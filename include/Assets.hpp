@@ -41,7 +41,7 @@ template <class Asset>
 Asset&
 Assets <Asset>::Get( const std::string& assetName )
 {
-  return mAssets.at( assetName ).second;
+  return mAssets.at( assetName );
 }
 
 #endif
