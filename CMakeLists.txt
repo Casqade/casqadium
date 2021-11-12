@@ -9,7 +9,9 @@ set_target_properties(${TARGET} PROPERTIES
   CXX_STANDARD 14
 )
 
+if(WIN32)
 option(${TARGET}_DISABLE_CMD "Build as GUI application" ON)
+endif()
 
 option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 option(${TARGET}_INSTALL "Generate install target for ${TARGET}" ON)
