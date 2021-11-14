@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.7 FATAL_ERROR)
 
 set(TARGET AnotherDayAtHospital)
-project(${TARGET} VERSION 1.0  LANGUAGES CXX)
+project(${TARGET} VERSION 1.0 LANGUAGES CXX)
 
 add_executable(${TARGET})
 set_target_properties(${TARGET} PROPERTIES
@@ -10,11 +10,11 @@ set_target_properties(${TARGET} PROPERTIES
 )
 
 if(WIN32)
-option(${TARGET}_DISABLE_CMD "Build as GUI application" ON)
+option(${TARGET}_DISABLE_CMD "Build as GUI application" OFF)
 endif()
 
-option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
-option(${TARGET}_INSTALL "Generate install target for ${TARGET}" ON)
+option(BUILD_SHARED_LIBS "Build using shared libraries" OFF)
+option(${TARGET}_INSTALL "Generate install target for ${TARGET}" OFF)
 
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
@@ -30,16 +30,22 @@ find_package(SFML COMPONENTS system window graphics audio REQUIRED)
 
 target_sources(${TARGET} PRIVATE
 
+  include/Variables.hpp
+
   include/Assets.hpp
-  include/GameState.hpp
   include/Logger.hpp
+  include/Widgets.hpp
 
-  src/GameState.cpp
+  src/Assets.cpp
+  src/Widgets.cpp
   src/Logger.cpp
-  src/main.cpp
 
+  src/main.cpp
   src/icon.rc
 )
+
+add_subdirectory(GameStates)
+target_include_directories(${TARGET} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/GameStates)
 
 target_include_directories(${TARGET} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/include)
 

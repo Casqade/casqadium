@@ -1,19 +1,22 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Window/Event.hpp>
 #include <SFML/System/Err.hpp>
+#include <SFML/Audio.hpp>
 
-#include <Assets.hpp>
+#include <Variables.hpp>
 #include <Logger.hpp>
-#include <GameState.hpp>
+#include <GameStates.hpp>
+#include <GameStateController.hpp>
 
 #include <forward_list>
 #include <sstream>
+#include <cmath>
+#include <memory>
 
 
 Logger Log;
 
-Assets <sf::Font> Fonts;
-Assets <sf::Texture> Textures;
+sf::RenderWindow window;
 
 
 std::vector <sf::Text> IntroTextEntries;
@@ -21,76 +24,51 @@ std::vector <sf::Text> IntroTextEntries;
 std::istringstream introText ("my text goes here;my text goes here;my text goes here;my text goes here;my text goes here;my text goes here;my text goes here;my text goes here;my text goes here;");
 
 
-template <class Asset>
-std::string Assets <Asset>::AssetsPath = "assets/";
-
-template <>
-std::string Assets <sf::Font>::AssetType = "fonts/";
-
-template <>
-std::string Assets <sf::Texture>::AssetType = "textures/";
-
-
-class GameStateTitle : public GameState
-{
-public:
-//  void enter() override;
-  void update( const sf::Time ) override;
-  void render( sf::RenderWindow& ) override;
-};
-
-void
-GameStateTitle::update( const sf::Time elapsed )
-{
-  const float dt = elapsed.asSeconds();
-  const float textSpeedY = 20.0f * dt;
-  const float textScaleD = 1.0f - dt;
-
-  for ( auto& text : IntroTextEntries )
-  {
-    if ( text.getPosition().y > 0.0f )
-      text.move( 0.0f, -textSpeedY );
-
-    if ( text.getScale().x > 0.0f )
-      text.scale( textScaleD, textScaleD * 1.0025f );
-  }
-}
-
-void
-GameStateTitle::render( sf::RenderWindow& window )
-{
-  for ( auto& text : IntroTextEntries )
-    window.draw( text );
-}
-
-
 int
 main( int , char*[] )
 {
   sf::err().rdbuf( Log.rdbuf());
 
-  std::forward_list <std::pair <std::string, std::string>> textures =
+  std::forward_list <std::pair <FontId, std::string>> fonts =
   {
-    { "window_icon", "window_icon.png" },
+    { FontId::Munro, "munro.ttf" },
+    { FontId::Jetbrains, "jetbrains.ttf" },
+    { FontId::FranklinGothic, "framd.ttf" },
+    { FontId::FranklinGothicItalic, "framdit.ttf" },
   };
 
-  std::forward_list <std::pair <std::string, std::string>> fonts =
+  std::forward_list <std::pair <TextureId, std::string>> textures =
   {
-    { "munro", "munro.ttf" },
-    { "jetbrains", "jetbrains.ttf" },
-//    { "framd", "framd.ttf" },
-//    { "framdit", "framdit.ttf" },
+    { TextureId::WindowIcon, "window_icon.png" },
   };
 
-  for ( const auto& texture : textures )
-    if ( Textures.Load( texture.first, texture.second ) == false )
-      return 1;
+  std::forward_list <std::pair <SoundId, std::string>> sounds =
+  {
+    { SoundId::Null, "" },
+  };
+
+  std::forward_list <std::pair <MusicId, std::string>> musics =
+  {
+    { MusicId::TitleTheme, "title.ogg" },
+  };
 
   for ( const auto& font : fonts )
-    if ( Fonts.Load( font.first, font.second ) == false )
+    if ( Fonts::Load( font.first, font.second ) == false )
       return 1;
 
-  sf::RenderWindow window( sf::VideoMode( 800, 600 ), "Another Day At Hospital", sf::Style::Titlebar | sf::Style::Close );
+  for ( const auto& texture : textures )
+    if ( Textures::Load( texture.first, texture.second ) == false )
+      return 1;
+
+  for ( const auto& sound : sounds )
+    if ( Sounds::Load( sound.first, sound.second ) == false )
+      return 1;
+
+  for ( const auto& music : musics )
+    if ( Music::Load( music.first, music.second ) == false )
+      return 1;
+
+  window.create( sf::VideoMode( 800, 600 ), "Another Day At Hospital", sf::Style::Titlebar | sf::Style::Close );
 
   std::string line {};
   std::vector <std::string> lines {};
@@ -99,7 +77,7 @@ main( int , char*[] )
 
   for ( auto& str : lines )
   {
-    sf::Text text( str, Fonts.Get( "munro" ), 36 );
+    sf::Text text( str, Fonts::Get(FontId::Munro), 36 );
     text.setFillColor( sf::Color::Yellow );
     text.setOrigin( text.getLocalBounds().width * 0.5f,
                     text.getLocalBounds().height * 0.5f );
@@ -113,10 +91,11 @@ main( int , char*[] )
 //  window.setVerticalSyncEnabled( true );
 //  window.setMouseCursorVisible( false );
 
+  GameStateController::setState <GameStateForeword> ();
+
   while ( window.isOpen() )
   {
     static sf::Clock clock;
-    static std::unique_ptr <GameState> gameState = std::make_unique <GameStateTitle> ();
 
     sf::Event event;
     while ( window.pollEvent(event ) )
@@ -128,13 +107,13 @@ main( int , char*[] )
           break;
 
         default:
-          gameState->handleEvent( event );
+          GameStateController::handleEvent( event );
       }
     }
 
     window.clear();
-    gameState->update( clock.restart() );
-    gameState->render( window );
+    GameStateController::update( clock.restart() );
+    GameStateController::render( window );
     window.display();
   }
 

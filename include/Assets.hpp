@@ -3,45 +3,22 @@
 
 #include <map>
 #include <string>
+#include <memory>
 
 
-template <class Asset>
+template <class Asset, typename AssetId>
 class Assets
 {
+protected:
   static std::string AssetsPath;
   static std::string AssetType;
 
-  static std::map <std::string, Asset> mAssets;
+  static std::map <AssetId, std::shared_ptr <Asset>> mAssets;
 
 public:
-  static bool Load( const std::string&, const std::string& );
-  static Asset& Get( const std::string& );
+  static bool Load( const AssetId, const std::string& );
+  static Asset& Get( const AssetId );
 };
 
-template <class Asset>
-std::map <std::string, Asset>
-Assets <Asset>::mAssets = {};
-
-template <class Asset>
-bool
-Assets <Asset>::Load( const std::string& assetName,
-                      const std::string& assetPath )
-{
-  Asset asset;
-  if ( asset.loadFromFile( AssetsPath + AssetType + assetPath ) == true )
-  {
-    mAssets[assetName] = asset;
-    return true;
-  }
-
-  return false;
-}
-
-template <class Asset>
-Asset&
-Assets <Asset>::Get( const std::string& assetName )
-{
-  return mAssets.at( assetName );
-}
 
 #endif

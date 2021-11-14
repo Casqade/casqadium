@@ -1,0 +1,68 @@
+#ifndef VARIABLES_HPP
+#define VARIABLES_HPP
+
+#include <Assets.hpp>
+
+
+namespace sf
+{
+class RenderWindow;
+class Font;
+class Texture;
+class SoundBuffer;
+class Music;
+}
+
+
+enum class FontId : uint32_t
+{
+  FranklinGothic,
+  FranklinGothicItalic,
+  Munro,
+  Jetbrains,
+};
+
+enum class TextureId : uint32_t
+{
+  WindowIcon,
+};
+
+enum class SoundId : uint32_t
+{
+  Null,
+};
+
+enum class MusicId : uint32_t
+{
+  TitleTheme,
+};
+
+extern class Logger Log;
+
+extern sf::RenderWindow window;
+
+class Fonts : public Assets <sf::Font, FontId>
+{};
+
+class Textures : public Assets <sf::Texture, TextureId>
+{};
+
+class Sounds : public Assets <sf::SoundBuffer, SoundId>
+{};
+
+class Music : public Assets <sf::Music, MusicId>
+{
+public:
+  static bool Load( const MusicId, const std::string& );
+  static sf::Music& Get( const MusicId );
+};
+
+//extern template class
+//Assets <sf::Music, MusicId>;
+
+//extern template
+//std::string
+//Assets <sf::Music, MusicId>::AssetType;
+
+
+#endif
