@@ -30,6 +30,7 @@ class GameStateTitle
 
   void handleControls( const float dt );
 
+  void updateLines( const float dt );
   void updateTitle( const float dt );
   void updateBackStory( const float dt );
 
