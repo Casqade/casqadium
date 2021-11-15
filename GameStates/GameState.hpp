@@ -12,6 +12,12 @@ class Time;
 
 class GameState
 {
+  enum class StateLocal
+  {
+    Null,
+
+  } mState;
+
 public:
   ~GameState();
   virtual void enter( );

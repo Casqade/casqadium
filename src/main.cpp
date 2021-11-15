@@ -19,10 +19,34 @@ Logger Log;
 sf::RenderWindow window;
 
 
-std::vector <sf::Text> IntroTextEntries;
+std::vector <sf::Text> TitleTextEntries;
+std::vector <sf::Text> BackStoryTextEntries;
 
-std::istringstream introText ("my text goes here;my text goes here;my text goes here;my text goes here;my text goes here;my text goes here;my text goes here;my text goes here;my text goes here;");
+std::istringstream titleText ("Another Day;At Hospital");
 
+std::istringstream backStoryText {"Episode IV;\
+A NEW HOPE;\
+It is a period of civil war.;\
+Rebel spaceships, striking;\
+from a hidden base, have won;\
+their first victory against;\
+the evil Galactic Empire.;\
+;\
+During the battle, Rebel;\
+spies managed to steal secret;\
+plans to the Empire's;\
+ultimate weapon, the DEATH;\
+STAR, an armored space;\
+station with enough power to;\
+destroy an entire planet.;\
+;\
+Pursued by the Empire's;\
+sinister agents, Princess;\
+Leia races home aboard her;\
+starship, custodian of the;\
+stolen plans that can save;\
+her people and restore;\
+freedom to the galaxy...."};
 
 int
 main( int , char*[] )
@@ -68,22 +92,44 @@ main( int , char*[] )
     if ( Music::Load( music.first, music.second ) == false )
       return 1;
 
-  window.create( sf::VideoMode( 800, 600 ), "Another Day At Hospital", sf::Style::Titlebar | sf::Style::Close );
+  const auto desktop = sf::VideoMode::getDesktopMode();
+  window.create( sf::VideoMode(desktop.height * 800.0f / 600, desktop.height),
+                 "Another Day At Hospital",
+                 sf::Style::Titlebar | sf::Style::Close );
 
-  std::string line {};
+  std::string entry {};
   std::vector <std::string> lines {};
-  while ( std::getline( introText, line, ';' ) )
-    lines.push_back( line );
 
-  for ( auto& str : lines )
+  while ( std::getline( titleText, entry, ';' ) )
+    lines.push_back( entry );
+
+  for ( auto& line : lines )
   {
-    sf::Text text( str, Fonts::Get(FontId::Munro), 36 );
-    text.setFillColor( sf::Color::Yellow );
+    sf::Text text( line, Fonts::Get(FontId::FranklinGothic), 128 );
+
+    text.setOutlineColor( sf::Color::Transparent );
+    text.setFillColor( sf::Color::Transparent );
+    text.setOutlineThickness( 1.0f );
     text.setOrigin( text.getLocalBounds().width * 0.5f,
                     text.getLocalBounds().height * 0.5f );
-    text.setPosition( window.getSize().x * 0.5f, window.getSize().y * 0.5f + IntroTextEntries.size() * ( text.getLocalBounds().height + text.getLineSpacing() ) );
-    text.setScale( 2.0f + IntroTextEntries.size(), 2.0f + IntroTextEntries.size());
-    IntroTextEntries.push_back( text );
+
+    TitleTextEntries.push_back( text );
+  }
+
+  lines.clear();
+
+  while ( std::getline( backStoryText, entry, ';' ) )
+    lines.push_back( entry );
+
+  for ( auto& line : lines )
+  {
+    sf::Text text( line, Fonts::Get(FontId::FranklinGothic), 64 );
+
+    text.setFillColor( sf::Color::Transparent );
+    text.setOrigin( text.getLocalBounds().width * 0.5f,
+                    text.getLocalBounds().height * 0.5f );
+
+    BackStoryTextEntries.push_back( text );
   }
 
 

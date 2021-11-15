@@ -88,9 +88,9 @@ GameStateForeword::transitingOut( const float dt )
   if ( mFade.finished() == false )
     return;
 
-  static sf::Music& music = Music::Get(MusicId::TitleTheme);
-  if ( music.getStatus() != sf::Music::Status::Playing )
-    music.play();
+//  static sf::Music& music = Music::Get(MusicId::TitleTheme);
+//  if ( music.getStatus() != sf::Music::Status::Playing )
+//    music.play();
 
   Log << "Finished";
   GameStateController::setState <GameStateTitle> ();
