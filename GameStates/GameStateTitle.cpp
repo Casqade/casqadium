@@ -7,8 +7,13 @@
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Audio/Music.hpp>
 
+#include <TimeUtils/Duration.hpp>
+#include <AppFramework/RenderCommand.hpp>
+#include <AppFramework/RenderQueue.hpp>
+
 #include <cmath>
 #include <sstream>
+
 
 
 extern std::vector <sf::Text> BackStoryTextEntries;
@@ -18,73 +23,15 @@ sf::Vector3f cubePos = {};
 sf::Vector3f cameraPos = {};
 sf::Vector3f cameraRot = {};
 const float nearZ = 2.0f;
-
-template <uint32_t Rows,
-          uint32_t Columns,
-          typename Type>
-struct Matrix
-{
-  std::array <std::array <Type, Columns>, Rows> m;
-};
-
-
-
-void
-toCameraCoordinates( const sf::Vector3f p )
-{
-  typedef std::array <std::array <float, 4>, 3> Matrix3x4;
-
-  sf::Vector2f cameraOrigin = {};
-
-//  X , Y , Z     -  world axis in camera coords
-//  Wx, Wy, Wz, 0
-//  Wx, Wy, Wz, 0
-//  Wx, Wy, Wz, 0
-//  0 , 0 , 0 , 1
-
-//  Cx, Cx, Cx, 0 - Camera X axis in world coords
-//  Cy, Cy, Cy, 0 - Camera Y axis in world coords
-//  Cz, Cz, Cz, 0 - Camera Z axis in world coords
-//  0 , 0 , 0 , 1
-
-//    Rotation matrix R:
-//  Rx Ry Rz 0 - Right
-//  Ux Uy Uz 0 - Up         vectors
-//  Dx Dy Dz 0 - Direction
-//  0  0  0  1
-
-//    Translation matrix T:
-//  1 0 0 -Px, P - camera position vector
-//  0 1 0 -Py
-//  0 0 1 -Pz
-//  0 0 0  1
-
-// LookAt = R * T
-
-  Matrix3x4 rotatedCameraMatrix;
-
-  Matrix3x4 cameraPosMatrix;
-  cameraPosMatrix[0][0] = 1;
-  cameraPosMatrix[1][1] = 1;
-  cameraPosMatrix[2][2] = 1;
-  cameraPosMatrix[3][0] = -cameraPos.x;
-  cameraPosMatrix[3][1] = -cameraPos.y;
-  cameraPosMatrix[3][2] = -cameraPos.z;
-  cameraPosMatrix[3][3] = 1;
-
-  rotatedCameraMatrix[0][0] = nearZ;
-  rotatedCameraMatrix[1][1] = nearZ;
-  rotatedCameraMatrix[0][2] = cameraOrigin.x;
-  rotatedCameraMatrix[1][2] = cameraOrigin.y;
-  rotatedCameraMatrix[2][2] = 1.0f;
-}
+sf::Vector2u windowSize = {};
 
 GameStateTitle::GameStateTitle()
   : mState(StateLocal::Title)
   , mTitlePos({0.0f, 0.0f, 0.75f})
   , mBackstoryPos({ 0.0f, 150.0f, 0.0f })
+  , mLines(sf::Lines)
   , mPressedKeys()
-{}
+{windowSize = window.getSize();}
 
 void
 GameStateTitle::handleControls( const float dt )
@@ -150,26 +97,6 @@ rectProjection(
   };
 }
 
-//sf::Vector2f operator / ( const sf::Vector2f l,
-//                          const sf::Vector2f r )
-//{
-//  return
-//  {
-//    l.x / r.x,
-//    l.y / r.y
-//  };
-//}
-
-//sf::Vector2f operator * ( const sf::Vector2f l,
-//                          const sf::Vector2f r )
-//{
-//  return
-//  {
-//    l.x * r.x,
-//    l.y * r.y
-//  };
-//}
-
 sf::Vector2f
 pointProjection( const sf::Vector3f p,
                  const float d )
@@ -188,8 +115,6 @@ distance( const sf::Vector3f p1,
 //  return std::sqrt( std::pow(p2.z - p1.z, 2) );
   return std::sqrt( std::pow(p2.x - p1.x, 2) + std::pow(p2.y - p1.y, 2) + std::pow(p2.z - p1.z, 2) );
 }
-
-sf::VertexArray lines( sf::Lines );
 
 void
 GameStateTitle::updateLines( const float dt )
@@ -211,58 +136,58 @@ GameStateTitle::updateLines( const float dt )
     std::stringstream coords;
     coords << v.x << ", " << v.y << ", " << v.z << " x ";
     auto proj = pointProjection( v, distance( {}, v ) );
-    v.x = window.getSize().x * 0.5f + proj.x * edgeL;
-    v.y =  window.getSize().y * 0.5f + proj.y * edgeL;
+    v.x = windowSize.x * 0.5f + proj.x * edgeL;
+    v.y =  windowSize.y * 0.5f + proj.y * edgeL;
     coords << cube[7].x << ", " << cube[7].y << ", " << cube[7].z;
 //    Log << coords.str();
   };
 
-  lines.clear();
-  lines.append({{cube[0].x, cube[0].y}});
-  lines.append({{cube[1].x, cube[1].y}, sf::Color::Blue});
-  lines.append({{cube[1].x, cube[1].y}, sf::Color::Blue});
-  lines.append({{cube[3].x, cube[3].y}});
-  lines.append({{cube[3].x, cube[3].y}});
-  lines.append({{cube[2].x, cube[2].y}, sf::Color::Green});
-  lines.append({{cube[2].x, cube[2].y}, sf::Color::Green});
-  lines.append({{cube[0].x, cube[0].y}});
-  lines.append({{cube[0].x, cube[0].y}});
-  lines.append({{cube[4].x, cube[4].y}, sf::Color::Red});
-  lines.append({{cube[4].x, cube[4].y}, sf::Color::Red});
-  lines.append({{cube[6].x, cube[6].y}});
-  lines.append({{cube[6].x, cube[6].y}});
-  lines.append({{cube[2].x, cube[2].y}, sf::Color::Green});
+  mLines.clear();
+  mLines.append({{cube[0].x, cube[0].y}});
+  mLines.append({{cube[1].x, cube[1].y}, sf::Color::Blue});
+  mLines.append({{cube[1].x, cube[1].y}, sf::Color::Blue});
+  mLines.append({{cube[3].x, cube[3].y}});
+  mLines.append({{cube[3].x, cube[3].y}});
+  mLines.append({{cube[2].x, cube[2].y}, sf::Color::Green});
+  mLines.append({{cube[2].x, cube[2].y}, sf::Color::Green});
+  mLines.append({{cube[0].x, cube[0].y}});
+  mLines.append({{cube[0].x, cube[0].y}});
+  mLines.append({{cube[4].x, cube[4].y}, sf::Color::Red});
+  mLines.append({{cube[4].x, cube[4].y}, sf::Color::Red});
+  mLines.append({{cube[6].x, cube[6].y}});
+  mLines.append({{cube[6].x, cube[6].y}});
+  mLines.append({{cube[2].x, cube[2].y}, sf::Color::Green});
 
-  lines.append({{cube[1].x, cube[1].y}, sf::Color::Blue});
-  lines.append({{cube[5].x, cube[5].y}});
-  lines.append({{cube[5].x, cube[5].y}});
-  lines.append({{cube[4].x, cube[4].y}, sf::Color::Red});
-  lines.append({{cube[5].x, cube[5].y}});
-  lines.append({{cube[7].x, cube[7].y}});
+  mLines.append({{cube[1].x, cube[1].y}, sf::Color::Blue});
+  mLines.append({{cube[5].x, cube[5].y}});
+  mLines.append({{cube[5].x, cube[5].y}});
+  mLines.append({{cube[4].x, cube[4].y}, sf::Color::Red});
+  mLines.append({{cube[5].x, cube[5].y}});
+  mLines.append({{cube[7].x, cube[7].y}});
 
-  lines.append({{cube[3].x, cube[3].y}});
-  lines.append({{cube[7].x, cube[7].y}});
-  lines.append({{cube[7].x, cube[7].y}});
-  lines.append({{cube[6].x, cube[6].y}});
+  mLines.append({{cube[3].x, cube[3].y}});
+  mLines.append({{cube[7].x, cube[7].y}});
+  mLines.append({{cube[7].x, cube[7].y}});
+  mLines.append({{cube[6].x, cube[6].y}});
 
 //  for ( int i = 0;
 //        i < cube.size();
 //        ++i)
 //  {
-//    lines.append({{ cube[i].x, cube[i].y },
+//    mLines.append({{ cube[i].x, cube[i].y },
 //                       { cube[(i + 1) % cube.size()].x, cube[(i + 1) % cube.size()].y }});
-//    lines.append({{ cube[i].x, cube[i].y },
+//    mLines.append({{ cube[i].x, cube[i].y },
 //                       { cube[(i + 2) % cube.size()].x, cube[(i + 2) % cube.size()].y }});
-//    lines.append({{ cube[i].x, cube[i].y },
+//    mLines.append({{ cube[i].x, cube[i].y },
 //                       { cube[(i + 3) % cube.size()].x, cube[(i + 3) % cube.size()].y }});
 //  }
 
   for ( int i = 0;
-        i < lines.getVertexCount();
+        i < mLines.getVertexCount();
         ++i)
   {
       std::stringstream coords;
-      coords << "[" << lines[i].position.x << " x " << lines[i].position.y << "]";
+      coords << "[" << mLines[i].position.x << " x " << mLines[i].position.y << "]";
       static std::map <int, std::string> coordsPrev;
 
 //      if ( coords.str() != coordsPrev[i] )
@@ -297,8 +222,8 @@ GameStateTitle::updateTitle( const float dt )
 
     line.setOutlineColor( sf::Color::Yellow );
 
-    line.setPosition( window.getSize().x * 0.5f + titleProjection.left,
-                      window.getSize().y * 0.5f + titleProjection.top );
+    line.setPosition( windowSize.x * 0.5f + titleProjection.left,
+                      windowSize.y * 0.5f + titleProjection.top );
 
     line.setScale(  titleProjection.width / line.getLocalBounds().width,
                     titleProjection.height / line.getLocalBounds().height );
@@ -329,8 +254,8 @@ GameStateTitle::updateBackStory( const float dt )
 
     line.setFillColor( sf::Color::Yellow );
 
-    line.setPosition( window.getSize().x * 0.5f + textProjection.left,
-                      window.getSize().y * 0.5f + textProjection.top );
+    line.setPosition( windowSize.x * 0.5f + textProjection.left,
+                      windowSize.y * 0.5f + textProjection.top );
 
     line.setScale( textProjection.width / line.getLocalBounds().width,
                    textProjection.height / line.getLocalBounds().height );
@@ -392,13 +317,24 @@ GameStateTitle::keyEvent( const sf::Event event )
 }
 
 void
-GameStateTitle::render( sf::RenderWindow& window )
+GameStateTitle::render( sf::RenderWindow& )
 {
-  for ( auto& text : TitleTextEntries )
-    window.draw( text );
+  auto& renderQueue = RenderQueue::Current();
 
-  for ( auto& text : BackStoryTextEntries )
-    window.draw( text );
+  for ( auto text : TitleTextEntries )
+    renderQueue.push( std::make_shared <RenderCommand> ( [=] ( const TimeUtils::Duration )
+    {
+        window.draw( text );
+    } ) );
 
-  window.draw( lines );
+  for ( auto text : BackStoryTextEntries )
+    renderQueue.push( std::make_shared <RenderCommand> ( [=] ( const TimeUtils::Duration )
+    {
+        window.draw( text );
+    } ) );
+
+  renderQueue.push( std::make_shared <RenderCommand> ( [=] ( const TimeUtils::Duration )
+  {
+      window.draw( mLines );
+  } ) );
 }

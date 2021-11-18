@@ -1,18 +1,24 @@
 #include <SFML/Graphics.hpp>
+#include <SFML/Window/Window.hpp>
 #include <SFML/Window/Event.hpp>
 #include <SFML/System/Err.hpp>
 #include <SFML/Audio.hpp>
+
+#include <AppFramework/ApplicationCore.hpp>
+#include <TimeUtils/Duration.hpp>
 
 #include <Variables.hpp>
 #include <Logger.hpp>
 #include <GameStates.hpp>
 #include <GameStateController.hpp>
+#include <AppFramework/RenderCommand.hpp>
+#include <AppFramework/RenderQueue.hpp>
 
 #include <forward_list>
 #include <sstream>
 #include <cmath>
 #include <memory>
-
+#include <functional>
 
 Logger Log;
 
@@ -22,9 +28,7 @@ sf::RenderWindow window;
 std::vector <sf::Text> TitleTextEntries;
 std::vector <sf::Text> BackStoryTextEntries;
 
-std::istringstream titleText ("Another Day;At Hospital");
-
-std::istringstream backStoryText {"Episode IV;\
+sf::String backStoryText {"Episode IV;\
 A NEW HOPE;\
 It is a period of civil war.;\
 Rebel spaceships, striking;\
@@ -48,10 +52,59 @@ stolen plans that can save;\
 her people and restore;\
 freedom to the galaxy...."};
 
+
+
+
+int
+loop( const uint32_t ticks,
+      const TimeUtils::Duration& deltaTime )
+{
+  static sf::Clock clock;
+
+  sf::Event event;
+  while ( window.pollEvent( event ) )
+  {
+    switch (event.type)
+    {
+      case sf::Event::Closed:
+        window.close();
+        return 0;
+
+      default:
+        GameStateController::handleEvent( event );
+    }
+  }
+
+  RenderQueue::Current().push( std::make_shared <RenderCommand> ( [=] ( const TimeUtils::Duration )
+  {
+    window.setActive();
+  } ) );
+
+  GameStateController::update( clock.restart() );
+  GameStateController::render( window );
+
+  RenderQueue::Current().push( std::make_shared <RenderCommand> ( [=] ( const TimeUtils::Duration )
+  {
+    window.display();
+    window.clear();
+  } ) );
+
+  return -1;
+}
+
+
 int
 main( int , char*[] )
 {
   sf::err().rdbuf( Log.rdbuf());
+
+  std::forward_list <std::pair <StringId, sf::String>> strings =
+  {
+    { StringId::Foreword, "A long time ago in a galaxy far,\nfar away..." },
+    { StringId::Title, "Another Day;At Hospital" },
+    { StringId::Backstory, backStoryText },
+    { StringId::ForewordInputPrompt, "Hold any key" },
+  };
 
   std::forward_list <std::pair <FontId, std::string>> fonts =
   {
@@ -76,6 +129,10 @@ main( int , char*[] )
     { MusicId::TitleTheme, "title.ogg" },
   };
 
+  for ( const auto& string : strings )
+    if ( Strings::Load( string.first, string.second ) == false )
+      return 1;
+
   for ( const auto& font : fonts )
     if ( Fonts::Load( font.first, font.second ) == false )
       return 1;
@@ -93,13 +150,14 @@ main( int , char*[] )
       return 1;
 
   const auto desktop = sf::VideoMode::getDesktopMode();
-  window.create( sf::VideoMode(desktop.height * 800.0f / 600, desktop.height),
+  window.create( sf::VideoMode(800, 600),
                  "Another Day At Hospital",
                  sf::Style::Titlebar | sf::Style::Close );
-
+window.setActive(false);
   std::string entry {};
   std::vector <std::string> lines {};
 
+  std::istringstream titleText ( Strings::Get( StringId::Title ));
   while ( std::getline( titleText, entry, ';' ) )
     lines.push_back( entry );
 
@@ -118,6 +176,7 @@ main( int , char*[] )
 
   lines.clear();
 
+  std::istringstream backStoryText( Strings::Get( StringId::Backstory ) );
   while ( std::getline( backStoryText, entry, ';' ) )
     lines.push_back( entry );
 
@@ -132,36 +191,9 @@ main( int , char*[] )
     BackStoryTextEntries.push_back( text );
   }
 
-
-  window.setFramerateLimit( 60 );
-//  window.setVerticalSyncEnabled( true );
 //  window.setMouseCursorVisible( false );
 
-  GameStateController::setState <GameStateForeword> ();
+  GameStateController::setState <GameStateTitle> ();
 
-  while ( window.isOpen() )
-  {
-    static sf::Clock clock;
-
-    sf::Event event;
-    while ( window.pollEvent(event ) )
-    {
-      switch (event.type)
-      {
-        case sf::Event::Closed:
-          window.close();
-          break;
-
-        default:
-          GameStateController::handleEvent( event );
-      }
-    }
-
-    window.clear();
-    GameStateController::update( clock.restart() );
-    GameStateController::render( window );
-    window.display();
-  }
-
-  return 0;
+  return ApplicationCore::Run( &loop, 30, 60 );
 }

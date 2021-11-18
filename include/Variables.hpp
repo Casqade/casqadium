@@ -7,12 +7,21 @@
 namespace sf
 {
 class RenderWindow;
+class String;
 class Font;
 class Texture;
 class SoundBuffer;
 class Music;
 }
 
+enum class StringId : uint32_t
+{
+  Foreword,
+  ForewordInputPrompt,
+
+  Title,
+  Backstory,
+};
 
 enum class FontId : uint32_t
 {
@@ -40,6 +49,13 @@ enum class MusicId : uint32_t
 extern class Logger Log;
 
 extern sf::RenderWindow window;
+
+class Strings : public Assets <sf::String, StringId>
+{
+public:
+  static bool Load( const StringId, const sf::String& );
+  static sf::String& Get( const StringId );
+};
 
 class Fonts : public Assets <sf::Font, FontId>
 {};

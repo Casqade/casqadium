@@ -18,10 +18,10 @@ option(${TARGET}_INSTALL "Generate install target for ${TARGET}" OFF)
 
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
-if(NOT ${BUILD_SHARED_LIBS})
-  set(SFML_STATIC_LIBRARIES TRUE)
-else()
+if(${BUILD_SHARED_LIBS})
   set(SFML_STATIC_LIBRARIES FALSE)
+else()
+  set(SFML_STATIC_LIBRARIES TRUE)
 endif()
 
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_INSTALL_PREFIX})
@@ -49,6 +49,9 @@ target_include_directories(${TARGET} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/GameState
 
 target_include_directories(${TARGET} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/include)
 
+add_subdirectory(lib)
+target_link_libraries(${TARGET} PRIVATE TimeUtils::TimeUtils)
+target_link_libraries(${TARGET} PRIVATE AppFramework::AppFramework)
 target_link_libraries(${TARGET} PRIVATE sfml-system sfml-window sfml-graphics sfml-audio)
 
 if(NOT ${BUILD_SHARED_LIBS})

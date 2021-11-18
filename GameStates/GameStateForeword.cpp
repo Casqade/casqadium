@@ -5,6 +5,10 @@
 #include <SFML/Audio/SoundBuffer.hpp>
 #include <SFML/Audio/Music.hpp>
 
+#include <TimeUtils/Duration.hpp>
+#include <AppFramework/RenderCommand.hpp>
+#include <AppFramework/RenderQueue.hpp>
+
 #include <Logger.hpp>
 #include <Variables.hpp>
 #include <GameStateController.hpp>
@@ -13,9 +17,9 @@
 
 GameStateForeword::GameStateForeword()
   : mState(StateLocal::TransitingIn)
-  , mForeword("A long time ago in a galaxy far,\nfar away...",
+  , mForeword(Strings::Get(StringId::Foreword),
               Fonts::Get(FontId::FranklinGothic))
-  , mInputPrompt({"[Hold any key]", Fonts::Get(FontId::FranklinGothic)},
+  , mInputPrompt({Strings::Get(StringId::ForewordInputPrompt), Fonts::Get(FontId::FranklinGothic)},
                  sf::seconds(0.2f), sf::seconds(0.2f))
   , mFade(  sf::Vector2f( window.getSize().x,
                           window.getSize().y ),
@@ -162,9 +166,12 @@ GameStateForeword::keyEvent( const sf::Event event )
 }
 
 void
-GameStateForeword::render( sf::RenderWindow& window )
+GameStateForeword::render( sf::RenderWindow& )
 {
-  window.draw( mForeword );
-  window.draw( mFade );
-  window.draw( mInputPrompt );
+  RenderQueue::Current().push( std::make_shared <RenderCommand> ( [=] ( const TimeUtils::Duration )
+  {
+      window.draw( mForeword );
+      window.draw( mFade );
+      window.draw( mInputPrompt );
+  } ) );
 }

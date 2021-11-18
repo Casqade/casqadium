@@ -26,30 +26,6 @@ std::string Assets <sf::SoundBuffer, SoundId>::AssetType = "sounds/";
 template <>
 std::string Assets <sf::Music, MusicId>::AssetType = "music/";
 
-bool
-Music::Load(
-  const MusicId       assetId,
-  const std::string&  assetPath )
-{
-  if ( assetPath.empty() )
-    return true;
-
-  std::shared_ptr <sf::Music> music = std::make_shared <sf::Music> ();
-  if ( music->openFromFile( AssetsPath + AssetType + assetPath ) == true )
-  {
-    mAssets[assetId] = music;
-    return true;
-  }
-
-  return false;
-}
-
-sf::Music&
-Music::Get( const MusicId id )
-{
-  return Assets::Get(id);
-}
-
 template <class Asset, typename AssetId>
 bool
 Assets <Asset, AssetId>::Load(
@@ -80,6 +56,46 @@ Assets <Asset, AssetId>::Get( const AssetId assetId )
   return *(mAssets.at( assetId ));
 }
 
+bool
+Strings::Load(
+  const StringId    assetId,
+  const sf::String& assetPath )
+{
+  mAssets[assetId] = std::make_shared <sf::String> (assetPath);
+
+  return true;
+}
+
+sf::String&
+Strings::Get( const StringId id )
+{
+  return Assets::Get(id);
+}
+
+bool
+Music::Load(
+  const MusicId       assetId,
+  const std::string&  assetPath )
+{
+  if ( assetPath.empty() )
+    return true;
+
+  std::shared_ptr <sf::Music> music = std::make_shared <sf::Music> ();
+  if ( music->openFromFile( AssetsPath + AssetType + assetPath ) == true )
+  {
+    mAssets[assetId] = music;
+    return true;
+  }
+
+  return false;
+}
+
+sf::Music&
+Music::Get( const MusicId id )
+{
+  return Assets::Get(id);
+}
+
 template class
 Assets <sf::Font, FontId>;
 
@@ -88,3 +104,6 @@ Assets <sf::Texture, TextureId>;
 
 template class
 Assets <sf::SoundBuffer, SoundId>;
+
+//template class
+//Assets <sf::Music, MusicId>;

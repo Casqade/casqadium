@@ -26,6 +26,8 @@ class GameStateTitle
   sf::Vector3f mTitlePos;
   sf::Vector3f mBackstoryPos;
 
+  sf::VertexArray mLines;
+
   std::set <sf::Keyboard::Key> mPressedKeys;
 
   void handleControls( const float dt );
