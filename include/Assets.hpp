@@ -6,6 +6,25 @@
 #include <memory>
 
 
+template <class T>
+class Singleton
+{
+protected:
+  static T instance;
+
+  inline Singleton() = default;
+  virtual inline ~Singleton() = default;
+
+public:
+  Singleton( Singleton& ) = delete;
+  void operator=( const Singleton & ) = delete;
+
+  static inline T* get()
+  {
+    return &instance;
+  }
+};
+
 template <class Asset, typename AssetId>
 class Assets
 {
