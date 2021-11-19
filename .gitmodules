@@ -1,3 +1,6 @@
 [submodule "lib/TimeUtils"]
 	path = lib/TimeUtils
 	url = https://gitlab.com/Casqade/timeutils
+[submodule "lib/AppFramework"]
+	path = lib/AppFramework
+	url = https://gitlab.com/Casqade/appframework
