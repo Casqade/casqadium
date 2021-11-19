@@ -7,13 +7,6 @@
 class GameState;
 class GameStateForeword;
 
-namespace sf
-{
-class RenderWindow;
-class Time;
-class Event;
-}
-
 class GameStateController
 {
   static std::unique_ptr <GameState> mCurrentState;

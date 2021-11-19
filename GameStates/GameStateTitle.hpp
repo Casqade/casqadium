@@ -2,15 +2,21 @@
 #define GAME_STATE_TITLE_HPP
 
 #include <GameState.hpp>
-#include <SFML/Graphics/Text.hpp>
 
 #include <set>
 
 
-namespace sf
+struct SDL_Scancode;
+struct SDL_Event;
+
+namespace Math
 {
-class Time;
-class RenderWindow;
+class Vector3f;
+}
+
+namespace TimeUtils
+{
+class Duration;
 }
 
 class GameStateTitle
@@ -23,12 +29,12 @@ class GameStateTitle
 
   } mState;
 
-  sf::Vector3f mTitlePos;
-  sf::Vector3f mBackstoryPos;
+  Math::Vector3f mTitlePos;
+  Math::Vector3f mBackstoryPos;
 
   sf::VertexArray mLines;
 
-  std::set <sf::Keyboard::Key> mPressedKeys;
+  std::set <SDL_Scancode> mPressedKeys;
 
   void handleControls( const float dt );
 
@@ -36,12 +42,12 @@ class GameStateTitle
   void updateTitle( const float dt );
   void updateBackStory( const float dt );
 
-  void keyEvent( const sf::Event ) override;
+  void keyEvent( const SDL_Event ) override;
 
 public:
   GameStateTitle();
 //  void enter() override;
-  void update( const sf::Time ) override;
+  void update( const TimeUtils::Duration ) override;
   void render( sf::RenderWindow& ) override;
 };
 

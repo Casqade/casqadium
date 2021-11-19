@@ -4,9 +4,6 @@
 #include <GameState.hpp>
 #include <Widgets.hpp>
 
-#include <SFML/Graphics/Text.hpp>
-#include <SFML/Graphics/RectangleShape.hpp>
-
 #include <set>
 
 
@@ -35,18 +32,18 @@ class GameStateForeword
   float mInputPromptDelay;
   float mTransitingOutTimer;
 
-  std::set <sf::Keyboard::Key> mPressedKeys;
+  std::set <SDL_Scancode> mPressedKeys;
 
   void transitingIn( const float dt );
   void transitingOut( const float dt );
 
   void waitAccept( const float dt );
 
-  void keyEvent( const sf::Event ) override;
+  void keyEvent( const SDL_Event ) override;
 
 public:
   GameStateForeword();
-  void update( const sf::Time ) override;
+  void update( const TimeUtils::Duration ) override;
   void render( sf::RenderWindow& ) override;
 };
 

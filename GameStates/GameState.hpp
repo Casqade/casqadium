@@ -1,13 +1,16 @@
 #ifndef GAME_STATE_HPP
 #define GAME_STATE_HPP
 
-#include <SFML/Window/Event.hpp>
 
+struct SDL_Renderer;
+struct SDL_Event;
+struct SDL_KeyboardEvent;
+struct SDL_MouseMotionEvent;
+struct SDL_MouseButtonEvent;
 
-namespace sf
+namespace TimeUtils
 {
-class RenderWindow;
-class Time;
+class Duration;
 }
 
 class GameState
@@ -21,14 +24,14 @@ class GameState
 public:
   ~GameState();
   virtual void enter( );
-  virtual void render( sf::RenderWindow& );
-  virtual void update( const sf::Time );
-  virtual void handleEvent( const sf::Event );
+  virtual void render( SDL_Renderer );
+  virtual void update( const TimeUtils::Duration );
+  virtual void handleEvent( const SDL_Event );
 
 protected:
-  virtual void keyEvent( const sf::Event );
-  virtual void mouseMoveEvent( const sf::Event::MouseMoveEvent );
-  virtual void mouseButtonEvent( const sf::Event::MouseButtonEvent );
+  virtual void keyEvent( const SDL_KeyboardEvent );
+  virtual void mouseMoveEvent( const SDL_MouseMotionEvent );
+  virtual void mouseButtonEvent( const SDL_MouseButtonEvent );
 };
 
 

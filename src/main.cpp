@@ -1,8 +1,4 @@
-#include <SFML/Graphics.hpp>
-#include <SFML/Window/Window.hpp>
-#include <SFML/Window/Event.hpp>
-#include <SFML/System/Err.hpp>
-#include <SFML/Audio.hpp>
+#include <SDL/SDL.h>
 
 #include <AppFramework/ApplicationCore.hpp>
 #include <TimeUtils/Duration.hpp>
@@ -96,8 +92,6 @@ loop( const uint32_t ticks,
 int
 main( int , char*[] )
 {
-  sf::err().rdbuf( Log.rdbuf());
-
   std::forward_list <std::pair <StringId, sf::String>> strings =
   {
     { StringId::Foreword, "A long time ago in a galaxy far,\nfar away..." },
