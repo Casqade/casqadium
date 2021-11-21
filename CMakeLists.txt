@@ -3,25 +3,16 @@ cmake_minimum_required(VERSION 3.7 FATAL_ERROR)
 set(TARGET AnotherDayAtHospital)
 project(${TARGET} VERSION 1.0 LANGUAGES CXX)
 
-if(WIN32)
-  option(${TARGET}_DISABLE_CMD "Build as GUI application" OFF)
-endif()
-
-option(BUILD_SHARED_LIBS "Build using shared libraries" OFF)
-option(${TARGET}_INSTALL "Generate install target for ${TARGET}" OFF)
-
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
-if(NOT ${BUILD_SHARED_LIBS})
-  set(SDL_STATIC_LIBRARIES TRUE)
+option(${TARGET}_INSTALL "Generate install target for ${TARGET}" OFF)
+option(BUILD_SHARED_LIBS "Build using shared libraries" OFF)
+
+if(WIN32)
+  option(${TARGET}_ENABLE_CMD "Build as console application" ON)
 endif()
 
 add_executable(${TARGET})
-set_target_properties(${TARGET} PROPERTIES
-  CXX_STANDARD_REQUIRED ON
-  CXX_STANDARD 14
-)
-
 target_sources(${TARGET} PRIVATE
 
   include/Variables.hpp
@@ -38,22 +29,42 @@ target_sources(${TARGET} PRIVATE
   src/icon.rc
 )
 
+set_target_properties(${TARGET} PROPERTIES
+  CXX_STANDARD_REQUIRED ON
+  CXX_STANDARD 14
+)
+
 add_subdirectory(GameStates)
 target_include_directories(${TARGET} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/GameStates)
-
 target_include_directories(${TARGET} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/include)
 
 add_subdirectory(lib)
-target_link_libraries(${TARGET} PRIVATE TimeUtils::TimeUtils)
-target_link_libraries(${TARGET} PRIVATE AppFramework::AppFramework)
-target_link_libraries(${TARGET} PRIVATE Sdl2Wrapper::Sdl2Wrapper)
 
 if(NOT ${BUILD_SHARED_LIBS})
-  target_link_libraries(${TARGET} PRIVATE -static-libgcc -static-libstdc++)
+  target_link_libraries(${TARGET} PUBLIC -static)
 endif()
 
-if(WIN32 AND ${TARGET}_DISABLE_CMD)
-  target_link_libraries(${TARGET} mwindows)
+target_link_libraries(${TARGET} PRIVATE TimeUtils::TimeUtils)
+target_link_libraries(${TARGET} PRIVATE Sdl2Wrapper::Sdl2Wrapper)
+target_link_libraries(${TARGET} PRIVATE AppFramework::AppFramework)
+
+include(GNUInstallDirs)
+
+find_package(Threads REQUIRED)
+target_link_libraries(${TARGET} PRIVATE Threads::Threads)
+
+if(WIN32)
+  if(${${TARGET}_ENABLE_CMD})
+    target_link_libraries(${TARGET} PRIVATE -mconsole)
+  endif()
+
+  if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+  else()
+    if(NOT ${BUILD_SHARED_LIBS})
+      target_link_libraries(${TARGET} PRIVATE -static-libgcc -static-libstdc++)
+    endif()
+  endif()
+
 endif()
 
 if(${TARGET}_INSTALL)

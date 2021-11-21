@@ -31,13 +31,13 @@ target_sources(${TARGET} PRIVATE
 #target_link_libraries(${TARGET} PRIVATE Logger::Logger)
 target_link_libraries(${TARGET} PRIVATE TimeUtils::TimeUtils)
 
-list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/sdl2)
+#list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake/sdl2)
 find_package(SDL2 REQUIRED)
 
 if(${BUILD_SHARED_LIBS})
-  target_link_libraries(${TARGET} PUBLIC SDL2::Main)
+  target_link_libraries(${TARGET} PUBLIC SDL2::SDL2)
 else()
-  target_link_libraries(${TARGET} PUBLIC SDL2::SDL2-static SDL2::SDL2 SDL2::SDL2main)
+  target_link_libraries(${TARGET} PUBLIC SDL2::SDL2-static)
 endif()
 
 if (SDL_PNG_SUPPORT)

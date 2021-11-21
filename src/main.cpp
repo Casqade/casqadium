@@ -1,4 +1,4 @@
-#include <SDL/SDL.h>
+#include <SDL2/SDL.h>
 
 #include <AppFramework/ApplicationCore.hpp>
 #include <TimeUtils/Duration.hpp>
