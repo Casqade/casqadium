@@ -59,14 +59,14 @@ Assets <Asset, AssetId>::Get( const AssetId assetId )
 bool
 Strings::Load(
   const StringId    assetId,
-  const sf::String& assetPath )
+  const std::string& assetPath )
 {
-  mAssets[assetId] = std::make_shared <sf::String> (assetPath);
+  mAssets[assetId] = std::make_shared <std::string> (assetPath);
 
   return true;
 }
 
-sf::String&
+std::string&
 Strings::Get( const StringId id )
 {
   return Assets::Get(id);

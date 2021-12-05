@@ -1,24 +1,13 @@
-#include <Sdl2Wrapper/Math.hpp>
+#include <olcPGE/olcPixelGameEngine.hpp>
+#include <olcPGE/Math.hpp>
 
 #include <string>
 #include <memory>
 #include <forward_list>
 
 
-namespace Math
+namespace olc
 {
-
-Vector3f::Vector3f()
-  : x()
-  , y()
-  , z()
-{}
-
-Vector3f::Vector3f( const Vector3f& other )
-  : x(other.x)
-  , y(other.y)
-  , z(other.z)
-{}
 
 Vector3f::Vector3f(
   const float newX,
@@ -72,5 +61,22 @@ Vector3f::operator / ( const Vector3f& other )
     this->z / other.z
   };
 }
+
+
+RectF::RectF( const float newX, const float newY,
+              const float newW, const float newH )
+  : x(newX)
+  , y(newY)
+  , w(newW)
+  , h(newH)
+{}
+
+RectF::RectF( const olc::vf2d pos,
+              const olc::vf2d size )
+  : x(pos.x)
+  , y(pos.y)
+  , w(size.x)
+  , h(size.y)
+{}
 
 }

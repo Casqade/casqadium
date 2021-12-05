@@ -2,17 +2,10 @@
 #define GAME_STATE_TITLE_HPP
 
 #include <GameState.hpp>
+#include <olcPGE/Math.hpp>
 
 #include <set>
 
-
-struct SDL_Scancode;
-struct SDL_Event;
-
-namespace Math
-{
-class Vector3f;
-}
 
 namespace TimeUtils
 {
@@ -29,26 +22,27 @@ class GameStateTitle
 
   } mState;
 
-  Math::Vector3f mTitlePos;
-  Math::Vector3f mBackstoryPos;
+  olc::Vector3f mTitlePos;
+  olc::Vector3f mBackstoryPos;
 
-  sf::VertexArray mLines;
+  std::vector <olc::vf2d> mLines;
 
-  std::set <SDL_Scancode> mPressedKeys;
+  std::set <olc::Key> mPressedKeys;
 
-  void handleControls( const float dt );
+  void handleControls( const TimeUtils::Duration );
 
-  void updateLines( const float dt );
-  void updateTitle( const float dt );
-  void updateBackStory( const float dt );
+  void updateLines( const TimeUtils::Duration );
+  void updateTitle( const TimeUtils::Duration );
+  void updateBackStory( const TimeUtils::Duration );
 
-  void keyEvent( const SDL_Event ) override;
+  void keyEvent( const olc::Event ) override;
 
 public:
-  GameStateTitle();
-//  void enter() override;
-  void update( const TimeUtils::Duration ) override;
-  void render( sf::RenderWindow& ) override;
+  GameStateTitle( GameStateController* const );
+
+  bool update( const uint32_t ticks,
+               const TimeUtils::Duration ) override;
+  void render() override;
 };
 
 

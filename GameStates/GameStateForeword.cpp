@@ -1,13 +1,9 @@
 #include <GameStateForeword.hpp>
 
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/Graphics/Font.hpp>
 #include <SFML/Audio/SoundBuffer.hpp>
 #include <SFML/Audio/Music.hpp>
 
 #include <TimeUtils/Duration.hpp>
-#include <AppFramework/RenderCommand.hpp>
-#include <AppFramework/RenderQueue.hpp>
 
 #include <Logger.hpp>
 #include <Variables.hpp>
@@ -15,16 +11,17 @@
 #include <GameStateTitle.hpp>
 
 
-GameStateForeword::GameStateForeword()
-  : mState(StateLocal::TransitingIn)
+GameStateForeword::GameStateForeword( GameStateController* const stateController )
+  : GameState(stateController)
+  , mState(StateLocal::TransitingIn)
   , mForeword(Strings::Get(StringId::Foreword),
               Fonts::Get(FontId::FranklinGothic))
-  , mInputPrompt({Strings::Get(StringId::ForewordInputPrompt), Fonts::Get(FontId::FranklinGothic)},
-                 sf::seconds(0.2f), sf::seconds(0.2f))
-  , mFade(  sf::Vector2f( window.getSize().x,
-                          window.getSize().y ),
-            {sf::Color::Black, sf::Color::Transparent},
-            sf::seconds(0.75f) )
+  , mInputPrompt(Strings::Get(StringId::ForewordInputPrompt), Fonts::Get(FontId::FranklinGothic),
+                 0.2, 0.2)
+  , mFade(  { window.getSize().x,
+              window.getSize().y },
+            {olc::BLACK, olc::BLANK},
+            0.75 )
   , mInputPromptDelay()
   , mTransitingOutTimer()
   , mPressedKeys()
@@ -97,7 +94,7 @@ GameStateForeword::transitingOut( const float dt )
 //    music.play();
 
   Log << "Finished";
-  GameStateController::setState <GameStateTitle> ();
+  mGameStateController->setState <GameStateTitle> ();
 }
 
 void

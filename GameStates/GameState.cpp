@@ -1,8 +1,11 @@
 #include <GameState.hpp>
-#include <Logger.hpp>
 
+#include <TimeUtils/Duration.hpp>
+
+#include <Logger.hpp>
 #include <Variables.hpp>
 #include <cxxabi.h>
+
 
 template <typename Type>
 std::string getTypeName( const Type* type)
@@ -18,6 +21,10 @@ std::string getTypeName( const Type* type)
   return typeName;
 }
 
+GameState::GameState( GameStateController* const stateController )
+  : mGameStateController(stateController)
+{}
+
 GameState::~GameState()
 {
   Log << "Destroying state "_s + getTypeName ( this );
@@ -30,32 +37,35 @@ GameState::enter()
 }
 
 void
-GameState::render( sf::RenderWindow& )
+GameState::render()
 {
   Log << __FUNCTION__;
 }
 
-void
-GameState::update( const sf::Time )
+bool
+GameState::update( const uint32_t ticks,
+                   const TimeUtils::Duration )
 {
   Log << __FUNCTION__;
+
+  return true;
 }
 
 void
-GameState::handleEvent( const sf::Event event )
+GameState::handleEvent( const olc::Event event )
 {
   switch (event.type)
   {
-    case sf::Event::EventType::KeyPressed:
-    case sf::Event::EventType::KeyReleased:
+    case olc::Event::EventType::KeyPressed:
+    case olc::Event::EventType::KeyReleased:
       keyEvent( event );
       break;
 
-    case sf::Event::EventType::MouseMoved:
+    case olc::Event::EventType::MouseMoved:
       mouseMoveEvent( event.mouseMove );
       break;
 
-    case sf::Event::EventType::MouseButtonPressed:
+    case olc::Event::EventType::MouseButtonPressed:
       mouseButtonEvent( event.mouseButton );
       break;
 
@@ -65,19 +75,19 @@ GameState::handleEvent( const sf::Event event )
 }
 
 void
-GameState::keyEvent( const sf::Event )
+GameState::keyEvent( const olc::Event )
 {
   Log << __FUNCTION__;
 }
 
 void
-GameState::mouseMoveEvent( const sf::Event::MouseMoveEvent )
+GameState::mouseMoveEvent( const olc::Event::MouseMoveEvent )
 {
   Log << __FUNCTION__;
 }
 
 void
-GameState::mouseButtonEvent( const sf::Event::MouseButtonEvent )
+GameState::mouseButtonEvent( const olc::Event::MouseButtonEvent )
 {
   Log << __FUNCTION__;
 }

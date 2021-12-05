@@ -2,34 +2,92 @@
 #include <Logger.hpp>
 #include <Variables.hpp>
 
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/Graphics/Text.hpp>
-#include <SFML/Graphics/RectangleShape.hpp>
+#include <olcPGE/olcPGEX_CustomFont.hpp>
+
 #include <SFML/Audio/Music.hpp>
 
 #include <TimeUtils/Duration.hpp>
-#include <AppFramework/RenderCommand.hpp>
-#include <AppFramework/RenderQueue.hpp>
 
 #include <cmath>
 #include <sstream>
 
 
+template <uint32_t Rows,
+          uint32_t Columns,
+          typename Type>
+struct Matrix
+{
+  std::array <std::array <Type, Columns>, Rows> m;
+};
 
-extern std::vector <sf::Text> BackStoryTextEntries;
-extern std::vector <sf::Text> TitleTextEntries;
 
-sf::Vector3f cubePos = {};
-sf::Vector3f cameraPos = {};
-sf::Vector3f cameraRot = {};
+
+void
+toCameraCoordinates( const olc::Vector3f p )
+{
+  typedef std::array <std::array <float, 4>, 3> Matrix3x4;
+
+  olc::vf2d cameraOrigin = {};
+
+//  X , Y , Z     -  world axis in camera coords
+//  Wx, Wy, Wz, 0
+//  Wx, Wy, Wz, 0
+//  Wx, Wy, Wz, 0
+//  0 , 0 , 0 , 1
+
+//  Cx, Cx, Cx, 0 - Camera X axis in world coords
+//  Cy, Cy, Cy, 0 - Camera Y axis in world coords
+//  Cz, Cz, Cz, 0 - Camera Z axis in world coords
+//  0 , 0 , 0 , 1
+
+//    Rotation matrix R:
+//  Rx Ry Rz 0 - Right
+//  Ux Uy Uz 0 - Up         vectors
+//  Dx Dy Dz 0 - Direction
+//  0  0  0  1
+
+//    Translation matrix T:
+//  1 0 0 -Px, P - camera position vector
+//  0 1 0 -Py
+//  0 0 1 -Pz
+//  0 0 0  1
+
+// LookAt = R * T
+
+//  Matrix3x4 rotatedCameraMatrix;
+
+//  Matrix3x4 cameraPosMatrix;
+//  cameraPosMatrix[0][0] = 1;
+//  cameraPosMatrix[1][1] = 1;
+//  cameraPosMatrix[2][2] = 1;
+//  cameraPosMatrix[3][0] = -cameraPos.x;
+//  cameraPosMatrix[3][1] = -cameraPos.y;
+//  cameraPosMatrix[3][2] = -cameraPos.z;
+//  cameraPosMatrix[3][3] = 1;
+
+//  rotatedCameraMatrix[0][0] = nearZ;
+//  rotatedCameraMatrix[1][1] = nearZ;
+//  rotatedCameraMatrix[0][2] = cameraOrigin.x;
+//  rotatedCameraMatrix[1][2] = cameraOrigin.y;
+//  rotatedCameraMatrix[2][2] = 1.0f;
+}
+
+
+extern std::vector <std::string> BackStoryTextEntries;
+extern std::vector <std::string> TitleTextEntries;
+
+olc::Vector3f cubePos = {};
+olc::Vector3f cameraPos = {};
+olc::Vector3f cameraRot = {};
 const float nearZ = 2.0f;
-sf::Vector2u windowSize = {};
+olc::vu2d windowSize = {};
 
-GameStateTitle::GameStateTitle()
-  : mState(StateLocal::Title)
+GameStateTitle::GameStateTitle( GameStateController* const stateController )
+  : GameState(stateController)
+  , mState(StateLocal::Title)
   , mTitlePos({0.0f, 0.0f, 0.75f})
   , mBackstoryPos({ 0.0f, 150.0f, 0.0f })
-  , mLines(sf::Lines)
+  , mLines({})
   , mPressedKeys()
 {windowSize = window.getSize();}
 
@@ -64,31 +122,25 @@ GameStateTitle::handleControls( const float dt )
 }
 
 
-sf::FloatRect
+olc::RectF
 rectProjection(
-  const sf::Vector3f  rectPos,
-  const sf::FloatRect rect )
+  const olc::Vector3f rectPos,
+  const olc::vf2d     rectSize )
 {
-  sf::Vector2f rectSize
-  {
-    rect.left + rect.width,
-    rect.top + rect.height,
-  };
-
-  sf::Vector2f rectProjection1
+  olc::vf2d rectProjection1
   {
     (rectPos.x - rectSize.x / 2) / rectPos.z,
     (rectPos.y - rectSize.y / 2) / rectPos.z,
   };
 
-  sf::Vector2f rectProjection2
+  olc::vf2d rectProjection2
   {
     (rectPos.x + rectSize.x / 2) / rectPos.z,
     (rectPos.y + rectSize.y / 2) / rectPos.z
   };
 
-  sf::Vector2f rectProjectionL = rectProjection2 - rectProjection1;
-  sf::Vector2f rectProjectionO = rectProjection1 + rectProjectionL / 2.0f;
+  olc::vf2d rectProjectionL = rectProjection2 - rectProjection1;
+  olc::vf2d rectProjectionO = rectProjection1 + rectProjectionL / 2.0f;
 
   return
   {
@@ -97,8 +149,8 @@ rectProjection(
   };
 }
 
-sf::Vector2f
-pointProjection( const sf::Vector3f p,
+olc::vf2d
+pointProjection( const olc::Vector3f p,
                  const float d )
 {
   return
@@ -109,8 +161,8 @@ pointProjection( const sf::Vector3f p,
 }
 
 float
-distance( const sf::Vector3f p1,
-          const sf::Vector3f p2 )
+distance( const olc::Vector3f p1,
+          const olc::Vector3f p2 )
 {
 //  return std::sqrt( std::pow(p2.z - p1.z, 2) );
   return std::sqrt( std::pow(p2.x - p1.x, 2) + std::pow(p2.y - p1.y, 2) + std::pow(p2.z - p1.z, 2) );
@@ -120,7 +172,7 @@ void
 GameStateTitle::updateLines( const float dt )
 {
   const float edgeL = 250.0f;
-  std::array <sf::Vector3f, 8> cube;
+  std::array <olc::Vector3f, 8> cube;
   cube[0] = { -edgeL, -edgeL, -edgeL };
   cube[1] = { -edgeL, -edgeL, edgeL };
   cube[2] = { -edgeL, edgeL, -edgeL};
@@ -143,32 +195,32 @@ GameStateTitle::updateLines( const float dt )
   };
 
   mLines.clear();
-  mLines.append({{cube[0].x, cube[0].y}});
-  mLines.append({{cube[1].x, cube[1].y}, sf::Color::Blue});
-  mLines.append({{cube[1].x, cube[1].y}, sf::Color::Blue});
-  mLines.append({{cube[3].x, cube[3].y}});
-  mLines.append({{cube[3].x, cube[3].y}});
-  mLines.append({{cube[2].x, cube[2].y}, sf::Color::Green});
-  mLines.append({{cube[2].x, cube[2].y}, sf::Color::Green});
-  mLines.append({{cube[0].x, cube[0].y}});
-  mLines.append({{cube[0].x, cube[0].y}});
-  mLines.append({{cube[4].x, cube[4].y}, sf::Color::Red});
-  mLines.append({{cube[4].x, cube[4].y}, sf::Color::Red});
-  mLines.append({{cube[6].x, cube[6].y}});
-  mLines.append({{cube[6].x, cube[6].y}});
-  mLines.append({{cube[2].x, cube[2].y}, sf::Color::Green});
+  mLines.push_back({cube[0].x, cube[0].y});
+  mLines.push_back({cube[1].x, cube[1].y});
+  mLines.push_back({cube[1].x, cube[1].y});
+  mLines.push_back({cube[3].x, cube[3].y});
+  mLines.push_back({cube[3].x, cube[3].y});
+  mLines.push_back({cube[2].x, cube[2].y});
+  mLines.push_back({cube[2].x, cube[2].y});
+  mLines.push_back({cube[0].x, cube[0].y});
+  mLines.push_back({cube[0].x, cube[0].y});
+  mLines.push_back({cube[4].x, cube[4].y});
+  mLines.push_back({cube[4].x, cube[4].y});
+  mLines.push_back({cube[6].x, cube[6].y});
+  mLines.push_back({cube[6].x, cube[6].y});
+  mLines.push_back({cube[2].x, cube[2].y});
 
-  mLines.append({{cube[1].x, cube[1].y}, sf::Color::Blue});
-  mLines.append({{cube[5].x, cube[5].y}});
-  mLines.append({{cube[5].x, cube[5].y}});
-  mLines.append({{cube[4].x, cube[4].y}, sf::Color::Red});
-  mLines.append({{cube[5].x, cube[5].y}});
-  mLines.append({{cube[7].x, cube[7].y}});
+  mLines.push_back({cube[1].x, cube[1].y});
+  mLines.push_back({cube[5].x, cube[5].y});
+  mLines.push_back({cube[5].x, cube[5].y});
+  mLines.push_back({cube[4].x, cube[4].y});
+  mLines.push_back({cube[5].x, cube[5].y});
+  mLines.push_back({cube[7].x, cube[7].y});
 
-  mLines.append({{cube[3].x, cube[3].y}});
-  mLines.append({{cube[7].x, cube[7].y}});
-  mLines.append({{cube[7].x, cube[7].y}});
-  mLines.append({{cube[6].x, cube[6].y}});
+  mLines.push_back({cube[3].x, cube[3].y});
+  mLines.push_back({cube[7].x, cube[7].y});
+  mLines.push_back({cube[7].x, cube[7].y});
+  mLines.push_back({cube[6].x, cube[6].y});
 
 //  for ( int i = 0;
 //        i < cube.size();
@@ -183,11 +235,11 @@ GameStateTitle::updateLines( const float dt )
 //  }
 
   for ( int i = 0;
-        i < mLines.getVertexCount();
+        i < mLines.size();
         ++i)
   {
       std::stringstream coords;
-      coords << "[" << mLines[i].position.x << " x " << mLines[i].position.y << "]";
+      coords << "[" << mLines[i].x << " x " << mLines[i].y << "]";
       static std::map <int, std::string> coordsPrev;
 
 //      if ( coords.str() != coordsPrev[i] )
@@ -242,12 +294,13 @@ GameStateTitle::updateBackStory( const float dt )
   {
     auto& line = *it;
     const auto lineIndex = it - BackStoryTextEntries.begin();
-    const sf::Vector3f linePos = { mBackstoryPos.x,
-                                   mBackstoryPos.y,
-                                   mBackstoryPos.z - lineIndex * 0.5f };
+    const olc::Vector3f linePos = { mBackstoryPos.x,
+                                    mBackstoryPos.y,
+                                    mBackstoryPos.z - lineIndex * 0.5f };
 
+    const auto lineBounds = Fonts::Get( FontId::Jetbrains).GetTextSize(line);
     const auto textProjection = rectProjection( linePos,
-                                                line.getLocalBounds() );
+                                                lineBounds );
 
     if ( linePos.z < 0.0f )
       return;
@@ -257,47 +310,49 @@ GameStateTitle::updateBackStory( const float dt )
     line.setPosition( windowSize.x * 0.5f + textProjection.left,
                       windowSize.y * 0.5f + textProjection.top );
 
-    line.setScale( textProjection.width / line.getLocalBounds().width,
-                   textProjection.height / line.getLocalBounds().height );
+    line.setScale( textProjection.width / lineBounds.x,
+                   textProjection.height / lineBounds.y );
   }
 }
 
-void
-GameStateTitle::update( const sf::Time elapsed )
+bool
+GameStateTitle::update( const uint32_t ticks,
+                        const TimeUtils::Duration tickInterval )
 {
-  const float dt = elapsed.asSeconds();
+  const float dt = (double) tickInterval;
   updateLines(dt);
 
   handleControls( dt );
-return;
-  static float titleDelay = sf::seconds(2.0f).asSeconds();
-  if ( (titleDelay -= dt) > 0.0f )
-    return;
+return true;
+
+  static auto titleDelay = TimeUtils::Duration(2.0);
+  if ( (titleDelay -= tickInterval) > TimeUtils::Duration() )
+    return true;
 
   updateTitle( dt );
 
-  static float backStoryDelay = sf::seconds(10.0f).asSeconds();
-  if ( (backStoryDelay -= dt) > 0.0f )
-    return;
+  static auto backStoryDelay = TimeUtils::Duration(10.0);
+  if ( (backStoryDelay -= tickInterval) > TimeUtils::Duration() )
+    return true;
 
   updateBackStory( dt );
 }
 
 void
-GameStateTitle::keyEvent( const sf::Event event )
+GameStateTitle::keyEvent( const olc::Event event )
 {
-  const sf::Event::KeyEvent key = event.key;
+  const olc::Event::KeyEvent key = event.key;
 
   switch (event.type)
   {
-    case sf::Event::EventType::KeyPressed:
+    case olc::Event::EventType::KeyPressed:
       mPressedKeys.emplace( key.code );
       static sf::Music& music = Music::Get(MusicId::TitleTheme);
       if ( music.getStatus() != sf::Music::Status::Playing )
         music.play();
       return;
 
-    case sf::Event::EventType::KeyReleased:
+    case olc::Event::EventType::KeyReleased:
     {
       auto pressedKey = mPressedKeys.find(key.code);
       if ( pressedKey != mPressedKeys.end() )
@@ -317,24 +372,13 @@ GameStateTitle::keyEvent( const sf::Event event )
 }
 
 void
-GameStateTitle::render( sf::RenderWindow& )
+GameStateTitle::render()
 {
-  auto& renderQueue = RenderQueue::Current();
-
   for ( auto text : TitleTextEntries )
-    renderQueue.push( std::make_shared <RenderCommand> ( [=] ( const TimeUtils::Duration )
-    {
-        window.draw( text );
-    } ) );
+    window.draw( text );
 
   for ( auto text : BackStoryTextEntries )
-    renderQueue.push( std::make_shared <RenderCommand> ( [=] ( const TimeUtils::Duration )
-    {
-        window.draw( text );
-    } ) );
+    window.draw( text );
 
-  renderQueue.push( std::make_shared <RenderCommand> ( [=] ( const TimeUtils::Duration )
-  {
-      window.draw( mLines );
-  } ) );
+  window.draw( mLines );
 }

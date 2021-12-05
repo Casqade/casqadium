@@ -1,16 +1,18 @@
-cmake_minimum_required(VERSION 3.7 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.8 FATAL_ERROR)
 
 set(TARGET AnotherDayAtHospital)
 project(${TARGET} VERSION 1.0 LANGUAGES CXX)
 
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
-option(${TARGET}_INSTALL "Generate install target for ${TARGET}" OFF)
-option(BUILD_SHARED_LIBS "Build using shared libraries" OFF)
+# For developing only
+set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR})
 
-if(WIN32)
-  option(${TARGET}_ENABLE_CMD "Build as console application" ON)
-endif()
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR})
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
+
+option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 
 add_executable(${TARGET})
 target_sources(${TARGET} PRIVATE
@@ -20,10 +22,13 @@ target_sources(${TARGET} PRIVATE
   include/Assets.hpp
   include/Logger.hpp
   include/Widgets.hpp
+  include/AnotherDayAtHospital.hpp
 
   src/Assets.cpp
   src/Widgets.cpp
   src/Logger.cpp
+
+  src/AnotherDayAtHospital.cpp
 
   src/main.cpp
   src/icon.rc
@@ -33,6 +38,18 @@ set_target_properties(${TARGET} PROPERTIES
   CXX_STANDARD_REQUIRED ON
   CXX_STANDARD 14
 )
+
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
+#  target_link_libraries(${TARGET} PUBLIC -mconsole)
+  set_target_properties(${TARGET} PROPERTIES
+    WIN32_EXECUTABLE FALSE
+  )
+else()
+#  target_link_libraries(${TARGET} PUBLIC -mwindows)
+  set_target_properties(${TARGET} PROPERTIES
+    WIN32_EXECUTABLE TRUE
+  )
+endif()
 
 add_subdirectory(GameStates)
 target_include_directories(${TARGET} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/GameStates)
@@ -45,19 +62,45 @@ if(NOT ${BUILD_SHARED_LIBS})
 endif()
 
 target_link_libraries(${TARGET} PRIVATE TimeUtils::TimeUtils)
-target_link_libraries(${TARGET} PRIVATE Sdl2Wrapper::Sdl2Wrapper)
-target_link_libraries(${TARGET} PRIVATE AppFramework::AppFramework)
+target_link_libraries(${TARGET} PRIVATE olcPGE::olcPGE)
 
 include(GNUInstallDirs)
 
 find_package(Threads REQUIRED)
 target_link_libraries(${TARGET} PRIVATE Threads::Threads)
 
-if(WIN32)
-  if(${${TARGET}_ENABLE_CMD})
-    target_link_libraries(${TARGET} PRIVATE -mconsole)
+find_package(SFML COMPONENTS audio QUIET)
+
+if(NOT SFML_FOUND)
+  include(FetchContent)
+
+  FetchContent_Declare(SFML
+    GIT_REPOSITORY https://github.com/SFML/SFML
+    GIT_TAG        2.5.1
+    GIT_SHALLOW    TRUE
+  )
+
+  set(SFML_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+  set(SFML_BUILD_AUDIO ON CACHE BOOL "" FORCE)
+  set(SFML_BUILD_GRAPHICS OFF CACHE BOOL "" FORCE)
+  set(SFML_BUILD_WINDOW OFF CACHE BOOL "" FORCE)
+  set(SFML_BUILD_NETWORK OFF CACHE BOOL "" FORCE)
+  set(SFML_USE_SYSTEM_DEPS OFF CACHE BOOL "" FORCE)
+
+  if(${BUILD_SHARED_LIBS})
+    set(BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)
+  else()
+    set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+    set(SFML_USE_STATIC_STD_LIBS ON CACHE BOOL "" FORCE)
   endif()
 
+  FetchContent_MakeAvailable(SFML)
+
+endif()
+
+target_link_libraries(${TARGET} PRIVATE sfml-audio)
+
+if(WIN32)
   if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   else()
     if(NOT ${BUILD_SHARED_LIBS})
@@ -67,11 +110,5 @@ if(WIN32)
 
 endif()
 
-if(${TARGET}_INSTALL)
-  set(${TARGET}_INSTALL_PATH ${CMAKE_INSTALL_PREFIX})
-else()
-  set(${TARGET}_INSTALL_PATH ${CMAKE_BINARY_DIR})
-endif()
-
-install(TARGETS ${TARGET} DESTINATION ${${TARGET}_INSTALL_PATH}/${CMAKE_INSTALL_BINDIR})
-file(COPY assets DESTINATION ${${TARGET}_INSTALL_PATH}/${CMAKE_INSTALL_BINDIR})
+install(TARGETS ${TARGET} DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
+file(COPY assets DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})

@@ -7,12 +7,6 @@
 #include <set>
 
 
-namespace sf
-{
-class RenderWindow;
-}
-
-
 class GameStateForeword
   : public GameState
 {
@@ -29,22 +23,24 @@ class GameStateForeword
 
   FadeEffect mFade;
 
-  float mInputPromptDelay;
-  float mTransitingOutTimer;
+  TimeUtils::Duration mInputPromptDelay;
+  TimeUtils::Duration mTransitingOutTimer;
 
-  std::set <SDL_Scancode> mPressedKeys;
+  std::set <olc::Key> mPressedKeys;
 
-  void transitingIn( const float dt );
-  void transitingOut( const float dt );
+  void transitingIn( const TimeUtils::Duration );
+  void transitingOut( const TimeUtils::Duration );
 
-  void waitAccept( const float dt );
+  void waitAccept( const TimeUtils::Duration );
 
-  void keyEvent( const SDL_Event ) override;
+  void keyEvent( const olc::Event ) override;
 
 public:
-  GameStateForeword();
-  void update( const TimeUtils::Duration ) override;
-  void render( sf::RenderWindow& ) override;
+  GameStateForeword( GameStateController* const );
+
+  bool update( const uint32_t ticks,
+               const TimeUtils::Duration ) override;
+  void render() override;
 };
 
 

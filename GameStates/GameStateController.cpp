@@ -3,12 +3,12 @@
 #include <GameStateForeword.hpp>
 #include <GameStateTitle.hpp>
 
+#include <TimeUtils/Duration.hpp>
+
 #include <Logger.hpp>
 #include <Variables.hpp>
 
 #include <cxxabi.h>
-#include <SFML/Window/Event.hpp>
-#include <SFML/Graphics/RenderWindow.hpp>
 
 
 template <typename Type>
@@ -25,34 +25,34 @@ std::string getTypeName()
   return typeName;
 }
 
-
-std::unique_ptr <GameState>
-GameStateController::mCurrentState = {};
-
 template <class NewState>
 void
 GameStateController::setState()
 {
   Log << "Changing state to "_s + getTypeName <NewState> ();
-  mCurrentState = std::make_unique <NewState> ();
+  mCurrentState = std::make_unique <NewState> ( this );
 }
 
 void
-GameStateController::handleEvent( const sf::Event event )
+GameStateController::handleEvent( const olc::Event event )
 {
   mCurrentState->handleEvent( event );
 }
 
-void
-GameStateController::update( const sf::Time elapsed )
+bool
+GameStateController::update(
+  const uint32_t ticks,
+  const TimeUtils::Duration dt )
 {
-  mCurrentState->update( elapsed );
+  return mCurrentState->update( ticks, dt );
 }
 
 void
-GameStateController::render( sf::RenderWindow& window )
+GameStateController::render(
+  const uint32_t frames,
+  const TimeUtils::Duration timeSinceTick )
 {
-  mCurrentState->render( window );
+  mCurrentState->render();
 }
 
 template

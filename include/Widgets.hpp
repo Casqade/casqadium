@@ -1,13 +1,14 @@
 #ifndef WIDGETS_HPP
 #define WIDGETS_HPP
 
-#include <SFML/Graphics/Text.hpp>
-#include <SFML/Graphics/RectangleShape.hpp>
-#include <SFML/System/Clock.hpp>
-#include <SFML/System/Time.hpp>
+#include <olcPGE/olcPGEX_CustomFont.hpp>
+
+#include <TimeUtils/Duration.hpp>
+
+#include <string>
 
 
-class InputPrompt : public sf::Text
+class InputPrompt
 {
 public:
 
@@ -20,11 +21,12 @@ public:
   };
 
 public:
-  InputPrompt(  const sf::Text prompt,
-                const sf::Time durationShown,
-                const sf::Time durationHidden );
+  InputPrompt(  const std::string& prompt,
+                const olc::CustomFont& font,
+                const TimeUtils::Duration shown,
+                const TimeUtils::Duration hidden );
 
-  void update( const float dt );
+  void update( const TimeUtils::Duration );
   void setState( const State state );
 
   bool isActive() const;
@@ -32,32 +34,34 @@ public:
 private:
   State mState;
 
-  sf::Time  mDurationShown,
-            mDurationHidden;
+  TimeUtils::Duration mDurationShown;
+  TimeUtils::Duration mDurationHidden;
 
-  sf::Clock mTimeInState;
+  TimeUtils::Duration mTimeInState;
+
+  olc::CustomFont& mFont;
 };
 
-class FadeEffect : public sf::RectangleShape
+class FadeEffect
 {
-  sf::Time mFadeDuration;
+  TimeUtils::Duration mFadeDuration;
   float mFadeCurrent;
 
-  std::pair <sf::Color, sf::Color> mFadeRange;
+  std::pair <olc::Pixel, olc::Pixel> mFadeRange;
 
 public:
   FadeEffect(
-    const sf::Vector2f            size,
-    const std::pair < sf::Color,
-                      sf::Color>  fadeRange,
-    const sf::Time                fadeDuration,
-    const sf::Vector2f            pos = {},
-    const sf::Vector2f            origin = {} );
+    const olc::vf2d               size,
+    const std::pair < olc::Pixel,
+                      olc::Pixel> fadeRange,
+    const TimeUtils::Duration     fadeDuration,
+    const olc::vf2d               pos = {},
+    const olc::vf2d               origin = {} );
 
   void update( const float dt );
 
-  void setFadeRange( std::pair < sf::Color, sf::Color> );
-  void setFadeDuration( const sf::Time );
+  void setFadeRange( std::pair <olc::Pixel, olc::Pixel> );
+  void setFadeDuration( const TimeUtils::Duration );
 
   bool finished() const;
 };
