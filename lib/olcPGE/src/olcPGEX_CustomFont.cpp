@@ -34,26 +34,23 @@ CustomFont::CustomFont(const std::string& sFontFile, olc::ResourcePack* pack)
         // CFON signature found - presume the pixels contain valid font information
         uint32_t nFormatVersion = fontSprite->GetPixel( 1, dataRow ).n;
         uint32_t nGlyphs        = fontSprite->GetPixel( 2, dataRow ).n;
-        int nOffset             = fontSprite->GetPixel( 3, dataRow ).n;
-        int nCharWidth          = fontSprite->GetPixel( 4, dataRow ).n;
-        int nCharHeight         = fontSprite->GetPixel( 5, dataRow ).n;
-        uint32_t nCharsPerRow   = fontSprite->width / nCharWidth;
+        uint32_t nOffset             = fontSprite->GetPixel( 3, dataRow ).n;
+        fCharSize = { fontSprite->GetPixel( 4, dataRow ).n,
+                      fontSprite->GetPixel( 5, dataRow ).n};
+        uint32_t nCharsPerRow   = fontSprite->width / fCharSize.x;
 
         for( uint32_t i=0; i < nGlyphs; i++ )
         {
             int pixelIndex      = i*2 + 6;
             int pixelX          = pixelIndex % fontSprite->width;
             int pixelY          = pixelIndex / fontSprite->width + dataRow;
-            int nWidth          = fontSprite->GetPixel( pixelX, pixelY ).n;
+            uint32_t nWidth     = fontSprite->GetPixel( pixelX, pixelY ).n;
             uint32_t nGlyph     = fontSprite->GetPixel( pixelX+1, pixelY ).n;
-            int x               = i % nCharsPerRow * nCharWidth + nOffset;
-            int y               = i / nCharsPerRow * nCharHeight;
-            mGlyphPositionsMono.emplace( nGlyph, std::make_pair<olc::vi2d, olc::vi2d>( {x,y}, {nCharWidth,nCharHeight-1}) );
-            mGlyphPositionsProp.emplace( nGlyph, std::make_pair<olc::vi2d, olc::vi2d>( {x,y}, {nWidth, nCharHeight-1}) );
+            uint32_t x               = i % nCharsPerRow * fCharSize.x + nOffset;
+            uint32_t y               = i / nCharsPerRow * fCharSize.y;
+            mGlyphPositionsMono.emplace( nGlyph, std::make_pair<olc::vu2d, olc::vu2d>( {x,y}, {fCharSize.x,fCharSize.y-1}) );
+            mGlyphPositionsProp.emplace( nGlyph, std::make_pair<olc::vu2d, olc::vu2d>( {x,y}, {nWidth, fCharSize.y-1}) );
         }
-
-        fCharWidth = float(nCharWidth);
-        fCharHeight = float(nCharHeight);
     }
     else
     {
@@ -63,10 +60,10 @@ CustomFont::CustomFont(const std::string& sFontFile, olc::ResourcePack* pack)
 }
 
 
-olc::vi2d CustomFont::GetTextSize(const std::string& s)
+olc::vu2d CustomFont::GetTextSize(const std::string& s) const
 {
-    olc::vi2d size = { 0,1 };
-    olc::vi2d pos = { 0,1 };
+    olc::vu2d size = { 0,1 };
+    olc::vu2d pos = { 0,1 };
     for( int i=0; i < (int)s.size(); )
     {
         uint32_t c = _next_utf8_codepoint( s, i );
@@ -75,29 +72,30 @@ olc::vi2d CustomFont::GetTextSize(const std::string& s)
         size.x = std::max(size.x, pos.x);
         size.y = std::max(size.y, pos.y);
     }
-    return size * vf2d( fCharWidth, fCharHeight );
+    const olc::vf2d textSize = vf2d(size) * vf2d( fCharSize.x, fCharSize.y );
+    return olc::vu2d(textSize.x, textSize.y);
 }
 
 
-olc::vi2d CustomFont::GetTextSizeProp(const std::string& s)
+olc::vu2d CustomFont::GetTextSizeProp(const std::string& s) const
 {
-    olc::vi2d size = { 0,1 };
-    olc::vi2d pos = { 0,1 };
+    olc::vu2d size = { 0,1 };
+    olc::vu2d pos = { 0,1 };
     for( int i=0; i < (int)s.size(); )
     {
         uint32_t c = _next_utf8_codepoint( s, i );
         if (c == '\n') { pos.y += 1 ;  pos.x = 0; }
-        else pos.x += mGlyphPositionsProp[c].second.x;
+        else pos.x += mGlyphPositionsProp.at(c).second.x;
         size.x = std::max(size.x, pos.x);
         size.y = std::max(size.y, pos.y);
     }
 
-    size.y *= (int)fCharHeight;
+    size.y *= fCharSize.y;
     return size;
 }
 
 
-void CustomFont::DrawStringDecal(const olc::vf2d& pos, const std::string& sText, const Pixel col, const olc::vf2d& scale)
+void CustomFont::DrawStringDecal(const olc::vf2d& pos, const std::string& sText, const Pixel col, const olc::vf2d& scale) const
 {
     olc::vf2d spos = { 0.0f, 0.0f };
     for( int i=0; i < (int)sText.size(); )
@@ -105,19 +103,19 @@ void CustomFont::DrawStringDecal(const olc::vf2d& pos, const std::string& sText,
         uint32_t c = _next_utf8_codepoint( sText, i );
         if (c == '\n')
         {
-            spos.x = 0; spos.y += fCharHeight * scale.y;
+            spos.x = 0; spos.y += fCharSize.y * scale.y;
         }
         else
         {
-            auto& glyph = mGlyphPositionsMono[c];
+            auto& glyph = mGlyphPositionsMono.at(c);
             pge->DrawPartialDecal(pos + spos, fontDecal.get(), glyph.first, glyph.second, scale, col);
-            spos.x += fCharWidth * scale.x;
+            spos.x += fCharSize.x * scale.x;
         }
     }
 }
 
 
-void CustomFont::DrawRotatedStringDecal(const olc::vf2d& pos, const std::string& sText, const float fAngle, const olc::vf2d& center, const Pixel col, const olc::vf2d& scale )
+void CustomFont::DrawRotatedStringDecal(const olc::vf2d& pos, const std::string& sText, const float fAngle, const olc::vf2d& center, const Pixel col, const olc::vf2d& scale ) const
 {
     olc::vf2d spos = center;
     for( int i=0; i < (int)sText.size(); )
@@ -125,19 +123,19 @@ void CustomFont::DrawRotatedStringDecal(const olc::vf2d& pos, const std::string&
         uint32_t c = _next_utf8_codepoint( sText, i );
         if (c == '\n')
         {
-            spos.x = center.x; spos.y -= fCharHeight;
+            spos.x = center.x; spos.y -= fCharSize.y;
         }
         else
         {
-            auto& glyph = mGlyphPositionsMono[c];
+            auto& glyph = mGlyphPositionsMono.at(c);
             pge->DrawPartialRotatedDecal(pos, fontDecal.get(), fAngle, spos, glyph.first, glyph.second, scale, col);
-            spos.x -= fCharWidth;
+            spos.x -= fCharSize.x;
         }
     }
 }
 
 
-void CustomFont::DrawStringPropDecal(const olc::vf2d& pos, const std::string& sText, const Pixel col, const olc::vf2d& scale)
+void CustomFont::DrawStringPropDecal(const olc::vf2d& pos, const std::string& sText, const Pixel col, const olc::vf2d& scale) const
 {
     olc::vf2d spos = { 0.0f, 0.0f };
     for( int i=0; i < (int)sText.size(); )
@@ -145,11 +143,11 @@ void CustomFont::DrawStringPropDecal(const olc::vf2d& pos, const std::string& sT
         uint32_t c = _next_utf8_codepoint( sText, i );
         if (c == '\n')
         {
-            spos.x = 0; spos.y += fCharHeight * scale.y;
+            spos.x = 0; spos.y += fCharSize.y * scale.y;
         }
         else
         {
-            auto& glyph = mGlyphPositionsProp[c];
+            auto& glyph = mGlyphPositionsProp.at(c);
             pge->DrawPartialDecal(pos + spos, fontDecal.get(), glyph.first, glyph.second, scale, col);
             spos.x += glyph.second.x * scale.x;
         }
@@ -157,7 +155,7 @@ void CustomFont::DrawStringPropDecal(const olc::vf2d& pos, const std::string& sT
 }
 
 
-void CustomFont::DrawRotatedStringPropDecal(const olc::vf2d& pos, const std::string& sText, const float fAngle, const olc::vf2d& center, const Pixel col, const olc::vf2d& scale )
+void CustomFont::DrawRotatedStringPropDecal(const olc::vf2d& pos, const std::string& sText, const float fAngle, const olc::vf2d& center, const Pixel col, const olc::vf2d& scale ) const
 {
     olc::vf2d spos = center;
     for( int i=0; i < (int)sText.size(); )
@@ -165,14 +163,37 @@ void CustomFont::DrawRotatedStringPropDecal(const olc::vf2d& pos, const std::str
         uint32_t c = _next_utf8_codepoint( sText, i );
         if (c == '\n')
         {
-            spos.x = center.x; spos.y -= fCharHeight;
+            spos.x = center.x; spos.y -= fCharSize.y;
         }
         else
         {
-            auto& glyph = mGlyphPositionsProp[c];
+            auto& glyph = mGlyphPositionsProp.at(c);
             pge->DrawPartialRotatedDecal(pos, fontDecal.get(), fAngle, spos, glyph.first, glyph.second, scale, col);
             spos.x -= glyph.second.x;
         }
     }
+}
+
+void DrawFontDecal(const olc::vf2d& pos, const olc::CustomFont* font, const std::string& sText, const Pixel col, const olc::vf2d& scale)
+{
+    return font->DrawStringDecal(pos, sText, col, scale);
+}
+
+
+void DrawRotatedFontDecal(const olc::vf2d& pos, const olc::CustomFont* font, const std::string& sText, const float fAngle, const olc::vf2d& center, const Pixel col, const olc::vf2d& scale )
+{
+    return font->DrawRotatedStringDecal(pos, sText, fAngle, center, col, scale);
+}
+
+
+void DrawFontPropDecal(const olc::vf2d& pos, const olc::CustomFont* font, const std::string& sText, const Pixel col, const olc::vf2d& scale)
+{
+    return font->DrawStringPropDecal(pos, sText, col, scale);
+}
+
+
+void DrawRotatedFontPropDecal(const olc::vf2d& pos, const olc::CustomFont* font, const std::string& sText, const float fAngle, const olc::vf2d& center, const Pixel col, const olc::vf2d& scale )
+{
+    return font->DrawRotatedStringPropDecal(pos, sText, fAngle, center, col, scale);
 }
 }
