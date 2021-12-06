@@ -120,9 +120,9 @@ Text2D::rotation() const
 }
 
 InputPrompt::InputPrompt(
-  const sf::Text prompt,
-  const sf::Time durationShown,
-  const sf::Time durationHidden )
+  const std::string& prompt,
+  const TimeUtils::Duration durationShown,
+  const TimeUtils::Duration durationHidden )
   : sf::Text(prompt)
   , mState(State::Inactive)
   , mDurationShown(durationShown)
@@ -131,7 +131,7 @@ InputPrompt::InputPrompt(
 {}
 
 void
-InputPrompt::update( const float dt )
+InputPrompt::update( const TimeUtils::Duration interval )
 {
   switch ( mState )
   {
