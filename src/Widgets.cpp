@@ -1,6 +1,124 @@
 #include <Widgets.hpp>
 
 
+namespace olc
+{
+
+Text2D::Text2D(
+  const olc::CustomFont* font,
+  const std::string& text,
+  const olc::Pixel color )
+  : mFont(font)
+  , mText(text)
+  , mColor(color)
+  , mPos()
+  , mSize(font->GetTextSize(text))
+  , mRotation()
+  , mMonospaced(true)
+{}
+
+void
+Text2D::render() const
+{
+  if ( mText.empty() )
+    return;
+
+  if ( mMonospaced )
+    return mFont->DrawRotatedStringDecal( mPos, mText,
+                                          mRotation, origin(),
+                                          mColor, scale() );
+
+  mFont->DrawRotatedStringPropDecal( mPos, mText,
+                                     mRotation, origin(),
+                                     mColor, scale() );
+}
+
+void
+Text2D::setFont( const CustomFont* font )
+{
+  mFont = font;
+}
+
+void
+Text2D::setText( const std::string& text )
+{
+  mText = text;
+}
+
+void
+Text2D::setColor( const olc::Pixel color )
+{
+  mColor = color;
+}
+
+void
+Text2D::setMonospaced( const bool monospaced )
+{
+  mMonospaced = monospaced;
+}
+
+void
+Text2D::setPos( const vf2d pos )
+{
+  mPos = pos;
+}
+
+void
+Text2D::setSize( const vu2d size )
+{
+  mSize = size;
+}
+
+void
+Text2D::setOrigin( const vf2d origin )
+{
+  mPos = origin - mSize;
+}
+
+void
+Text2D::setRotation( const float angle )
+{
+  mRotation = angle;
+}
+
+vf2d
+Text2D::pos() const
+{
+  return mPos;
+}
+
+vu2d
+Text2D::size() const
+{
+  return mSize;
+}
+
+vu2d
+Text2D::textSize() const
+{
+  return mFont->GetTextSize(mText);
+}
+
+vf2d
+Text2D::scale() const
+{
+  return mText.empty() ? vf2d(1.0f, 1.0f) : mSize / mFont->GetTextSize(mText);
+}
+
+vf2d
+Text2D::origin() const
+{
+  return mPos + mSize / 2.0f;
+}
+
+float
+Text2D::rotation() const
+{
+  return mRotation;
+}
+
+}
+
 InputPrompt::InputPrompt(
   const sf::Text prompt,
   const sf::Time durationShown,
