@@ -28,12 +28,14 @@ GameStateForeword::GameStateForeword( GameStateController* const stateController
   , mTransitingOutTimer()
   , mPressedKeys()
 {
+  mForeword.setMonospaced(false);
   mForeword.setOrigin( (olc::vf2d) mPGE->GetWindowSize() * 0.5f );
 
+  mInputPrompt.setMonospaced(false);
   mInputPrompt.setColor({ 37, 203, 232, 0 });
 
-  mInputPrompt.setPos({ mPGE->GetWindowSize().x * 0.5f,
-                        mPGE->GetWindowSize().y * 0.75f });
+  mInputPrompt.setOrigin({  mPGE->GetWindowSize().x * 0.5f,
+                            mPGE->GetWindowSize().y * 0.75f });
 }
 
 bool
@@ -156,6 +158,7 @@ GameStateForeword::keyEvent( const olc::Event event )
 void
 GameStateForeword::render()
 {
+  mPGE->SetPixelMode( olc::Pixel::ALPHA );
   mForeword.render();
 
   mPGE->FillRectDecal( {mFade.x, mFade.y},
