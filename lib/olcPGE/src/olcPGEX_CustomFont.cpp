@@ -17,8 +17,18 @@ uint32_t _next_utf8_codepoint( const std::string& s, int& i )
 
 
 CustomFont::CustomFont(const std::string& sFontFile, olc::ResourcePack* pack)
+{ LoadFromFile(sFontFile, pack); }
+
+
+olc::rcode
+CustomFont::LoadFromFile(const std::string& sFontFile, olc::ResourcePack* pack)
 {
-    fontSprite = std::make_unique<olc::Sprite>( sFontFile, pack );
+    fontSprite = std::make_unique<olc::Sprite>();
+
+    auto result = fontSprite->LoadFromFile( sFontFile, pack );
+    if ( result != olc::rcode::OK )
+      return result;
+
     fontDecal = std::make_unique<olc::Decal>( fontSprite.get() );
 
     // Find the CFON signature and extract the embedded font information
@@ -56,7 +66,11 @@ CustomFont::CustomFont(const std::string& sFontFile, olc::ResourcePack* pack)
     {
         // No "CFON" signature found - hint to std out
         printf( "%s is not a valid custom font\n", sFontFile.c_str() );
+
+        return olc::rcode::FAIL;
     }
+
+    return olc::rcode::OK;
 }
 
 

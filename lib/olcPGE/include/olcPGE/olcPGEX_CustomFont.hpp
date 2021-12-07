@@ -11,8 +11,10 @@ namespace olc
 class CustomFont : public olc::PGEX
 {
 public:
-  CustomFont() = delete;
+  CustomFont() = default;
   CustomFont(const std::string& sFontFile, olc::ResourcePack* pack = nullptr);
+
+  olc::rcode LoadFromFile(const std::string& sFontFile, olc::ResourcePack* pack = nullptr);
 
   olc::vu2d GetTextSize(const std::string& s) const;
   olc::vu2d GetTextSizeProp(const std::string& s) const;
