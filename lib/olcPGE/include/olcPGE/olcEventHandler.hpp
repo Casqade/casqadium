@@ -15,12 +15,11 @@ class EventHandler
 
   std::deque <olc::Event> mEvents;
 
-  void updateEvents();
-
 public:
   EventHandler() = delete;
   EventHandler( const PixelGameEngine* const );
 
+  void update();
   bool pollEvent( olc::Event& event );
 };
 

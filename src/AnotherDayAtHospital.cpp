@@ -135,8 +135,9 @@ AnotherDayAtHospital::update(
   const uint32_t ticks,
   const TimeUtils::Duration tickInterval )
 {
-  olc::Event event;
+  mEventHandler.update();
 
+  olc::Event event;
   while ( mEventHandler.pollEvent(event) )
     mGameStateController.handleEvent( event );
 

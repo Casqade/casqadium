@@ -9,7 +9,7 @@ EventHandler::EventHandler( const PixelGameEngine* const pge )
 {}
 
 void
-EventHandler::updateEvents()
+EventHandler::update()
 {
   const bool isInFocus = mPGE->IsFocused();
   static bool wasInFocus = isInFocus;
@@ -119,8 +119,6 @@ EventHandler::updateEvents()
 bool
 EventHandler::pollEvent( Event& event )
 {
-  updateEvents();
-
   if ( mEvents.empty() )
     return false;
 
