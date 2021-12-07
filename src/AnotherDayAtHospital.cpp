@@ -196,7 +196,7 @@ AnotherDayAtHospital::OnUserUpdate( float )
     frames = 1;
 
   if ( frames != 0 )
-    mGameStateController.render( this );
+    mGameStateController.render();
 
   TimeUtils::SleepUntil( std::min( mTickPrevious + (tickRateLimited ? mTickInterval : TimeUtils::Duration()),
                                    mFramePrevious + mFrameInterval ) );

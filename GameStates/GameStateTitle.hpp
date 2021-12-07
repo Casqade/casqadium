@@ -39,7 +39,7 @@ public:
 
   bool update( const uint32_t ticks,
                const TimeUtils::Duration ) override;
-  void render( olc::PixelGameEngine* const ) override;
+  void render() override;
 };
 
 

@@ -30,7 +30,7 @@ public:
 
   bool update( const uint32_t ticks,
                const TimeUtils::Duration );
-  void render( olc::PixelGameEngine* const );
+  void render();
 };
 
 

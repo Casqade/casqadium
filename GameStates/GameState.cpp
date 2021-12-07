@@ -25,6 +25,7 @@ std::string getTypeName( const Type* type)
 
 GameState::GameState( GameStateController* const stateController )
   : mGameStateController(stateController)
+  , mPGE(olc::renderer->ptrPGE)
 {}
 
 GameState::~GameState()
@@ -39,7 +40,7 @@ GameState::enter()
 }
 
 void
-GameState::render( olc::PixelGameEngine* const )
+GameState::render()
 {
   Log << __FUNCTION__;
 }

@@ -48,9 +48,9 @@ GameStateController::update(
 }
 
 void
-GameStateController::render( olc::PixelGameEngine* const engine )
+GameStateController::render()
 {
-  mCurrentState->render( engine );
+  mCurrentState->render();
 }
 
 template

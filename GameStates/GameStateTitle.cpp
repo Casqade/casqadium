@@ -171,11 +171,11 @@ GameStateTitle::keyEvent( const olc::Event event )
 }
 
 void
-GameStateTitle::render( olc::PixelGameEngine* const engine )
+GameStateTitle::render()
 {
-  for ( auto text : TitleTextEntries )
-    engine->DrawStringDecal( {}, text );
+  for ( auto& text : TitleTextEntries )
+    mPGE->DrawStringDecal( {}, text );
 
-  for ( auto text : BackStoryTextEntries )
-    engine->DrawStringDecal( {}, text );
+  for ( auto& text : BackStoryTextEntries )
+    mPGE->DrawStringDecal( {}, text );
 }

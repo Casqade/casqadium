@@ -164,9 +164,9 @@ GameStateForeword::keyEvent( const olc::Event event )
 }
 
 void
-GameStateForeword::render( olc::PixelGameEngine* const engine )
+GameStateForeword::render()
 {
-//  window.draw( mForeword );
+  mForeword.render();
 //  window.draw( mFade );
 //  window.draw( mInputPrompt );
 }

@@ -22,6 +22,7 @@ class GameState
 
 protected:
   GameStateController* const mGameStateController;
+  olc::PixelGameEngine* const mPGE;
 
   virtual void keyEvent( const olc::Event );
   virtual void mouseMoveEvent( const olc::Event::MouseMoveEvent );
@@ -36,7 +37,7 @@ public:
   virtual bool update( const uint32_t ticks,
                        const TimeUtils::Duration );
 
-  virtual void render( olc::PixelGameEngine* const );
+  virtual void render();
 
   virtual void handleEvent( const olc::Event );
 };
