@@ -69,6 +69,7 @@ GameState::handleEvent( const olc::Event event )
       break;
 
     case olc::Event::EventType::MouseButtonPressed:
+    case olc::Event::EventType::MouseButtonReleased:
       mouseButtonEvent( event.mouseButton );
       break;
 
