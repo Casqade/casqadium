@@ -33,7 +33,7 @@ enum class FontId : uint32_t
   Jetbrains,
 };
 
-enum class TextureId : uint32_t
+enum class SpriteId : uint32_t
 {
   WindowIcon,
 };
@@ -51,34 +51,19 @@ enum class MusicId : uint32_t
 extern class Logger Log;
 
 class Strings : public Assets <std::string, StringId>
-{
-public:
-  static bool Load( const StringId, const std::string& );
-  static std::string& Get( const StringId );
-};
+{};
 
 class Fonts : public Assets <olc::CustomFont, FontId>
 {};
 
-class Textures : public Assets <olc::Sprite, TextureId>
+class Sprites : public Assets <olc::Sprite, SpriteId>
 {};
 
 class Sounds : public Assets <sf::SoundBuffer, SoundId>
 {};
 
 class Music : public Assets <sf::Music, MusicId>
-{
-public:
-  static bool Load( const MusicId, const std::string& );
-  static sf::Music& Get( const MusicId );
-};
-
-//extern template class
-//Assets <sf::Music, MusicId>;
-
-//extern template
-//std::string
-//Assets <sf::Music, MusicId>::AssetType;
+{};
 
 
 #endif
