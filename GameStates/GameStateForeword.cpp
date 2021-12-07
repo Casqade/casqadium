@@ -14,26 +14,21 @@
 GameStateForeword::GameStateForeword( GameStateController* const stateController )
   : GameState(stateController)
   , mState(StateLocal::TransitingIn)
-//  , mForeword(Strings::Get(StringId::Foreword),
-//              Fonts::Get(FontId::FranklinGothic))
-  , mInputPrompt(Strings::Get(StringId::ForewordInputPrompt), Fonts::Get(FontId::FranklinGothic),
+  , mForeword(&Fonts::Get(FontId::FranklinGothic),
+              Strings::Get(StringId::Foreword),
+              olc::Pixel{37, 203, 232})
+  , mInputPrompt(Strings::Get(StringId::ForewordInputPrompt),
+                 &Fonts::Get(FontId::FranklinGothic),
                  0.2, 0.2)
   , mFade(  { 0,
               0 },
             {olc::BLACK, olc::BLANK},
             0.75 )
-  , mInputPromptDelay()
+  , mInputPromptTimer({2, 0}, true)
   , mTransitingOutTimer()
   , mPressedKeys()
 {
-//  mForeword.setFillColor( sf::Color( 37, 203, 232 ) );
-
-//  mForeword.setOrigin( mForeword.getLocalBounds().width * 0.5f,
-//                       mForeword.getLocalBounds().height * 0.5f );
-
-//  mForeword.setPosition( window.getSize().x * 0.5f,
-//                         window.getSize().y * 0.5f );
-
+  mForeword.setOrigin( (olc::vf2d) mPGE->GetWindowSize() * 0.5f );
 
 //  mInputPrompt.setFillColor( sf::Color( 37, 203, 232, 0 ) );
 
@@ -101,9 +96,7 @@ GameStateForeword::transitingOut( const TimeUtils::Duration dt )
 void
 GameStateForeword::waitAccept( const TimeUtils::Duration dt )
 {
-  const static sf::Time inputPromptDelay { sf::seconds(2.0f) };
-
-  if ( (mInputPromptDelay += dt) < inputPromptDelay.asSeconds() )
+  if ( mInputPromptTimer.update( dt ) > TimeUtils::Duration() )
     return;
 
   if ( mPressedKeys.size() == 0

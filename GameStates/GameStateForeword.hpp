@@ -18,12 +18,12 @@ class GameStateForeword
 
   } mState;
 
-//  sf::Text mForeword;
+  olc::Text2D mForeword;
   InputPrompt mInputPrompt;
 
   FadeEffect mFade;
 
-  TimeUtils::Duration mInputPromptDelay;
+  TimeUtils::Timer mInputPromptTimer;
   TimeUtils::Duration mTransitingOutTimer;
 
   std::set <olc::Key> mPressedKeys;
