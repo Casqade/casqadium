@@ -106,7 +106,7 @@ inline isCulled( const Rect3D& )
 
 }
 
-class InputPrompt
+class InputPrompt : public olc::Text2D
 {
 public:
 
@@ -120,7 +120,7 @@ public:
 
 public:
   InputPrompt(  const std::string& prompt,
-                const olc::CustomFont& font,
+                const olc::CustomFont* font,
                 const TimeUtils::Duration shown,
                 const TimeUtils::Duration hidden );
 
@@ -135,9 +135,7 @@ private:
   TimeUtils::Duration mDurationShown;
   TimeUtils::Duration mDurationHidden;
 
-  TimeUtils::Duration mTimeInState;
-
-  const olc::CustomFont& mFont;
+  TimeUtils::Timer mTimeInState;
 };
 
 class FadeEffect

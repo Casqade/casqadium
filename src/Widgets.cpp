@@ -24,13 +24,13 @@ Text2D::render() const
     return;
 
   if ( mMonospaced )
-    return mFont->DrawRotatedStringDecal( mPos, mText,
-                                          mRotation, origin(),
-                                          mColor, scale() );
+    return olc::DrawRotatedFontDecal( mPos, mFont, mText,
+                                      mRotation, origin(),
+                                      mColor, scale() );
 
-  mFont->DrawRotatedStringPropDecal( mPos, mText,
-                                     mRotation, origin(),
-                                     mColor, scale() );
+  olc::DrawRotatedFontPropDecal( mPos, mFont, mText,
+                                 mRotation, origin(),
+                                 mColor, scale() );
 }
 
 void
@@ -139,60 +139,73 @@ Text2D::rotation() const
 
 InputPrompt::InputPrompt(
   const std::string& prompt,
-  const olc::CustomFont& font,
+  const olc::CustomFont* font,
   const TimeUtils::Duration durationShown,
   const TimeUtils::Duration durationHidden )
-  : mState(State::Inactive)
+  : olc::Text2D(font, prompt)
+  , mState(State::Inactive)
   , mDurationShown(durationShown)
   , mDurationHidden(durationHidden)
-  , mTimeInState()
-  , mFont(font)
+  , mTimeInState({}, true)
 {}
 
 void
-InputPrompt::update( const TimeUtils::Duration interval )
+InputPrompt::update( const TimeUtils::Duration dt )
 {
-//  switch ( mState )
-//  {
-//    case State::Inactive:
-//    {
-//      sf::Color fillColor = this->getFillColor();
-//      fillColor.a = 0;
-//      return setFillColor( fillColor );
-//    }
+  mTimeInState.update(dt);
 
-//    case State::Shown:
-//    {
-//      if ( mTimeInState.getElapsedTime().asSeconds() > mDurationShown.asSeconds() )
-//        return setState( State::Hidden );
+  if ( mTimeInState.isReady() == false )
+    return;
 
-//      sf::Color fillColor = this->getFillColor();
-//      fillColor.a = 255;
+  switch ( mState )
+  {
+    case State::Shown:
+      return setState( State::Hidden );
 
-//      return setFillColor( fillColor );
-//    }
+    case State::Hidden:
+      return setState( State::Shown );
 
-//    case State::Hidden:
-//    {
-//      if ( mTimeInState.getElapsedTime().asSeconds() > mDurationHidden.asSeconds() )
-//        setState( State::Shown );
-
-//      sf::Color fillColor = this->getFillColor();
-//      fillColor.a = 0;
-
-//      return setFillColor( fillColor );
-//    }
-
-//    default:
-//      return;
-//  }
+    default:
+      return;
+  }
 }
 
 void
 InputPrompt::setState( const State state )
 {
   mState = state;
-//  mTimeInState.restart();
+
+  switch ( mState )
+  {
+    case State::Inactive:
+    {
+      olc::Pixel fillColor = this->color();
+      fillColor.a = 0;
+
+      return setColor( fillColor );
+    }
+
+    case State::Shown:
+    {
+      olc::Pixel fillColor = this->color();
+      fillColor.a = 255;
+      setColor( fillColor );
+
+      return mTimeInState.start( mDurationShown );
+    }
+
+    case State::Hidden:
+    {
+      olc::Pixel fillColor = this->color();
+      fillColor.a = 0;
+      setColor( fillColor );
+
+      return mTimeInState.start( mDurationHidden );
+    }
+
+    default:
+      return;
+  }
 }
 
 bool
