@@ -28,8 +28,7 @@ public:
                                   const Pixel col = olc::WHITE, const olc::vf2d& scale = { 1.0f, 1.0f }) const;
 
 private:
-  std::unique_ptr<olc::Sprite>    fontSprite;
-  std::unique_ptr<olc::Decal>     fontDecal;
+  std::unique_ptr<olc::Renderable> fontTexture;
 
   olc::vu2d fCharSize;
   std::unordered_map<uint32_t, std::pair<olc::vu2d, olc::vu2d> > mGlyphPositionsMono;

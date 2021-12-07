@@ -13,7 +13,7 @@ class Music;
 namespace olc
 {
 class CustomFont;
-class Sprite;
+class Renderable;
 }
 
 enum class StringId : uint32_t
@@ -56,7 +56,7 @@ class Strings : public Assets <std::string, StringId>
 class Fonts : public Assets <olc::CustomFont, FontId>
 {};
 
-class Sprites : public Assets <olc::Sprite, SpriteId>
+class Sprites : public Assets <olc::Renderable, SpriteId>
 {};
 
 class Sounds : public Assets <sf::SoundBuffer, SoundId>

@@ -20,7 +20,7 @@ template <>
 std::string Assets <olc::CustomFont, FontId>::AssetType = "fonts/";
 
 template <>
-std::string Assets <olc::Sprite, SpriteId>::AssetType = "sprites/";
+std::string Assets <olc::Renderable, SpriteId>::AssetType = "sprites/";
 
 template <>
 std::string Assets <sf::SoundBuffer, SoundId>::AssetType = "sounds/";
@@ -66,7 +66,7 @@ Assets <olc::CustomFont, FontId>::Load(
 
   auto font = std::make_shared <olc::CustomFont> ();
 
-  if ( font->LoadFromFile( AssetsPath + AssetType + assetPath ) == false )
+  if ( font->LoadFromFile( AssetsPath + AssetType + assetPath ) != olc::rcode::OK )
     return false;
 
   mAssets[assetId] = font;
@@ -75,16 +75,16 @@ Assets <olc::CustomFont, FontId>::Load(
 
 template <>
 bool
-Assets <olc::Sprite, SpriteId>::Load(
+Assets <olc::Renderable, SpriteId>::Load(
   const SpriteId      assetId,
   const std::string&  assetPath )
 {
   if ( assetPath.empty() )
     return true;
 
-  auto sprite = std::make_shared <olc::Sprite> ();
+  auto sprite = std::make_shared <olc::Renderable> ();
 
-  if ( sprite->LoadFromFile( AssetsPath + AssetType + assetPath ) == false )
+  if ( sprite->Load( AssetsPath + AssetType + assetPath ) != olc::rcode::OK )
     return false;
 
   mAssets[assetId] = sprite;
@@ -132,7 +132,7 @@ template class
 Assets <olc::CustomFont, FontId>;
 
 template class
-Assets <olc::Sprite, SpriteId>;
+Assets <olc::Renderable, SpriteId>;
 
 template class
 Assets <sf::SoundBuffer, SoundId>;

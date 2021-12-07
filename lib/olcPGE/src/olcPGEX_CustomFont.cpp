@@ -23,13 +23,13 @@ CustomFont::CustomFont(const std::string& sFontFile, olc::ResourcePack* pack)
 olc::rcode
 CustomFont::LoadFromFile(const std::string& sFontFile, olc::ResourcePack* pack)
 {
-    fontSprite = std::make_unique<olc::Sprite>();
+    fontTexture = std::make_unique<olc::Renderable>();
 
-    auto result = fontSprite->LoadFromFile( sFontFile, pack );
+    const olc::rcode result = fontTexture->Load( sFontFile, pack );
     if ( result != olc::rcode::OK )
       return result;
 
-    fontDecal = std::make_unique<olc::Decal>( fontSprite.get() );
+    const olc::Sprite* fontSprite = fontTexture->Sprite();
 
     // Find the CFON signature and extract the embedded font information
     int dataRow = -1;
@@ -122,7 +122,7 @@ void CustomFont::DrawStringDecal(const olc::vf2d& pos, const std::string& sText,
         else
         {
             auto& glyph = mGlyphPositionsMono.at(c);
-            pge->DrawPartialDecal(pos + spos, fontDecal.get(), glyph.first, glyph.second, scale, col);
+            pge->DrawPartialDecal(pos + spos, fontTexture->Decal(), glyph.first, glyph.second, scale, col);
             spos.x += fCharSize.x * scale.x;
         }
     }
@@ -142,7 +142,7 @@ void CustomFont::DrawRotatedStringDecal(const olc::vf2d& pos, const std::string&
         else
         {
             auto& glyph = mGlyphPositionsMono.at(c);
-            pge->DrawPartialRotatedDecal(pos, fontDecal.get(), fAngle, spos, glyph.first, glyph.second, scale, col);
+            pge->DrawPartialRotatedDecal(pos, fontTexture->Decal(), fAngle, spos, glyph.first, glyph.second, scale, col);
             spos.x -= fCharSize.x;
         }
     }
@@ -162,7 +162,7 @@ void CustomFont::DrawStringPropDecal(const olc::vf2d& pos, const std::string& sT
         else
         {
             auto& glyph = mGlyphPositionsProp.at(c);
-            pge->DrawPartialDecal(pos + spos, fontDecal.get(), glyph.first, glyph.second, scale, col);
+            pge->DrawPartialDecal(pos + spos, fontTexture->Decal(), glyph.first, glyph.second, scale, col);
             spos.x += glyph.second.x * scale.x;
         }
     }
@@ -182,7 +182,7 @@ void CustomFont::DrawRotatedStringPropDecal(const olc::vf2d& pos, const std::str
         else
         {
             auto& glyph = mGlyphPositionsProp.at(c);
-            pge->DrawPartialRotatedDecal(pos, fontDecal.get(), fAngle, spos, glyph.first, glyph.second, scale, col);
+            pge->DrawPartialRotatedDecal(pos, fontTexture->Decal(), fAngle, spos, glyph.first, glyph.second, scale, col);
             spos.x -= glyph.second.x;
         }
     }
