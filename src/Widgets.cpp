@@ -81,6 +81,24 @@ Text2D::setRotation( const float angle )
   mRotation = angle;
 }
 
+const olc::CustomFont*
+Text2D::font() const
+{
+  return mFont;
+}
+
+std::string
+Text2D::text() const
+{
+  return mText;
+}
+
+olc::Pixel
+Text2D::color() const
+{
+  return mColor;
+}
+
 vf2d
 Text2D::pos() const
 {

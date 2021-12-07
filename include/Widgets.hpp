@@ -46,7 +46,7 @@ public:
   void setColor( const olc::Pixel );
   void setMonospaced( const bool );
 
-  olc::CustomFont* font() const;
+  const olc::CustomFont* font() const;
   std::string text() const;
   olc::Pixel color() const;
 
