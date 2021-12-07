@@ -107,6 +107,8 @@ EventHandler::updateEvents()
     event.mouseWheelScroll.y = mousePos.y;
 
     mEvents.push_back(event);
+
+    mouseWheelPrev = mouseWheel;
   }
 
   return;
