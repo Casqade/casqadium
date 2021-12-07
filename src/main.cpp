@@ -10,7 +10,7 @@ main( int , char*[] )
 {
   AnotherDayAtHospital game( 30, 60 );
 
-  const olc::rcode result = game.Construct(256, 240, 4, 4);
+  const olc::rcode result = game.Construct( 800, 600, 1, 1 );
   if ( result != olc::rcode::OK )
     return result;
 

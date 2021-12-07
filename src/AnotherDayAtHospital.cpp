@@ -52,19 +52,6 @@ AnotherDayAtHospital::AnotherDayAtHospital(
 }
 
 bool
-AnotherDayAtHospital::OnUserCreate()
-{
-//  SetCursor(NULL);
-
-  if ( loadResources() == false )
-    return false;
-
-  mGameStateController.setState <GameStateTitle> ();
-
-  return true;
-}
-
-bool
 AnotherDayAtHospital::loadResources()
 {
   std::forward_list <std::pair <StringId, std::string>> strings =
@@ -77,7 +64,7 @@ AnotherDayAtHospital::loadResources()
 
   std::forward_list <std::pair <FontId, std::string>> fonts =
   {
-    { FontId::Munro, "munro.png" },
+//    { FontId::Munro, "munro.png" },
     { FontId::Jetbrains, "jetbrains.png" },
     { FontId::FranklinGothic, "framd.png" },
     { FontId::FranklinGothicItalic, "framdit.png" },
@@ -154,6 +141,19 @@ AnotherDayAtHospital::update(
     mGameStateController.handleEvent( event );
 
   return mGameStateController.update( ticks, tickInterval );
+}
+
+bool
+AnotherDayAtHospital::OnUserCreate()
+{
+//  SetCursor(NULL);
+
+  if ( loadResources() == false )
+    return false;
+
+  mGameStateController.setState <GameStateTitle> ();
+
+  return true;
 }
 
 bool

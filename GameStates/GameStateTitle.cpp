@@ -78,7 +78,6 @@ GameStateTitle::GameStateTitle( GameStateController* const stateController )
   , mState(StateLocal::Title)
   , mTitlePos({0.0f, 0.0f, 0.75f})
   , mBackstoryPos({ 0.0f, 150.0f, 0.0f })
-  , mLines({})
   , mPressedKeys()
 {}
 

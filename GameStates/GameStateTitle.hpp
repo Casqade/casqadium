@@ -25,8 +25,6 @@ class GameStateTitle
   glm::vec3 mTitlePos;
   glm::vec3 mBackstoryPos;
 
-  std::vector <olc::vf2d> mLines;
-
   std::set <olc::Key> mPressedKeys;
 
   void updateTitle( const TimeUtils::Duration );
