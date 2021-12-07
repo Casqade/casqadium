@@ -7,14 +7,15 @@ namespace olc
 Text2D::Text2D(
   const olc::CustomFont* font,
   const std::string& text,
-  const olc::Pixel color )
+  const olc::Pixel color,
+  const bool monospaced )
   : mFont(font)
   , mText(text)
   , mColor(color)
   , mPos()
-  , mSize(font->GetTextSize(text))
+  , mSize(monospaced ? font->GetTextSize(text) : font->GetTextSizeProp(text))
   , mRotation()
-  , mMonospaced(true)
+  , mMonospaced(monospaced)
 {}
 
 void
@@ -37,12 +38,14 @@ void
 Text2D::setFont( const CustomFont* font )
 {
   mFont = font;
+  mSize = mMonospaced ? mFont->GetTextSize(mText) : mFont->GetTextSizeProp(mText);
 }
 
 void
 Text2D::setText( const std::string& text )
 {
   mText = text;
+  mSize = mMonospaced ? mFont->GetTextSize(mText) : mFont->GetTextSizeProp(mText);
 }
 
 void
@@ -55,6 +58,7 @@ void
 Text2D::setMonospaced( const bool monospaced )
 {
   mMonospaced = monospaced;
+  mSize = mMonospaced ? mFont->GetTextSize(mText) : mFont->GetTextSizeProp(mText);
 }
 
 void
@@ -120,7 +124,7 @@ Text2D::textSize() const
 vf2d
 Text2D::scale() const
 {
-  return mText.empty() ? vf2d(1.0f, 1.0f) : mSize / mFont->GetTextSize(mText);
+  return mText.empty() ? vf2d(1.0f, 1.0f) : mMonospaced ? mSize / mFont->GetTextSize(mText) : mSize / mFont->GetTextSizeProp(mText);
 }
 
 vf2d

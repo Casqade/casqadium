@@ -32,7 +32,8 @@ class Text2D
 public:
   Text2D( const olc::CustomFont*,
           const std::string&  = {},
-          const olc::Pixel    = olc::WHITE );
+          const olc::Pixel    = olc::WHITE,
+          const bool monospaced = true );
 
   void render() const;
 
