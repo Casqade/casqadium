@@ -25,11 +25,11 @@ Text2D::render() const
 
   if ( mMonospaced )
     return olc::DrawRotatedFontDecal( mPos, mFont, mText,
-                                      mRotation, origin(),
+                                      mRotation, {},
                                       mColor, scale() );
 
   olc::DrawRotatedFontPropDecal( mPos, mFont, mText,
-                                 mRotation, origin(),
+                                 mRotation, {},
                                  mColor, scale() );
 }
 
