@@ -65,6 +65,8 @@ EventHandler::updateEvents()
     event.mouseMove.dy = mousePos.y - mousePosPrev.y;
 
     mEvents.push_back(event);
+
+    mousePosPrev = mousePos;
   }
 
   for ( uint32_t button = 0;
