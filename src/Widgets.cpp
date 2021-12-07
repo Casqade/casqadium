@@ -76,7 +76,7 @@ Text2D::setSize( const vu2d size )
 void
 Text2D::setOrigin( const vf2d origin )
 {
-  mPos = origin - mSize;
+  mPos = origin - mSize / 2;
 }
 
 void
