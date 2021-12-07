@@ -46,7 +46,7 @@ EventHandler::updateEvents()
     else
       continue;
 
-    event.key.code = key;
+    event.key.code = Key(key);
     mEvents.push_back(event);
   }
 

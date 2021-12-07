@@ -121,59 +121,60 @@ Text2D::rotation() const
 
 InputPrompt::InputPrompt(
   const std::string& prompt,
+  const olc::CustomFont& font,
   const TimeUtils::Duration durationShown,
   const TimeUtils::Duration durationHidden )
-  : sf::Text(prompt)
-  , mState(State::Inactive)
+  : mState(State::Inactive)
   , mDurationShown(durationShown)
   , mDurationHidden(durationHidden)
   , mTimeInState()
+  , mFont(font)
 {}
 
 void
 InputPrompt::update( const TimeUtils::Duration interval )
 {
-  switch ( mState )
-  {
-    case State::Inactive:
-    {
-      sf::Color fillColor = this->getFillColor();
-      fillColor.a = 0;
-      return setFillColor( fillColor );
-    }
+//  switch ( mState )
+//  {
+//    case State::Inactive:
+//    {
+//      sf::Color fillColor = this->getFillColor();
+//      fillColor.a = 0;
+//      return setFillColor( fillColor );
+//    }
 
-    case State::Shown:
-    {
-      if ( mTimeInState.getElapsedTime().asSeconds() > mDurationShown.asSeconds() )
-        return setState( State::Hidden );
+//    case State::Shown:
+//    {
+//      if ( mTimeInState.getElapsedTime().asSeconds() > mDurationShown.asSeconds() )
+//        return setState( State::Hidden );
 
-      sf::Color fillColor = this->getFillColor();
-      fillColor.a = 255;
+//      sf::Color fillColor = this->getFillColor();
+//      fillColor.a = 255;
 
-      return setFillColor( fillColor );
-    }
+//      return setFillColor( fillColor );
+//    }
 
-    case State::Hidden:
-    {
-      if ( mTimeInState.getElapsedTime().asSeconds() > mDurationHidden.asSeconds() )
-        setState( State::Shown );
+//    case State::Hidden:
+//    {
+//      if ( mTimeInState.getElapsedTime().asSeconds() > mDurationHidden.asSeconds() )
+//        setState( State::Shown );
 
-      sf::Color fillColor = this->getFillColor();
-      fillColor.a = 0;
+//      sf::Color fillColor = this->getFillColor();
+//      fillColor.a = 0;
 
-      return setFillColor( fillColor );
-    }
+//      return setFillColor( fillColor );
+//    }
 
-    default:
-      return;
-  }
+//    default:
+//      return;
+//  }
 }
 
 void
 InputPrompt::setState( const State state )
 {
   mState = state;
-  mTimeInState.restart();
+//  mTimeInState.restart();
 }
 
 bool
@@ -183,34 +184,32 @@ InputPrompt::isActive() const
 }
 
 FadeEffect::FadeEffect(
-  const sf::Vector2f            size,
-  const std::pair < sf::Color,
-                    sf::Color>  fadeRange,
-  const sf::Time                fadeDuration,
-  const sf::Vector2f            pos,
-  const sf::Vector2f            origin )
-  : sf::RectangleShape(size)
-  , mFadeDuration(fadeDuration)
-  , mFadeCurrent()
+  const olc::vf2d               size,
+  const std::pair < olc::Pixel,
+                    olc::Pixel> fadeRange,
+  const TimeUtils::Duration     fadeDuration,
+  const olc::vf2d               pos,
+  const olc::vf2d               origin )
+  : mTimer(fadeDuration)
   , mFadeRange(fadeRange)
 {
-  setFillColor(mFadeRange.first);
-  setOrigin(origin);
-  setPosition(pos);
+//  setFillColor(mFadeRange.first);
+//  setOrigin(origin);
+//  setPosition(pos);
 }
 
 void
-FadeEffect::update( const float dt )
+FadeEffect::update( const TimeUtils::Duration dt )
 {
-  if ( mFadeCurrent >= mFadeDuration.asSeconds() )
+  if ( mTimer.isReady() )
     return;
 
-  sf::Color fadeColor = getFillColor();
+  olc::Pixel fadeColor = {}; // getFillColor();
 
   const auto coef =
-    std::min( (mFadeCurrent += dt)
-                / mFadeDuration.asSeconds(),
-              1.0f );
+    std::min( double(mTimer.duration() - mTimer.update(dt))
+                / (double) mTimer.duration(),
+              1.0 );
 
   fadeColor.r
     = mFadeRange.first.r
@@ -232,26 +231,26 @@ FadeEffect::update( const float dt )
     + (float(mFadeRange.second.a) - mFadeRange.first.a)
     * coef;
 
-  setFillColor( fadeColor );
+//  setFillColor( fadeColor );
 }
 
 void
 FadeEffect::setFadeRange(
-  std::pair < sf::Color, sf::Color> fadeRange )
+  std::pair <olc::Pixel, olc::Pixel> fadeRange )
 {
-  mFadeCurrent = float();
+  mTimer = { mTimer.duration() };
   mFadeRange = fadeRange;
 }
 
 void
 FadeEffect::setFadeDuration(
-  sf::Time fadeDuration )
+  TimeUtils::Duration fadeDuration )
 {
-  mFadeDuration = fadeDuration;
+  mTimer = { fadeDuration };
 }
 
 bool
 FadeEffect::finished() const
 {
-  return mFadeCurrent >= mFadeDuration.asSeconds();
+  return mTimer.isReady();
 }

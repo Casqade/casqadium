@@ -2,9 +2,9 @@
 #define GAME_STATE_TITLE_HPP
 
 #include <GameState.hpp>
-#include <olcPGE/Math.hpp>
 
 #include <set>
+#include <glm/vec3.hpp>
 
 
 namespace TimeUtils
@@ -22,16 +22,13 @@ class GameStateTitle
 
   } mState;
 
-  olc::Vector3f mTitlePos;
-  olc::Vector3f mBackstoryPos;
+  glm::vec3 mTitlePos;
+  glm::vec3 mBackstoryPos;
 
   std::vector <olc::vf2d> mLines;
 
   std::set <olc::Key> mPressedKeys;
 
-  void handleControls( const TimeUtils::Duration );
-
-  void updateLines( const TimeUtils::Duration );
   void updateTitle( const TimeUtils::Duration );
   void updateBackStory( const TimeUtils::Duration );
 
@@ -42,7 +39,7 @@ public:
 
   bool update( const uint32_t ticks,
                const TimeUtils::Duration ) override;
-  void render() override;
+  void render( olc::PixelGameEngine* const ) override;
 };
 
 

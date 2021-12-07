@@ -5,7 +5,10 @@
 #include <olcPGE/olcPixelGameEngine.hpp>
 
 #include <TimeUtils/Duration.hpp>
+#include <TimeUtils/Timer.hpp>
+
 #include <olcPGE/Math.hpp>
+#include <glm/glm.hpp>
 
 #include <string>
 
@@ -55,35 +58,48 @@ public:
   float rotation() const;
 };
 
+
+class Camera
+{
+  glm::vec3 mPos;
+  glm::vec3 mDirection;
+
+public:
+  Camera( const glm::vec3 up )
+  {
+
+  }
+};
+
 class Rect3D
 {
-  olc::Vector3f mPos;
-  olc::Vector3f mRotation;
-  olc::Vector3f mNormal;
+  glm::vec3 mPos;
+  glm::vec3 mRotation;
+  glm::vec3 mNormal;
 
   std::array <olc::vf2d, 4> mVerts;
 
   const olc::Decal* mDecal;
 
 public:
-  Rect3D( const olc::vf2d     size,
-          const olc::Vector3f pos = {},
-          const olc::Vector3f rot = {},
+  Rect3D( const glm::vec2 size,
+          const glm::vec3 pos = {},
+          const glm::vec3 rot = {},
           const olc::Decal*   decal = {} );
 
   void render();
 
-  std::array <olc::Vector3f, 4> verts();
+  std::array <glm::vec3, 4> verts();
 };
 
-olc::vf2d
-toScreen( const olc::Vector3f vert )
+inline olc::vf2d
+toScreen( const glm::vec3 vert )
 {
-
+  return {};
 }
 
 bool
-isCulled( const Rect3D& )
+inline isCulled( const Rect3D& )
 {
   return true;
 }
@@ -121,13 +137,12 @@ private:
 
   TimeUtils::Duration mTimeInState;
 
-  olc::CustomFont& mFont;
+  const olc::CustomFont& mFont;
 };
 
 class FadeEffect
 {
-  TimeUtils::Duration mFadeDuration;
-  float mFadeCurrent;
+  TimeUtils::Timer mTimer;
 
   std::pair <olc::Pixel, olc::Pixel> mFadeRange;
 
@@ -140,7 +155,7 @@ public:
     const olc::vf2d               pos = {},
     const olc::vf2d               origin = {} );
 
-  void update( const float dt );
+  void update( const TimeUtils::Duration dt );
 
   void setFadeRange( std::pair <olc::Pixel, olc::Pixel> );
   void setFadeDuration( const TimeUtils::Duration );

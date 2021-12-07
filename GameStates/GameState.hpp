@@ -20,22 +20,25 @@ class GameState
 
   } mState;
 
-
-public:
-  GameState( GameStateController* const );
-  virtual ~GameState();
-  virtual void enter();
-  virtual void render();
-  virtual bool update( const uint32_t ticks,
-                       const TimeUtils::Duration );
-  virtual void handleEvent( const olc::Event );
-
 protected:
   GameStateController* const mGameStateController;
 
   virtual void keyEvent( const olc::Event );
   virtual void mouseMoveEvent( const olc::Event::MouseMoveEvent );
   virtual void mouseButtonEvent( const olc::Event::MouseButtonEvent );
+
+public:
+  GameState( GameStateController* const );
+  virtual ~GameState();
+
+  virtual void enter();
+
+  virtual bool update( const uint32_t ticks,
+                       const TimeUtils::Duration );
+
+  virtual void render( olc::PixelGameEngine* const );
+
+  virtual void handleEvent( const olc::Event );
 };
 
 

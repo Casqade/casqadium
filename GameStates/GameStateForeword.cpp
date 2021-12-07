@@ -1,7 +1,7 @@
-#include <GameStateForeword.hpp>
-
 #include <SFML/Audio/SoundBuffer.hpp>
 #include <SFML/Audio/Music.hpp>
+
+#include <GameStateForeword.hpp>
 
 #include <TimeUtils/Duration.hpp>
 
@@ -14,59 +14,60 @@
 GameStateForeword::GameStateForeword( GameStateController* const stateController )
   : GameState(stateController)
   , mState(StateLocal::TransitingIn)
-  , mForeword(Strings::Get(StringId::Foreword),
-              Fonts::Get(FontId::FranklinGothic))
+//  , mForeword(Strings::Get(StringId::Foreword),
+//              Fonts::Get(FontId::FranklinGothic))
   , mInputPrompt(Strings::Get(StringId::ForewordInputPrompt), Fonts::Get(FontId::FranklinGothic),
                  0.2, 0.2)
-  , mFade(  { window.getSize().x,
-              window.getSize().y },
+  , mFade(  { 0,
+              0 },
             {olc::BLACK, olc::BLANK},
             0.75 )
   , mInputPromptDelay()
   , mTransitingOutTimer()
   , mPressedKeys()
 {
-  mForeword.setFillColor( sf::Color( 37, 203, 232 ) );
+//  mForeword.setFillColor( sf::Color( 37, 203, 232 ) );
 
-  mForeword.setOrigin( mForeword.getLocalBounds().width * 0.5f,
-                       mForeword.getLocalBounds().height * 0.5f );
+//  mForeword.setOrigin( mForeword.getLocalBounds().width * 0.5f,
+//                       mForeword.getLocalBounds().height * 0.5f );
 
-  mForeword.setPosition( window.getSize().x * 0.5f,
-                         window.getSize().y * 0.5f );
+//  mForeword.setPosition( window.getSize().x * 0.5f,
+//                         window.getSize().y * 0.5f );
 
 
-  mInputPrompt.setFillColor( sf::Color( 37, 203, 232, 0 ) );
+//  mInputPrompt.setFillColor( sf::Color( 37, 203, 232, 0 ) );
 
-  mInputPrompt.setOrigin( mInputPrompt.getLocalBounds().width * 0.5f,
-                          mInputPrompt.getLocalBounds().height * 0.5f );
+//  mInputPrompt.setOrigin( mInputPrompt.getLocalBounds().width * 0.5f,
+//                          mInputPrompt.getLocalBounds().height * 0.5f );
 
-  mInputPrompt.setPosition( window.getSize().x * 0.5f,
-                            window.getSize().y * 0.75f );
+//  mInputPrompt.setPosition( window.getSize().x * 0.5f,
+//                            window.getSize().y * 0.75f );
 }
 
-void
-GameStateForeword::update( const sf::Time elapsed )
+bool
+GameStateForeword::update(  const uint32_t ticks,
+                            const TimeUtils::Duration elapsed )
 {
-  const float dt = elapsed.asSeconds();
-
   switch ( mState )
   {
     case StateLocal::TransitingIn:
-      return transitingIn( dt );
+      return transitingIn( elapsed ), true;
 
     case StateLocal::WaitAccept:
-      return waitAccept( dt );
+      return waitAccept( elapsed ), true;
 
     case StateLocal::TransitingOut:
-      return transitingOut( dt );
+      return transitingOut( elapsed ), true;
 
     default:
-      return;
+      return true;
   }
+
+  return true;
 }
 
 void
-GameStateForeword::transitingIn( const float dt )
+GameStateForeword::transitingIn( const TimeUtils::Duration dt )
 {
   mFade.update( dt );
 
@@ -78,7 +79,7 @@ GameStateForeword::transitingIn( const float dt )
 }
 
 void
-GameStateForeword::transitingOut( const float dt )
+GameStateForeword::transitingOut( const TimeUtils::Duration dt )
 {
   mInputPrompt.update( dt );
 
@@ -98,7 +99,7 @@ GameStateForeword::transitingOut( const float dt )
 }
 
 void
-GameStateForeword::waitAccept( const float dt )
+GameStateForeword::waitAccept( const TimeUtils::Duration dt )
 {
   const static sf::Time inputPromptDelay { sf::seconds(2.0f) };
 
@@ -113,13 +114,13 @@ GameStateForeword::waitAccept( const float dt )
 }
 
 void
-GameStateForeword::keyEvent( const sf::Event event )
+GameStateForeword::keyEvent( const olc::Event event )
 {
-  const sf::Event::KeyEvent key = event.key;
+  const olc::Event::KeyEvent key = event.key;
 
   switch (event.type)
   {
-    case sf::Event::EventType::KeyPressed:
+    case olc::Event::EventType::KeyPressed:
       switch (mState)
       {
         case StateLocal::WaitAccept:
@@ -127,8 +128,8 @@ GameStateForeword::keyEvent( const sf::Event event )
 
           mInputPrompt.setState( InputPrompt::State::Inactive );
 
-          mFade.setFadeRange({ mFade.getFillColor(), sf::Color::Black });
-          mFade.setFadeDuration( sf::seconds(0.75f) );
+          mFade.setFadeRange({ olc::BLANK, olc::BLACK });
+          mFade.setFadeDuration( 0.75 );
 
           mState = StateLocal::TransitingOut;
           Log << "TransitingOut";
@@ -143,7 +144,7 @@ GameStateForeword::keyEvent( const sf::Event event )
         default:
           return;
       }
-    case sf::Event::EventType::KeyReleased:
+    case olc::Event::EventType::KeyReleased:
       if ( mState == StateLocal::TransitingOut )
       {
         auto pressedKey = mPressedKeys.find(key.code);
@@ -163,12 +164,9 @@ GameStateForeword::keyEvent( const sf::Event event )
 }
 
 void
-GameStateForeword::render( sf::RenderWindow& )
+GameStateForeword::render( olc::PixelGameEngine* const engine )
 {
-  RenderQueue::Current().push( std::make_shared <RenderCommand> ( [=] ( const TimeUtils::Duration )
-  {
-      window.draw( mForeword );
-      window.draw( mFade );
-      window.draw( mInputPrompt );
-  } ) );
+//  window.draw( mForeword );
+//  window.draw( mFade );
+//  window.draw( mInputPrompt );
 }

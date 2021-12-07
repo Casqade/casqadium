@@ -2,6 +2,7 @@
 #define GAME_STATE_CONTROLLER_HPP
 
 #include <memory>
+#include <GameState.hpp>
 
 
 namespace TimeUtils
@@ -11,11 +12,9 @@ class Duration;
 
 namespace olc
 {
+class PixelGameEngine;
 class Event;
 }
-
-class GameState;
-class GameStateForeword;
 
 class GameStateController
 {
@@ -31,8 +30,7 @@ public:
 
   bool update( const uint32_t ticks,
                const TimeUtils::Duration );
-  void render( const uint32_t frames,
-               const TimeUtils::Duration timeSinceTick );
+  void render( olc::PixelGameEngine* const );
 };
 
 

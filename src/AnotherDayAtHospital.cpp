@@ -2,6 +2,7 @@
 
 #include <GameStateTitle.hpp>
 #include <Variables.hpp>
+#include <Logger.hpp>
 
 #include <forward_list>
 
@@ -82,9 +83,9 @@ AnotherDayAtHospital::loadResources()
     { FontId::FranklinGothicItalic, "framdit.png" },
   };
 
-  std::forward_list <std::pair <TextureId, std::string>> textures =
+  std::forward_list <std::pair <SpriteId, std::string>> sprites =
   {
-    { TextureId::WindowIcon, "window_icon.png" },
+    { SpriteId::WindowIcon, "window_icon.png" },
   };
 
   std::forward_list <std::pair <SoundId, std::string>> sounds =
@@ -98,24 +99,35 @@ AnotherDayAtHospital::loadResources()
   };
 
   for ( const auto& string : strings )
-    if ( Strings::Load( string.first, string.second ) == false )
-      return 1;
+    Strings::Load( string.first, string.second );
 
   for ( const auto& font : fonts )
     if ( Fonts::Load( font.first, font.second ) == false )
-      return 1;
+    {
+      Log << "ERROR: Failed to load font " << font.second;
+      return false;
+    }
 
-  for ( const auto& texture : textures )
-    if ( Textures::Load( texture.first, texture.second ) == false )
-      return 1;
+  for ( const auto& sprite : sprites )
+    if ( Sprites::Load( sprite.first, sprite.second ) == false )
+    {
+      Log << "ERROR: Failed to load sprite " << sprite.second;
+      return false;
+    }
 
   for ( const auto& sound : sounds )
     if ( Sounds::Load( sound.first, sound.second ) == false )
-      return 1;
+    {
+      Log << "ERROR: Failed to load sound " << sound.second;
+      return false;
+    }
 
   for ( const auto& music : musics )
     if ( Music::Load( music.first, music.second ) == false )
-      return 1;
+    {
+      Log << "ERROR: Failed to load music " << music.second;
+      return false;
+    }
 
   std::string entry {};
   std::vector <std::string> lines {};
@@ -184,7 +196,7 @@ AnotherDayAtHospital::OnUserUpdate( float )
     frames = 1;
 
   if ( frames != 0 )
-    mGameStateController.render( frames, currentTime - mTickPrevious );
+    mGameStateController.render( this );
 
   TimeUtils::SleepUntil( std::min( mTickPrevious + (tickRateLimited ? mTickInterval : TimeUtils::Duration()),
                                    mFramePrevious + mFrameInterval ) );

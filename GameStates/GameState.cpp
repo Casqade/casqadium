@@ -1,5 +1,7 @@
 #include <GameState.hpp>
 
+#include <olcPGE/olcPixelGameEngine.hpp>
+
 #include <TimeUtils/Duration.hpp>
 
 #include <Logger.hpp>
@@ -37,7 +39,7 @@ GameState::enter()
 }
 
 void
-GameState::render()
+GameState::render( olc::PixelGameEngine* const )
 {
   Log << __FUNCTION__;
 }

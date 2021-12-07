@@ -18,7 +18,7 @@ class GameStateForeword
 
   } mState;
 
-  sf::Text mForeword;
+//  sf::Text mForeword;
   InputPrompt mInputPrompt;
 
   FadeEffect mFade;
@@ -40,7 +40,7 @@ public:
 
   bool update( const uint32_t ticks,
                const TimeUtils::Duration ) override;
-  void render() override;
+  void render( olc::PixelGameEngine* const ) override;
 };
 
 

@@ -48,11 +48,9 @@ GameStateController::update(
 }
 
 void
-GameStateController::render(
-  const uint32_t frames,
-  const TimeUtils::Duration timeSinceTick )
+GameStateController::render( olc::PixelGameEngine* const engine )
 {
-  mCurrentState->render();
+  mCurrentState->render( engine );
 }
 
 template
