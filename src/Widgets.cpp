@@ -215,73 +215,70 @@ InputPrompt::isActive() const
 }
 
 FadeEffect::FadeEffect(
-  const olc::vf2d               size,
+  const olc::RectF              rect,
   const std::pair < olc::Pixel,
                     olc::Pixel> fadeRange,
-  const TimeUtils::Duration     fadeDuration,
-  const olc::vf2d               pos,
-  const olc::vf2d               origin )
-  : mTimer(fadeDuration)
+  const TimeUtils::Duration     fadeDuration )
+  : olc::RectF(rect)
+  , mFadeTimer(fadeDuration)
   , mFadeRange(fadeRange)
-{
-//  setFillColor(mFadeRange.first);
-//  setOrigin(origin);
-//  setPosition(pos);
-}
+{}
 
 void
 FadeEffect::update( const TimeUtils::Duration dt )
 {
-  if ( mTimer.isReady() )
+  if ( mFadeTimer.isReady() )
     return;
 
-  olc::Pixel fadeColor = {}; // getFillColor();
-
-  const auto coef =
-    std::min( double(mTimer.duration() - mTimer.update(dt))
-                / (double) mTimer.duration(),
+  const double coef =
+    std::min( double(mFadeTimer.duration() - mFadeTimer.update(dt))
+                / (double) mFadeTimer.duration(),
               1.0 );
 
-  fadeColor.r
+  mFadeColor.r
     = mFadeRange.first.r
     + (float(mFadeRange.second.r) - mFadeRange.first.r)
     * coef;
 
-  fadeColor.g
+  mFadeColor.g
     = mFadeRange.first.g
     + (float(mFadeRange.second.g) - mFadeRange.first.g)
     * coef;
 
-  fadeColor.b
+  mFadeColor.b
     = mFadeRange.first.b
     + (float(mFadeRange.second.b) - mFadeRange.first.b)
     * coef;
 
-  fadeColor.a
+  mFadeColor.a
     = mFadeRange.first.a
     + (float(mFadeRange.second.a) - mFadeRange.first.a)
     * coef;
-
-//  setFillColor( fadeColor );
 }
 
 void
 FadeEffect::setFadeRange(
   std::pair <olc::Pixel, olc::Pixel> fadeRange )
 {
-  mTimer = { mTimer.duration() };
   mFadeRange = fadeRange;
+  mFadeTimer.restart();
 }
 
 void
 FadeEffect::setFadeDuration(
   TimeUtils::Duration fadeDuration )
 {
-  mTimer = { fadeDuration };
+  mFadeTimer.start( fadeDuration );
+}
+
+olc::Pixel
+FadeEffect::fadeColor() const
+{
+  return mFadeColor;
 }
 
 bool
 FadeEffect::finished() const
 {
-  return mTimer.isReady();
+  return mFadeTimer.isReady();
 }

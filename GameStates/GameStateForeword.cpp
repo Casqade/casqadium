@@ -20,8 +20,8 @@ GameStateForeword::GameStateForeword( GameStateController* const stateController
   , mInputPrompt(Strings::Get(StringId::ForewordInputPrompt),
                  &Fonts::Get(FontId::FranklinGothic),
                  0.2, 0.2)
-  , mFade(  { 0,
-              0 },
+  , mFade(  { {},
+              {mPGE->GetWindowSize().x, mPGE->GetWindowSize().y} },
             {olc::BLACK, olc::BLANK},
             0.75 )
   , mInputPromptTimer({2, 0}, true)

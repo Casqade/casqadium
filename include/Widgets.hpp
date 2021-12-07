@@ -138,26 +138,26 @@ private:
   TimeUtils::Timer mTimeInState;
 };
 
-class FadeEffect
+class FadeEffect : public olc::RectF
 {
-  TimeUtils::Timer mTimer;
+  olc::Pixel mFadeColor;
+  TimeUtils::Timer mFadeTimer;
 
   std::pair <olc::Pixel, olc::Pixel> mFadeRange;
 
 public:
   FadeEffect(
-    const olc::vf2d               size,
+    const olc::RectF              rect,
     const std::pair < olc::Pixel,
                       olc::Pixel> fadeRange,
-    const TimeUtils::Duration     fadeDuration,
-    const olc::vf2d               pos = {},
-    const olc::vf2d               origin = {} );
+    const TimeUtils::Duration     fadeDuration );
 
-  void update( const TimeUtils::Duration dt );
+  void update( const TimeUtils::Duration );
 
   void setFadeRange( std::pair <olc::Pixel, olc::Pixel> );
   void setFadeDuration( const TimeUtils::Duration );
 
+  olc::Pixel fadeColor() const;
   bool finished() const;
 };
 
