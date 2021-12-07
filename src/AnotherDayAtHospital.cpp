@@ -1,6 +1,6 @@
 #include <AnotherDayAtHospital.hpp>
 
-#include <GameStateTitle.hpp>
+#include <GameStateForeword.hpp>
 #include <Variables.hpp>
 #include <Logger.hpp>
 
@@ -152,7 +152,7 @@ AnotherDayAtHospital::OnUserCreate()
   if ( loadResources() == false )
     return false;
 
-  mGameStateController.setState <GameStateTitle> ();
+  mGameStateController.setState <GameStateForeword> ();
 
   return true;
 }

@@ -30,13 +30,10 @@ GameStateForeword::GameStateForeword( GameStateController* const stateController
 {
   mForeword.setOrigin( (olc::vf2d) mPGE->GetWindowSize() * 0.5f );
 
-//  mInputPrompt.setFillColor( sf::Color( 37, 203, 232, 0 ) );
+  mInputPrompt.setColor({ 37, 203, 232, 0 });
 
-//  mInputPrompt.setOrigin( mInputPrompt.getLocalBounds().width * 0.5f,
-//                          mInputPrompt.getLocalBounds().height * 0.5f );
-
-//  mInputPrompt.setPosition( window.getSize().x * 0.5f,
-//                            window.getSize().y * 0.75f );
+  mInputPrompt.setPos({ mPGE->GetWindowSize().x * 0.5f,
+                        mPGE->GetWindowSize().y * 0.75f });
 }
 
 bool
@@ -160,6 +157,10 @@ void
 GameStateForeword::render()
 {
   mForeword.render();
-//  window.draw( mFade );
-//  window.draw( mInputPrompt );
+
+  mPGE->FillRectDecal( {mFade.x, mFade.y},
+                       {mFade.w, mFade.h},
+                       mFade.fadeColor() );
+
+  mInputPrompt.render();
 }
