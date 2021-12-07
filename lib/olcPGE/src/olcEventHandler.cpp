@@ -24,6 +24,8 @@ EventHandler::updateEvents()
       event.type = Event::EventType::LostFocus;
 
     mEvents.push_back(event);
+
+    wasInFocus = isInFocus;
   }
 
   if ( isInFocus == false )
