@@ -8,7 +8,9 @@
 #include <TimeUtils/Timer.hpp>
 
 #include <olcPGE/Math.hpp>
-#include <glm/glm.hpp>
+#include <glm/vec3.hpp>
+#include <glm/mat4x4.hpp>
+#include <glm/trigonometric.hpp>
 
 #include <string>
 
@@ -59,53 +61,78 @@ public:
   float rotation() const;
 };
 
+}
 
-class Camera
+class Camera3D
 {
-  glm::vec3 mPos;
-  glm::vec3 mDirection;
+  glm::mat4 mProjection;
+  glm::vec4 mViewport;
+
+  glm::vec3 mOrigin;
+  glm::vec3 mOrientation;
+
+  glm::vec3 mFront;
+  glm::vec3 mUp;
+  glm::vec3 mRight;
+  glm::vec3 mWorldUp;
+
+  float mSpeed;
+  float mZoom;
+
+  void recalculateVectors();
 
 public:
-  Camera( const glm::vec3 up )
-  {
+  Camera3D( const glm::mat4&  projection,
+            const glm::vec4&  viewport,
+            const glm::vec3   origin = {},
+            const glm::vec3   orientation = {0.0f, glm::radians(-90.0f), 0.0f} );
 
-  }
+  glm::mat4 viewMatrix() const;
+  glm::mat4 projMatrix() const;
+  glm::vec4 viewport() const;
 };
 
-class Rect3D
+class Drawable3D
 {
-  glm::vec3 mPos;
-  glm::vec3 mRotation;
+protected:
+  glm::vec3 mOrigin;
+  glm::vec3 mOrientation;
+  glm::vec3 mScale;
+
+  glm::mat4 modelMatrix() const;
+
+public:
+  Drawable3D( const glm::vec3 origin = {},
+              const glm::vec3 orientation = {},
+              const glm::vec3 scale = { 1.0f, 1.0f, 1.0f } );
+
+  virtual void appendCulled(  std::multimap < float, Drawable3D*, std::greater <float>>& depthBuffer,
+                              const Camera3D& );
+
+  virtual void draw();
+};
+
+class Poly3D : public Drawable3D
+{
   glm::vec3 mNormal;
 
-  std::array <olc::vf2d, 4> mVerts;
+  std::array <glm::vec3, 4> mVerts;
+  std::array <olc::vf2d, 4> mVertsProjected;
 
-  const olc::Decal* mDecal;
+  olc::Decal* mDecal;
 
 public:
-  Rect3D( const glm::vec2 size,
-          const glm::vec3 pos = {},
-          const glm::vec3 rot = {},
-          const olc::Decal*   decal = {} );
+  Poly3D( const std::array <glm::vec3, 4>& verts,
+          const glm::vec3   origin = {},
+          const glm::vec3   orientation = {},
+          const glm::vec3   scale = {},
+          olc::Decal* decal = {} );
 
-  void render();
+  void appendCulled(  std::multimap < float, Drawable3D*, std::greater <float>>& depthBuffer,
+                      const Camera3D& ) override;
 
-  std::array <glm::vec3, 4> verts();
+  void draw() override;
 };
-
-inline olc::vf2d
-toScreen( const glm::vec3 vert )
-{
-  return {};
-}
-
-bool
-inline isCulled( const Rect3D& )
-{
-  return true;
-}
-
-}
 
 class InputPrompt : public olc::Text2D
 {

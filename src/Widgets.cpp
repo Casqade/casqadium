@@ -1,5 +1,10 @@
 #include <Widgets.hpp>
 
+#include <glm/gtc/matrix_transform.hpp>
+
+#include <glm/gtx/euler_angles.hpp>
+#include <glm/gtx/transform.hpp>
+
 
 namespace olc
 {
@@ -141,12 +146,144 @@ Text2D::rotation() const
 
 }
 
+
+Camera3D::Camera3D(
+  const glm::mat4&  projection,
+  const glm::vec4&  viewport,
+  const glm::vec3   origin,
+  const glm::vec3   orientation )
+  : mProjection(projection)
+  , mViewport(viewport)
+  , mOrigin(origin)
+  , mOrientation(orientation)
+  , mFront(glm::vec3(0.0f, 0.0f, -1.0f))
+  , mUp()
+  , mRight()
+  , mWorldUp(0.0f, 1.0f, 0.0f)
+  , mSpeed(1.0f)
+  , mZoom(45.0f)
+{}
+
+void
+Camera3D::recalculateVectors()
+{
+  mFront.x = cos(mOrientation.y) * cos(mOrientation.x);
+  mFront.y = sin(mOrientation.x);
+  mFront.z = sin(mOrientation.y) * cos(mOrientation.x);
+  mFront = glm::normalize(mFront);
+
+  mRight = glm::normalize(glm::cross(mFront, mWorldUp));
+  mUp    = glm::normalize(glm::cross(mRight, mFront));
+}
+
+glm::mat4
+Camera3D::viewMatrix() const
+{
+  return glm::lookAt( mOrigin, mOrigin + mFront, mUp );
+}
+
+glm::mat4
+Camera3D::projMatrix() const
+{
+  return mProjection;
+}
+
+glm::vec4
+Camera3D::viewport() const
+{
+  return mViewport;
+}
+
+
+Drawable3D::Drawable3D( const glm::vec3 origin,
+                        const glm::vec3 orientation,
+                        const glm::vec3 scale )
+  : mOrigin(origin)
+  , mOrientation(orientation)
+  , mScale(scale)
+{}
+
+glm::mat4
+Drawable3D::modelMatrix() const
+{
+//  glm::mat4 translate = glm::translate( glm::mat4(1.0f), mOrigin );
+//  glm::mat4 rotation = glm::orientate4( mOrientation );
+//  glm::mat4 scale = glm::scale( mScale );
+
+  return  glm::translate( glm::mat4(1.0f), mOrigin )
+        * glm::orientate4( mOrientation )
+        * glm::scale( mScale );
+}
+
+void
+Drawable3D::appendCulled( std::multimap < float, Drawable3D*, std::greater <float>>&,
+                          const Camera3D& )
+{
+  return;
+}
+
+void
+Drawable3D::draw()
+{
+  return;
+}
+
+
+Poly3D::Poly3D(
+  const std::array <glm::vec3, 4>& verts,
+  const glm::vec3   origin,
+  const glm::vec3   orientation,
+  const glm::vec3   scale,
+  olc::Decal* decal )
+  : Drawable3D(origin, orientation, scale)
+  , mNormal(glm::normalize(glm::cross(verts[2] - verts[0], verts[1] - verts[0])))
+  , mVerts(verts)
+  , mVertsProjected()
+  , mDecal(decal)
+{}
+
+void
+Poly3D::appendCulled( std::multimap < float, Drawable3D*, std::greater <float>>& depthBuffer,
+                      const Camera3D& cam )
+{
+  const glm::mat4 modelView = cam.viewMatrix() * modelMatrix();
+  const glm::mat4 projection = cam.projMatrix();
+  const glm::vec4 viewport = cam.viewport();
+
+  float polygonDepth = 0.0f;
+
+  for ( size_t i = 0;
+        i < mVerts.size();
+        ++i )
+  {
+    glm::vec3 vert = glm::projectZO( mVerts[i],
+                                     modelView,
+                                     projection,
+                                      viewport );
+
+    mVertsProjected[i] = { vert.x, vert.y };
+    polygonDepth += vert.z;
+    std::cout << "VertDepth: " << vert.z << "\n";
+  }
+
+  polygonDepth /= mVertsProjected.size();
+  depthBuffer.emplace( polygonDepth, this );
+
+  return;
+}
+
+void
+Poly3D::draw()
+{
+  olc::renderer->ptrPGE->DrawWarpedDecal( mDecal, mVertsProjected );
+}
+
 InputPrompt::InputPrompt(
   const std::string& prompt,
   const olc::CustomFont* font,
   const TimeUtils::Duration durationShown,
   const TimeUtils::Duration durationHidden )
-  : olc::Text2D(font, prompt)
+  : olc::Text2D(font, "[" + prompt + "]")
   , mState(State::Inactive)
   , mDurationShown(durationShown)
   , mDurationHidden(durationHidden)
