@@ -156,13 +156,36 @@ Camera3D::Camera3D(
   , mViewport(viewport)
   , mOrigin(origin)
   , mOrientation(orientation)
-  , mFront(glm::vec3(0.0f, 0.0f, -1.0f))
+  , mFront()
   , mUp()
   , mRight()
   , mWorldUp(0.0f, 1.0f, 0.0f)
   , mSpeed(1.0f)
   , mZoom(45.0f)
-{}
+{
+  recalculateVectors();
+}
+
+void
+Camera3D::rotatePitch( const float pitch )
+{
+  mOrientation.x += pitch;
+  recalculateVectors();
+}
+
+void
+Camera3D::rotateYaw( const float yaw )
+{
+  mOrientation.y += yaw;
+  recalculateVectors();
+}
+
+void
+Camera3D::rotateRoll( const float roll )
+{
+  mOrientation.z += roll;
+  recalculateVectors();
+}
 
 void
 Camera3D::recalculateVectors()
@@ -174,6 +197,12 @@ Camera3D::recalculateVectors()
 
   mRight = glm::normalize(glm::cross(mFront, mWorldUp));
   mUp    = glm::normalize(glm::cross(mRight, mFront));
+}
+
+glm::vec3
+Camera3D::orientation() const
+{
+  return glm::degrees(mOrientation);
 }
 
 glm::mat4
@@ -210,9 +239,9 @@ Drawable3D::modelMatrix() const
 //  glm::mat4 rotation = glm::orientate4( mOrientation );
 //  glm::mat4 scale = glm::scale( mScale );
 
-  return  glm::translate( glm::mat4(1.0f), mOrigin )
+  return  glm::translate( glm::mat4(1.0f), mOrigin );/*
         * glm::orientate4( mOrientation )
-        * glm::scale( mScale );
+        * glm::scale( mScale );*/
 }
 
 void
@@ -256,14 +285,18 @@ Poly3D::appendCulled( std::multimap < float, Drawable3D*, std::greater <float>>&
         i < mVerts.size();
         ++i )
   {
-    glm::vec3 vert = glm::projectZO( mVerts[i],
-                                     modelView,
-                                     projection,
+    glm::vec3 vert = glm::projectZO(  mVerts[i],
+                                      modelView,
+                                      projection,
                                       viewport );
 
     mVertsProjected[i] = { vert.x, vert.y };
     polygonDepth += vert.z;
-    std::cout << "VertDepth: " << vert.z << "\n";
+    if ( vert.z < 0.0f || vert.z > 1.0f )
+      return;
+    std::cout << "Vert " << i << ": " << mVerts[i].x << " " << mVerts[i].y << " " << mVerts[i].z << "\n";
+    std::cout << "Vert " << i << ": " << vert.x << " " << vert.y << " " << vert.z << "\n";
+    std::cout << "\n";
   }
 
   polygonDepth /= mVertsProjected.size();
@@ -275,6 +308,17 @@ Poly3D::appendCulled( std::multimap < float, Drawable3D*, std::greater <float>>&
 void
 Poly3D::draw()
 {
+  if ( ( (mVertsProjected[1].x - mVertsProjected[0].x) * (mVertsProjected[2].y - mVertsProjected[1].y) )
+       - ((mVertsProjected[1].y - mVertsProjected[0].y) * (mVertsProjected[2].x-mVertsProjected[1].x) ) < 0.0f )
+  {
+//    std::cout << "culled\n";
+    olc::renderer->ptrPGE->DrawLineDecal( mVertsProjected[0], mVertsProjected[1] );
+    olc::renderer->ptrPGE->DrawLineDecal( mVertsProjected[0], mVertsProjected[2] );
+    olc::renderer->ptrPGE->DrawLineDecal( mVertsProjected[1], mVertsProjected[2] );
+  }
+  else if ( mDecal == nullptr )
+    return;
+
   olc::renderer->ptrPGE->DrawWarpedDecal( mDecal, mVertsProjected );
 }
 

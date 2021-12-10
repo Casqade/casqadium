@@ -1,6 +1,7 @@
 #include <AnotherDayAtHospital.hpp>
 
 #include <GameStateForeword.hpp>
+#include <GameStateSandbox.hpp>
 #include <Variables.hpp>
 #include <Logger.hpp>
 
@@ -153,7 +154,7 @@ AnotherDayAtHospital::OnUserCreate()
   if ( loadResources() == false )
     return false;
 
-  mGameStateController.setState <GameStateForeword> ();
+  mGameStateController.setState <GameStateSandbox> ();
 
   return true;
 }

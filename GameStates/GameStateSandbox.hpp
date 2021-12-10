@@ -18,6 +18,7 @@ class GameStateSandbox
   std::set <olc::Key> mPressedKeys;
 
   void keyEvent( const olc::Event ) override;
+  void mouseMoveEvent( const olc::Event::MouseMoveEvent ) override;
 
 public:
   GameStateSandbox( GameStateController* const );

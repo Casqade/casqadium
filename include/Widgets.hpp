@@ -85,7 +85,13 @@ public:
   Camera3D( const glm::mat4&  projection,
             const glm::vec4&  viewport,
             const glm::vec3   origin = {},
-            const glm::vec3   orientation = {0.0f, glm::radians(-90.0f), 0.0f} );
+            const glm::vec3   orientation = {} );
+
+  void rotatePitch( const float );
+  void rotateYaw( const float );
+  void rotateRoll( const float );
+
+  glm::vec3 orientation() const;
 
   glm::mat4 viewMatrix() const;
   glm::mat4 projMatrix() const;
@@ -104,7 +110,7 @@ protected:
 public:
   Drawable3D( const glm::vec3 origin = {},
               const glm::vec3 orientation = {},
-              const glm::vec3 scale = { 1.0f, 1.0f, 1.0f } );
+              const glm::vec3 scale = {} );
 
   virtual void appendCulled(  std::multimap < float, Drawable3D*, std::greater <float>>& depthBuffer,
                               const Camera3D& );
