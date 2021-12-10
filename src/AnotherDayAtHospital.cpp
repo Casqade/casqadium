@@ -66,7 +66,10 @@ AnotherDayAtHospital::loadResources()
   {
 //    { FontId::Munro, "munro.png" },
     { FontId::Jetbrains, "jetbrains.png" },
-    { FontId::FranklinGothic, "framd.png" },
+    { FontId::FranklinGothic30, "framd30.png" },
+    { FontId::FranklinGothic40, "framd40.png" },
+    { FontId::FranklinGothic64, "framd64.png" },
+    { FontId::FranklinGothic128, "framd128.png" },
     { FontId::FranklinGothicItalic, "framdit.png" },
   };
 

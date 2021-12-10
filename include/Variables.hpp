@@ -27,7 +27,10 @@ enum class StringId : uint32_t
 
 enum class FontId : uint32_t
 {
-  FranklinGothic,
+  FranklinGothic30,
+  FranklinGothic40,
+  FranklinGothic64,
+  FranklinGothic128,
   FranklinGothicItalic,
   Munro,
   Jetbrains,

@@ -14,11 +14,11 @@
 GameStateForeword::GameStateForeword( GameStateController* const stateController )
   : GameState(stateController)
   , mState(StateLocal::TransitingIn)
-  , mForeword(&Fonts::Get(FontId::FranklinGothic),
+  , mForeword(&Fonts::Get(FontId::FranklinGothic30),
               Strings::Get(StringId::Foreword),
               olc::Pixel{37, 203, 232})
   , mInputPrompt(Strings::Get(StringId::ForewordInputPrompt),
-                 &Fonts::Get(FontId::FranklinGothic),
+                 &Fonts::Get(FontId::FranklinGothic30),
                  0.2, 0.2)
   , mFade(  { {},
               {mPGE->GetWindowSize().x, mPGE->GetWindowSize().y} },
