@@ -138,8 +138,6 @@ AnotherDayAtHospital::update(
   const uint32_t ticks,
   const TimeUtils::Duration tickInterval )
 {
-  mEventHandler.update();
-
   olc::Event event;
   while ( mEventHandler.pollEvent(event) )
     mGameStateController.handleEvent( event );
@@ -163,6 +161,8 @@ AnotherDayAtHospital::OnUserCreate()
 bool
 AnotherDayAtHospital::OnUserUpdate( float )
 {
+  mEventHandler.update();
+
   static const bool tickRateLimited = mTickInterval > TimeUtils::Duration();
   static const bool frameRateLimited = mFrameInterval > TimeUtils::Duration();
 
