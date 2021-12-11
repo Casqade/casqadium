@@ -11,6 +11,7 @@
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/trigonometric.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 #include <string>
 
@@ -87,11 +88,12 @@ public:
             const glm::vec3   origin = {},
             const glm::vec3   orientation = {} );
 
-  void rotatePitch( const float );
-  void rotateYaw( const float );
-  void rotateRoll( const float );
+  void rotate( const glm::vec3 );
 
   glm::vec3 orientation() const;
+  glm::vec3 front() const;
+  glm::vec3 right() const;
+  glm::vec3 up() const;
 
   glm::mat4 viewMatrix() const;
   glm::mat4 projMatrix() const;
@@ -110,12 +112,20 @@ protected:
 public:
   Drawable3D( const glm::vec3 origin = {},
               const glm::vec3 orientation = {},
-              const glm::vec3 scale = {} );
+              const glm::vec3 scale = { 1.0f, 1.0f, 1.0f } );
 
   virtual void appendCulled(  std::multimap < float, Drawable3D*, std::greater <float>>& depthBuffer,
                               const Camera3D& );
 
   virtual void draw();
+
+  void translate( const glm::vec3 );
+  void rotate( const glm::vec3 );
+  void scale( const glm::vec3 );
+
+  void setOrigin( const glm::vec3 );
+  void setOrientation( const glm::vec3 );
+  void setScale( const glm::vec3 );
 };
 
 class Poly3D : public Drawable3D
@@ -126,18 +136,48 @@ class Poly3D : public Drawable3D
   std::array <olc::vf2d, 4> mVertsProjected;
 
   olc::Decal* mDecal;
+  olc::Pixel mColor;
 
 public:
   Poly3D( const std::array <glm::vec3, 4>& verts,
           const glm::vec3   origin = {},
           const glm::vec3   orientation = {},
-          const glm::vec3   scale = {},
+          const glm::vec3   scale = { 1.0f, 1.0f, 1.0f },
           olc::Decal* decal = {} );
 
+  void draw() override;
   void appendCulled(  std::multimap < float, Drawable3D*, std::greater <float>>& depthBuffer,
                       const Camera3D& ) override;
 
-  void draw() override;
+  void setColor( olc::Pixel color );
+};
+
+class Drawable
+{
+protected:
+  glm::mat4 mTranslation;
+  glm::quat mOrientation;
+  glm::mat4 mScale;
+
+  glm::mat4 modelMatrix() const;
+
+public:
+  Drawable( const glm::vec3 origin = {},
+            const glm::vec3 orientation = {},
+            const glm::vec3 scale = { 1.0f, 1.0f, 1.0f } );
+
+  virtual void appendCulled(  std::multimap < float, Drawable*, std::greater <float>>& depthBuffer,
+                              const Camera3D& );
+
+  virtual void draw();
+
+  void translate( const glm::vec3 );
+  void rotate( const glm::quat );
+  void scale( const glm::vec3 );
+
+  void setOrigin( const glm::vec3 );
+  void setOrientation( const glm::quat );
+  void setScale( const glm::vec3 );
 };
 
 class InputPrompt : public olc::Text2D

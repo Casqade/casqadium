@@ -2,6 +2,7 @@
 #define GAME_STATE_SANDBOX_HPP
 
 #include <GameState.hpp>
+#include <Widgets.hpp>
 
 #include <set>
 
@@ -14,6 +15,11 @@ class GameStateSandbox
     Idle,
 
   } mState;
+
+  Camera3D mCamera;
+  Poly3D mPolyX;
+  Poly3D mPolyY;
+  Poly3D mPolyZ;
 
   std::set <olc::Key> mPressedKeys;
 
