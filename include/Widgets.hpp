@@ -104,14 +104,14 @@ class Drawable3D
 {
 protected:
   glm::vec3 mOrigin;
-  glm::vec3 mOrientation;
+  glm::quat mOrientation;
   glm::vec3 mScale;
 
   glm::mat4 modelMatrix() const;
 
 public:
   Drawable3D( const glm::vec3 origin = {},
-              const glm::vec3 orientation = {},
+              const glm::quat orientation = {},
               const glm::vec3 scale = { 1.0f, 1.0f, 1.0f } );
 
   virtual void appendCulled(  std::multimap < float, Drawable3D*, std::greater <float>>& depthBuffer,
@@ -120,11 +120,11 @@ public:
   virtual void draw();
 
   void translate( const glm::vec3 );
-  void rotate( const glm::vec3 );
+  void rotate( const glm::quat );
   void scale( const glm::vec3 );
 
   void setOrigin( const glm::vec3 );
-  void setOrientation( const glm::vec3 );
+  void setOrientation( const glm::quat );
   void setScale( const glm::vec3 );
 };
 
@@ -152,33 +152,6 @@ public:
   void setColor( olc::Pixel color );
 };
 
-class Drawable
-{
-protected:
-  glm::mat4 mTranslation;
-  glm::quat mOrientation;
-  glm::mat4 mScale;
-
-  glm::mat4 modelMatrix() const;
-
-public:
-  Drawable( const glm::vec3 origin = {},
-            const glm::vec3 orientation = {},
-            const glm::vec3 scale = { 1.0f, 1.0f, 1.0f } );
-
-  virtual void appendCulled(  std::multimap < float, Drawable*, std::greater <float>>& depthBuffer,
-                              const Camera3D& );
-
-  virtual void draw();
-
-  void translate( const glm::vec3 );
-  void rotate( const glm::quat );
-  void scale( const glm::vec3 );
-
-  void setOrigin( const glm::vec3 );
-  void setOrientation( const glm::quat );
-  void setScale( const glm::vec3 );
-};
 
 class InputPrompt : public olc::Text2D
 {

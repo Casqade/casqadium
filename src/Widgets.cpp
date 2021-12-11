@@ -232,7 +232,7 @@ Camera3D::viewport() const
 
 
 Drawable3D::Drawable3D( const glm::vec3 origin,
-                        const glm::vec3 orientation,
+                        const glm::quat orientation,
                         const glm::vec3 scale )
   : mOrigin(origin)
   , mOrientation(orientation)
@@ -247,12 +247,8 @@ Drawable3D::modelMatrix() const
 //  glm::mat4 scale = glm::scale( mScale );
 
   return  glm::translate( glm::mat4(1.0f), mOrigin )
-//        * glm::orientate4( mOrientation )
-        * glm::toMat4(glm::quat())
-//        * glm::rotate( mOrientation.x, glm::vec3( 1.0, 0.0, 0.0 ) )
-//        * glm::rotate( mOrientation.y, glm::vec3( 0.0, 1.0, 0.0 ) )
-//        * glm::rotate( mOrientation.z, glm::vec3( 0.0, 0.0, 1.0 ) )
-        * glm::scale( mScale );
+        * glm::toMat4(mOrientation)
+        * glm::scale( glm::mat4(1.0f), mScale );
 }
 
 void
@@ -275,9 +271,13 @@ Drawable3D::translate( const glm::vec3 translation )
 }
 
 void
-Drawable3D::rotate( const glm::vec3 rotation )
+Drawable3D::rotate( const glm::quat rotation )
 {
-  mOrientation += rotation;
+  mOrientation *= rotation;
+  std::cout << "pyr:\n";
+  std::cout << glm::degrees(glm::pitch(mOrientation)) << "\n";
+  std::cout << glm::degrees(glm::yaw(mOrientation)) << "\n";
+  std::cout << glm::degrees(glm::roll(mOrientation)) << "\n\n";
 }
 
 void
@@ -293,7 +293,7 @@ Drawable3D::setOrigin( const glm::vec3 origin )
 }
 
 void
-Drawable3D::setOrientation( const glm::vec3 orientation )
+Drawable3D::setOrientation( const glm::quat orientation )
 {
   mOrientation = orientation;
 }
@@ -302,79 +302,6 @@ void
 Drawable3D::setScale( const glm::vec3 scale )
 {
   mScale = scale;
-}
-
-Drawable::Drawable( const glm::vec3 origin,
-                    const glm::vec3 orientation,
-                    const glm::vec3 scale )
-  : mTranslation(glm::translate( glm::mat4(1.0f), origin ))
-  , mOrientation(orientation)
-  , mScale(glm::scale( glm::mat4(1.0f), scale ))
-{}
-
-glm::mat4
-Drawable::modelMatrix() const
-{
-//  glm::mat4 translate = glm::translate( glm::mat4(1.0f), mOrigin );
-//  glm::mat4 rotation = glm::orientate4( mOrientation );
-//  glm::mat4 scale = glm::scale( mScale );
-
-  return  mTranslation
-//        * glm::orientate4( mOrientation )
-        * glm::toMat4(glm::quat())
-//        * glm::rotate( mOrientation.x, glm::vec3( 1.0, 0.0, 0.0 ) )
-//        * glm::rotate( mOrientation.y, glm::vec3( 0.0, 1.0, 0.0 ) )
-//        * glm::rotate( mOrientation.z, glm::vec3( 0.0, 0.0, 1.0 ) )
-        * mScale;
-}
-
-void
-Drawable::appendCulled( std::multimap < float, Drawable*, std::greater <float>>&,
-                        const Camera3D& )
-{
-  return;
-}
-
-void
-Drawable::draw()
-{
-  return;
-}
-
-void
-Drawable::translate( const glm::vec3 translation )
-{
-  mTranslation = glm::translate( mTranslation, translation );
-}
-
-void
-Drawable::rotate( const glm::quat rotation )
-{
-  mOrientation *= rotation;
-}
-
-void
-Drawable::scale( const glm::vec3 scale )
-{
-  mScale = glm::scale( mScale, scale );
-}
-
-void
-Drawable::setOrigin( const glm::vec3 origin )
-{
-  mTranslation = glm::translate( glm::mat4(1.0f), origin );
-}
-
-void
-Drawable::setOrientation( const glm::quat orientation )
-{
-  mOrientation = orientation;
-}
-
-void
-Drawable::setScale( const glm::vec3 scale )
-{
-  mScale = glm::scale( glm::mat4(1.0f), scale );
 }
 
 
