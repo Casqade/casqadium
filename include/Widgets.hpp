@@ -70,12 +70,7 @@ class Camera3D
   glm::vec4 mViewport;
 
   glm::vec3 mOrigin;
-  glm::vec3 mOrientation;
-
-  glm::vec3 mFront;
-  glm::vec3 mUp;
-  glm::vec3 mRight;
-  glm::vec3 mWorldUp;
+  glm::quat mOrientation;
 
   float mSpeed;
   float mZoom;
@@ -85,12 +80,15 @@ class Camera3D
 public:
   Camera3D( const glm::mat4&  projection,
             const glm::vec4&  viewport,
-            const glm::vec3   origin = {},
-            const glm::vec3   orientation = {} );
+            const glm::vec3&  origin = {},
+            const glm::quat&  orientation = glm::vec3{} );
 
-  void rotate( const glm::vec3 );
+  void move( const glm::vec3& direction );
+  void rotate( const glm::quat& );
+  void rotate( const glm::vec4& );
+//  void zoom(  );
 
-  glm::vec3 orientation() const;
+  glm::quat orientation() const;
   glm::vec3 front() const;
   glm::vec3 right() const;
   glm::vec3 up() const;
@@ -111,7 +109,7 @@ protected:
 
 public:
   Drawable3D( const glm::vec3 origin = {},
-              const glm::quat orientation = {},
+              const glm::quat orientation = glm::vec3{},
               const glm::vec3 scale = { 1.0f, 1.0f, 1.0f } );
 
   virtual void appendCulled(  std::multimap < float, Drawable3D*, std::greater <float>>& depthBuffer,
@@ -141,7 +139,7 @@ class Poly3D : public Drawable3D
 public:
   Poly3D( const std::array <glm::vec3, 4>& verts,
           const glm::vec3   origin = {},
-          const glm::vec3   orientation = {},
+          const glm::quat   orientation = glm::vec3{},
           const glm::vec3   scale = { 1.0f, 1.0f, 1.0f },
           olc::Decal* decal = {} );
 

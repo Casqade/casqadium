@@ -151,16 +151,12 @@ Text2D::rotation() const
 Camera3D::Camera3D(
   const glm::mat4&  projection,
   const glm::vec4&  viewport,
-  const glm::vec3   origin,
-  const glm::vec3   orientation )
+  const glm::vec3&  origin,
+  const glm::quat&  orientation )
   : mProjection(projection)
   , mViewport(viewport)
   , mOrigin(origin)
   , mOrientation(orientation)
-  , mFront()
-  , mUp()
-  , mRight()
-  , mWorldUp(0.0f, 1.0f, 0.0f)
   , mSpeed(1.0f)
   , mZoom(45.0f)
 {
@@ -168,54 +164,76 @@ Camera3D::Camera3D(
 }
 
 void
-Camera3D::rotate( const glm::vec3 rotation )
+Camera3D::move( const glm::vec3& direction )
 {
-  mOrientation += rotation;
-  recalculateVectors();
+  mOrigin += direction * mSpeed;
+
+  std::cout << mOrigin.x << " " << mOrigin.y << " " << mOrigin.z << "\n";
+}
+
+void
+Camera3D::rotate( const glm::quat& rotation )
+{
+  mOrientation *= rotation;
+  mOrientation = glm::normalize(mOrientation);
+//  recalculateVectors();
+}
+
+void
+Camera3D::rotate( const glm::vec4& rotation )
+{
+  mOrientation = glm::rotate( mOrientation, rotation.w, glm::vec3( rotation ) );
 }
 
 void
 Camera3D::recalculateVectors()
 {
-  mFront.x = cos(mOrientation.y) * cos(mOrientation.x);
-  mFront.y = sin(mOrientation.x);
-  mFront.z = sin(mOrientation.y) * cos(mOrientation.x);
-  mFront = glm::normalize(mFront);
+  glm::quat qFront = mOrientation * glm::quat(0, 0, 0, -1) * glm::conjugate(mOrientation);
 
-  mRight = glm::normalize(glm::cross(mFront, mWorldUp));
-  mUp    = glm::normalize(glm::cross(mRight, mFront));
+//  mFront = {qFront.x, qFront.y, qFront.z};
+//  mRight = glm::normalize( glm::cross(mFront, glm::vec3{0, 1, 0}) );
+//  mUp = glm::normalize( glm::cross(mFront, mRight) );
 
-  mUp = glm::mat3(glm::rotate( glm::mat4(1.0f), mOrientation.z, mFront )) * mUp;
+//  const glm::mat4 transform = glm::inverse( glm::translate(glm::mat4(1.0f), mOrigin) * glm::toMat4(mOrientation) );
+
+//  mFront = glm::normalize( glm::vec3(transform[2]) );
+//  mUp = glm::normalize( glm::vec3(transform[1]) );
+
+//  mFront = glm::normalize(glm::rotate(glm::inverse(mOrientation), glm::vec3(0.0, 0.0, 1.0)));
+//  mRight = glm::normalize(glm::rotate(glm::inverse(mOrientation), glm::vec3(1.0, 0.0, 0.0)));
+//  mUp = glm::normalize(glm::rotate(glm::inverse(mOrientation), glm::vec3(0.0, 1.0, 0.0)));
 }
 
-glm::vec3
+glm::quat
 Camera3D::orientation() const
 {
-  return glm::degrees(mOrientation);
+  return mOrientation;
 }
 
 glm::vec3
 Camera3D::front() const
 {
-  return mFront;
+  return glm::rotate( mOrientation, {0.0f, 0.0f, -1.0f} );
 }
 
 glm::vec3
 Camera3D::right() const
 {
-  return mRight;
+  return glm::rotate( mOrientation, {1.0f, 0.0f, 0.0f} );
 }
 
 glm::vec3
 Camera3D::up() const
 {
-  return mUp;
+  return glm::rotate( mOrientation, {0.0f, 1.0f, 0.0f} );
 }
 
 glm::mat4
 Camera3D::viewMatrix() const
 {
-  return glm::lookAt( mOrigin, mOrigin + mFront, mUp );
+  return glm::lookAt( mOrigin,
+                      mOrigin + front(),
+                      up() );
 }
 
 glm::mat4
@@ -308,7 +326,7 @@ Drawable3D::setScale( const glm::vec3 scale )
 Poly3D::Poly3D(
   const std::array <glm::vec3, 4>& verts,
   const glm::vec3   origin,
-  const glm::vec3   orientation,
+  const glm::quat   orientation,
   const glm::vec3   scale,
   olc::Decal* decal )
   : Drawable3D(origin, orientation, scale)
@@ -382,9 +400,9 @@ Poly3D::draw()
     olc::renderer->ptrPGE->DrawLineDecal( mVertsProjected[2], mVertsProjected[3], mColor );
     olc::renderer->ptrPGE->DrawLineDecal( mVertsProjected[3], mVertsProjected[0], mColor );
 
-    olc::renderer->ptrPGE->FillCircle( mVertsProjected[3], 5.0f, olc::RED );
-    olc::renderer->ptrPGE->FillCircle( mVertsProjected[1], 5.0f, olc::GREEN );
-    olc::renderer->ptrPGE->FillCircle( mVertsProjected[0], 5.0f, olc::BLUE );
+//    olc::renderer->ptrPGE->FillCircle( mVertsProjected[3], 5.0f, olc::RED );
+//    olc::renderer->ptrPGE->FillCircle( mVertsProjected[1], 5.0f, olc::GREEN );
+//    olc::renderer->ptrPGE->FillCircle( mVertsProjected[0], 5.0f, olc::BLUE );
 
     return;
   }
@@ -401,9 +419,9 @@ Poly3D::draw()
 //  else
     olc::renderer->ptrPGE->DrawWarpedDecal( mDecal, mVertsProjected );
 
-    olc::renderer->ptrPGE->FillCircle( mVertsProjected[3], 5.0f, olc::RED );
-    olc::renderer->ptrPGE->FillCircle( mVertsProjected[1], 5.0f, olc::GREEN );
-    olc::renderer->ptrPGE->FillCircle( mVertsProjected[0], 5.0f, olc::BLUE );
+//    olc::renderer->ptrPGE->FillCircle( mVertsProjected[3], 5.0f, olc::RED );
+//    olc::renderer->ptrPGE->FillCircle( mVertsProjected[1], 5.0f, olc::GREEN );
+//    olc::renderer->ptrPGE->FillCircle( mVertsProjected[0], 5.0f, olc::BLUE );
 }
 
 void
