@@ -75,8 +75,6 @@ class Camera3D
   float mSpeed;
   float mZoom;
 
-  void recalculateVectors();
-
 public:
   Camera3D( const glm::mat4&  projection,
             const glm::vec4&  viewport,
@@ -85,9 +83,10 @@ public:
 
   void move( const glm::vec3& direction );
   void rotate( const glm::quat& );
-  void rotate( const glm::vec4& );
+  void rotateGlobal( const glm::quat& );
 //  void zoom(  );
 
+  glm::vec3 origin() const;
   glm::quat orientation() const;
   glm::vec3 front() const;
   glm::vec3 right() const;
@@ -128,26 +127,36 @@ public:
 
 class Poly3D : public Drawable3D
 {
-  glm::vec3 mNormal;
-
   std::array <glm::vec3, 4> mVerts;
   std::array <olc::vf2d, 4> mVertsProjected;
 
-  olc::Decal* mDecal;
-  olc::Pixel mColor;
+  olc::Decal* mFrontFaceDecal;
+  olc::Decal* mBackFaceDecal;
+
+  olc::Pixel  mFrontFaceColor;
+  olc::Pixel  mBackFaceColor;
+
+  enum FaceWindingOrder : bool
+  {
+    CounterClockWise,
+    ClockWise
+
+  } mProjectedWindingOrder;
+
+  bool isClockWise( const bool yAxisUp = false ) const;
 
 public:
-  Poly3D( const std::array <glm::vec3, 4>& verts,
-          const glm::vec3   origin = {},
-          const glm::quat   orientation = glm::vec3{},
-          const glm::vec3   scale = { 1.0f, 1.0f, 1.0f },
-          olc::Decal* decal = {} );
+  Poly3D( const std::array <glm::vec3, 4>& verts );
 
   void draw() override;
   void appendCulled(  std::multimap < float, Drawable3D*, std::greater <float>>& depthBuffer,
                       const Camera3D& ) override;
 
-  void setColor( olc::Pixel color );
+  void setFrontFace( olc::Decal* );
+  void setFrontFace( const olc::Pixel );
+
+  void setBackFace( olc::Decal* );
+  void setBackFace( const olc::Pixel );
 };
 
 

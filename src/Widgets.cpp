@@ -159,49 +159,40 @@ Camera3D::Camera3D(
   , mOrientation(orientation)
   , mSpeed(1.0f)
   , mZoom(45.0f)
-{
-  recalculateVectors();
-}
+{}
 
 void
 Camera3D::move( const glm::vec3& direction )
 {
   mOrigin += direction * mSpeed;
-
-  std::cout << mOrigin.x << " " << mOrigin.y << " " << mOrigin.z << "\n";
 }
 
 void
 Camera3D::rotate( const glm::quat& rotation )
 {
+//  const auto lastOrientation = mOrientation;
+
   mOrientation *= rotation;
-  mOrientation = glm::normalize(mOrientation);
-//  recalculateVectors();
+
+//  if ( up().y < 0.0f )
+//    mOrientation = lastOrientation;
 }
 
 void
-Camera3D::rotate( const glm::vec4& rotation )
+Camera3D::rotateGlobal( const glm::quat& rotation )
 {
-  mOrientation = glm::rotate( mOrientation, rotation.w, glm::vec3( rotation ) );
+  const auto lastOrientation = mOrientation;
+
+  mOrientation = rotation * mOrientation;
+
+  if ( up().y < 0.0f )
+    mOrientation = lastOrientation;
 }
 
-void
-Camera3D::recalculateVectors()
+glm::vec3
+Camera3D::origin() const
 {
-  glm::quat qFront = mOrientation * glm::quat(0, 0, 0, -1) * glm::conjugate(mOrientation);
-
-//  mFront = {qFront.x, qFront.y, qFront.z};
-//  mRight = glm::normalize( glm::cross(mFront, glm::vec3{0, 1, 0}) );
-//  mUp = glm::normalize( glm::cross(mFront, mRight) );
-
-//  const glm::mat4 transform = glm::inverse( glm::translate(glm::mat4(1.0f), mOrigin) * glm::toMat4(mOrientation) );
-
-//  mFront = glm::normalize( glm::vec3(transform[2]) );
-//  mUp = glm::normalize( glm::vec3(transform[1]) );
-
-//  mFront = glm::normalize(glm::rotate(glm::inverse(mOrientation), glm::vec3(0.0, 0.0, 1.0)));
-//  mRight = glm::normalize(glm::rotate(glm::inverse(mOrientation), glm::vec3(1.0, 0.0, 0.0)));
-//  mUp = glm::normalize(glm::rotate(glm::inverse(mOrientation), glm::vec3(0.0, 1.0, 0.0)));
+  return mOrigin;
 }
 
 glm::quat
@@ -292,10 +283,6 @@ void
 Drawable3D::rotate( const glm::quat rotation )
 {
   mOrientation *= rotation;
-  std::cout << "pyr:\n";
-  std::cout << glm::degrees(glm::pitch(mOrientation)) << "\n";
-  std::cout << glm::degrees(glm::yaw(mOrientation)) << "\n";
-  std::cout << glm::degrees(glm::roll(mOrientation)) << "\n\n";
 }
 
 void
@@ -323,19 +310,41 @@ Drawable3D::setScale( const glm::vec3 scale )
 }
 
 
+bool wireFrameEnabled = true;
+
+bool frontFaceWindingOrder = false;
+
+olc::Pixel wireFrameFrontFaceColor = olc::DARK_RED;
+olc::Pixel wireFrameBackFaceColor = olc::DARK_BLUE;
+
+///
+/// Vertices must be counter-clockwise ordered
+/// and begin from topleft corner.
+///
 Poly3D::Poly3D(
-  const std::array <glm::vec3, 4>& verts,
-  const glm::vec3   origin,
-  const glm::quat   orientation,
-  const glm::vec3   scale,
-  olc::Decal* decal )
-  : Drawable3D(origin, orientation, scale)
-//  , mNormal(glm::normalize(glm::cross(verts[2] - verts[0], verts[1] - verts[0])))
-  , mNormal(glm::normalize(glm::cross(verts[1] - verts[0], verts[2] - verts[0])))
+  const std::array <glm::vec3, 4>& verts )
+  : Drawable3D()
   , mVerts(verts)
   , mVertsProjected()
-  , mDecal(decal)
+  , mFrontFaceDecal()
+  , mBackFaceDecal()
+  , mFrontFaceColor(wireFrameFrontFaceColor)
+  , mBackFaceColor(wireFrameBackFaceColor)
 {}
+
+bool
+Poly3D::isClockWise( const bool yAxisUp ) const
+{
+  float area = {};
+
+  for ( size_t i = 0, iNext = 1;
+        i < mVertsProjected.size();
+        ++i, iNext = (i + 1) % mVertsProjected.size() )
+    area += (mVertsProjected[iNext].x - mVertsProjected[i].x)
+          * (mVertsProjected[iNext].y + mVertsProjected[i].y);
+
+  return yAxisUp ? area > 0.0f : area < 0.0f;
+}
 
 void
 Poly3D::appendCulled( std::multimap < float, Drawable3D*, std::greater <float>>& depthBuffer,
@@ -345,89 +354,97 @@ Poly3D::appendCulled( std::multimap < float, Drawable3D*, std::greater <float>>&
   const glm::mat4 projection = cam.projMatrix();
   const glm::vec4 viewport = cam.viewport();
 
+  bool  offScreen = true;
   float polygonDepth = 0.0f;
 
   for ( size_t i = 0;
         i < mVerts.size();
         ++i )
   {
-    glm::vec3 vert = glm::projectZO(  mVerts[i],
-                                      modelView,
-                                      projection,
-                                      viewport );
+    const glm::vec3 vert
+      = glm::projectZO( mVerts[i],
+                        modelView,
+                        projection,
+                        viewport );
 
     mVertsProjected[i] = { vert.x, viewport.w - vert.y };
     polygonDepth += vert.z;
+
     if ( vert.z < 0.0f || vert.z > 1.0f )
       return;
-//    std::cout << "Vert " << i << ": " << mVerts[i].x << " " << mVerts[i].y << " " << mVerts[i].z << "\n";
-//    std::cout << "Vert " << i << ": " << mVertsProjected[i].x << " " << mVertsProjected[i].y << " " << vert.z << "\n";
-//    std::cout << "\n";
+
+    if (    (vert.x >= 0.0f && vert.y >= 0.0f)
+         && (vert.x <= viewport.z && vert.y <= viewport.w) )
+      offScreen = false;
   }
+
+  if ( offScreen )
+    return;
+
+  mProjectedWindingOrder = (FaceWindingOrder) isClockWise();
+  if (    wireFrameEnabled == false
+       && mBackFaceDecal == nullptr
+       && mProjectedWindingOrder != frontFaceWindingOrder )
+    return;
 
   polygonDepth /= mVertsProjected.size();
   depthBuffer.emplace( polygonDepth, this );
-
-  return;
 }
 
 void
 Poly3D::draw()
 {
-//  if ( ( (mVertsProjected[1].x - mVertsProjected[0].x) * (mVertsProjected[2].y - mVertsProjected[1].y) )
-//       - ((mVertsProjected[1].y - mVertsProjected[0].y) * (mVertsProjected[2].x-mVertsProjected[1].x) ) > 0.0f )
-//    return;
+  if ( wireFrameEnabled == false )
+  {
+    if ( mProjectedWindingOrder == frontFaceWindingOrder )
+    {
+      if ( mFrontFaceDecal != nullptr )
+        return olc::renderer->ptrPGE->DrawWarpedDecal( mFrontFaceDecal, mVertsProjected );
+      else
+        return olc::renderer->ptrPGE->DrawWarpedDecal( mFrontFaceDecal, mVertsProjected, mFrontFaceColor );
+    }
 
-  float sum = {};
-  for ( size_t i = 0;
+    if ( mBackFaceDecal != nullptr )
+      return olc::renderer->ptrPGE->DrawWarpedDecal( mBackFaceDecal, mVertsProjected );
+
+    return olc::renderer->ptrPGE->DrawWarpedDecal( mBackFaceDecal, mVertsProjected, mBackFaceColor );
+  }
+
+  for ( size_t i = 0, iNext = 1;
         i < mVertsProjected.size();
-        ++i )
-  {
-    const size_t iNext = (i + 1) % mVertsProjected.size();
-    sum += (mVertsProjected[iNext].x - mVertsProjected[i].x)
-        * (mVertsProjected[iNext].y + mVertsProjected[i].y);
-  }
+        ++i, iNext = (i + 1) % mVertsProjected.size() )
+    olc::renderer->ptrPGE->DrawLineDecal( mVertsProjected[i],
+                                          mVertsProjected[iNext],
+                                          mProjectedWindingOrder == frontFaceWindingOrder ?
+                                          wireFrameFrontFaceColor : wireFrameBackFaceColor );
 
-  if ( sum < 0.0f )
-//    return;
-  {
-    std::cout << mVertsProjected[0].x << " " << mVertsProjected[0].y << "\n";
-    std::cout << mVertsProjected[1].x << " " << mVertsProjected[1].y << "\n";
-    std::cout << mVertsProjected[2].x << " " << mVertsProjected[2].y << "\n";
-    std::cout << mVertsProjected[3].x << " " << mVertsProjected[3].y << "\n\n";
-    olc::renderer->ptrPGE->DrawLineDecal( mVertsProjected[0], mVertsProjected[1], mColor );
-    olc::renderer->ptrPGE->DrawLineDecal( mVertsProjected[1], mVertsProjected[2], mColor );
-    olc::renderer->ptrPGE->DrawLineDecal( mVertsProjected[2], mVertsProjected[3], mColor );
-    olc::renderer->ptrPGE->DrawLineDecal( mVertsProjected[3], mVertsProjected[0], mColor );
-
-//    olc::renderer->ptrPGE->FillCircle( mVertsProjected[3], 5.0f, olc::RED );
-//    olc::renderer->ptrPGE->FillCircle( mVertsProjected[1], 5.0f, olc::GREEN );
-//    olc::renderer->ptrPGE->FillCircle( mVertsProjected[0], 5.0f, olc::BLUE );
-
-    return;
-  }
-
-//  if ( mDecal == nullptr )
-//  {
-//    olc::renderer->ptrPGE->DrawLineDecal( mVertsProjected[0], mVertsProjected[1], mColor );
-//    olc::renderer->ptrPGE->DrawLineDecal( mVertsProjected[1], mVertsProjected[2], mColor );
-//    olc::renderer->ptrPGE->DrawLineDecal( mVertsProjected[2], mVertsProjected[3], mColor );
-//    olc::renderer->ptrPGE->DrawLineDecal( mVertsProjected[3], mVertsProjected[0], mColor );
-
-//    return;
-//  }
-//  else
-    olc::renderer->ptrPGE->DrawWarpedDecal( mDecal, mVertsProjected );
-
-//    olc::renderer->ptrPGE->FillCircle( mVertsProjected[3], 5.0f, olc::RED );
-//    olc::renderer->ptrPGE->FillCircle( mVertsProjected[1], 5.0f, olc::GREEN );
-//    olc::renderer->ptrPGE->FillCircle( mVertsProjected[0], 5.0f, olc::BLUE );
+  olc::renderer->ptrPGE->FillRectDecal( mVertsProjected[2], { 3.0f, 3.0f }, olc::RED );
+  olc::renderer->ptrPGE->FillRectDecal( mVertsProjected[0],{ 3.0f, 3.0f }, olc::GREEN );
+  olc::renderer->ptrPGE->FillRectDecal( mVertsProjected[1], { 3.0f, 3.0f }, olc::BLUE );
 }
 
 void
-Poly3D::setColor( olc::Pixel color )
+Poly3D::setFrontFace( olc::Decal* decal )
 {
-  mColor = color;
+  mFrontFaceDecal = decal;
+}
+
+void
+Poly3D::setFrontFace( const olc::Pixel color )
+{
+  mFrontFaceColor = color;
+}
+
+void
+Poly3D::setBackFace( olc::Decal* decal )
+{
+  mBackFaceDecal = decal;
+}
+
+void
+Poly3D::setBackFace( const olc::Pixel color )
+{
+  mBackFaceColor = color;
 }
 
 

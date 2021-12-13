@@ -13,35 +13,70 @@
 GameStateSandbox::GameStateSandbox( GameStateController* const stateController )
   : GameState(stateController)
   , mState(StateLocal::Idle)
-  , mCamera(glm::perspective( glm::radians(45.0f),
-            (float) mPGE->GetWindowSize().x / mPGE->GetWindowSize().y,
+  , mCamera(glm::perspectiveFovRH_ZO( glm::radians(45.0f),
+            (float) mPGE->GetWindowSize().x, (float) mPGE->GetWindowSize().y,
             0.01f, 1000.0f ),
             { 0.0f, 0.0f, mPGE->GetWindowSize().x, mPGE->GetWindowSize().y })
 //  , mPolyX({{ {0.0f, 0.0f, 0.0f},
 //              {0.0f, 1.0f, 0.0f},
 //              {1.0f, 1.0f, 0.0f},
 //              {1.0f, 0.0f, 0.0f}}})
-  , mPolyX({{ {-0.5f, -0.5f, 0.0f},
-              {-0.5f, 0.5f, 0.0f},
-              {0.5f, 0.5f, 0.0f},
-              {0.5f, -0.5f, 0.0f}}})
+  , mPolyX({{ {-0.5f, 0.5f, 0.0f},
+              {-0.5f, -0.5f, 0.0f},
+              {0.5f, -0.5f, 0.0f},
+              {0.5f, 0.5f, 0.0f}}})
   , mPolyY(mPolyX)
   , mPolyZ(mPolyX)
+  , mPolyXtext(std::make_unique <olc::Renderable> ())
+  , mPolyYtext(std::make_unique <olc::Renderable> ())
+  , mPolyZtext(std::make_unique <olc::Renderable> ())
   , mPressedKeys()
 {
-  mPolyX.setColor( olc::RED );
-  mPolyY.setColor( olc::GREEN );
-  mPolyZ.setColor( olc::BLUE );
+  mPolyX.setFrontFace( olc::RED );
+  mPolyY.setFrontFace( olc::GREEN );
+  mPolyZ.setFrontFace( olc::BLUE );
 
   mPolyX.setOrigin({ 5.0f, 0.0f, 0.0f });
   mPolyY.setOrigin({ 0.0f, 5.0f, 0.0f });
   mPolyZ.setOrigin({ 0.0f, 0.0f, 5.0f });
+
+  const olc::vi2d textSize = mPGE->GetTextSize( "X" );
+  mPolyXtext->Create( textSize.x, textSize.y );
+  mPolyYtext->Create( textSize.x, textSize.y );
+  mPolyZtext->Create( textSize.x, textSize.y );
+
+  mPGE->SetDrawTarget( mPolyXtext->Sprite() );
+  mPGE->Clear( olc::BLANK );
+  mPGE->DrawString( 0, 0, "X", olc::RED );
+
+  mPGE->SetDrawTarget( mPolyYtext->Sprite() );
+  mPGE->Clear( olc::BLANK );
+  mPGE->DrawString( 0, 0, "Y", olc::GREEN );
+
+  mPGE->SetDrawTarget( mPolyZtext->Sprite() );
+  mPGE->Clear( olc::BLANK );
+  mPGE->DrawString( 0, 0, "Z", olc::BLUE );
+
+  mPGE->SetDrawTarget( nullptr );
+
+  mPolyXtext->Decal()->Update();
+  mPolyYtext->Decal()->Update();
+  mPolyZtext->Decal()->Update();
+
+  mPolyX.setFrontFace( mPolyXtext->Decal() );
+  mPolyY.setFrontFace( mPolyYtext->Decal() );
+  mPolyZ.setFrontFace( mPolyZtext->Decal() );
+
+  mPolyX.setScale({ 1.0f, 2.0f, 2.0f });
 }
 
 bool
 GameStateSandbox::update( const uint32_t ticks,
                           const TimeUtils::Duration elapsed )
 {
+  if ( mPressedKeys.count( olc::Key::ESCAPE ) > 0 )
+    return false;
+
   if ( mPGE->GetKey( olc::Key::W ).bHeld )
     mCamera.move( mCamera.front() );
 
@@ -101,15 +136,12 @@ GameStateSandbox::mouseMoveEvent( const olc::Event::MouseMoveEvent event )
   if ( mPressedKeys.count( olc::Key::CTRL ) == 0 )
   {
 //  if ( mPressedKeys.count( olc::Key::X ) > 0 )
-//    mCamera.rotate( glm::vec4(mCamera.right().x, mCamera.right().y, mCamera.right().z, glm::radians((float) event.dy)) );
     mCamera.rotate( glm::angleAxis( glm::radians((float) -event.dy), glm::vec3{1.0f, 0.0f, 0.0f} ) );
 
   if ( mPressedKeys.count( olc::Key::Z ) > 0 )
-  //    mCamera.rotate( glm::vec4(mCamera.front().x, mCamera.front().y, mCamera.front().z, glm::radians((float) event.dx)) );
     mCamera.rotate( glm::angleAxis( glm::radians((float) -event.dx), glm::vec3{0.0f, 0.0f, 1.0f} ) );
   else
     //  if ( mPressedKeys.count( olc::Key::Y ) > 0 )
-//    mCamera.rotate( glm::vec4(mCamera.up().x, mCamera.up().y, mCamera.up().z, glm::radians((float) -event.dx)) );
     mCamera.rotate( glm::angleAxis( glm::radians((float) -event.dx), glm::vec3{0.0f, 1.0f, 0.0f} ) );
 
   }
@@ -136,32 +168,45 @@ GameStateSandbox::render()
   mPolyY.appendCulled( depthBuffer, mCamera );
   mPolyZ.appendCulled( depthBuffer, mCamera );
 
+  const glm::vec3 camPos = mCamera.origin();
+  const glm::vec3 camOrientation = glm::degrees(glm::eulerAngles( mCamera.orientation() ));
+  const glm::vec3 camFront = glm::degrees(mCamera.front());
+  const glm::vec3 camRight = glm::degrees(mCamera.right());
+  const glm::vec3 camUp = glm::degrees(mCamera.up());
+
   olc::vf2d textPos = {};
 
-  mPGE->DrawStringDecal( {}, "Camera angle:" );
-  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(mCamera.orientation().x) );
-  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(mCamera.orientation().y) );
-  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(mCamera.orientation().z) );
+  mPGE->DrawStringDecal( {}, "Camera pos:" );
+  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(camPos.x) );
+  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(camPos.y) );
+  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(camPos.z) );
+
+  textPos += {0.0f, 10.0f};
+  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, "Camera angle:" );
+  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(camOrientation.x) );
+  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(camOrientation.y) );
+  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(camOrientation.z) );
 
   textPos += {0.0f, 10.0f};
   mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, "Camera front:" );
-  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(mCamera.front().x) );
-  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(mCamera.front().y) );
-  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(mCamera.front().z) );
+  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(camFront.x) );
+  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(camFront.y) );
+  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(camFront.z) );
 
   textPos += {0.0f, 10.0f};
   mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, "Camera right:" );
-  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(mCamera.right().x) );
-  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(mCamera.right().y) );
-  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(mCamera.right().z) );
+  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(camRight.x) );
+  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(camRight.y) );
+  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(camRight.z) );
 
   textPos += {0.0f, 10.0f};
   mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, "Camera up:" );
-  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(mCamera.up().x) );
-  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(mCamera.up().y) );
-  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(mCamera.up().z) );
+  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(camUp.x) );
+  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(camUp.y) );
+  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(camUp.z) );
 
-//  std::cout << depthBuffer.size() << "\n";
+  textPos += {0.0f, 10.0f};
+  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, "Depth buffer size: " + std::to_string(depthBuffer.size()) );
 
   for ( auto drawable : depthBuffer )
     drawable.second->draw();

@@ -21,6 +21,10 @@ class GameStateSandbox
   Poly3D mPolyY;
   Poly3D mPolyZ;
 
+  std::unique_ptr <olc::Renderable> mPolyXtext;
+  std::unique_ptr <olc::Renderable> mPolyYtext;
+  std::unique_ptr <olc::Renderable> mPolyZtext;
+
   std::set <olc::Key> mPressedKeys;
 
   void keyEvent( const olc::Event ) override;
