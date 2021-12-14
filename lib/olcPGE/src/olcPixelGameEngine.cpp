@@ -1,3 +1,4 @@
+#define UNICODE
 #include <olcPGE/olcPixelGameEngine.hpp>
 
 

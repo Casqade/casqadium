@@ -46,7 +46,7 @@ if(WIN32)
     endif()
   endif()
 
-  target_link_libraries(${TARGET} PRIVATE -municode user32 gdi32 opengl32 gdiplus Shlwapi dwmapi)
+  target_link_libraries(${TARGET} PUBLIC user32 gdi32 opengl32 gdiplus Shlwapi dwmapi)
 
 else()
   target_link_libraries(${TARGET} PRIVATE X11 GL png)
