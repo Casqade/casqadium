@@ -4,74 +4,12 @@
 #include <Logger.hpp>
 #include <Variables.hpp>
 
-#include <glm/vec3.hpp>
-
-#include <olcPGE/olcPGEX_CustomFont.hpp>
-
 #include <TimeUtils/Duration.hpp>
-
-#include <cmath>
-#include <sstream>
-
-
-void
-toCameraCoordinates( const glm::vec3 p )
-{
-  typedef std::array <std::array <float, 4>, 3> Matrix3x4;
-
-  olc::vf2d cameraOrigin = {};
-
-//  X , Y , Z     -  world axis in camera coords
-//  Wx, Wy, Wz, 0
-//  Wx, Wy, Wz, 0
-//  Wx, Wy, Wz, 0
-//  0 , 0 , 0 , 1
-
-//  Cx, Cx, Cx, 0 - Camera X axis in world coords
-//  Cy, Cy, Cy, 0 - Camera Y axis in world coords
-//  Cz, Cz, Cz, 0 - Camera Z axis in world coords
-//  0 , 0 , 0 , 1
-
-//    Rotation matrix R:
-//  Rx Ry Rz 0 - Right
-//  Ux Uy Uz 0 - Up         vectors
-//  Dx Dy Dz 0 - Direction
-//  0  0  0  1
-
-//    Translation matrix T:
-//  1 0 0 -Px, P - camera position vector
-//  0 1 0 -Py
-//  0 0 1 -Pz
-//  0 0 0  1
-
-// LookAt = R * T
-
-//  Matrix3x4 rotatedCameraMatrix;
-
-//  Matrix3x4 cameraPosMatrix;
-//  cameraPosMatrix[0][0] = 1;
-//  cameraPosMatrix[1][1] = 1;
-//  cameraPosMatrix[2][2] = 1;
-//  cameraPosMatrix[3][0] = -cameraPos.x;
-//  cameraPosMatrix[3][1] = -cameraPos.y;
-//  cameraPosMatrix[3][2] = -cameraPos.z;
-//  cameraPosMatrix[3][3] = 1;
-
-//  rotatedCameraMatrix[0][0] = nearZ;
-//  rotatedCameraMatrix[1][1] = nearZ;
-//  rotatedCameraMatrix[0][2] = cameraOrigin.x;
-//  rotatedCameraMatrix[1][2] = cameraOrigin.y;
-//  rotatedCameraMatrix[2][2] = 1.0f;
-}
 
 
 extern std::vector <std::string> BackStoryTextEntries;
 extern std::vector <std::string> TitleTextEntries;
 
-glm::vec3 cubePos = {};
-glm::vec3 cameraPos = {};
-glm::vec3 cameraRot = {};
-const float nearZ = 2.0f;
 
 GameStateTitle::GameStateTitle( GameStateController* const stateController )
   : GameState(stateController)
