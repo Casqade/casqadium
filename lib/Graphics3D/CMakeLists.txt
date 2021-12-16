@@ -12,6 +12,9 @@ add_library(${TARGET}::${TARGET} ALIAS ${TARGET})
 target_sources(${TARGET} PRIVATE
   src/Camera.cpp
   include/${TARGET}/Camera.hpp
+
+  src/Transformable.cpp
+  include/${TARGET}/Transformable.hpp
 )
 
 target_link_libraries(${TARGET} PUBLIC glm::glm)
