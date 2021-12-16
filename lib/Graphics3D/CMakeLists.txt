@@ -15,6 +15,9 @@ target_sources(${TARGET} PRIVATE
 
   src/Transformable.cpp
   include/${TARGET}/Transformable.hpp
+
+  src/SceneNode.cpp
+  include/${TARGET}/SceneNode.hpp
 )
 
 target_link_libraries(${TARGET} PUBLIC glm::glm)
