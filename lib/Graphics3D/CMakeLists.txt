@@ -14,6 +14,8 @@ target_sources(${TARGET} PRIVATE
   include/${TARGET}/Camera.hpp
 )
 
+target_link_libraries(${TARGET} PUBLIC glm::glm)
+
 include(GNUInstallDirs)
 
 target_include_directories(${TARGET} PUBLIC
