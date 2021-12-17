@@ -1,4 +1,5 @@
 #include <Graphics3D/Camera.hpp>
+#include <glm/gtx/matrix_decompose.hpp>
 
 
 namespace Graphics3D
@@ -60,9 +61,13 @@ Camera::up() const
 glm::mat4
 Camera::viewMatrix() const
 {
-  return glm::lookAt( mOrigin,
-                      mOrigin + front(),
-                      up() );
+  glm::vec4 viewOrigin = model() * glm::vec4 {mOrigin, 1};
+  glm::vec4 viewFront = model() * glm::vec4 {front(), 0};
+  glm::vec4 viewUp = model() * glm::vec4 {up(), 0};
+
+  return glm::lookAtRH( glm::vec3(viewOrigin),
+                        glm::vec3(viewOrigin) + glm::vec3(viewFront),
+                        glm::vec3(viewUp) );
 }
 
 glm::mat4
@@ -70,9 +75,9 @@ Camera::projMatrix() const
 {
   return  mProjection == Projection::Perspective ?
           glm::perspectiveFovRH_ZO( glm::radians(mFov),
-                    mViewport.x, mViewport.y,
+                    mViewport.z, mViewport.w,
                     mZrange.first, mZrange.second )
-        : glm::ortho( 0.0f, mViewport.x, 0.0f, mViewport.y,
+        : glm::ortho( mViewport.x, mViewport.z, mViewport.y, mViewport.w,
                       mZrange.first, mZrange.second );
 }
 
