@@ -12,15 +12,17 @@ namespace Graphics3D
 
 class SceneNode : public Transformable
 {
-  std::shared_ptr <SceneNode> mParent;
+  const SceneNode* mParent;
   std::set <std::shared_ptr <SceneNode>> mChildren;
 
-public:
-  SceneNode( const std::shared_ptr <SceneNode> parent = {} );
-  SceneNode( SceneNode& );
-  ~SceneNode();
+protected:
+  void setParent( const SceneNode* );
+  virtual std::shared_ptr <SceneNode> clone();
 
-  void setParent( const std::shared_ptr <SceneNode> );
+public:
+  SceneNode( const SceneNode* parent = {} );
+  SceneNode( SceneNode& );
+  virtual ~SceneNode();
 
   void addChild( const std::shared_ptr <SceneNode> );
   void removeChild( const std::shared_ptr <SceneNode> );
@@ -28,7 +30,7 @@ public:
   void clearChildren();
   void transferChildren( SceneNode& );
 
-  std::shared_ptr <SceneNode> extractChild();
+//  std::shared_ptr <SceneNode> extractChild();
 
   glm::mat4 model() const override;
 };

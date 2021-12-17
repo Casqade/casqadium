@@ -4,16 +4,14 @@
 namespace Graphics3D
 {
 
-SceneNode::SceneNode( const std::shared_ptr <SceneNode> parent )
+SceneNode::SceneNode( const SceneNode* parent )
   : mParent(parent)
 {}
 
 SceneNode::SceneNode( SceneNode& node )
 {
-  for ( auto& child : mChildren )
-  {
-    node.mChildren.insert( child );
-  }
+  for ( const auto& child : mChildren )
+    node.addChild( child->clone() );
 }
 
 SceneNode::~SceneNode()
@@ -24,8 +22,14 @@ SceneNode::~SceneNode()
   clearChildren();
 }
 
+std::shared_ptr <SceneNode>
+SceneNode::clone()
+{
+  return std::make_shared <SceneNode> (*this);
+}
+
 void
-SceneNode::setParent( const std::shared_ptr <SceneNode> parent )
+SceneNode::setParent( const SceneNode* parent )
 {
   mParent = parent;
 }
@@ -33,6 +37,7 @@ SceneNode::setParent( const std::shared_ptr <SceneNode> parent )
 void
 SceneNode::addChild( const std::shared_ptr <SceneNode> node )
 {
+  node->setParent( this );
   mChildren.insert( node );
 }
 
@@ -55,7 +60,7 @@ void
 SceneNode::transferChildren( SceneNode& node )
 {
   for ( auto& child : mChildren )
-    child->clearChildren();
+    node.addChild( child );
 
   mChildren.clear();
 }
