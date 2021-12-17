@@ -3,6 +3,7 @@
 
 #include <GameState.hpp>
 #include <Widgets.hpp>
+#include <Graphics3D/Camera.hpp>
 
 #include <set>
 
@@ -16,7 +17,7 @@ class GameStateSandbox
 
   } mState;
 
-  Camera3D mCamera;
+  Graphics3D::Camera mCamera;
   Poly3D mPolyX;
   Poly3D mPolyY;
   Poly3D mPolyZ;

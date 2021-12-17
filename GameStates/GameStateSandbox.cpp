@@ -3,6 +3,7 @@
 #include <glm/gtx/transform.hpp>
 
 #include <TimeUtils/Duration.hpp>
+#include <Graphics3D/SceneNode.hpp>
 
 #include <Widgets.hpp>
 #include <Logger.hpp>
@@ -13,10 +14,7 @@
 GameStateSandbox::GameStateSandbox( GameStateController* const stateController )
   : GameState(stateController)
   , mState(StateLocal::Idle)
-  , mCamera(glm::perspectiveFovRH_ZO( glm::radians(45.0f),
-            (float) mPGE->GetWindowSize().x, (float) mPGE->GetWindowSize().y,
-            0.01f, 1000.0f ),
-            { 0.0f, 0.0f, mPGE->GetWindowSize().x, mPGE->GetWindowSize().y })
+  , mCamera()
 //  , mPolyX({{ {0.0f, 0.0f, 0.0f},
 //              {0.0f, 1.0f, 0.0f},
 //              {1.0f, 1.0f, 0.0f},
@@ -78,22 +76,22 @@ GameStateSandbox::update( const uint32_t ticks,
     return false;
 
   if ( mPGE->GetKey( olc::Key::W ).bHeld )
-    mCamera.move( mCamera.front() );
+    mCamera.translate( mCamera.front() );
 
   if ( mPGE->GetKey( olc::Key::S ).bHeld )
-    mCamera.move( -mCamera.front() );
+    mCamera.translate( -mCamera.front() );
 
   if ( mPGE->GetKey( olc::Key::A ).bHeld )
-    mCamera.move( -mCamera.right() );
+    mCamera.translate( -mCamera.right() );
 
   if ( mPGE->GetKey( olc::Key::D ).bHeld )
-    mCamera.move( mCamera.right() );
+    mCamera.translate( mCamera.right() );
 
   if ( mPGE->GetKey( olc::Key::SPACE ).bHeld )
-    mCamera.move( mCamera.up() );
+    mCamera.translate( mCamera.up() );
 
   if ( mPGE->GetKey( olc::Key::SHIFT ).bHeld )
-    mCamera.move( -mCamera.up() );
+    mCamera.translate( -mCamera.up() );
 
   switch ( mState )
   {
@@ -143,7 +141,6 @@ GameStateSandbox::mouseMoveEvent( const olc::Event::MouseMoveEvent event )
   else
     //  if ( mPressedKeys.count( olc::Key::Y ) > 0 )
     mCamera.rotate( glm::angleAxis( glm::radians((float) -event.dx), glm::vec3{0.0f, 1.0f, 0.0f} ) );
-
   }
 
   if ( mPressedKeys.size() == 0 )
@@ -157,7 +154,6 @@ GameStateSandbox::mouseMoveEvent( const olc::Event::MouseMoveEvent event )
 
   if ( mPressedKeys.count( olc::Key::L ) > 0 )
     mPolyX.rotate( glm::angleAxis( glm::radians((float) event.dy), glm::vec3{1.0f, 0.0f, 0.0f} ) );
-
 }
 
 void

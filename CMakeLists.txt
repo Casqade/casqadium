@@ -62,6 +62,7 @@ if(NOT ${BUILD_SHARED_LIBS})
 endif()
 
 target_link_libraries(${TARGET} PRIVATE TimeUtils::TimeUtils)
+target_link_libraries(${TARGET} PRIVATE Graphics3D::Graphics3D)
 target_link_libraries(${TARGET} PRIVATE olcPGE::olcPGE)
 
 include(GNUInstallDirs)
