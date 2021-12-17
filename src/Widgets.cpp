@@ -6,6 +6,8 @@
 #include <glm/gtx/euler_angles.hpp>
 #include <glm/gtx/transform.hpp>
 
+#include <Graphics3D/Camera.hpp>
+
 
 namespace olc
 {
@@ -242,27 +244,14 @@ Camera3D::viewport() const
 
 Drawable3D::Drawable3D( const glm::vec3 origin,
                         const glm::quat orientation,
-                        const glm::vec3 scale )
-  : mOrigin(origin)
-  , mOrientation(orientation)
-  , mScale(scale)
+                        const glm::vec3 scale,
+                        const Graphics3D::SceneNode* parent )
+  : Graphics3D::SceneNode(parent)
 {}
-
-glm::mat4
-Drawable3D::modelMatrix() const
-{
-//  glm::mat4 translate = glm::translate( glm::mat4(1.0f), mOrigin );
-//  glm::mat4 rotation = glm::orientate4( mOrientation );
-//  glm::mat4 scale = glm::scale( mScale );
-
-  return  glm::translate( glm::mat4(1.0f), mOrigin )
-        * glm::toMat4(mOrientation)
-        * glm::scale( glm::mat4(1.0f), mScale );
-}
 
 void
 Drawable3D::appendCulled( std::multimap < float, Drawable3D*, std::greater <float>>&,
-                          const Camera3D& )
+                          const Graphics3D::Camera& )
 {
   return;
 }
@@ -273,44 +262,7 @@ Drawable3D::draw()
   return;
 }
 
-void
-Drawable3D::translate( const glm::vec3 translation )
-{
-  mOrigin += translation;
-}
-
-void
-Drawable3D::rotate( const glm::quat rotation )
-{
-  mOrientation *= rotation;
-}
-
-void
-Drawable3D::scale( const glm::vec3 scale )
-{
-  mScale += scale;
-}
-
-void
-Drawable3D::setOrigin( const glm::vec3 origin )
-{
-  mOrigin = origin;
-}
-
-void
-Drawable3D::setOrientation( const glm::quat orientation )
-{
-  mOrientation = orientation;
-}
-
-void
-Drawable3D::setScale( const glm::vec3 scale )
-{
-  mScale = scale;
-}
-
-
-bool wireFrameEnabled = true;
+bool wireFrameEnabled = false;
 
 bool frontFaceWindingOrder = false;
 
@@ -348,9 +300,9 @@ Poly3D::isClockWise( const bool yAxisUp ) const
 
 void
 Poly3D::appendCulled( std::multimap < float, Drawable3D*, std::greater <float>>& depthBuffer,
-                      const Camera3D& cam )
+                      const Graphics3D::Camera& cam )
 {
-  const glm::mat4 modelView = cam.viewMatrix() * modelMatrix();
+  const glm::mat4 modelView = cam.viewMatrix() * model();
   const glm::mat4 projection = cam.projMatrix();
   const glm::vec4 viewport = cam.viewport();
 
@@ -382,10 +334,10 @@ Poly3D::appendCulled( std::multimap < float, Drawable3D*, std::greater <float>>&
     return;
 
   mProjectedWindingOrder = (FaceWindingOrder) isClockWise();
-  if (    wireFrameEnabled == false
-       && mBackFaceDecal == nullptr
-       && mProjectedWindingOrder != frontFaceWindingOrder )
-    return;
+//  if (    wireFrameEnabled == false
+//       && mBackFaceDecal == nullptr
+//       && mProjectedWindingOrder != frontFaceWindingOrder )
+//    return;
 
   polygonDepth /= mVertsProjected.size();
   depthBuffer.emplace( polygonDepth, this );

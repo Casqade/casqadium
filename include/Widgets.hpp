@@ -6,6 +6,7 @@
 
 #include <TimeUtils/Duration.hpp>
 #include <TimeUtils/Timer.hpp>
+#include <Graphics3D/SceneNode.hpp>
 
 #include <olcPGE/Math.hpp>
 #include <glm/vec3.hpp>
@@ -15,6 +16,11 @@
 
 #include <string>
 
+
+namespace Graphics3D
+{
+class Camera;
+}
 
 namespace olc
 {
@@ -97,32 +103,18 @@ public:
   glm::vec4 viewport() const;
 };
 
-class Drawable3D
+class Drawable3D : public Graphics3D::SceneNode
 {
-protected:
-  glm::vec3 mOrigin;
-  glm::quat mOrientation;
-  glm::vec3 mScale;
-
-  glm::mat4 modelMatrix() const;
-
 public:
   Drawable3D( const glm::vec3 origin = {},
               const glm::quat orientation = glm::vec3{},
-              const glm::vec3 scale = { 1.0f, 1.0f, 1.0f } );
+              const glm::vec3 scale = { 1.0f, 1.0f, 1.0f },
+              const Graphics3D::SceneNode* parent = nullptr );
 
   virtual void appendCulled(  std::multimap < float, Drawable3D*, std::greater <float>>& depthBuffer,
-                              const Camera3D& );
+                              const Graphics3D::Camera& );
 
   virtual void draw();
-
-  void translate( const glm::vec3 );
-  void rotate( const glm::quat );
-  void scale( const glm::vec3 );
-
-  void setOrigin( const glm::vec3 );
-  void setOrientation( const glm::quat );
-  void setScale( const glm::vec3 );
 };
 
 class Poly3D : public Drawable3D
@@ -150,7 +142,7 @@ public:
 
   void draw() override;
   void appendCulled(  std::multimap < float, Drawable3D*, std::greater <float>>& depthBuffer,
-                      const Camera3D& ) override;
+                      const Graphics3D::Camera& ) override;
 
   void setFrontFace( olc::Decal* );
   void setFrontFace( const olc::Pixel );
