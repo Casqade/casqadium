@@ -11,6 +11,29 @@
 #include <GameStateController.hpp>
 
 
+class Node : public Graphics3D::SceneNode
+{
+  std::string mName;
+
+public:
+  Node() = default;
+  Node( const std::string& name, const SceneNode* parent = nullptr )
+    : Graphics3D::SceneNode(parent)
+    , mName(name)
+  {}
+  Node( Node& ) = default;
+
+  void setName( const std::string& name )
+  {
+    mName = name;
+  }
+
+  std::shared_ptr <SceneNode> clone() override
+  {
+    return std::make_shared <Node> (*this);
+  }
+};
+
 GameStateSandbox::GameStateSandbox( GameStateController* const stateController )
   : GameState(stateController)
   , mState(StateLocal::Idle)
