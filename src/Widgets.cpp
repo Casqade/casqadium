@@ -302,6 +302,13 @@ void
 Poly3D::appendCulled( std::multimap < float, Drawable3D*, std::greater <float>>& depthBuffer,
                       const Graphics3D::Camera& cam )
 {
+  for ( auto& child : mChildren )
+  {
+    Poly3D* poly = dynamic_cast <Poly3D*> ( child.get() );
+    if ( poly )
+      poly->appendCulled( depthBuffer, cam );
+  }
+
   const glm::mat4 modelView = cam.viewMatrix() * model();
   const glm::mat4 projection = cam.projMatrix();
   const glm::vec4 viewport = cam.viewport();
@@ -346,6 +353,11 @@ Poly3D::appendCulled( std::multimap < float, Drawable3D*, std::greater <float>>&
 void
 Poly3D::draw()
 {
+    Poly3D* poly = dynamic_cast <Poly3D*> ( child.get() );
+    if ( poly )
+      poly->draw();
+  }
+
   if ( wireFrameEnabled == false )
   {
     if ( mProjectedWindingOrder == frontFaceWindingOrder )
