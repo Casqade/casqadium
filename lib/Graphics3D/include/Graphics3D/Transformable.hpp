@@ -20,6 +20,7 @@ public:
   Transformable(  const glm::vec3& origin = {},
                   const glm::quat& orientation = glm::vec3{},
                   const glm::vec3& scale = { 1.0f, 1.0f, 1.0f } );
+  Transformable( Transformable& ) = default;
 
   virtual ~Transformable() = default;
 

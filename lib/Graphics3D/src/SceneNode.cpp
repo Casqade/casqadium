@@ -5,13 +5,17 @@ namespace Graphics3D
 {
 
 SceneNode::SceneNode( const SceneNode* parent )
-  : mParent(parent)
+  : Transformable()
+  , mParent(parent)
+  , mChildren()
 {}
 
 SceneNode::SceneNode( SceneNode& node )
+  : Transformable(node.mOrigin, node.mOrientation, node.mScale)
+  , mParent(node.mParent)
 {
-  for ( const auto& child : mChildren )
-    node.addChild( child->clone() );
+  for ( const auto& child : node.mChildren )
+    addChild( child->clone() );
 }
 
 SceneNode::~SceneNode()
