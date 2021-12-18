@@ -1,13 +1,13 @@
 #ifndef GRAPHICS_3D_CAMERA_HPP
 #define GRAPHICS_3D_CAMERA_HPP
 
-#include <Graphics3D/Transformable.hpp>
+#include <Graphics3D/SceneNode.hpp>
 
 
 namespace Graphics3D
 {
 
-class Camera : public Transformable
+class Camera : public SceneNode
 {
 public:
   enum class Projection : bool

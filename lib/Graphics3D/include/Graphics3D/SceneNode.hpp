@@ -12,10 +12,10 @@ namespace Graphics3D
 
 class SceneNode : public Transformable
 {
+protected:
   const SceneNode* mParent;
   std::set <std::shared_ptr <SceneNode>> mChildren;
 
-protected:
   void setParent( const SceneNode* );
   virtual std::shared_ptr <SceneNode> clone();
 
