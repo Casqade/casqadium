@@ -61,13 +61,7 @@ Camera::up() const
 glm::mat4
 Camera::viewMatrix() const
 {
-  glm::vec4 viewOrigin = model() * glm::vec4 {mOrigin, 1};
-  glm::vec4 viewFront = model() * glm::vec4 {front(), 0};
-  glm::vec4 viewUp = model() * glm::vec4 {up(), 0};
-
-  return glm::lookAtRH( glm::vec3(viewOrigin),
-                        glm::vec3(viewOrigin) + glm::vec3(viewFront),
-                        glm::vec3(viewUp) );
+  return glm::inverse( model() );
 }
 
 glm::mat4
