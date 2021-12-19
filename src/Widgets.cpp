@@ -353,6 +353,8 @@ Poly3D::appendCulled( std::multimap < float, Drawable3D*, std::greater <float>>&
 void
 Poly3D::draw()
 {
+  for ( auto& child : mChildren )
+  {
     Poly3D* poly = dynamic_cast <Poly3D*> ( child.get() );
     if ( poly )
       poly->draw();
