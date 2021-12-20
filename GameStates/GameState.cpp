@@ -70,7 +70,7 @@ GameState::handleEvent( const olc::Event event )
 
     case olc::Event::EventType::MouseButtonPressed:
     case olc::Event::EventType::MouseButtonReleased:
-      mouseButtonEvent( event.mouseButton );
+      mouseButtonEvent( event );
       break;
 
     default:
@@ -91,7 +91,7 @@ GameState::mouseMoveEvent( const olc::Event::MouseMoveEvent )
 }
 
 void
-GameState::mouseButtonEvent( const olc::Event::MouseButtonEvent )
+GameState::mouseButtonEvent( const olc::Event )
 {
   Log << __FUNCTION__;
 }

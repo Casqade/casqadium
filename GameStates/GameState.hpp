@@ -26,7 +26,7 @@ protected:
 
   virtual void keyEvent( const olc::Event );
   virtual void mouseMoveEvent( const olc::Event::MouseMoveEvent );
-  virtual void mouseButtonEvent( const olc::Event::MouseButtonEvent );
+  virtual void mouseButtonEvent( const olc::Event );
 
 public:
   GameState( GameStateController* const );
