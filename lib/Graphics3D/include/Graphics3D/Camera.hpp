@@ -28,11 +28,11 @@ private:
 
 public:
   Camera( const Projection& = Projection::Perspective,
-          const float fov = 45.0f,
+          const float fov = glm::radians(45.0f),
           const glm::vec4& viewport = {0.0f, 0.0f, 800.0f, 600.0f},
           const std::pair <float, float>& zRange = {0.1f, 1000.0f} );
 
-  void setFov( const float degrees );
+  void setFov( const float radians );
   void setViewport( const glm::vec4& );
   void setProjection( const Projection& );
   void setZrange( const std::pair <float, float>& );

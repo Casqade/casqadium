@@ -17,9 +17,9 @@ Camera::Camera(
 {}
 
 void
-Camera::setFov( const float degrees )
+Camera::setFov( const float radians )
 {
-  mFov = degrees;
+  mFov = radians;
 }
 
 void
@@ -68,9 +68,9 @@ glm::mat4
 Camera::projMatrix() const
 {
   return  mProjection == Projection::Perspective ?
-          glm::perspectiveFovRH_ZO( glm::radians(mFov),
-                    mViewport.z, mViewport.w,
-                    mZrange.first, mZrange.second )
+          glm::perspectiveFovRH_ZO( mFov,
+                                    mViewport.z, mViewport.w,
+                                    mZrange.first, mZrange.second )
         : glm::ortho( mViewport.x, mViewport.z, mViewport.y, mViewport.w,
                       mZrange.first, mZrange.second );
 }
