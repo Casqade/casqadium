@@ -70,38 +70,6 @@ public:
 
 }
 
-class Camera3D
-{
-  glm::mat4 mProjection;
-  glm::vec4 mViewport;
-
-  glm::vec3 mOrigin;
-  glm::quat mOrientation;
-
-  float mSpeed;
-  float mZoom;
-
-public:
-  Camera3D( const glm::mat4&  projection,
-            const glm::vec4&  viewport,
-            const glm::vec3&  origin = {},
-            const glm::quat&  orientation = glm::vec3{} );
-
-  void move( const glm::vec3& direction );
-  void rotate( const glm::quat& );
-  void rotateGlobal( const glm::quat& );
-//  void zoom(  );
-
-  glm::vec3 origin() const;
-  glm::quat orientation() const;
-  glm::vec3 front() const;
-  glm::vec3 right() const;
-  glm::vec3 up() const;
-
-  glm::mat4 viewMatrix() const;
-  glm::mat4 projMatrix() const;
-  glm::vec4 viewport() const;
-};
 
 class Drawable3D : public Graphics3D::SceneNode
 {
