@@ -178,6 +178,11 @@ GameStateSandbox::mouseMoveEvent( const olc::Event::MouseMoveEvent event )
 }
 
 void
+GameStateSandbox::mouseButtonEvent( const olc::Event event )
+{
+}
+
+void
 GameStateSandbox::render()
 {
   mDepthBuffer.clear();
