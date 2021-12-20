@@ -24,7 +24,7 @@ public:
 
   virtual ~Transformable() = default;
 
-  virtual glm::mat4 model() const;
+  glm::mat4 modelLocal() const;
 
   void translate( const glm::vec3& );
   void rotate( const glm::quat& );

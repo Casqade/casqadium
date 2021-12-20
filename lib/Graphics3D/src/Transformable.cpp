@@ -14,12 +14,8 @@ Transformable::Transformable(
 {}
 
 glm::mat4
-Transformable::model() const
+Transformable::modelLocal() const
 {
-//  glm::mat4 translate = glm::translate( glm::mat4(1.0f), mOrigin );
-//  glm::mat4 rotation = glm::orientate4( mOrientation );
-//  glm::mat4 scale = glm::scale( mScale );
-
   return  glm::translate( glm::mat4(1.0f), mOrigin )
         * glm::toMat4(mOrientation)
         * glm::scale( glm::mat4(1.0f), mScale );

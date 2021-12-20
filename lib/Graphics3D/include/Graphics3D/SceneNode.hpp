@@ -32,7 +32,7 @@ public:
 
 //  std::shared_ptr <SceneNode> extractChild();
 
-  glm::mat4 model() const override;
+  glm::mat4 modelWorld() const;
 };
 
 } // namespace Graphics3D

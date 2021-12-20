@@ -309,7 +309,7 @@ Poly3D::appendCulled( std::multimap < float, Drawable3D*, std::greater <float>>&
       poly->appendCulled( depthBuffer, cam );
   }
 
-  const glm::mat4 modelView = cam.viewMatrix() * model();
+  const glm::mat4 modelView = cam.viewMatrix() * modelWorld();
   const glm::mat4 projection = cam.projMatrix();
   const glm::vec4 viewport = cam.viewport();
 

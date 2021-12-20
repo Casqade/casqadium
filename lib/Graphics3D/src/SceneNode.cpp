@@ -39,10 +39,10 @@ SceneNode::setParent( const SceneNode* parent )
 }
 
 void
-SceneNode::addChild( const std::shared_ptr <SceneNode> node )
+SceneNode::addChild( const std::shared_ptr <SceneNode> child )
 {
-  node->setParent( this );
-  mChildren.insert( node );
+  child->setParent( this );
+  mChildren.insert( child );
 }
 
 void
@@ -70,12 +70,12 @@ SceneNode::transferChildren( SceneNode& node )
 }
 
 glm::mat4
-SceneNode::model() const
+SceneNode::modelWorld() const
 {
   if ( mParent )
-    return mParent->model() * Transformable::model();
+    return mParent->modelWorld() * modelLocal();
 
-  return Transformable::model();
+  return modelLocal();
 }
 
 } // namespace Graphics3D

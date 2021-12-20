@@ -61,7 +61,7 @@ Camera::up() const
 glm::mat4
 Camera::viewMatrix() const
 {
-  return glm::inverse( model() );
+  return glm::inverse( modelWorld() );
 }
 
 glm::mat4
