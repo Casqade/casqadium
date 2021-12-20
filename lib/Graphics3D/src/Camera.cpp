@@ -1,5 +1,5 @@
 #include <Graphics3D/Camera.hpp>
-#include <glm/gtx/matrix_decompose.hpp>
+#include <glm/gtc/matrix_access.hpp>
 
 
 namespace Graphics3D
@@ -97,6 +97,29 @@ std::pair <float, float>
 Camera::zRange() const
 {
   return mZrange;
+}
+
+
+void
+CameraFPS::rotate( const glm::quat& rotation )
+{
+  const auto lastOrientation = mOrientation;
+
+  Transformable::rotate( rotation );
+
+  if ( glm::column( viewMatrix(), ViewMatrixVector::Up ).y < 0.0f )
+    mOrientation = lastOrientation;
+}
+
+void
+CameraFPS::rotateGlobal( const glm::quat& rotation )
+{
+  const auto lastOrientation = mOrientation;
+
+  Transformable::rotateGlobal( rotation );
+
+  if ( glm::column( viewMatrix(), ViewMatrixVector::Up ).y < 0.0f )
+    mOrientation = lastOrientation;
 }
 
 } // namespace Graphics3D

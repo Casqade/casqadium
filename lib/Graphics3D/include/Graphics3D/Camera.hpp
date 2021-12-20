@@ -22,10 +22,6 @@ private:
   Projection mProjection;
   std::pair <float, float> mZrange;
 
-  void setScale( const glm::vec3& ) = delete;
-  void scale( const glm::vec3& ) = delete;
-  glm::vec3 scale() const = delete;
-
 public:
   Camera( const Projection& = Projection::Perspective,
           const float fov = glm::radians(45.0f),
@@ -48,6 +44,20 @@ public:
   float fov() const;
   Projection projection() const;
   std::pair <float, float> zRange() const;
+};
+
+class CameraFPS : public Camera
+{
+  enum ViewMatrixVector
+  {
+    Up,
+    Right,
+    Front
+  };
+
+public:
+  void rotate( const glm::quat& );
+  void rotateGlobal( const glm::quat& );
 };
 
 } // namespace Graphics3D
