@@ -18,6 +18,9 @@ class GameStateSandbox
   } mState;
 
   Graphics3D::Camera mCamera;
+
+  std::multimap <float, Drawable3D*, std::greater <float>> mDepthBuffer;
+
   Poly3D mPolyX;
   Poly3D mPolyY;
   Poly3D mPolyZ;

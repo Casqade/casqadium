@@ -184,10 +184,11 @@ GameStateSandbox::mouseMoveEvent( const olc::Event::MouseMoveEvent event )
 void
 GameStateSandbox::render()
 {
-  std::multimap <float, Drawable3D*, std::greater <float>> depthBuffer;
-  mPolyX.appendCulled( depthBuffer, mCamera );
-  mPolyY.appendCulled( depthBuffer, mCamera );
-  mPolyZ.appendCulled( depthBuffer, mCamera );
+  mDepthBuffer.clear();
+
+  mPolyX.appendCulled( mDepthBuffer, mCamera );
+  mPolyY.appendCulled( mDepthBuffer, mCamera );
+  mPolyZ.appendCulled( mDepthBuffer, mCamera );
 
   const glm::vec3 camPos = mCamera.origin();
   const glm::vec3 camOrientation = glm::degrees(glm::eulerAngles( mCamera.orientation() ));
@@ -227,8 +228,8 @@ GameStateSandbox::render()
   mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(camUp.z) );
 
   textPos += {0.0f, 10.0f};
-  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, "Depth buffer size: " + std::to_string(depthBuffer.size()) );
+  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, "Depth buffer size: " + std::to_string(mDepthBuffer.size()) );
 
-  for ( auto drawable : depthBuffer )
+  for ( auto drawable : mDepthBuffer )
     drawable.second->draw();
 }
