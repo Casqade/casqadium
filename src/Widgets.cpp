@@ -150,25 +150,8 @@ Text2D::rotation() const
 }
 
 
-Drawable3D::Drawable3D( const glm::vec3 origin,
-                        const glm::quat orientation,
-                        const glm::vec3 scale,
-                        const Graphics3D::SceneNode* parent )
-  : Graphics3D::SceneNode(parent)
-{}
-
-void
-Drawable3D::appendCulled( std::multimap < float, Drawable3D*, std::greater <float>>&,
-                          const Graphics3D::Camera& )
+namespace Graphics3D
 {
-  return;
-}
-
-void
-Drawable3D::draw()
-{
-  return;
-}
 
 bool wireFrameEnabled = false;
 
@@ -182,8 +165,9 @@ olc::Pixel wireFrameBackFaceColor = olc::DARK_BLUE;
 /// and begin from topleft corner.
 ///
 Poly3D::Poly3D(
-  const std::array <glm::vec3, 4>& verts )
-  : Drawable3D()
+  const std::array <glm::vec3, 4>& verts,
+  const SceneNode* parent )
+  : SceneNode(parent)
   , mVerts(verts)
   , mVertsProjected()
   , mFrontFaceDecal()
@@ -207,19 +191,14 @@ Poly3D::isClockWise( const bool yAxisUp ) const
 }
 
 void
-Poly3D::appendCulled( std::multimap < float, Drawable3D*, std::greater <float>>& depthBuffer,
-                      const Graphics3D::Camera& cam )
+Poly3D::appendCulled( std::multimap < float, SceneNode*, std::greater <float>>& depthBuffer,
+                      const Camera* camera )
 {
-  for ( auto& child : mChildren )
-  {
-    Poly3D* poly = dynamic_cast <Poly3D*> ( child.get() );
-    if ( poly )
-      poly->appendCulled( depthBuffer, cam );
-  }
+  SceneNode::appendCulled( depthBuffer, camera );
 
-  const glm::mat4 modelView = cam.viewMatrix() * modelWorld();
-  const glm::mat4 projection = cam.projMatrix();
-  const glm::vec4 viewport = cam.viewport();
+  const glm::mat4 modelView = camera->viewMatrix() * modelWorld();
+  const glm::mat4 projection = camera->projMatrix();
+  const glm::vec4 viewport = camera->viewport();
 
   bool  offScreen = true;
   float polygonDepth = 0.0f;
@@ -320,6 +299,8 @@ Poly3D::setBackFace( const olc::Pixel color )
 {
   mBackFaceColor = color;
 }
+
+} // namespace Graphics3D
 
 
 InputPrompt::InputPrompt(

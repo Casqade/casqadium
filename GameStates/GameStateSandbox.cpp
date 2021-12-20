@@ -38,10 +38,6 @@ GameStateSandbox::GameStateSandbox( GameStateController* const stateController )
   : GameState(stateController)
   , mState(StateLocal::Idle)
   , mCamera()
-//  , mPolyX({{ {0.0f, 0.0f, 0.0f},
-//              {0.0f, 1.0f, 0.0f},
-//              {1.0f, 1.0f, 0.0f},
-//              {1.0f, 0.0f, 0.0f}}})
   , mPolyX({{ {-0.5f, 0.5f, 0.0f},
               {-0.5f, -0.5f, 0.0f},
               {0.5f, -0.5f, 0.0f},
@@ -186,9 +182,9 @@ GameStateSandbox::render()
 {
   mDepthBuffer.clear();
 
-  mPolyX.appendCulled( mDepthBuffer, mCamera );
-  mPolyY.appendCulled( mDepthBuffer, mCamera );
-  mPolyZ.appendCulled( mDepthBuffer, mCamera );
+  mPolyX.appendCulled( mDepthBuffer, &mCamera );
+  mPolyY.appendCulled( mDepthBuffer, &mCamera );
+  mPolyZ.appendCulled( mDepthBuffer, &mCamera );
 
   const glm::vec3 camPos = mCamera.origin();
   const glm::vec3 camOrientation = glm::degrees(glm::eulerAngles( mCamera.orientation() ));

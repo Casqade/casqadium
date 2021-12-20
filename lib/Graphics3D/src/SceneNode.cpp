@@ -69,6 +69,20 @@ SceneNode::transferChildren( SceneNode& node )
   mChildren.clear();
 }
 
+void
+SceneNode::appendCulled(  std::multimap < float, SceneNode*, std::greater <float>>& depthBuffer,
+                          const Graphics3D::Camera* camera )
+{
+  for ( auto& child : mChildren )
+    child->appendCulled( depthBuffer, camera );
+}
+
+void
+SceneNode::draw()
+{
+  return;
+}
+
 glm::mat4
 SceneNode::modelWorld() const
 {

@@ -19,11 +19,11 @@ class GameStateSandbox
 
   Graphics3D::Camera mCamera;
 
-  std::multimap <float, Drawable3D*, std::greater <float>> mDepthBuffer;
+  std::multimap <float, Graphics3D::SceneNode*, std::greater <float>> mDepthBuffer;
 
-  Poly3D mPolyX;
-  Poly3D mPolyY;
-  Poly3D mPolyZ;
+  Graphics3D::Poly3D mPolyX;
+  Graphics3D::Poly3D mPolyY;
+  Graphics3D::Poly3D mPolyZ;
 
   std::unique_ptr <olc::Renderable> mPolyXtext;
   std::unique_ptr <olc::Renderable> mPolyYtext;

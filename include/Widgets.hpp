@@ -17,11 +17,6 @@
 #include <string>
 
 
-namespace Graphics3D
-{
-class Camera;
-}
-
 namespace olc
 {
 
@@ -71,21 +66,10 @@ public:
 }
 
 
-class Drawable3D : public Graphics3D::SceneNode
+namespace Graphics3D
 {
-public:
-  Drawable3D( const glm::vec3 origin = {},
-              const glm::quat orientation = glm::vec3{},
-              const glm::vec3 scale = { 1.0f, 1.0f, 1.0f },
-              const Graphics3D::SceneNode* parent = nullptr );
 
-  virtual void appendCulled(  std::multimap < float, Drawable3D*, std::greater <float>>& depthBuffer,
-                              const Graphics3D::Camera& );
-
-  virtual void draw();
-};
-
-class Poly3D : public Drawable3D
+class Poly3D : public SceneNode
 {
   std::array <glm::vec3, 4> mVerts;
   std::array <olc::vf2d, 4> mVertsProjected;
@@ -106,11 +90,12 @@ class Poly3D : public Drawable3D
   bool isClockWise( const bool yAxisUp = false ) const;
 
 public:
-  Poly3D( const std::array <glm::vec3, 4>& verts );
+  Poly3D( const std::array <glm::vec3, 4>& verts,
+          const SceneNode* parent = nullptr );
 
   void draw() override;
-  void appendCulled(  std::multimap < float, Drawable3D*, std::greater <float>>& depthBuffer,
-                      const Graphics3D::Camera& ) override;
+  void appendCulled(  std::multimap < float, SceneNode*, std::greater <float>>& depthBuffer,
+                      const Camera* ) override;
 
   void setFrontFace( olc::Decal* );
   void setFrontFace( const olc::Pixel );
@@ -118,6 +103,8 @@ public:
   void setBackFace( olc::Decal* );
   void setBackFace( const olc::Pixel );
 };
+
+} // namespace Graphics3D
 
 
 class InputPrompt : public olc::Text2D

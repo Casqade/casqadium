@@ -4,11 +4,14 @@
 #include <Graphics3D/Transformable.hpp>
 
 #include <set>
+#include <map>
 #include <memory>
 
 
 namespace Graphics3D
 {
+
+class Camera;
 
 class SceneNode : public Transformable
 {
@@ -31,6 +34,11 @@ public:
   void transferChildren( SceneNode& );
 
 //  std::shared_ptr <SceneNode> extractChild();
+
+  virtual void appendCulled(  std::multimap < float, SceneNode*, std::greater <float>>& depthBuffer,
+                              const Camera* );
+
+  virtual void draw();
 
   glm::mat4 modelWorld() const;
 };
