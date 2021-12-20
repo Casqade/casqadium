@@ -89,6 +89,8 @@ GameStateSandbox::GameStateSandbox( GameStateController* const stateController )
   mPolyZ.setFrontFace( mPolyZtext->Decal() );
 
   mPolyX.setScale({ 1.0f, 2.0f, 2.0f });
+
+  mCamera.setViewport({ 0.0f, 0.0f, mPGE->GetWindowSize().x, mPGE->GetWindowSize().y });
 }
 
 bool
