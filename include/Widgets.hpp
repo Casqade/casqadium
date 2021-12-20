@@ -74,6 +74,8 @@ class Poly3D : public SceneNode
   std::array <glm::vec3, 4> mVerts;
   std::array <olc::vf2d, 4> mVertsProjected;
 
+  bool mSelected;
+
   olc::Decal* mFrontFaceDecal;
   olc::Decal* mBackFaceDecal;
 
@@ -87,6 +89,8 @@ class Poly3D : public SceneNode
 
   } mProjectedWindingOrder;
 
+  void drawOutline( const olc::Pixel );
+
   bool isClockWise( const bool yAxisUp = false ) const;
 
 public:
@@ -96,6 +100,11 @@ public:
   void draw() override;
   void appendCulled(  std::multimap < float, SceneNode*, std::greater <float>>& depthBuffer,
                       const Camera* ) override;
+
+  bool isUnderCursor( olc::vi2d ) const;
+
+  bool isSelected() const;
+  void setSelected( bool );
 
   void setFrontFace( olc::Decal* );
   void setFrontFace( const olc::Pixel );

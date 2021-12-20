@@ -25,6 +25,8 @@ class GameStateSandbox
   Graphics3D::Poly3D mPolyY;
   Graphics3D::Poly3D mPolyZ;
 
+  std::set <Graphics3D::Poly3D*> mSelectedPolys;
+
   std::unique_ptr <olc::Renderable> mPolyXtext;
   std::unique_ptr <olc::Renderable> mPolyYtext;
   std::unique_ptr <olc::Renderable> mPolyZtext;

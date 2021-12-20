@@ -170,6 +170,7 @@ Poly3D::Poly3D(
   : SceneNode(parent)
   , mVerts(verts)
   , mVertsProjected()
+  , mSelected()
   , mFrontFaceDecal()
   , mBackFaceDecal()
   , mFrontFaceColor(wireFrameFrontFaceColor)
@@ -228,10 +229,10 @@ Poly3D::appendCulled( std::multimap < float, SceneNode*, std::greater <float>>& 
     return;
 
   mProjectedWindingOrder = (FaceWindingOrder) isClockWise();
-//  if (    wireFrameEnabled == false
-//       && mBackFaceDecal == nullptr
-//       && mProjectedWindingOrder != frontFaceWindingOrder )
-//    return;
+  if (    wireFrameEnabled == false
+       && mBackFaceDecal == nullptr
+       && mProjectedWindingOrder != frontFaceWindingOrder )
+    return;
 
   polygonDepth /= mVertsProjected.size();
   depthBuffer.emplace( polygonDepth, this );
@@ -240,40 +241,70 @@ Poly3D::appendCulled( std::multimap < float, SceneNode*, std::greater <float>>& 
 void
 Poly3D::draw()
 {
-  for ( auto& child : mChildren )
+  if ( wireFrameEnabled )
   {
-    Poly3D* poly = dynamic_cast <Poly3D*> ( child.get() );
-    if ( poly )
-      poly->draw();
+    if ( mSelected )
+      drawOutline(  mProjectedWindingOrder == frontFaceWindingOrder ?
+                    wireFrameFrontFaceColor.inv() : wireFrameBackFaceColor.inv() );
+    else
+      drawOutline(  mProjectedWindingOrder == frontFaceWindingOrder ?
+                    wireFrameFrontFaceColor : wireFrameBackFaceColor );
+
+    olc::renderer->ptrPGE->FillRectDecal( mVertsProjected[2], { 3.0f, 3.0f }, olc::RED );
+    olc::renderer->ptrPGE->FillRectDecal( mVertsProjected[0], { 3.0f, 3.0f }, olc::GREEN );
+    olc::renderer->ptrPGE->FillRectDecal( mVertsProjected[1], { 3.0f, 3.0f }, olc::BLUE );
+
+    return;
   }
 
-  if ( wireFrameEnabled == false )
-  {
-    if ( mProjectedWindingOrder == frontFaceWindingOrder )
-    {
-      if ( mFrontFaceDecal != nullptr )
-        return olc::renderer->ptrPGE->DrawWarpedDecal( mFrontFaceDecal, mVertsProjected );
-      else
-        return olc::renderer->ptrPGE->DrawWarpedDecal( mFrontFaceDecal, mVertsProjected, mFrontFaceColor );
-    }
+  if ( mProjectedWindingOrder == frontFaceWindingOrder )
+    olc::renderer->ptrPGE->DrawWarpedDecal( mFrontFaceDecal,
+                                            mVertsProjected,
+                                            mFrontFaceDecal ? olc::WHITE : mFrontFaceColor );
+  else
+    olc::renderer->ptrPGE->DrawWarpedDecal( mBackFaceDecal,
+                                            mVertsProjected,
+                                            mBackFaceDecal ? olc::WHITE : mBackFaceColor );
 
-    if ( mBackFaceDecal != nullptr )
-      return olc::renderer->ptrPGE->DrawWarpedDecal( mBackFaceDecal, mVertsProjected );
+  if ( mSelected )
+    drawOutline(  mProjectedWindingOrder == frontFaceWindingOrder ?
+                  wireFrameFrontFaceColor.inv() : wireFrameBackFaceColor.inv() );
+}
 
-    return olc::renderer->ptrPGE->DrawWarpedDecal( mBackFaceDecal, mVertsProjected, mBackFaceColor );
-  }
-
+void
+Poly3D::drawOutline( const olc::Pixel color )
+{
   for ( size_t i = 0, iNext = 1;
         i < mVertsProjected.size();
         ++i, iNext = (i + 1) % mVertsProjected.size() )
     olc::renderer->ptrPGE->DrawLineDecal( mVertsProjected[i],
                                           mVertsProjected[iNext],
-                                          mProjectedWindingOrder == frontFaceWindingOrder ?
-                                          wireFrameFrontFaceColor : wireFrameBackFaceColor );
+                                          color );
+}
 
-  olc::renderer->ptrPGE->FillRectDecal( mVertsProjected[2], { 3.0f, 3.0f }, olc::RED );
-  olc::renderer->ptrPGE->FillRectDecal( mVertsProjected[0],{ 3.0f, 3.0f }, olc::GREEN );
-  olc::renderer->ptrPGE->FillRectDecal( mVertsProjected[1], { 3.0f, 3.0f }, olc::BLUE );
+bool
+Poly3D::isUnderCursor( olc::vi2d mouse ) const
+{
+  bool edgeCrossed = false;
+
+  for ( int i = 0, j = mVertsProjected.size() - 1;
+        i < mVertsProjected.size();
+        j = i++ )
+  {
+    if ( ( (mVertsProjected[i].y > mouse.y) != (mVertsProjected[j].y > mouse.y) ) &&
+     (mouse.x < (mVertsProjected[j].x - mVertsProjected[i].x)
+      * (mouse.y - mVertsProjected[i].y)
+      / (mVertsProjected[j].y - mVertsProjected[i].y) + mVertsProjected[i].x) )
+       edgeCrossed = !edgeCrossed;
+  }
+
+  return edgeCrossed;
+}
+
+void
+Poly3D::setSelected( bool selected )
+{
+  mSelected = selected;
 }
 
 void

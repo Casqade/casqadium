@@ -44,6 +44,7 @@ GameStateSandbox::GameStateSandbox( GameStateController* const stateController )
               {0.5f, 0.5f, 0.0f}}})
   , mPolyY(mPolyX)
   , mPolyZ(mPolyX)
+  , mSelectedPolys()
   , mPolyXtext(std::make_unique <olc::Renderable> ())
   , mPolyYtext(std::make_unique <olc::Renderable> ())
   , mPolyZtext(std::make_unique <olc::Renderable> ())
@@ -144,9 +145,6 @@ GameStateSandbox::keyEvent( const olc::Event event )
     default:
       return;
   }
-
-  if ( mPressedKeys.size() == 0 )
-    return;
 }
 
 void
@@ -180,6 +178,39 @@ GameStateSandbox::mouseMoveEvent( const olc::Event::MouseMoveEvent event )
 void
 GameStateSandbox::mouseButtonEvent( const olc::Event event )
 {
+  if ( event.type != olc::Event::MouseButtonPressed )
+    return;
+
+  if ( event.mouseButton.button == olc::Event::MouseButton::Left )
+  {
+    std::for_each( mDepthBuffer.end(),
+                   mDepthBuffer.begin(),
+    [this, event] ( const auto& node )
+    {
+      auto* poly = dynamic_cast <Graphics3D::Poly3D*> ( node.second );
+      if ( poly && poly->isUnderCursor({ event.mouseButton.x, event.mouseButton.y }) )
+      {
+        if ( mSelectedPolys.count( poly ) > 0 )
+        {
+          mSelectedPolys.erase( poly );
+          return poly->setSelected( false );
+        }
+
+        poly->setSelected( true );
+        mSelectedPolys.insert( poly );
+
+        return;
+      }
+    });
+  }
+
+  if ( event.mouseButton.button == olc::Event::MouseButton::Right )
+  {
+    for ( auto poly : mSelectedPolys )
+      poly->setSelected( false );
+
+    mSelectedPolys.clear();
+  }
 }
 
 void
