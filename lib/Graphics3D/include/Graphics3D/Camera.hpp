@@ -50,8 +50,8 @@ class CameraFPS : public Camera
 {
   enum ViewMatrixVector
   {
-    Up,
     Right,
+    Up,
     Front
   };
 
