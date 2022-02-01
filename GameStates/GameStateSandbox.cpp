@@ -228,14 +228,6 @@ GameStateSandbox::render()
   const glm::vec3 camRight = glm::degrees(mCamera.right());
   const glm::vec3 camUp = glm::degrees(mCamera.up());
 
-  olc::vf2d textPos = {};
-
-  mPGE->DrawStringDecal( {}, "Camera pos:" );
-  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(camPos.x) );
-  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(camPos.y) );
-  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(camPos.z) );
-
-  textPos += {0.0f, 10.0f};
   ImGui::Text("Camera pos:");
   ImGui::TextColored({1.0f, 0.0f, 0.0f, 1.0f}, std::to_string(camPos.x).c_str());
   ImGui::TextColored({0.0f, 1.0f, 0.0f, 1.0f}, std::to_string(camPos.y).c_str());
