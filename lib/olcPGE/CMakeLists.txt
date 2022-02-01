@@ -15,6 +15,18 @@ target_sources(${TARGET} PRIVATE
   include/${TARGET}/olcPGEX_CustomFont.hpp
   src/olcPGEX_CustomFont.cpp
 
+  imgui/imgui.h
+  imgui/imgui.cpp
+  imgui/imgui_demo.cpp
+  imgui/imgui_draw.cpp
+  imgui/imgui_tables.cpp
+  imgui/imgui_widgets.cpp
+  imgui/backends/imgui_impl_opengl2.h
+  imgui/backends/imgui_impl_opengl2.cpp
+
+  include/${TARGET}/olcPGEX_ImGui.hpp
+  src/olcPGEX_ImGui.cpp
+
   include/${TARGET}/olcEvent.hpp
 
   include/${TARGET}/olcEventHandler.hpp
@@ -56,6 +68,8 @@ include(GNUInstallDirs)
 
 target_include_directories(${TARGET} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/${CMAKE_INSTALL_INCLUDEDIR}>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/imgui>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 

@@ -150,7 +150,6 @@ GameStateSandbox::keyEvent( const olc::Event event )
 void
 GameStateSandbox::mouseMoveEvent( const olc::Event::MouseMoveEvent event )
 {
-  if ( mPressedKeys.count( olc::Key::CTRL ) == 0 )
   {
 //  if ( mPressedKeys.count( olc::Key::X ) > 0 )
     mCamera.rotate( glm::angleAxis( glm::radians((float) -event.dy), glm::vec3{1.0f, 0.0f, 0.0f} ) );
@@ -235,31 +234,32 @@ GameStateSandbox::render()
   mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(camPos.z) );
 
   textPos += {0.0f, 10.0f};
-  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, "Camera angle:" );
-  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(camOrientation.x) );
-  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(camOrientation.y) );
-  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(camOrientation.z) );
+  ImGui::Text("Camera pos:");
+  ImGui::TextColored({1.0f, 0.0f, 0.0f, 1.0f}, std::to_string(camPos.x).c_str());
+  ImGui::TextColored({0.0f, 1.0f, 0.0f, 1.0f}, std::to_string(camPos.y).c_str());
+  ImGui::TextColored({0.0f, 0.0f, 1.0f, 1.0f}, std::to_string(camPos.z).c_str());
 
-  textPos += {0.0f, 10.0f};
-  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, "Camera front:" );
-  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(camFront.x) );
-  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(camFront.y) );
-  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(camFront.z) );
+  ImGui::Text("Camera angle:");
+  ImGui::TextColored({1.0f, 0.0f, 0.0f, 1.0f}, std::to_string(camOrientation.x).c_str());
+  ImGui::TextColored({0.0f, 1.0f, 0.0f, 1.0f}, std::to_string(camOrientation.y).c_str());
+  ImGui::TextColored({0.0f, 0.0f, 1.0f, 1.0f}, std::to_string(camOrientation.z).c_str());
 
-  textPos += {0.0f, 10.0f};
-  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, "Camera right:" );
-  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(camRight.x) );
-  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(camRight.y) );
-  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(camRight.z) );
+  ImGui::Text("Camera front:");
+  ImGui::TextColored({1.0f, 0.0f, 0.0f, 1.0f}, std::to_string(camFront.x).c_str());
+  ImGui::TextColored({0.0f, 1.0f, 0.0f, 1.0f}, std::to_string(camFront.y).c_str());
+  ImGui::TextColored({0.0f, 0.0f, 1.0f, 1.0f}, std::to_string(camFront.z).c_str());
 
-  textPos += {0.0f, 10.0f};
-  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, "Camera up:" );
-  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(camUp.x) );
-  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(camUp.y) );
-  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, std::to_string(camUp.z) );
+  ImGui::Text("Camera right:");
+  ImGui::TextColored({1.0f, 0.0f, 0.0f, 1.0f}, std::to_string(camRight.x).c_str());
+  ImGui::TextColored({0.0f, 1.0f, 0.0f, 1.0f}, std::to_string(camRight.y).c_str());
+  ImGui::TextColored({0.0f, 0.0f, 1.0f, 1.0f}, std::to_string(camRight.z).c_str());
 
-  textPos += {0.0f, 10.0f};
-  mPGE->DrawStringDecal( textPos += {0.0f, 10.0f}, "Depth buffer size: " + std::to_string(mDepthBuffer.size()) );
+  ImGui::Text("Camera up:");
+  ImGui::TextColored({1.0f, 0.0f, 0.0f, 1.0f}, std::to_string(camUp.x).c_str());
+  ImGui::TextColored({0.0f, 1.0f, 0.0f, 1.0f}, std::to_string(camUp.y).c_str());
+  ImGui::TextColored({0.0f, 0.0f, 1.0f, 1.0f}, std::to_string(camUp.z).c_str());
+
+  ImGui::Text(("Depth buffer size: " + std::to_string(mDepthBuffer.size())).c_str());
 
   for ( auto drawable : mDepthBuffer )
     drawable.second->draw();

@@ -5,6 +5,7 @@
 
 #include <olcPGE/olcPixelGameEngine.hpp>
 #include <olcPGE/olcEventHandler.hpp>
+#include <olcPGE/olcPGEX_ImGui.hpp>
 
 #include <GameStateController.hpp>
 
@@ -19,6 +20,7 @@ class AnotherDayAtHospital : public olc::PixelGameEngine
 
   GameStateController mGameStateController;
   olc::EventHandler   mEventHandler;
+  olc::imgui::PGE_ImGUI mImGui;
 
   bool loadResources();
 

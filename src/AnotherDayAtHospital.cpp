@@ -42,6 +42,7 @@ AnotherDayAtHospital::AnotherDayAtHospital(
   const uint64_t tickRate,
   const uint64_t frameRate )
   : olc::PixelGameEngine()
+  , mImGui(true)
   , mTickInterval(tickRate > 0 ? 1.0 / tickRate : TimeUtils::Duration())
   , mFrameInterval(frameRate > 0 ? 1.0 / frameRate : TimeUtils::Duration())
   , mTickPrevious(TimeUtils::Now())
@@ -151,6 +152,10 @@ AnotherDayAtHospital::OnUserCreate()
 {
 //  SetCursor(NULL);
 
+  const uint32_t mainLayer = CreateLayer();
+  EnableLayer( mainLayer, true );
+  SetDrawTarget( mainLayer );
+
   if ( loadResources() == false )
     return false;
 
@@ -201,7 +206,10 @@ AnotherDayAtHospital::OnUserUpdate( float )
     frames = 1;
 
   if ( frames != 0 )
+  {
+    SetDrawTarget(1);
     mGameStateController.render();
+  }
 
   TimeUtils::SleepUntil( mFramePrevious + mFrameInterval );
 
