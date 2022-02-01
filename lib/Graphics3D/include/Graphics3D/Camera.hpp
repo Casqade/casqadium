@@ -56,8 +56,8 @@ class CameraFPS : public Camera
   };
 
 public:
-  void rotate( const glm::quat& );
-  void rotateGlobal( const glm::quat& );
+  void rotate( const glm::quat& ) override;
+  void rotateGlobal( const glm::quat& ) override;
 };
 
 } // namespace Graphics3D

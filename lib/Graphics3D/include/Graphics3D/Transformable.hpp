@@ -24,20 +24,20 @@ public:
 
   virtual ~Transformable() = default;
 
-  glm::mat4 modelLocal() const;
+  virtual glm::mat4 modelLocal() const;
 
-  void translate( const glm::vec3& );
-  void rotate( const glm::quat& );
-  void rotateGlobal( const glm::quat& );
-  void scale( const glm::vec3& );
+  virtual void translate( const glm::vec3& );
+  virtual void rotate( const glm::quat& );
+  virtual void rotateGlobal( const glm::quat& );
+  virtual void scale( const glm::vec3& );
 
-  void setOrigin( const glm::vec3& );
-  void setOrientation( const glm::quat& );
-  void setScale( const glm::vec3& );
+  virtual void setOrigin( const glm::vec3& );
+  virtual void setOrientation( const glm::quat& );
+  virtual void setScale( const glm::vec3& );
 
-  glm::vec3 origin() const;
-  glm::quat orientation() const;
-  glm::vec3 scale() const;
+  virtual glm::vec3 origin() const;
+  virtual glm::quat orientation() const;
+  virtual glm::vec3 scale() const;
 };
 
 } // namespace Graphics3D
