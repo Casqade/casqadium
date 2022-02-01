@@ -10,6 +10,8 @@
 #include <Variables.hpp>
 #include <GameStateController.hpp>
 
+#include <imgui/imgui.h>
+
 
 class Node : public Graphics3D::SceneNode
 {
