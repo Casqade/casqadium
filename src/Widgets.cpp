@@ -162,9 +162,9 @@ olc::Pixel wireFrameBackFaceColor = olc::DARK_BLUE;
 
 ///
 /// Vertices must be counter-clockwise ordered
-/// and begin from topleft corner.
+/// counting from topleft corner.
 ///
-Poly3D::Poly3D(
+Quad::Quad(
   const std::array <glm::vec3, 4>& verts,
   const SceneNode* parent )
   : SceneNode(parent)
@@ -178,7 +178,7 @@ Poly3D::Poly3D(
 {}
 
 bool
-Poly3D::isClockWise( const bool yAxisUp ) const
+Quad::isClockWise( const bool yAxisUp ) const
 {
   float area = {};
 
@@ -192,8 +192,8 @@ Poly3D::isClockWise( const bool yAxisUp ) const
 }
 
 void
-Poly3D::appendCulled( std::multimap < float, SceneNode*, std::greater <float>>& depthBuffer,
-                      const Camera* camera )
+Quad::appendCulled( std::multimap < float, SceneNode*, std::greater <float>>& depthBuffer,
+                    const Camera* camera )
 {
   SceneNode::appendCulled( depthBuffer, camera );
 
@@ -239,7 +239,7 @@ Poly3D::appendCulled( std::multimap < float, SceneNode*, std::greater <float>>& 
 }
 
 void
-Poly3D::draw()
+Quad::draw()
 {
   if ( wireFrameEnabled )
   {
@@ -272,7 +272,7 @@ Poly3D::draw()
 }
 
 void
-Poly3D::drawOutline( const olc::Pixel color )
+Quad::drawOutline( const olc::Pixel& color ) const
 {
   for ( size_t i = 0, iNext = 1;
         i < mVertsProjected.size();
@@ -283,7 +283,7 @@ Poly3D::drawOutline( const olc::Pixel color )
 }
 
 bool
-Poly3D::isUnderCursor( olc::vi2d mouse ) const
+Quad::isUnderCursor( olc::vi2d mouse ) const
 {
   bool edgeCrossed = false;
 
@@ -302,31 +302,31 @@ Poly3D::isUnderCursor( olc::vi2d mouse ) const
 }
 
 void
-Poly3D::setSelected( bool selected )
+Quad::setSelected( bool selected )
 {
   mSelected = selected;
 }
 
 void
-Poly3D::setFrontFace( olc::Decal* decal )
+Quad::setFrontFace( olc::Decal* decal )
 {
   mFrontFaceDecal = decal;
 }
 
 void
-Poly3D::setFrontFace( const olc::Pixel color )
+Quad::setFrontFace( const olc::Pixel color )
 {
   mFrontFaceColor = color;
 }
 
 void
-Poly3D::setBackFace( olc::Decal* decal )
+Quad::setBackFace( olc::Decal* decal )
 {
   mBackFaceDecal = decal;
 }
 
 void
-Poly3D::setBackFace( const olc::Pixel color )
+Quad::setBackFace( const olc::Pixel color )
 {
   mBackFaceColor = color;
 }

@@ -186,7 +186,7 @@ GameStateSandbox::mouseButtonEvent( const olc::Event event )
     std::for_each( mDepthBuffer.rbegin(), mDepthBuffer.rend(),
     [&] ( const auto& node )
     {
-      auto* poly = dynamic_cast <Graphics3D::Poly3D*> ( node.second );
+      auto* poly = dynamic_cast <Graphics3D::Quad*> ( node.second );
       if ( poly && poly->isUnderCursor({ event.mouseButton.x, event.mouseButton.y }) )
       {
         if ( mSelectedPolys.count( poly ) > 0 )

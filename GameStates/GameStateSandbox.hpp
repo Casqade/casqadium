@@ -21,11 +21,12 @@ class GameStateSandbox
 
   std::multimap <float, Graphics3D::SceneNode*, std::greater <float>> mDepthBuffer;
 
-  Graphics3D::Poly3D mPolyX;
-  Graphics3D::Poly3D mPolyY;
-  Graphics3D::Poly3D mPolyZ;
 
-  std::set <Graphics3D::Poly3D*> mSelectedPolys;
+  Graphics3D::Quad mPolyX;
+  Graphics3D::Quad mPolyY;
+  Graphics3D::Quad mPolyZ;
+
+  std::set <Graphics3D::Quad*> mSelectedPolys;
 
   std::unique_ptr <olc::Renderable> mPolyXtext;
   std::unique_ptr <olc::Renderable> mPolyYtext;

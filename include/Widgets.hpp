@@ -69,7 +69,7 @@ public:
 namespace Graphics3D
 {
 
-class Poly3D : public SceneNode
+class Quad : public SceneNode
 {
   std::array <glm::vec3, 4> mVerts;
   std::array <olc::vf2d, 4> mVertsProjected;
@@ -89,13 +89,13 @@ class Poly3D : public SceneNode
 
   } mProjectedWindingOrder;
 
-  void drawOutline( const olc::Pixel );
+  void drawOutline( const olc::Pixel& ) const;
 
   bool isClockWise( const bool yAxisUp = false ) const;
 
 public:
-  Poly3D( const std::array <glm::vec3, 4>& verts,
-          const SceneNode* parent = nullptr );
+  Quad( const std::array <glm::vec3, 4>& verts,
+        const SceneNode* parent = nullptr );
 
   void draw() override;
   void appendCulled(  std::multimap < float, SceneNode*, std::greater <float>>& depthBuffer,
