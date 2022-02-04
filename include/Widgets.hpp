@@ -113,6 +113,23 @@ public:
   void setBackFace( const olc::Pixel );
 };
 
+class OrientationGizmo : public SceneNode
+{
+  Camera* mCamera;
+
+  std::array <std::array <glm::vec3, 2>, 3> mVerts;
+  std::array <std::array <olc::vf2d, 2>, 3> mVertsProjected;
+
+public:
+  OrientationGizmo( Camera* = nullptr );
+
+  void draw() override;
+  void appendCulled(  std::multimap < float, SceneNode*, std::greater <float>>& depthBuffer,
+                      const Camera* ) override;
+
+  void setCamera( Camera* );
+};
+
 } // namespace Graphics3D
 
 

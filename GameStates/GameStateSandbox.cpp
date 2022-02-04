@@ -46,20 +46,18 @@ GameStateSandbox::GameStateSandbox( GameStateController* const stateController )
               {0.5f, 0.5f, 0.0f}}})
   , mPolyY(mPolyX)
   , mPolyZ(mPolyX)
+  , mAxisX0(mPolyX)
+  , mAxisX1(mPolyX)
+  , mAxisY0(mPolyX)
+  , mAxisY1(mPolyX)
+  , mAxisZ0(mPolyX)
+  , mAxisZ1(mPolyX)
   , mSelectedPolys()
   , mPolyXtext(std::make_unique <olc::Renderable> ())
   , mPolyYtext(std::make_unique <olc::Renderable> ())
   , mPolyZtext(std::make_unique <olc::Renderable> ())
   , mPressedKeys()
 {
-  mPolyX.setFrontFace( olc::RED );
-  mPolyY.setFrontFace( olc::GREEN );
-  mPolyZ.setFrontFace( olc::BLUE );
-
-  mPolyX.setOrigin({ 5.0f, 0.0f, 0.0f });
-  mPolyY.setOrigin({ 0.0f, 5.0f, 0.0f });
-  mPolyZ.setOrigin({ 0.0f, 0.0f, 5.0f });
-
   const olc::vi2d textSize = mPGE->GetTextSize( "X" );
   mPolyXtext->Create( textSize.x, textSize.y );
   mPolyYtext->Create( textSize.x, textSize.y );
@@ -83,13 +81,53 @@ GameStateSandbox::GameStateSandbox( GameStateController* const stateController )
   mPolyYtext->Decal()->Update();
   mPolyZtext->Decal()->Update();
 
+  mPolyX.setFrontFace( olc::RED );
+  mPolyY.setFrontFace( olc::GREEN );
+  mPolyZ.setFrontFace( olc::BLUE );
+
+  mPolyX.setOrigin({ 5.0f, 0.0f, 0.0f });
+  mPolyY.setOrigin({ 0.0f, 5.0f, 0.0f });
+  mPolyZ.setOrigin({ 0.0f, 0.0f, 5.0f });
+
+  mAxisX0.setOrigin({ -100.0f, 0.0f, 0.0f });
+  mAxisX1.setOrigin({ 100.0f, 0.0f, 0.0f });
+  mAxisY0.setOrigin({ 0.0f, -100.0f, 0.0f });
+  mAxisY1.setOrigin({ 0.0f, 100.0f, 0.0f });
+  mAxisZ0.setOrigin({ 0.0f, 0.0f, -100.0f });
+  mAxisZ1.setOrigin({ 0.0f, 0.0f, 100.0f });
+  auto gizmo = std::make_shared <Graphics3D::OrientationGizmo> (&mCamera);
+//  gizmo->setScale({2.0f, 2.0f, 2.0f});
+//  gizmo->setOrigin({0.0f, 0.0f, -2.0f});
+
   mPolyX.setFrontFace( mPolyXtext->Decal() );
   mPolyY.setFrontFace( mPolyYtext->Decal() );
   mPolyZ.setFrontFace( mPolyZtext->Decal() );
 
-  mPolyX.setScale({ 1.0f, 2.0f, 2.0f });
+  mAxisX0.setFrontFace( mPolyXtext->Decal() );
+  mAxisX1.setFrontFace( mPolyXtext->Decal() );
+  mAxisY0.setFrontFace( mPolyYtext->Decal() );
+  mAxisY1.setFrontFace( mPolyYtext->Decal() );
+  mAxisZ0.setFrontFace( mPolyZtext->Decal() );
+  mAxisZ1.setFrontFace( mPolyZtext->Decal() );
+
+  mAxisX0.setScale({ 50.0f, 50.0f, 0.0f });
+  mAxisX1.setScale({ 50.0f, 50.0f, 0.0f });
+  mAxisY0.setScale({ 50.0f, 50.0f, 0.0f });
+  mAxisY1.setScale({ 50.0f, 50.0f, 0.0f });
+  mAxisZ0.setScale({ 50.0f, 50.0f, 0.0f });
+  mAxisZ1.setScale({ 50.0f, 50.0f, 0.0f });
+
+  mAxisX0.rotateGlobal(glm::angleAxis(glm::radians(90.0f), glm::vec3{0.0f, 1.0f, 0.0f}));
+  mAxisX1.rotateGlobal(glm::angleAxis(glm::radians(-90.0f), glm::vec3{0.0f, 1.0f, 0.0f}));
+  mAxisY0.rotateGlobal(glm::angleAxis(glm::radians(-90.0f), glm::vec3{1.0f, 0.0f, 0.0f}));
+  mAxisY1.rotateGlobal(glm::angleAxis(glm::radians(90.0f), glm::vec3{1.0f, 0.0f, 0.0f}));
+  mAxisZ0.rotateGlobal(glm::angleAxis(glm::radians(0.0f), glm::vec3{0.0f, 1.0f, 0.0f}));
+  mAxisZ1.rotateGlobal(glm::angleAxis(glm::radians(180.0f), glm::vec3{0.0f, 1.0f, 0.0f}));
 
   mCamera.setViewport({ 0.0f, 0.0f, mPGE->GetWindowSize().x, mPGE->GetWindowSize().y });
+//  mCamera.setProjection(Graphics3D::Camera::Projection::Orthogonal);
+
+  mCameraRoot.addChild(gizmo);
 }
 
 bool
@@ -152,6 +190,7 @@ GameStateSandbox::keyEvent( const olc::Event event )
 void
 GameStateSandbox::mouseMoveEvent( const olc::Event::MouseMoveEvent event )
 {
+  if ( mPressedKeys.count( olc::Key::CTRL ) > 0 )
   {
 //  if ( mPressedKeys.count( olc::Key::X ) > 0 )
     mCamera.rotate( glm::angleAxis( glm::radians((float) -event.dy), glm::vec3{1.0f, 0.0f, 0.0f} ) );
@@ -222,11 +261,21 @@ GameStateSandbox::render()
   mPolyY.appendCulled( mDepthBuffer, &mCamera );
   mPolyZ.appendCulled( mDepthBuffer, &mCamera );
 
+//  mAxisX0.appendCulled( mDepthBuffer, &mCamera );
+//  mAxisX1.appendCulled( mDepthBuffer, &mCamera );
+//  mAxisY0.appendCulled( mDepthBuffer, &mCamera );
+//  mAxisY1.appendCulled( mDepthBuffer, &mCamera );
+//  mAxisZ0.appendCulled( mDepthBuffer, &mCamera );
+//  mAxisZ1.appendCulled( mDepthBuffer, &mCamera );
+  mCameraRoot.appendCulled( mDepthBuffer, &mCamera );
+
   const glm::vec3 camPos = mCamera.origin();
   const glm::vec3 camOrientation = glm::degrees(glm::eulerAngles( mCamera.orientation() ));
   const glm::vec3 camFront = glm::degrees(mCamera.front());
   const glm::vec3 camRight = glm::degrees(mCamera.right());
   const glm::vec3 camUp = glm::degrees(mCamera.up());
+
+  ImGui::SetNextWindowPos({mPGE->GetWindowSize().x * 0.9f, 0.0f});
 
   ImGui::Text("Camera pos:");
   ImGui::TextColored({1.0f, 0.0f, 0.0f, 1.0f}, std::to_string(camPos.x).c_str());

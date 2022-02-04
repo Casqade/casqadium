@@ -331,6 +331,75 @@ Quad::setBackFace( const olc::Pixel color )
   mBackFaceColor = color;
 }
 
+
+OrientationGizmo::OrientationGizmo( Camera* cam )
+  : mCamera(cam)
+  , mVerts({{ {{ {-0.5f, -0.5f, -0.5f}, {0.5f, -0.5f, -0.5f} }},
+              {{ {-0.5f, -0.5f, -0.5f}, {-0.5f, 0.5f, -0.5f} }},
+              {{ {-0.5f, -0.5f, -0.5f}, {-0.5f, -0.5f, 0.5f} }} }})
+  , mVertsProjected()
+{}
+
+void
+OrientationGizmo::draw()
+{
+  olc::renderer->ptrPGE->DrawLineDecal( mVertsProjected[0][0],
+                                        mVertsProjected[0][1],
+                                        olc::RED);
+
+  olc::renderer->ptrPGE->DrawLineDecal( mVertsProjected[1][0],
+                                        mVertsProjected[1][1],
+                                        olc::GREEN);
+
+  olc::renderer->ptrPGE->DrawLineDecal( mVertsProjected[2][0],
+                                        mVertsProjected[2][1],
+                                        olc::BLUE);
+}
+
+void
+OrientationGizmo::appendCulled(
+  std::multimap < float, SceneNode*, std::greater <float>>& depthBuffer,
+  const Camera* camera )
+{
+  SceneNode::appendCulled( depthBuffer, camera );
+  auto origin = mOrigin + camera->front();
+  glm::mat4 model = glm::translate( glm::mat4(1.0f), origin )
+//                  * glm::toMat4(glm::inverse(camera->orientation()))
+//                  * glm::toMat4(camera->orientation())
+                  * glm::scale( glm::mat4(1.0f), mScale );
+
+  const auto windowSize = olc::renderer->ptrPGE->GetWindowSize();
+
+  const glm::mat4 modelView = camera->viewMatrix() * model;
+  const glm::mat4 projection = camera->projMatrix();
+  const glm::vec4 viewport = {0.0f, 0.0f,
+                              windowSize.x * 0.1f, windowSize.y * 0.1f};
+
+  for ( size_t axis = 0;
+        axis < mVerts.size();
+        ++axis )
+    for ( size_t i = 0;
+          i < mVerts[axis].size();
+          ++i )
+    {
+      const glm::vec3 vert
+        = glm::projectZO( mVerts[axis][i],
+                          modelView,
+                          projection,
+                          camera->viewport() );
+
+      mVertsProjected[axis][i] = { vert.x, viewport.w - vert.y };
+    }
+
+  depthBuffer.emplace(0.0f, this);
+}
+
+void
+OrientationGizmo::setCamera( Camera* cam )
+{
+  mCamera = cam;
+}
+
 } // namespace Graphics3D
 
 

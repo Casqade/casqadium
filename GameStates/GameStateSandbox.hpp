@@ -17,14 +17,22 @@ class GameStateSandbox
 
   } mState;
 
-  Graphics3D::Camera mCamera;
+  Graphics3D::CameraFPS mCamera;
 
   std::multimap <float, Graphics3D::SceneNode*, std::greater <float>> mDepthBuffer;
 
+  Graphics3D::SceneNode mCameraRoot;
 
   Graphics3D::Quad mPolyX;
   Graphics3D::Quad mPolyY;
   Graphics3D::Quad mPolyZ;
+
+  Graphics3D::Quad mAxisX0;
+  Graphics3D::Quad mAxisX1;
+  Graphics3D::Quad mAxisY0;
+  Graphics3D::Quad mAxisY1;
+  Graphics3D::Quad mAxisZ0;
+  Graphics3D::Quad mAxisZ1;
 
   std::set <Graphics3D::Quad*> mSelectedPolys;
 
