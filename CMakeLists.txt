@@ -100,7 +100,7 @@ if(NOT SFML_FOUND)
 endif()
 
 target_link_libraries(${TARGET} PRIVATE sfml-audio)
-
+target_compile_options(${TARGET} PRIVATE -Og)
 if(WIN32)
   if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   else()
