@@ -354,6 +354,10 @@ OrientationGizmo::draw()
   olc::renderer->ptrPGE->DrawLineDecal( mVertsProjected[2][0],
                                         mVertsProjected[2][1],
                                         olc::BLUE);
+
+  olc::renderer->ptrPGE->FillRectDecal( mVertsProjected[0][1], {4.0f, 4.0f}, olc::RED );
+  olc::renderer->ptrPGE->FillRectDecal( mVertsProjected[1][1], {4.0f, 4.0f}, olc::GREEN );
+  olc::renderer->ptrPGE->FillRectDecal( mVertsProjected[2][1], {4.0f, 4.0f}, olc::BLUE );
 }
 
 void
