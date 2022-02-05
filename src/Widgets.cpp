@@ -362,18 +362,17 @@ OrientationGizmo::appendCulled(
   const Camera* camera )
 {
   SceneNode::appendCulled( depthBuffer, camera );
-  auto origin = mOrigin + camera->front();
-  glm::mat4 model = glm::translate( glm::mat4(1.0f), origin )
-//                  * glm::toMat4(glm::inverse(camera->orientation()))
-//                  * glm::toMat4(camera->orientation())
+  glm::mat4 model = glm::toMat4(glm::inverse(camera->orientation()))
                   * glm::scale( glm::mat4(1.0f), mScale );
 
   const auto windowSize = olc::renderer->ptrPGE->GetWindowSize();
 
-  const glm::mat4 modelView = camera->viewMatrix() * model;
-  const glm::mat4 projection = camera->projMatrix();
-  const glm::vec4 viewport = {0.0f, 0.0f,
-                              windowSize.x * 0.1f, windowSize.y * 0.1f};
+  const Camera gizmoCam(Camera::Projection::Orthogonal, {},
+                        {0.0f, 0.0f, 200.0f, 200.0f});
+
+  const glm::mat4 modelView = glm::translate( glm::mat4(1.0f), {0.0f, 0.0f, -5.0f} ) * model;
+  const glm::mat4 projection = gizmoCam.projMatrix();
+  const glm::vec4 viewport = gizmoCam.viewport();
 
   for ( size_t axis = 0;
         axis < mVerts.size();
@@ -386,9 +385,9 @@ OrientationGizmo::appendCulled(
         = glm::projectZO( mVerts[axis][i],
                           modelView,
                           projection,
-                          camera->viewport() );
+                          viewport );
 
-      mVertsProjected[axis][i] = { vert.x, viewport.w - vert.y };
+      mVertsProjected[axis][i] = { viewport.z * 0.5f + vert.x, viewport.w * 0.5f - vert.y };
     }
 
   depthBuffer.emplace(0.0f, this);
