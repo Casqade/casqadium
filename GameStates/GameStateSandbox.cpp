@@ -155,6 +155,15 @@ GameStateSandbox::update( const uint32_t ticks,
   if ( mPGE->GetKey( olc::Key::SHIFT ).bHeld )
     mCamera.translate( -mCamera.up() );
 
+  if ( mPGE->GetKey( olc::Key::C ).bPressed )
+  {
+    static olc::vi2d cursor = {};
+    mPolyZtext->Sprite()->SetPixel(cursor.x, cursor.y, olc::DARK_BLUE);
+    mPolyZtext->Decal()->Update();
+    ++cursor.x %= mPolyZtext->Sprite()->width;
+    cursor.y = cursor.x == 0 ? ++cursor.y %= mPolyZtext->Sprite()->height : cursor.y;
+  }
+
   switch ( mState )
   {
     case StateLocal::Idle:
