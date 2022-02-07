@@ -4,6 +4,7 @@
 #include <GameState.hpp>
 #include <Widgets.hpp>
 #include <Graphics3D/Camera.hpp>
+#include <Graphics3D/Quad.hpp>
 
 #include <set>
 

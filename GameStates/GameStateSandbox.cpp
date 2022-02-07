@@ -4,6 +4,7 @@
 
 #include <TimeUtils/Duration.hpp>
 #include <Graphics3D/SceneNode.hpp>
+#include <Graphics3D/OrientationGizmo.hpp>
 
 #include <Widgets.hpp>
 #include <Logger.hpp>

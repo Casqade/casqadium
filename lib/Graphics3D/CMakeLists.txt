@@ -13,14 +13,21 @@ target_sources(${TARGET} PRIVATE
   src/Camera.cpp
   include/${TARGET}/Camera.hpp
 
+  src/OrientationGizmo.cpp
+  include/${TARGET}/OrientationGizmo.hpp
+
   src/Transformable.cpp
   include/${TARGET}/Transformable.hpp
 
   src/SceneNode.cpp
   include/${TARGET}/SceneNode.hpp
+
+  src/Quad.cpp
+  include/${TARGET}/Quad.hpp
 )
 
 target_link_libraries(${TARGET} PUBLIC glm::glm)
+target_link_libraries(${TARGET} PUBLIC olcPGE::olcPGE)
 
 include(GNUInstallDirs)
 
