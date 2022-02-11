@@ -107,7 +107,7 @@ CameraFPS::rotate( const glm::quat& rotation )
 
   Transformable::rotate( rotation );
 
-  if ( glm::row( viewMatrix(), ViewMatrixVector::Up ).y < 0.0f )
+  if (up().y < 0.0f)
     mOrientation = lastOrientation;
 }
 
@@ -118,7 +118,7 @@ CameraFPS::rotateGlobal( const glm::quat& rotation )
 
   Transformable::rotateGlobal( rotation );
 
-  if ( glm::row( viewMatrix(), ViewMatrixVector::Up ).y < 0.0f )
+  if (up().y < 0.0f)
     mOrientation = lastOrientation;
 }
 
