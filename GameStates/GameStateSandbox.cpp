@@ -1,6 +1,8 @@
 #include <GameStateSandbox.hpp>
 
 #include <glm/gtx/transform.hpp>
+#include <glm/gtc/matrix_access.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <TimeUtils/Duration.hpp>
 #include <Graphics3D/SceneNode.hpp>
@@ -12,6 +14,7 @@
 #include <GameStateController.hpp>
 
 #include <imgui/imgui.h>
+#include <ImGuizmo/ImGuizmo.h>
 
 
 class Node : public Graphics3D::SceneNode
@@ -111,12 +114,12 @@ GameStateSandbox::GameStateSandbox( GameStateController* const stateController )
   mAxisZ0.setFrontFace( mPolyZtext->Decal() );
   mAxisZ1.setFrontFace( mPolyZtext->Decal() );
 
-  mAxisX0.setScale({ 50.0f, 50.0f, 0.0f });
-  mAxisX1.setScale({ 50.0f, 50.0f, 0.0f });
-  mAxisY0.setScale({ 50.0f, 50.0f, 0.0f });
-  mAxisY1.setScale({ 50.0f, 50.0f, 0.0f });
-  mAxisZ0.setScale({ 50.0f, 50.0f, 0.0f });
-  mAxisZ1.setScale({ 50.0f, 50.0f, 0.0f });
+  mAxisX0.setScale({ 50.0f, 50.0f, 50.0f });
+  mAxisX1.setScale({ 50.0f, 50.0f, 50.0f });
+  mAxisY0.setScale({ 50.0f, 50.0f, 50.0f });
+  mAxisY1.setScale({ 50.0f, 50.0f, 50.0f });
+  mAxisZ0.setScale({ 50.0f, 50.0f, 50.0f });
+  mAxisZ1.setScale({ 50.0f, 50.0f, 50.0f });
 
   mAxisX0.rotateGlobal(glm::angleAxis(glm::radians(90.0f), glm::vec3{0.0f, 1.0f, 0.0f}));
   mAxisX1.rotateGlobal(glm::angleAxis(glm::radians(-90.0f), glm::vec3{0.0f, 1.0f, 0.0f}));
@@ -208,7 +211,7 @@ GameStateSandbox::mouseMoveEvent( const olc::Event::MouseMoveEvent event )
   if ( mPressedKeys.count( olc::Key::Z ) > 0 )
     mCamera.rotate( glm::angleAxis( glm::radians((float) -event.dx), glm::vec3{0.0f, 0.0f, 1.0f} ) );
   else
-    //  if ( mPressedKeys.count( olc::Key::Y ) > 0 )
+//      if ( mPressedKeys.count( olc::Key::Y ) > 0 )
     mCamera.rotateGlobal( glm::angleAxis( glm::radians((float) -event.dx), glm::vec3{0.0f, 1.0f, 0.0f} ) );
   }
 
@@ -241,6 +244,7 @@ GameStateSandbox::mouseButtonEvent( const olc::Event event )
       {
         if ( mSelectedPolys.count( poly ) > 0 )
         {
+          return;
           mSelectedPolys.erase( poly );
           return poly->setSelected( false );
         }
@@ -271,26 +275,34 @@ GameStateSandbox::render()
   mPolyY.appendCulled( mDepthBuffer, &mCamera );
   mPolyZ.appendCulled( mDepthBuffer, &mCamera );
 
-//  mAxisX0.appendCulled( mDepthBuffer, &mCamera );
-//  mAxisX1.appendCulled( mDepthBuffer, &mCamera );
-//  mAxisY0.appendCulled( mDepthBuffer, &mCamera );
-//  mAxisY1.appendCulled( mDepthBuffer, &mCamera );
-//  mAxisZ0.appendCulled( mDepthBuffer, &mCamera );
-//  mAxisZ1.appendCulled( mDepthBuffer, &mCamera );
-  mCameraRoot.appendCulled( mDepthBuffer, &mCamera );
+  mAxisX0.appendCulled( mDepthBuffer, &mCamera );
+  mAxisX1.appendCulled( mDepthBuffer, &mCamera );
+  mAxisY0.appendCulled( mDepthBuffer, &mCamera );
+  mAxisY1.appendCulled( mDepthBuffer, &mCamera );
+  mAxisZ0.appendCulled( mDepthBuffer, &mCamera );
+  mAxisZ1.appendCulled( mDepthBuffer, &mCamera );
+//  mCameraRoot.appendCulled( mDepthBuffer, &mCamera );
 
   const glm::vec3 camPos = mCamera.origin();
   const glm::vec3 camOrientation = glm::degrees(glm::eulerAngles( mCamera.orientation() ));
-  const glm::vec3 camFront = glm::degrees(mCamera.front());
-  const glm::vec3 camRight = glm::degrees(mCamera.right());
-  const glm::vec3 camUp = glm::degrees(mCamera.up());
+  const glm::quat camQuat = mCamera.orientation();
+  const glm::vec3 camFront = mCamera.front();
+  const glm::vec3 camRight = mCamera.right();
+  const glm::vec3 camUp = glm::row( mCamera.viewMatrix(), 1 );
 
   ImGui::SetNextWindowPos({mPGE->GetWindowSize().x * 0.9f, 0.0f});
+  ImGui::Begin("Orientation");
 
   ImGui::Text("Camera pos:");
   ImGui::TextColored({1.0f, 0.0f, 0.0f, 1.0f}, std::to_string(camPos.x).c_str());
   ImGui::TextColored({0.0f, 1.0f, 0.0f, 1.0f}, std::to_string(camPos.y).c_str());
   ImGui::TextColored({0.0f, 0.0f, 1.0f, 1.0f}, std::to_string(camPos.z).c_str());
+
+  ImGui::Text("Camera quat:");
+  ImGui::TextColored({1.0f, 0.0f, 0.0f, 1.0f}, std::to_string(camQuat.x).c_str());
+  ImGui::TextColored({0.0f, 1.0f, 0.0f, 1.0f}, std::to_string(camQuat.y).c_str());
+  ImGui::TextColored({0.0f, 0.0f, 1.0f, 1.0f}, std::to_string(camQuat.z).c_str());
+  ImGui::TextColored({1.0f, 1.0f, 1.0f, 1.0f}, std::to_string(camQuat.w).c_str());
 
   ImGui::Text("Camera angle:");
   ImGui::TextColored({1.0f, 0.0f, 0.0f, 1.0f}, std::to_string(camOrientation.x).c_str());
@@ -313,6 +325,145 @@ GameStateSandbox::render()
   ImGui::TextColored({0.0f, 0.0f, 1.0f, 1.0f}, std::to_string(camUp.z).c_str());
 
   ImGui::Text(("Depth buffer size: " + std::to_string(mDepthBuffer.size())).c_str());
+  ImGui::End();
+
+
+  static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
+  static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::LOCAL);
+
+  static bool useSnap = false;
+  static float snap[3] = { 1.f, 1.f, 1.f };
+  static float bounds[] = { -0.5f, -0.5f, -0.5f, 0.5f, 0.5f, 0.5f };
+  static float boundsSnap[] = { 0.1f, 0.1f, 0.1f };
+  static bool boundSizing = false;
+  static bool boundSizingSnap = false;
+
+  auto camView = mCamera.viewMatrix();
+  if ( mSelectedPolys.size() > 0 )
+  {
+    ImGui::SetNextWindowPos({0.0f, 0.0f});
+    ImGui::Begin("Gizmo");
+
+    if ( ImGui::RadioButton("Translate", mCurrentGizmoOperation == ImGuizmo::TRANSLATE) )
+      mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
+
+    ImGui::SameLine();
+    if ( ImGui::RadioButton("Rotate", mCurrentGizmoOperation == ImGuizmo::ROTATE) )
+      mCurrentGizmoOperation = ImGuizmo::ROTATE;
+
+    ImGui::SameLine();
+    if ( ImGui::RadioButton("Scale", mCurrentGizmoOperation == ImGuizmo::SCALE) )
+    {
+      mCurrentGizmoMode = ImGuizmo::LOCAL;
+      mCurrentGizmoOperation = ImGuizmo::SCALE;
+    }
+
+    auto node = *mSelectedPolys.begin();
+    auto nodeMat = node->modelWorld();
+    auto camMat = mCamera.modelWorld();
+    float matrixTranslation[3], matrixRotation[3], matrixScale[3];
+    ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(nodeMat),
+                                          matrixTranslation,
+                                          matrixRotation,
+                                          matrixScale);
+
+    if ( ImGui::InputFloat3("Tr", matrixTranslation) )
+      node->setOrigin(glm::make_vec3(matrixTranslation));
+
+    if ( ImGui::InputFloat3("Rt", matrixRotation) )
+      node->setOrientation(glm::make_vec3(matrixRotation));
+
+    if ( ImGui::InputFloat3("Sc", matrixScale) )
+      node->setScale(glm::make_vec3(matrixScale));
+
+    nodeMat = node->modelWorld();
+
+    if (ImGui::RadioButton("Local", mCurrentGizmoMode == ImGuizmo::LOCAL))
+      mCurrentGizmoMode = ImGuizmo::LOCAL;
+
+    if (mCurrentGizmoOperation != ImGuizmo::SCALE)
+    {
+      ImGui::SameLine();
+      if (ImGui::RadioButton("World", mCurrentGizmoMode == ImGuizmo::WORLD))
+        mCurrentGizmoMode = ImGuizmo::WORLD;
+    }
+
+    ImGui::Checkbox("##", &useSnap);
+    ImGui::SameLine();
+    switch (mCurrentGizmoOperation)
+    {
+      case ImGuizmo::TRANSLATE:
+        ImGui::InputFloat3("Snap", &snap[0]);
+        break;
+
+      case ImGuizmo::ROTATE:
+        ImGui::InputFloat("Angle Snap", &snap[0]);
+        break;
+
+      case ImGuizmo::SCALE:
+        ImGui::InputFloat("Scale Snap", &snap[0]);
+        break;
+
+      default:
+        break;
+    }
+    ImGui::Checkbox("Bound Sizing", &boundSizing);
+    if (boundSizing)
+    {
+       ImGui::PushID(3);
+       ImGui::Checkbox("##", &boundSizingSnap);
+       ImGui::SameLine();
+       ImGui::InputFloat3("Snap", boundsSnap);
+       ImGui::PopID();
+    }
+
+    auto camProj = mCamera.projMatrix();
+    auto identity = glm::mat4(1.0f);
+
+    ImGuiIO& io = ImGui::GetIO();
+    ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+    ImGuizmo::SetDrawlist(ImGui::GetBackgroundDrawList());
+//    ImGuizmo::DrawGrid(glm::value_ptr(camView), glm::value_ptr(camProj), glm::value_ptr(identity), 100.f);
+    if ( ImGuizmo::Manipulate(  glm::value_ptr(camView),
+                                glm::value_ptr(camProj),
+                                mCurrentGizmoOperation,
+                                mCurrentGizmoMode,
+                                glm::value_ptr(nodeMat),
+                                nullptr,
+                                useSnap ? &snap[0] : nullptr,
+                                boundSizing ? bounds : nullptr,
+                                boundSizingSnap ? boundsSnap : nullptr) )
+    {
+      node->setOrigin(nodeMat[3]);
+      glm::vec3 scale{};
+      nodeMat[3] = {0, 0, 0, 1};
+
+      for (int i = 0; i < 3; ++i)
+      {
+        scale[i] = glm::length(nodeMat[i]);
+        nodeMat[i] /= scale[i];
+      }
+//      ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(nodeMat), matrixTranslation, matrixRotation, matrixScale);
+      node->setScale(scale);
+      node->setOrientation(glm::toQuat(nodeMat));
+    }
+    ImGui::End();
+  }
+
+  ImGui::SetNextWindowSize({128.0f, 128.0f});
+  ImGui::Begin("View", nullptr, ImGuiWindowFlags_NoMove);
+  ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y,
+                    ImGui::GetWindowWidth(), ImGui::GetWindowHeight());
+  ImVec2 gizmoPos = {ImGui::GetWindowPos().x, ImGui::GetWindowPos().y};
+  ImVec2 gizmoSize = { ImGui::GetWindowWidth(),  ImGui::GetWindowHeight()};
+  ImGuizmo::SetDrawlist();
+  ImGuizmo::ViewManipulate(glm::value_ptr(camView),
+                           8.0f,
+                           gizmoPos,
+                           gizmoSize,
+                           0x10101010);
+  mCamera.setOrientation(glm::conjugate(glm::toQuat(camView)));
+  ImGui::End();
 
   for ( auto drawable : mDepthBuffer )
     drawable.second->draw();

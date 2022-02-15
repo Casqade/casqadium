@@ -24,6 +24,9 @@ target_sources(${TARGET} PRIVATE
   imgui/backends/imgui_impl_opengl2.h
   imgui/backends/imgui_impl_opengl2.cpp
 
+  ImGuizmo/ImGuizmo.h
+  ImGuizmo/ImGuizmo.cpp
+
   include/${TARGET}/olcPGEX_ImGui.hpp
   src/olcPGEX_ImGui.cpp
 
@@ -69,6 +72,7 @@ include(GNUInstallDirs)
 target_include_directories(${TARGET} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/${CMAKE_INSTALL_INCLUDEDIR}>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/imgui>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/ImGuizmo>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
