@@ -82,11 +82,14 @@ GameStateTitle::keyEvent( const olc::Event event )
   switch (event.type)
   {
     case olc::Event::EventType::KeyPressed:
-      mPressedKeys.emplace( key.code );
+    {
+      mPressedKeys.emplace(key.code);
       static sf::Music& music = Music::Get(MusicId::TitleTheme);
-      if ( music.getStatus() != sf::Music::Playing )
-        music.play();
+      if (music.getStatus() != sf::Music::Playing)
+          music.play();
+
       return;
+    }
 
     case olc::Event::EventType::KeyReleased:
     {
