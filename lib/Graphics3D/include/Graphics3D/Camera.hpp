@@ -13,7 +13,7 @@ public:
   enum class Projection : bool
   {
     Perspective,
-    Orthogonal
+    Orthographic
   };
 
 private:

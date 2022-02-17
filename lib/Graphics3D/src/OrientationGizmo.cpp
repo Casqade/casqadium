@@ -44,7 +44,7 @@ OrientationGizmo::appendCulled(
 
   const auto windowSize = olc::renderer->ptrPGE->GetWindowSize();
 
-  const Camera gizmoCam(Camera::Projection::Orthogonal, {},
+  const Camera gizmoCam(Camera::Projection::Orthographic, {},
                         {0.0f, 0.0f, 200.0f, 200.0f});
 
   const glm::mat4 modelView = glm::translate( glm::mat4(1.0f), {0.0f, 0.0f, -5.0f} ) * model;
