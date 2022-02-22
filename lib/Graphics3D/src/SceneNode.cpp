@@ -83,6 +83,48 @@ SceneNode::draw()
   return;
 }
 
+void
+SceneNode::setOriginWorld( const glm::vec3& origin )
+{
+  mOrigin = toLocalSpace(origin);
+}
+
+void
+SceneNode::setOrientationWorld( const glm::quat& orientation )
+{
+  mOrientation = toLocalSpace(orientation);
+}
+
+void
+SceneNode::setScaleWorld( const glm::vec3& scale )
+{
+  mScale = (modelLocal() * glm::inverse(modelWorld()) * glm::translate(glm::mat4(1.0f), scale))[3];
+}
+
+glm::vec3
+SceneNode::toLocalSpace( const glm::vec3& point ) const
+{
+  return glm::translate( modelLocal() * glm::inverse(modelWorld()), point )[3];
+}
+
+glm::quat
+SceneNode::toLocalSpace( const glm::quat& orientation ) const
+{
+  return glm::normalize( glm::quat(modelLocal() * glm::inverse(modelWorld())) * orientation );
+}
+
+glm::vec3
+SceneNode::toWorldSpace( const glm::vec3& point ) const
+{
+  return glm::translate( modelWorld() * glm::inverse(modelLocal()), point )[3];
+}
+
+glm::quat
+SceneNode::toWorldSpace( const glm::quat& orientation ) const
+{
+  return glm::normalize( glm::quat(modelWorld() * glm::inverse(modelLocal())) * orientation );
+}
+
 glm::mat4
 SceneNode::modelWorld() const
 {

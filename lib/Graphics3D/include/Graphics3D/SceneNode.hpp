@@ -40,6 +40,16 @@ public:
 
   virtual void draw();
 
+  void setOriginWorld( const glm::vec3& );
+  void setOrientationWorld( const glm::quat& );
+  void setScaleWorld( const glm::vec3& );
+
+  glm::vec3 toLocalSpace( const glm::vec3& ) const;
+  glm::quat toLocalSpace( const glm::quat& ) const;
+
+  glm::vec3 toWorldSpace( const glm::vec3& ) const;
+  glm::quat toWorldSpace( const glm::quat& ) const;
+
   glm::mat4 modelWorld() const;
 };
 
