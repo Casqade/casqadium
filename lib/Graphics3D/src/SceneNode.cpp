@@ -20,16 +20,7 @@ SceneNode::SceneNode( SceneNode& node )
 
 SceneNode::~SceneNode()
 {
-  for ( auto& child : mChildren )
-    child->setParent( nullptr );
-
-  clearChildren();
-}
-
-std::shared_ptr <SceneNode>
-SceneNode::clone()
-{
-  return std::make_shared <SceneNode> (*this);
+  detachChildren();
 }
 
 void
@@ -38,35 +29,76 @@ SceneNode::setParent( const SceneNode* parent )
   mParent = parent;
 }
 
+
+std::shared_ptr <SceneNode>
+SceneNode::clone()
+{
+  return std::make_shared <SceneNode> (*this);
+}
+
+SceneNode*
+SceneNode::parent() const
+{
+  return const_cast <SceneNode*> (mParent);
+}
+
 void
 SceneNode::addChild( const std::shared_ptr <SceneNode> child )
 {
+  if ( child == nullptr )
+    return;
+
   child->setParent( this );
   mChildren.insert( child );
 }
 
 void
-SceneNode::removeChild( const std::shared_ptr <SceneNode> child )
+SceneNode::addChildren( const std::set <std::shared_ptr <SceneNode>> children )
 {
+  for ( const auto& child : children )
+    addChild(child);
+}
+
+void
+SceneNode::deleteChildren()
+{
+  for ( auto& child : mChildren )
+  {
+    child->setParent();
+    child->deleteChildren();
+  }
+
+  mChildren.clear();
+}
+
+void
+SceneNode::deleteChild( const std::shared_ptr <SceneNode> child )
+{
+  detachChild( child );
+}
+
+std::set <std::shared_ptr <SceneNode>>
+SceneNode::detachChildren()
+{
+  const auto children = mChildren;
+  mChildren.clear();
+
+  for ( auto& child : children )
+    child->setParent();
+
+  return children;
+}
+
+std::shared_ptr <SceneNode>
+SceneNode::detachChild( const std::shared_ptr <SceneNode> child )
+{
+  if ( mChildren.find(child) == mChildren.end() )
+    return nullptr;
+
+  child->setParent();
   mChildren.erase( child );
-}
 
-void
-SceneNode::clearChildren()
-{
-  for ( auto& child : mChildren )
-    child->clearChildren();
-
-  mChildren.clear();
-}
-
-void
-SceneNode::transferChildren( SceneNode& node )
-{
-  for ( auto& child : mChildren )
-    node.addChild( child );
-
-  mChildren.clear();
+  return child;
 }
 
 void

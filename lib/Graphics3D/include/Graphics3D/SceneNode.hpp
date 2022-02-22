@@ -19,21 +19,24 @@ protected:
   const SceneNode* mParent;
   std::set <std::shared_ptr <SceneNode>> mChildren;
 
-  void setParent( const SceneNode* );
+  void setParent( const SceneNode* = nullptr );
   virtual std::shared_ptr <SceneNode> clone();
 
 public:
   SceneNode( const SceneNode* parent = {} );
   SceneNode( SceneNode& );
-  virtual ~SceneNode();
+  ~SceneNode() override;
+
+  SceneNode* parent() const;
 
   void addChild( const std::shared_ptr <SceneNode> );
-  void removeChild( const std::shared_ptr <SceneNode> );
+  void addChildren( const std::set <std::shared_ptr <SceneNode>> );
 
-  void clearChildren();
-  void transferChildren( SceneNode& );
+  void deleteChildren();
+  void deleteChild( const std::shared_ptr <SceneNode> );
 
-//  std::shared_ptr <SceneNode> extractChild();
+  std::set <std::shared_ptr <SceneNode>> detachChildren();
+  std::shared_ptr <SceneNode> detachChild( const std::shared_ptr <SceneNode> );
 
   virtual void appendCulled(  std::multimap < float, SceneNode*, std::greater <float>>& depthBuffer,
                               const Camera* );
