@@ -130,8 +130,6 @@ GameStateSandbox::GameStateSandbox( GameStateController* const stateController )
 
   mCamera.setViewport({ 0.0f, 0.0f, mPGE->GetWindowSize().x, mPGE->GetWindowSize().y });
 //  mCamera.setProjection(Graphics3D::Camera::Projection::Orthogonal);
-
-  mCameraRoot.addChild(gizmo);
 }
 
 bool
@@ -290,7 +288,7 @@ GameStateSandbox::render()
   const glm::vec3 camRight = mCamera.right();
   const glm::vec3 camUp = glm::row( mCamera.viewMatrix(), 1 );
 
-  ImGui::SetNextWindowPos({mPGE->GetWindowSize().x * 0.9f, 0.0f});
+  ImGui::SetNextWindowPos({mPGE->GetDrawTargetWidth() * 0.9f, 0.0f});
   ImGui::Begin("Orientation");
 
   ImGui::Text("Camera pos:");
@@ -325,23 +323,18 @@ GameStateSandbox::render()
   ImGui::TextColored({0.0f, 0.0f, 1.0f, 1.0f}, std::to_string(camUp.z).c_str());
 
   ImGui::Text(("Depth buffer size: " + std::to_string(mDepthBuffer.size())).c_str());
+
   ImGui::End();
 
 
   static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
   static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::LOCAL);
 
-  static bool useSnap = false;
-  static float snap[3] = { 1.f, 1.f, 1.f };
-  static float bounds[] = { -0.5f, -0.5f, -0.5f, 0.5f, 0.5f, 0.5f };
-  static float boundsSnap[] = { 0.1f, 0.1f, 0.1f };
-  static bool boundSizing = false;
-  static bool boundSizingSnap = false;
-
   auto camView = mCamera.viewMatrix();
+
   if ( mSelectedPolys.size() > 0 )
   {
-    ImGui::SetNextWindowPos({0.0f, 0.0f});
+    ImGui::SetNextWindowPos({0.0f, 128.0f});
     ImGui::Begin("Gizmo");
 
     if ( ImGui::RadioButton("Translate", mCurrentGizmoOperation == ImGuizmo::TRANSLATE) )
@@ -359,34 +352,59 @@ GameStateSandbox::render()
     }
 
     auto node = *mSelectedPolys.begin();
-    auto nodeMat = node->modelWorld();
-    auto camMat = mCamera.modelWorld();
-    float matrixTranslation[3], matrixRotation[3], matrixScale[3];
-    ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(nodeMat),
-                                          matrixTranslation,
-                                          matrixRotation,
-                                          matrixScale);
+    glm::mat4 nodeMat;
 
-    if ( ImGui::InputFloat3("Tr", matrixTranslation) )
-      node->setOrigin(glm::make_vec3(matrixTranslation));
+    if ( mCurrentGizmoMode == ImGuizmo::LOCAL )
+      nodeMat = node->modelLocal();
+    else if ( mCurrentGizmoMode == ImGuizmo::WORLD )
+      nodeMat = node->modelWorld();
 
-    if ( ImGui::InputFloat3("Rt", matrixRotation) )
-      node->setOrientation(glm::make_vec3(matrixRotation));
+    glm::vec3 nodeTrans;
+    glm::quat nodeRotation;
+    glm::vec3 nodeScale = node->scale();
+    glm::vec3 skew;
+    glm::vec4 pers;
 
-    if ( ImGui::InputFloat3("Sc", matrixScale) )
-      node->setScale(glm::make_vec3(matrixScale));
+    glm::decompose(nodeMat,
+                   nodeScale,
+                   nodeRotation,
+                   nodeTrans,
+                   skew,
+                   pers);
 
-    nodeMat = node->modelWorld();
+    glm::vec3 nodeOrien = glm::degrees(glm::eulerAngles(nodeRotation));
 
-    if (ImGui::RadioButton("Local", mCurrentGizmoMode == ImGuizmo::LOCAL))
+    if ( ImGui::InputFloat3("Tr", glm::value_ptr(nodeTrans)) )
+    {
+      if ( mCurrentGizmoMode == ImGuizmo::LOCAL )
+        node->setOrigin(nodeTrans);
+
+      else if ( mCurrentGizmoMode == ImGuizmo::WORLD )
+        node->setOrigin(node->toLocalSpace(nodeTrans));
+    }
+    if ( ImGui::InputFloat3("Rt", glm::value_ptr(nodeOrien)) )
+    {
+      if ( mCurrentGizmoMode == ImGuizmo::LOCAL )
+        node->setOrientation(glm::radians(nodeOrien));
+
+      else if ( mCurrentGizmoMode == ImGuizmo::WORLD )
+        node->setOrientation(node->toLocalSpace(glm::quat(glm::radians(nodeOrien))));
+    }
+    if ( ImGui::InputFloat3("Sc", glm::value_ptr(nodeScale)) )
+      node->setScale(nodeScale);
+
+    if ( ImGui::RadioButton("Local", mCurrentGizmoMode == ImGuizmo::LOCAL) )
       mCurrentGizmoMode = ImGuizmo::LOCAL;
 
     if (mCurrentGizmoOperation != ImGuizmo::SCALE)
     {
       ImGui::SameLine();
-      if (ImGui::RadioButton("World", mCurrentGizmoMode == ImGuizmo::WORLD))
+      if ( ImGui::RadioButton("World", mCurrentGizmoMode == ImGuizmo::WORLD) )
         mCurrentGizmoMode = ImGuizmo::WORLD;
     }
+
+    static bool useSnap = false;
+    static float snap[3] = { 1.f, 1.f, 1.f };
 
     ImGui::Checkbox("##", &useSnap);
     ImGui::SameLine();
@@ -407,49 +425,40 @@ GameStateSandbox::render()
       default:
         break;
     }
-    ImGui::Checkbox("Bound Sizing", &boundSizing);
-    if (boundSizing)
-    {
-       ImGui::PushID(3);
-       ImGui::Checkbox("##", &boundSizingSnap);
-       ImGui::SameLine();
-       ImGui::InputFloat3("Snap", boundsSnap);
-       ImGui::PopID();
-    }
 
+    nodeMat = node->modelWorld();
     auto camProj = mCamera.projMatrix();
     auto identity = glm::mat4(1.0f);
+    glm::mat4 deltaMat;
 
     ImGuiIO& io = ImGui::GetIO();
     ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
     ImGuizmo::SetDrawlist(ImGui::GetBackgroundDrawList());
-//    ImGuizmo::DrawGrid(glm::value_ptr(camView), glm::value_ptr(camProj), glm::value_ptr(identity), 100.f);
+
     if ( ImGuizmo::Manipulate(  glm::value_ptr(camView),
                                 glm::value_ptr(camProj),
                                 mCurrentGizmoOperation,
                                 mCurrentGizmoMode,
                                 glm::value_ptr(nodeMat),
-                                nullptr,
+                                glm::value_ptr(deltaMat),
                                 useSnap ? &snap[0] : nullptr,
-                                boundSizing ? bounds : nullptr,
-                                boundSizingSnap ? boundsSnap : nullptr) )
+                                nullptr,
+                                nullptr ) )
     {
-      node->setOrigin(nodeMat[3]);
-      glm::vec3 scale{};
-      nodeMat[3] = {0, 0, 0, 1};
+      nodeMat = node->toLocalSpace(nodeMat);
 
-      for (int i = 0; i < 3; ++i)
-      {
-        scale[i] = glm::length(nodeMat[i]);
-        nodeMat[i] /= scale[i];
-      }
-//      ImGuizmo::DecomposeMatrixToComponents(glm::value_ptr(nodeMat), matrixTranslation, matrixRotation, matrixScale);
-      node->setScale(scale);
-      node->setOrientation(glm::toQuat(nodeMat));
+      glm::decompose( nodeMat,
+                      nodeScale, nodeRotation, nodeTrans,
+                      skew, pers );
+
+      node->setOrigin(nodeTrans);
+      node->setOrientation(nodeRotation);
+      node->setScale(nodeScale);
     }
     ImGui::End();
   }
 
+  ImGui::SetNextWindowPos({0.0f, 0.0f});
   ImGui::SetNextWindowSize({128.0f, 128.0f});
   ImGui::Begin("View", nullptr, ImGuiWindowFlags_NoMove);
   ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y,
@@ -457,6 +466,7 @@ GameStateSandbox::render()
   ImVec2 gizmoPos = {ImGui::GetWindowPos().x, ImGui::GetWindowPos().y};
   ImVec2 gizmoSize = { ImGui::GetWindowWidth(),  ImGui::GetWindowHeight()};
   ImGuizmo::SetDrawlist();
+
   ImGuizmo::ViewManipulate(glm::value_ptr(camView),
                            8.0f,
                            gizmoPos,
