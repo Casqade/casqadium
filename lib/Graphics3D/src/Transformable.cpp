@@ -30,13 +30,13 @@ Transformable::translate( const glm::vec3& translation )
 void
 Transformable::rotate( const glm::quat& rotation )
 {
-  mOrientation *= rotation;
+  mOrientation = glm::normalize(mOrientation * rotation);
 }
 
 void
 Transformable::rotateGlobal( const glm::quat& rotation )
 {
-  mOrientation = rotation * mOrientation;
+  mOrientation = glm::normalize(rotation * mOrientation);
 }
 
 void
