@@ -99,9 +99,6 @@ GameStateSandbox::GameStateSandbox( GameStateController* const stateController )
   mAxisY1.setOrigin({ 0.0f, 100.0f, 0.0f });
   mAxisZ0.setOrigin({ 0.0f, 0.0f, -100.0f });
   mAxisZ1.setOrigin({ 0.0f, 0.0f, 100.0f });
-  auto gizmo = std::make_shared <Graphics3D::OrientationGizmo> (&mCamera);
-  gizmo->setScale({20.0f, 20.0f, 20.0f});
-//  gizmo->setOrigin({0.0f, 0.0f, -2.0f});
 
   mPolyX.setFrontFace( mPolyXtext->Decal() );
   mPolyY.setFrontFace( mPolyYtext->Decal() );

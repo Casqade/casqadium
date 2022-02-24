@@ -13,9 +13,6 @@ target_sources(${TARGET} PRIVATE
   src/Camera.cpp
   include/${TARGET}/Camera.hpp
 
-  src/OrientationGizmo.cpp
-  include/${TARGET}/OrientationGizmo.hpp
-
   src/Transformable.cpp
   include/${TARGET}/Transformable.hpp
 
