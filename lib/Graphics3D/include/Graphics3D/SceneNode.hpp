@@ -49,9 +49,11 @@ public:
 
   glm::vec3 toLocalSpace( const glm::vec3& ) const;
   glm::quat toLocalSpace( const glm::quat& ) const;
+  glm::mat4 toLocalSpace( const glm::mat4& ) const;
 
   glm::vec3 toWorldSpace( const glm::vec3& ) const;
   glm::quat toWorldSpace( const glm::quat& ) const;
+  glm::mat4 toWorldSpace( const glm::mat4& ) const;
 
   glm::mat4 modelWorld() const;
 };

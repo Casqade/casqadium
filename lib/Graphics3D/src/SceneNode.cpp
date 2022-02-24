@@ -145,6 +145,12 @@ SceneNode::toLocalSpace( const glm::quat& orientation ) const
   return glm::normalize( glm::quat(modelLocal() * glm::inverse(modelWorld())) * orientation );
 }
 
+glm::mat4
+SceneNode::toLocalSpace( const glm::mat4& mat ) const
+{
+  return modelLocal() * glm::inverse(modelWorld()) * mat;
+}
+
 glm::vec3
 SceneNode::toWorldSpace( const glm::vec3& point ) const
 {
@@ -155,6 +161,12 @@ glm::quat
 SceneNode::toWorldSpace( const glm::quat& orientation ) const
 {
   return glm::normalize( glm::quat(modelWorld() * glm::inverse(modelLocal())) * orientation );
+}
+
+glm::mat4
+SceneNode::toWorldSpace( const glm::mat4& mat ) const
+{
+  return modelWorld() * glm::inverse(modelLocal()) * mat;
 }
 
 glm::mat4
