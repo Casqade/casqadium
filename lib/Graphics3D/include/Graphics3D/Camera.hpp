@@ -13,7 +13,27 @@ public:
   enum class Projection : bool
   {
     Perspective,
-    Orthographic
+    Orthographic,
+  };
+
+  enum ViewMatrixVector
+  {
+    Right,
+    Up,
+    Front
+  };
+
+  enum class RenderMode
+  {
+    Wireframe,
+    WireframeTextured,
+    Solid,
+  };
+
+  enum class CullingMode
+  {
+    DoubleSidedFaces,
+    CullBackface,
   };
 
 private:
@@ -21,6 +41,9 @@ private:
   glm::vec4 mViewport;
   Projection mProjection;
   std::pair <float, float> mZrange;
+
+  RenderMode mRenderMode;
+  CullingMode mCullingMode;
 
 public:
   Camera( const Projection& = Projection::Perspective,
@@ -44,17 +67,13 @@ public:
   float fov() const;
   Projection projection() const;
   std::pair <float, float> zRange() const;
+
+  RenderMode renderMode() const;
+  CullingMode cullingMode() const;
 };
 
 class CameraFPS : public Camera
 {
-  enum ViewMatrixVector
-  {
-    Right,
-    Up,
-    Front
-  };
-
 public:
   void rotate( const glm::quat& ) override;
   void rotateGlobal( const glm::quat& ) override;
