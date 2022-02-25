@@ -9,6 +9,14 @@
 namespace Graphics3D
 {
 
+constexpr std::array <glm::vec3, 4> defaultQuadVerts =
+{{
+  {-0.5f, 0.5f, 0.0f},
+  {-0.5f, -0.5f, 0.0f},
+  {0.5f, -0.5f, 0.0f},
+  {0.5f, 0.5f, 0.0f}
+}};
+
 class Quad : public SceneNode
 {
   std::array <glm::vec3, 4> mVerts;
@@ -34,7 +42,7 @@ class Quad : public SceneNode
   bool isClockWise( const bool yAxisUp = false ) const;
 
 public:
-  Quad( const std::array <glm::vec3, 4>& verts,
+  Quad( const std::array <glm::vec3, 4>& = defaultQuadVerts,
         const SceneNode* parent = nullptr );
 
   void draw() override;
