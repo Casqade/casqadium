@@ -99,6 +99,17 @@ Camera::zRange() const
   return mZrange;
 }
 
+Camera::RenderMode
+Camera::renderMode() const
+{
+  return mRenderMode;
+}
+
+Camera::CullingMode
+Camera::cullingMode() const
+{
+  return mCullingMode;
+}
 
 void
 CameraFPS::rotate( const glm::quat& rotation )
