@@ -210,14 +210,14 @@ GameStateSandbox::mouseMoveEvent( const olc::Event::MouseMoveEvent event )
   if ( mPressedKeys.count( olc::Key::CTRL ) > 0 )
   {
 //  if ( mPressedKeys.count( olc::Key::X ) > 0 )
-    mCamera.rotate( glm::angleAxis( glm::radians((float) -event.dy), glm::vec3{1.0f, 0.0f, 0.0f} ) );
-//    mCamera.rotateGlobal( glm::angleAxis( glm::radians((float) -event.dy), mCamera.toWorldSpace(mCamera.right()) ) );
+    mCamera.rotate( glm::normalize(glm::angleAxis( glm::radians((float) -event.dy), glm::vec3{1.0f, 0.0f, 0.0f} )) );
+//    mCamera.rotateGlobal( glm::normalize(glm::angleAxis( glm::radians((float) -event.dy), mCamera.toWorldSpace(mCamera.right()) )) );
 
   if ( mPressedKeys.count( olc::Key::Z ) > 0 )
-    mCamera.rotate( glm::angleAxis( glm::radians((float) -event.dx), glm::vec3{0.0f, 0.0f, 1.0f} ) );
+    mCamera.rotate( glm::normalize(glm::angleAxis( glm::radians((float) -event.dx), glm::vec3{0.0f, 0.0f, 1.0f} )) );
   else
 //      if ( mPressedKeys.count( olc::Key::Y ) > 0 )
-    mCamera.rotateGlobal( glm::angleAxis( glm::radians((float) -event.dx), glm::vec3{0.0f, 1.0f, 0.0f} ) );
+    mCamera.rotateGlobal( glm::normalize(glm::angleAxis( glm::radians((float) -event.dx), glm::vec3{0.0f, 1.0f, 0.0f} )) );
   }
 
   if ( mPressedKeys.size() == 0 )

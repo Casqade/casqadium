@@ -118,8 +118,15 @@ CameraFPS::rotate( const glm::quat& rotation )
 
   Transformable::rotate( rotation );
 
-  if (up().y < 0.0f)
-    mOrientation = lastOrientation;
+  if ( up().y < 0.0f )
+    mOrientation = glm::normalize(lastOrientation);
+
+  else if ( std::abs(right().y) != 0.0f )
+  {
+    mOrientation = glm::normalize(lastOrientation);
+
+    Transformable::rotate( rotation );
+  }
 }
 
 void
@@ -129,8 +136,15 @@ CameraFPS::rotateGlobal( const glm::quat& rotation )
 
   Transformable::rotateGlobal( rotation );
 
-  if (up().y < 0.0f)
-    mOrientation = lastOrientation;
+  if ( up().y < 0.0f )
+    mOrientation = glm::normalize(lastOrientation);
+
+  else if ( std::abs(right().y) != 0.0f )
+  {
+    mOrientation = glm::normalize(lastOrientation);
+
+    Transformable::rotateGlobal( rotation );
+  }
 }
 
 } // namespace Graphics3D
