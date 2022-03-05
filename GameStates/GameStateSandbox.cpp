@@ -475,12 +475,14 @@ GameStateSandbox::render()
   ImGuizmo::SetDrawlist();
 
   auto camControlMat = glm::inverse(mCameraController->modelWorld());
+  const auto camControlMatPrev = camControlMat;
   ImGuizmo::ViewManipulate(glm::value_ptr(camControlMat),
                            8.0f,
                            gizmoPos,
                            gizmoSize,
                            0x10101010);
-  mCameraController->setOrientation(glm::conjugate(glm::toQuat(camControlMat)));
+  if ( camControlMat != camControlMatPrev )
+    mCameraController->setOrientation( glm::conjugate(glm::toQuat(camControlMat)) );
 
   ImGui::End();
 
