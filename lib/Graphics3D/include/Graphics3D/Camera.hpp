@@ -78,11 +78,29 @@ public:
   LightingMode lightingMode() const;
 };
 
-class CameraFPS : public Camera
+class CameraController : public SceneNode
 {
 public:
-  void rotate( const glm::quat& ) override;
-  void rotateGlobal( const glm::quat& ) override;
+  CameraController() = default;
+  virtual ~CameraController() = default;
+
+  virtual void control( const glm::vec3& angleDelta );
+};
+
+class CameraControllerFPS : public CameraController
+{
+  glm::vec3 mViewCurrent;
+  std::pair <glm::vec3, glm::vec3> mViewLimits;
+
+public:
+  CameraControllerFPS( const std::pair <glm::vec3,
+                                        glm::vec3>& viewLimits = {glm::radians(glm::vec3{-90.0f, -180.0f, -10.0f}),
+                                                                  glm::radians(glm::vec3{90.0f, 180.0f, 10.0f})});
+
+  void control( const glm::vec3& angleDelta ) override;
+
+  void setViewCurrent( const glm::vec3& );
+  void setViewLimits( const std::pair <glm::vec3, glm::vec3>& );
 };
 
 } // namespace Graphics3D

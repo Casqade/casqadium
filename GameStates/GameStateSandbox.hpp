@@ -18,7 +18,8 @@ class GameStateSandbox
 
   } mState;
 
-  Graphics3D::CameraFPS mCamera;
+  std::shared_ptr <Graphics3D::Camera> mCamera;
+  std::shared_ptr <Graphics3D::CameraController> mCameraController;
 
   std::multimap <float, Graphics3D::SceneNode*, std::greater <float>> mDepthBuffer;
 

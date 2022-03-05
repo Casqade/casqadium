@@ -104,40 +104,50 @@ Camera::textureMode() const
   return mTextureMode;
 }
 
-void
-CameraFPS::rotate( const glm::quat& rotation )
+Camera::LightingMode
+Camera::lightingMode() const
 {
-  const auto lastOrientation = mOrientation;
+  return mLightingMode;
+}
 
-  Transformable::rotate( rotation );
 
-  if ( up().y < 0.0f )
-    mOrientation = glm::normalize(lastOrientation);
+void
+CameraController::control( const glm::vec3& angle )
+{
+  rotate( glm::angleAxis(angle.x, glm::vec3{1.0f, 0.0f, 0.0f}) );
+  rotate( glm::angleAxis(angle.y, glm::vec3{0.0f, 1.0f, 0.0f}) );
+  rotate( glm::angleAxis(angle.z, glm::vec3{0.0f, 0.0f, 1.0f}) );
+}
 
-  else if ( std::abs(right().y) != 0.0f )
-  {
-    mOrientation = glm::normalize(lastOrientation);
 
-    Transformable::rotate( rotation );
-  }
+CameraControllerFPS::CameraControllerFPS( const std::pair <glm::vec3, glm::vec3>& viewLimits )
+  : CameraController()
+  , mViewCurrent()
+  , mViewLimits(viewLimits)
+{}
+
+void
+CameraControllerFPS::control( const glm::vec3& angle )
+{
+  const auto viewLast = mViewCurrent;
+
+  mViewCurrent = glm::clamp( mViewCurrent + angle, mViewLimits.first, mViewLimits.second );
+
+  rotate( glm::angleAxis( (mViewCurrent - viewLast).x, glm::vec3{1.0f, 0.0f, 0.0f} ) );
+  rotateGlobal( glm::angleAxis( (mViewCurrent - viewLast).y, glm::vec3{0.0f, 1.0f, 0.0f} ) );
+  rotate( glm::angleAxis( (mViewCurrent - viewLast).z, glm::vec3{0.0f, 0.0f, 1.0f} ) );
 }
 
 void
-CameraFPS::rotateGlobal( const glm::quat& rotation )
+CameraControllerFPS::setViewCurrent( const glm::vec3& viewCurrent )
 {
-  const auto lastOrientation = mOrientation;
+  mViewCurrent = viewCurrent;
+}
 
-  Transformable::rotateGlobal( rotation );
-
-  if ( up().y < 0.0f )
-    mOrientation = glm::normalize(lastOrientation);
-
-  else if ( std::abs(right().y) != 0.0f )
-  {
-    mOrientation = glm::normalize(lastOrientation);
-
-    Transformable::rotateGlobal( rotation );
-  }
+void
+CameraControllerFPS::setViewLimits( const std::pair <glm::vec3, glm::vec3>& viewLimits )
+{
+  mViewLimits = viewLimits;
 }
 
 } // namespace Graphics3D
