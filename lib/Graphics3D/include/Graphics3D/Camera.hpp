@@ -20,20 +20,26 @@ public:
   {
     Right,
     Up,
-    Front
+    Front,
   };
 
   enum class RenderMode
   {
     Wireframe,
-    WireframeTextured,
     Solid,
   };
 
-  enum class CullingMode
+  enum class TextureMode
   {
-    DoubleSidedFaces,
-    CullBackface,
+    NoTexture,
+    Color,
+    Textured,
+  };
+
+  enum class LightingMode
+  {
+    Ambient,
+    Diffuse,
   };
 
 private:
@@ -42,8 +48,9 @@ private:
   Projection mProjection;
   std::pair <float, float> mZrange;
 
-  RenderMode mRenderMode;
-  CullingMode mCullingMode;
+  RenderMode    mRenderMode;
+  TextureMode   mTextureMode;
+  LightingMode  mLightingMode;
 
 public:
   Camera( const Projection& = Projection::Perspective,
@@ -67,7 +74,8 @@ public:
   std::pair <float, float> zRange() const;
 
   RenderMode renderMode() const;
-  CullingMode cullingMode() const;
+  TextureMode textureMode() const;
+  LightingMode lightingMode() const;
 };
 
 class CameraFPS : public Camera

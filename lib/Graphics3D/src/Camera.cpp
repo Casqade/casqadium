@@ -1,5 +1,7 @@
 #include <Graphics3D/Camera.hpp>
 #include <glm/gtc/matrix_access.hpp>
+#include <glm/gtx/vector_angle.hpp>
+#include <iostream>
 
 
 namespace Graphics3D
@@ -14,6 +16,9 @@ Camera::Camera(
   , mViewport(viewport)
   , mProjection(projection)
   , mZrange(zRange)
+  , mRenderMode(RenderMode::Solid)
+  , mTextureMode(TextureMode::Textured)
+  , mLightingMode(LightingMode::Diffuse)
 {}
 
 void
@@ -93,10 +98,10 @@ Camera::renderMode() const
   return mRenderMode;
 }
 
-Camera::CullingMode
-Camera::cullingMode() const
+Camera::TextureMode
+Camera::textureMode() const
 {
-  return mCullingMode;
+  return mTextureMode;
 }
 
 void

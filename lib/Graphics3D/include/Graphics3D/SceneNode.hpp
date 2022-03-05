@@ -41,7 +41,7 @@ public:
   virtual void appendCulled(  std::multimap < float, SceneNode*, std::greater <float>>& depthBuffer,
                               const Camera* );
 
-  virtual void draw();
+  virtual void draw( const Camera* );
 
   void setOriginWorld( const glm::vec3& );
   void setOrientationWorld( const glm::quat& );

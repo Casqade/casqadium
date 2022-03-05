@@ -5,8 +5,6 @@
 namespace Graphics3D
 {
 
-bool wireFrameEnabled = false;
-
 bool frontFaceWindingOrder = false;
 
 olc::Pixel wireFrameFrontFaceColor = olc::DARK_RED;
@@ -26,8 +24,7 @@ Quad::Quad(
   , mSelected()
   , mFrontFaceDecal()
   , mBackFaceDecal()
-  , mFrontFaceColor(wireFrameFrontFaceColor)
-  , mBackFaceColor(wireFrameBackFaceColor)
+  , mDoubleSidedFace()
 {}
 
 bool
@@ -82,43 +79,79 @@ Quad::appendCulled( std::multimap < float, SceneNode*, std::greater <float>>& de
     return;
 
   mProjectedWindingOrder = (FaceWindingOrder) isClockWise();
-//  if (    wireFrameEnabled == false
-//       && mBackFaceDecal == nullptr
-//       && mProjectedWindingOrder != frontFaceWindingOrder
-//          )
-//    return;
+
+  if ( mDoubleSidedFace == false
+       && mProjectedWindingOrder != frontFaceWindingOrder )
+    return;
 
   polygonDepth /= mVertsProjected.size();
   depthBuffer.emplace( polygonDepth, this );
 }
 
 void
-Quad::draw()
+Quad::draw( const Camera* camera )
 {
-  if ( wireFrameEnabled )
+  olc::Pixel colorLight = olc::WHITE;
+  olc::Pixel colorTexture = olc::WHITE;
+
+  switch ( camera->renderMode() )
   {
-    if ( mSelected )
-      drawOutline(  mProjectedWindingOrder == frontFaceWindingOrder ?
-                    wireFrameFrontFaceColor.inv() : wireFrameBackFaceColor.inv() );
-    else
-      drawOutline(  mProjectedWindingOrder == frontFaceWindingOrder ?
-                    wireFrameFrontFaceColor : wireFrameBackFaceColor );
+    case Camera::RenderMode::Wireframe:
+    {
+      colorTexture =  mProjectedWindingOrder == frontFaceWindingOrder ?
+                      wireFrameFrontFaceColor : wireFrameBackFaceColor;
 
-    olc::renderer->ptrPGE->FillRectDecal( mVertsProjected[2], { 3.0f, 3.0f }, olc::RED );
-    olc::renderer->ptrPGE->FillRectDecal( mVertsProjected[0], { 3.0f, 3.0f }, olc::GREEN );
-    olc::renderer->ptrPGE->FillRectDecal( mVertsProjected[1], { 3.0f, 3.0f }, olc::BLUE );
+      if ( mSelected )
+        drawOutline(  mProjectedWindingOrder == frontFaceWindingOrder ?
+                      wireFrameFrontFaceColor.inv() : wireFrameBackFaceColor.inv() );
+      else
+        drawOutline( colorTexture );
 
-    return;
+      olc::renderer->ptrPGE->FillRectDecal( mVertsProjected[2], { 5.0f, 5.0f }, olc::RED );
+      olc::renderer->ptrPGE->FillRectDecal( mVertsProjected[0], { 5.0f, 5.0f }, olc::GREEN );
+      olc::renderer->ptrPGE->FillRectDecal( mVertsProjected[1], { 5.0f, 5.0f }, olc::BLUE );
+
+      break;
+    }
+
+    default:
+      break;
   }
 
-  if ( mProjectedWindingOrder == frontFaceWindingOrder )
-    olc::renderer->ptrPGE->DrawWarpedDecal( mFrontFaceDecal,
-                                            mVertsProjected,
-                                            mFrontFaceDecal ? olc::WHITE : mFrontFaceColor );
-  else
-    olc::renderer->ptrPGE->DrawWarpedDecal( mBackFaceDecal,
-                                            mVertsProjected,
-                                            mBackFaceDecal ? olc::WHITE : mBackFaceColor );
+  switch ( camera->lightingMode() )
+  {
+    case Camera::LightingMode::Diffuse:
+    {
+      colorLight = olc::WHITE;
+
+      break;
+    }
+
+    default:
+      break;
+  }
+
+  switch ( camera->textureMode() )
+  {
+    case Camera::TextureMode::Color:
+    {
+      drawSolid( nullptr, colorTexture );
+
+      break;
+    }
+
+    case Camera::TextureMode::Textured:
+    {
+      drawSolid(  mProjectedWindingOrder == frontFaceWindingOrder ?
+                    mFrontFaceDecal : mBackFaceDecal,
+                  colorLight );
+
+      break;
+    }
+
+    default:
+      return;
+  }
 
   if ( mSelected )
     drawOutline(  mProjectedWindingOrder == frontFaceWindingOrder ?
@@ -134,6 +167,15 @@ Quad::drawOutline( const olc::Pixel& color ) const
     olc::renderer->ptrPGE->DrawLineDecal( mVertsProjected[i],
                                           mVertsProjected[iNext],
                                           color );
+}
+
+void
+Quad::drawSolid( olc::Decal* const decal,
+                 const olc::Pixel& tint ) const
+{
+  olc::renderer->ptrPGE->DrawWarpedDecal( decal,
+                                          mVertsProjected,
+                                          tint );
 }
 
 bool
@@ -156,9 +198,15 @@ Quad::isUnderCursor( olc::vi2d mouse ) const
 }
 
 void
-Quad::setSelected( bool selected )
+Quad::setSelected( const bool selected )
 {
   mSelected = selected;
+}
+
+void
+Quad::setDoubleSidedFace( const bool doubleSidedFace )
+{
+  mDoubleSidedFace = doubleSidedFace;
 }
 
 void
@@ -168,21 +216,9 @@ Quad::setFrontFace( olc::Decal* decal )
 }
 
 void
-Quad::setFrontFace( const olc::Pixel color )
-{
-  mFrontFaceColor = color;
-}
-
-void
 Quad::setBackFace( olc::Decal* decal )
 {
   mBackFaceDecal = decal;
-}
-
-void
-Quad::setBackFace( const olc::Pixel color )
-{
-  mBackFaceColor = color;
 }
 
 }

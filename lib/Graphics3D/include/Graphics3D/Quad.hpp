@@ -27,8 +27,7 @@ class Quad : public SceneNode
   olc::Decal* mFrontFaceDecal;
   olc::Decal* mBackFaceDecal;
 
-  olc::Pixel  mFrontFaceColor;
-  olc::Pixel  mBackFaceColor;
+  bool mDoubleSidedFace;
 
   enum FaceWindingOrder : bool
   {
@@ -38,6 +37,8 @@ class Quad : public SceneNode
   } mProjectedWindingOrder;
 
   void drawOutline( const olc::Pixel& ) const;
+  void drawSolid( olc::Decal* const,
+                  const olc::Pixel& tint ) const;
 
   bool isClockWise( const bool yAxisUp = false ) const;
 
@@ -45,20 +46,18 @@ public:
   Quad( const std::array <glm::vec3, 4>& = defaultQuadVerts,
         const SceneNode* parent = nullptr );
 
-  void draw() override;
+  void draw( const Camera* ) override;
   void appendCulled(  std::multimap < float, SceneNode*, std::greater <float>>& depthBuffer,
                       const Camera* ) override;
 
   bool isUnderCursor( olc::vi2d ) const;
 
   bool isSelected() const;
-  void setSelected( bool );
+  void setSelected( const bool );
+  void setDoubleSidedFace( const bool );
 
   void setFrontFace( olc::Decal* );
-  void setFrontFace( const olc::Pixel );
-
   void setBackFace( olc::Decal* );
-  void setBackFace( const olc::Pixel );
 };
 
 }

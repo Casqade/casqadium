@@ -110,7 +110,7 @@ SceneNode::appendCulled(  std::multimap < float, SceneNode*, std::greater <float
 }
 
 void
-SceneNode::draw()
+SceneNode::draw( const Camera* )
 {
   return;
 }
