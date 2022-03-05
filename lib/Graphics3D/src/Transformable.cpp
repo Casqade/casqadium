@@ -81,4 +81,22 @@ Transformable::scale() const
   return mScale;
 }
 
+glm::vec3
+Transformable::front() const
+{
+  return glm::rotate( mOrientation, {0.0f, 0.0f, -1.0f} );
+}
+
+glm::vec3
+Transformable::right() const
+{
+  return glm::rotate( mOrientation, {1.0f, 0.0f, 0.0f} );
+}
+
+glm::vec3
+Transformable::up() const
+{
+  return glm::rotate( mOrientation, {0.0f, 1.0f, 0.0f} );
+}
+
 } // namespace Graphics3D

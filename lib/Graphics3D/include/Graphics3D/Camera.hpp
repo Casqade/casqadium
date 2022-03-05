@@ -56,9 +56,7 @@ public:
   void setProjection( const Projection& );
   void setZrange( const std::pair <float, float>& );
 
-  glm::vec3 front() const;
-  glm::vec3 right() const;
-  glm::vec3 up() const;
+  glm::vec3 front() const override;
 
   glm::mat4 viewMatrix() const;
   glm::mat4 projMatrix() const;

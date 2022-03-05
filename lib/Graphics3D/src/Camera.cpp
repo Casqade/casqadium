@@ -46,18 +46,6 @@ Camera::front() const
   return glm::rotate( mOrientation, {0.0f, 0.0f, -1.0f} );
 }
 
-glm::vec3
-Camera::right() const
-{
-  return glm::rotate( mOrientation, {1.0f, 0.0f, 0.0f} );
-}
-
-glm::vec3
-Camera::up() const
-{
-  return glm::rotate( mOrientation, {0.0f, 1.0f, 0.0f} );
-}
-
 glm::mat4
 Camera::viewMatrix() const
 {

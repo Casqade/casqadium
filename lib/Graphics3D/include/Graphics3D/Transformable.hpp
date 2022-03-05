@@ -38,6 +38,10 @@ public:
   virtual glm::vec3 origin() const;
   virtual glm::quat orientation() const;
   virtual glm::vec3 scale() const;
+
+  virtual glm::vec3 front() const;
+  virtual glm::vec3 right() const;
+  virtual glm::vec3 up() const;
 };
 
 } // namespace Graphics3D
