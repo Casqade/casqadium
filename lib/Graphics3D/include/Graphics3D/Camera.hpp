@@ -92,6 +92,11 @@ class CameraControllerFPS : public CameraController
   glm::vec2 mViewCurrent;
   std::pair <glm::vec2, glm::vec2> mViewLimits;
 
+  glm::vec3 mUpAxis;
+
+  void clampViewAxis( const std::pair <float, float> valueLimits,
+                      float& value );
+
 public:
   CameraControllerFPS( const std::pair <glm::vec2,
                                         glm::vec2>& viewLimits = {glm::vec2{  glm::radians(-90.0f),
@@ -101,6 +106,9 @@ public:
 
   void control( const glm::vec3& angleDelta ) override;
 
+  void setOrientation( const glm::quat& ) override;
+
+  void setAxisUp( const glm::vec3& );
   void setViewCurrent( const glm::vec2& );
   void setViewLimits( const std::pair <glm::vec3, glm::vec3>& );
 };

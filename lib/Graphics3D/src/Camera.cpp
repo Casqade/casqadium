@@ -124,7 +124,22 @@ CameraControllerFPS::CameraControllerFPS( const std::pair <glm::vec2, glm::vec2>
   : CameraController()
   , mViewCurrent()
   , mViewLimits(viewLimits)
+  , mUpAxis(up())
 {}
+
+
+void
+CameraControllerFPS::clampViewAxis( const std::pair <float, float> valueLimits,
+                                    float& value )
+{
+  if (    valueLimits.first == -std::numeric_limits <float>::infinity()
+       && value < glm::radians(-180.0f) )
+    value += glm::radians(360.0f);
+
+  if (    valueLimits.second == std::numeric_limits <float>::infinity()
+       && value > glm::radians(180.0f) )
+    value -= glm::radians(360.0f);
+}
 
 void
 CameraControllerFPS::control( const glm::vec3& angle )
@@ -135,8 +150,28 @@ CameraControllerFPS::control( const glm::vec3& angle )
                              mViewLimits.first,
                              mViewLimits.second );
 
+  clampViewAxis( {mViewLimits.first.x, mViewLimits.second.x},
+                  mViewCurrent.x );
+
+  clampViewAxis( {mViewLimits.first.y, mViewLimits.second.y},
+                  mViewCurrent.y );
+
   rotate( glm::angleAxis( (mViewCurrent - viewLast).x, glm::vec3{1.0f, 0.0f, 0.0f} ) );
-  rotateGlobal( glm::angleAxis( (mViewCurrent - viewLast).y, glm::vec3{0.0f, 1.0f, 0.0f} ) );
+  rotateGlobal( glm::angleAxis( (mViewCurrent - viewLast).y, mUpAxis ) );
+}
+
+void
+CameraControllerFPS::setOrientation( const glm::quat& orientation )
+{
+  Transformable::setOrientation( orientation );
+  mViewCurrent = {};
+  mUpAxis = up();
+}
+
+void
+CameraControllerFPS::setUpAxis( const glm::vec3& axisUp )
+{
+  mUpAxis = axisUp;
 }
 
 void
