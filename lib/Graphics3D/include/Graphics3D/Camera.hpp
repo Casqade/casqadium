@@ -108,7 +108,7 @@ public:
 
   void setOrientation( const glm::quat& ) override;
 
-  void setAxisUp( const glm::vec3& );
+  void setUpAxis( const glm::vec3& );
   void setViewCurrent( const glm::vec2& );
   void setViewLimits( const std::pair <glm::vec3, glm::vec3>& );
 };
