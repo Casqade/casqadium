@@ -120,7 +120,7 @@ CameraController::control( const glm::vec3& angle )
 }
 
 
-CameraControllerFPS::CameraControllerFPS( const std::pair <glm::vec3, glm::vec3>& viewLimits )
+CameraControllerFPS::CameraControllerFPS( const std::pair <glm::vec2, glm::vec2>& viewLimits )
   : CameraController()
   , mViewCurrent()
   , mViewLimits(viewLimits)
@@ -131,15 +131,16 @@ CameraControllerFPS::control( const glm::vec3& angle )
 {
   const auto viewLast = mViewCurrent;
 
-  mViewCurrent = glm::clamp( mViewCurrent + angle, mViewLimits.first, mViewLimits.second );
+  mViewCurrent = glm::clamp( mViewCurrent + glm::vec2(angle),
+                             mViewLimits.first,
+                             mViewLimits.second );
 
   rotate( glm::angleAxis( (mViewCurrent - viewLast).x, glm::vec3{1.0f, 0.0f, 0.0f} ) );
   rotateGlobal( glm::angleAxis( (mViewCurrent - viewLast).y, glm::vec3{0.0f, 1.0f, 0.0f} ) );
-  rotate( glm::angleAxis( (mViewCurrent - viewLast).z, glm::vec3{0.0f, 0.0f, 1.0f} ) );
 }
 
 void
-CameraControllerFPS::setViewCurrent( const glm::vec3& viewCurrent )
+CameraControllerFPS::setViewCurrent( const glm::vec2& viewCurrent )
 {
   mViewCurrent = viewCurrent;
 }

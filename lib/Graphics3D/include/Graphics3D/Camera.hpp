@@ -89,17 +89,19 @@ public:
 
 class CameraControllerFPS : public CameraController
 {
-  glm::vec3 mViewCurrent;
-  std::pair <glm::vec3, glm::vec3> mViewLimits;
+  glm::vec2 mViewCurrent;
+  std::pair <glm::vec2, glm::vec2> mViewLimits;
 
 public:
-  CameraControllerFPS( const std::pair <glm::vec3,
-                                        glm::vec3>& viewLimits = {glm::radians(glm::vec3{-90.0f, -180.0f, -10.0f}),
-                                                                  glm::radians(glm::vec3{90.0f, 180.0f, 10.0f})});
+  CameraControllerFPS( const std::pair <glm::vec2,
+                                        glm::vec2>& viewLimits = {glm::vec2{  glm::radians(-90.0f),
+                                                                              -std::numeric_limits <float>::infinity()},
+                                                                  glm::vec2{  glm::radians(90.0f),
+                                                                              std::numeric_limits <float>::infinity()}});
 
   void control( const glm::vec3& angleDelta ) override;
 
-  void setViewCurrent( const glm::vec3& );
+  void setViewCurrent( const glm::vec2& );
   void setViewLimits( const std::pair <glm::vec3, glm::vec3>& );
 };
 
