@@ -70,7 +70,7 @@ Quad::appendCulled( std::multimap < float, SceneNode*, std::greater <float>>& de
     if ( vert.z < 0.0f || vert.z > 1.0f )
       return;
 
-    if (    (vert.x >= 0.0f && vert.y >= 0.0f)
+    if (    (vert.x >= viewport.x && vert.y >= viewport.y)
          && (vert.x <= viewport.z && vert.y <= viewport.w) )
       offScreen = false;
   }
