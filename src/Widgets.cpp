@@ -24,12 +24,13 @@ Text2D::Text2D(
   , mSize(monospaced ? font->GetTextSize(text) : font->GetTextSizeProp(text))
   , mRotation()
   , mMonospaced(monospaced)
+  , mIsHidden()
 {}
 
 void
 Text2D::render() const
 {
-  if ( mText.empty() )
+  if ( mText.empty() || mIsHidden )
     return;
 
   if ( mMonospaced )
@@ -67,6 +68,11 @@ Text2D::setMonospaced( const bool monospaced )
 {
   mMonospaced = monospaced;
   mSize = mMonospaced ? mFont->GetTextSize(mText) : mFont->GetTextSizeProp(mText);
+}
+void
+Text2D::setHidden( const bool hidden )
+{
+  mIsHidden = hidden;
 }
 
 void
@@ -145,6 +151,12 @@ float
 Text2D::rotation() const
 {
   return mRotation;
+}
+
+bool
+Text2D::isHidden() const
+{
+  return mIsHidden;
 }
 
 }

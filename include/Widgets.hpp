@@ -33,6 +33,8 @@ class Text2D
 
   bool mMonospaced;
 
+  bool mIsHidden;
+
 public:
   Text2D( const olc::CustomFont*,
           const std::string&  = {},
@@ -50,6 +52,7 @@ public:
   void setText( const std::string& );
   void setColor( const olc::Pixel );
   void setMonospaced( const bool );
+  void setHidden( const bool );
 
   const olc::CustomFont* font() const;
   std::string text() const;
@@ -61,6 +64,7 @@ public:
   vf2d scale() const;
   vf2d origin() const;
   float rotation() const;
+  bool isHidden() const;
 };
 
 }
