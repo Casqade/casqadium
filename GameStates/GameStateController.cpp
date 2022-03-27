@@ -1,5 +1,6 @@
 #include <GameStateController.hpp>
 
+#include <GameStateEcsSandbox.hpp>
 #include <GameStateSandbox.hpp>
 #include <GameStateForeword.hpp>
 #include <GameStateTitle.hpp>
@@ -65,3 +66,7 @@ GameStateController::setState <GameStateTitle> ();
 template
 void
 GameStateController::setState <GameStateSandbox> ();
+
+template
+void
+GameStateController::setState <GameStateEcsSandbox> ();

@@ -16,6 +16,9 @@ target_sources(${TARGET}
 
     ${CMAKE_CURRENT_SOURCE_DIR}/GameStateSandbox.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/GameStateSandbox.hpp
+
+    ${CMAKE_CURRENT_SOURCE_DIR}/GameStateEcsSandbox.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/GameStateEcsSandbox.hpp
 )
 
 target_include_directories(${TARGET} PUBLIC

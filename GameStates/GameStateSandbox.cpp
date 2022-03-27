@@ -16,9 +16,6 @@
 #include <imgui/imgui.h>
 #include <ImGuizmo/ImGuizmo.h>
 
-#include <entt/entt.hpp>
-#include <entt/core/hashed_string.hpp>
-
 
 class Node : public Graphics3D::SceneNode
 {
@@ -149,36 +146,6 @@ GameStateSandbox::GameStateSandbox( GameStateController* const stateController )
   mSceneRoot.addChild(mAxisY1);
   mSceneRoot.addChild(mAxisZ0);
   mSceneRoot.addChild(mAxisZ1);
-
-
-
-  using namespace entt::literals;
-
-  entt::registry reg;
-
-  struct MyComp
-  {
-      std::string text = "mycompcontent";
-  };
-
-  auto tag = entt::tag<entt::hashed_string{"MyComp"}>();
-  entt::meta <MyComp> ().type("MyComp"_hs);
-
-  auto ss = entt::resolve("reflected_type"_hs);
-
-  auto entity = reg.create();
-  auto get = reg.get <MyComp> (entity);
-  reg.emplace <MyComp> (entity);
-  for(auto &&[entity, pos]: reg.view<MyComp>().each())
-  {
-      std::cout << pos.text;
-  }
-
-//  auto test = entt::resolve("MyComp"_hs).id();
-  reg.view <entt::tag<entt::hashed_string{"MyComp"}>>().each([] (auto entity, auto& comp)
-  {
-        std::cout << comp.text << "\n";
-  });
 }
 
 bool
