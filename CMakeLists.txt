@@ -122,31 +122,9 @@ if(NOT EnTT_FOUND)
 
 endif()
 
-find_package(Edyn QUIET)
-
-if(NOT Edyn_FOUND)
-  include(FetchContent)
-
-  FetchContent_Declare(Edyn
-    GIT_REPOSITORY https://github.com/xissburg/edyn
-    GIT_TAG        v0.3.0
-    GIT_SHALLOW    TRUE
-  )
-
-  if(${BUILD_SHARED_LIBS})
-    set(BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)
-  else()
-    set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
-  endif()
-
-  FetchContent_MakeAvailable(Edyn)
-
-endif()
-
 target_link_libraries(${TARGET} PRIVATE
   sfml-audio
   EnTT::EnTT
-  Edyn::Edyn
 )
 
 if(WIN32)
