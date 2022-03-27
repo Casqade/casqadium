@@ -13,6 +13,9 @@ target_sources(${TARGET} PRIVATE
   src/Common.cpp
   include/${TARGET}/Common.hpp
 
+  src/Components/SceneNode.cpp
+  include/${TARGET}/Components/SceneNode.hpp
+
   src/Components/Transform.cpp
   include/${TARGET}/Components/Transform.hpp
 
