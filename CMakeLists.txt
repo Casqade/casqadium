@@ -57,15 +57,9 @@ add_subdirectory(GameStates)
 target_include_directories(${TARGET} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/GameStates)
 target_include_directories(${TARGET} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/include)
 
-add_subdirectory(lib)
-
 if(NOT ${BUILD_SHARED_LIBS})
   target_link_libraries(${TARGET} PUBLIC -static)
 endif()
-
-target_link_libraries(${TARGET} PRIVATE TimeUtils::TimeUtils)
-target_link_libraries(${TARGET} PRIVATE Graphics3D::Graphics3D)
-target_link_libraries(${TARGET} PRIVATE olcPGE::olcPGE)
 
 include(GNUInstallDirs)
 
@@ -122,10 +116,17 @@ if(NOT EnTT_FOUND)
 
 endif()
 
-target_link_libraries(${TARGET} PRIVATE
+target_link_libraries(${TARGET} PUBLIC
   sfml-audio
   EnTT::EnTT
 )
+
+add_subdirectory(lib)
+
+target_link_libraries(${TARGET} PRIVATE TimeUtils::TimeUtils)
+target_link_libraries(${TARGET} PRIVATE Graphics3D::Graphics3D)
+target_link_libraries(${TARGET} PRIVATE olcPGE::olcPGE)
+target_link_libraries(${TARGET} PRIVATE ECS::ECS)
 
 if(WIN32)
   if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
