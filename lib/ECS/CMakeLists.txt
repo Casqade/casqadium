@@ -12,6 +12,9 @@ add_library(${TARGET}::${TARGET} ALIAS ${TARGET})
 target_sources(${TARGET} PRIVATE
   src/Common.cpp
   include/${TARGET}/Common.hpp
+
+  src/Components/Tag.cpp
+  include/${TARGET}/Components/Tag.hpp
 )
 
 target_link_libraries(${TARGET} PUBLIC EnTT::EnTT)
