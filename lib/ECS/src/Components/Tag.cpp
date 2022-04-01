@@ -57,7 +57,7 @@ EntityReference::EntityReference()
 {}
 
 entt::entity
-EntityReference::get()
+EntityReference::get() const
 {
   if ( id.data() != nullptr && entityIdStorage().count(id.value()) > 0 )
     return entityIdStorage()[id.value()];

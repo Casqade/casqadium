@@ -40,7 +40,7 @@ struct EntityReference
 
   EntityReference();
 
-  entt::entity get();
+  entt::entity get() const;
 };
 
 } // namespace Components
