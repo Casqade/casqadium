@@ -21,11 +21,9 @@ struct Transform
   glm::quat orientation;
   glm::vec3 scale;
 
-  bool dirty;
-
   Transform();
 
-  glm::mat4 modelLocal();
+  glm::mat4 modelLocal() const;
 
   void serialize( const std::string& json ) const;
 

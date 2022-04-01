@@ -22,11 +22,7 @@ struct SceneNode
 
   glm::vec3 scaleWorld;
 
-  bool dirty;
-
-  SceneNode();
-
-  glm::mat4 modelWorld( entt::registry& );
+  glm::mat4 modelWorld( entt::registry& ) const;
 
   void serialize( const std::string& json ) const;
 
@@ -35,9 +31,6 @@ struct SceneNode
                     const std::string& json ) const;
 
   static void Register();
-
-private:
-  glm::mat4 modelWorldCache;
 };
 
 } // namespace Components

@@ -13,17 +13,13 @@ Transform::Transform()
   : translation()
   , orientation()
   , scale()
-  , dirty(true)
   , modelLocalCache()
 {}
 
 glm::mat4
-Transform::modelLocal()
+Transform::modelLocal() const
 {
-  if ( dirty == false)
-    return modelLocalCache;
-
-  return modelLocalCache =
+  return
     glm::translate(glm::mat4(1.0f), translation) *
     glm::mat4(orientation) *
     glm::scale(glm::mat4(1.0f), scale);

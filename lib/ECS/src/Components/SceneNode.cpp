@@ -1,59 +1,41 @@
 #include <ECS/Components/SceneNode.hpp>
 #include <ECS/Components/Transform.hpp>
 
+#include <glm/gtx/quaternion.hpp>
+
 #include <entt/entt.hpp>
 
 
 namespace ECS
 {
 
+glm::mat4
+ResolveWorldMatrix(
+  entt::registry& registry,
+  const Components::Transform& transform,
+  const Components::SceneNode& sceneNode )
+{
+  return sceneNode.modelWorld(registry) * transform.modelLocal();
+}
+
 namespace Components
 {
 
 glm::mat4
-resolveWorldMatrix( entt::registry& registry, entt::entity entity )
+SceneNode::modelWorld( entt::registry& registry ) const
 {
-  if ( registry.valid(entity) == false )
-    return glm::mat4(1.0f);
+  entt::entity parentEntity = parent.get();
 
-  Transform& transform = registry.get <Transform> (entity);
-  SceneNode& sceneNode = registry.get <SceneNode> (entity);
+  if ( registry.valid(parentEntity) == false )
+    return glm::scale(glm::mat4(1.0f), scaleWorld);
+
+  Transform& parentTransform = registry.get <Transform> (parentEntity);
+  SceneNode& parentNode = registry.get <SceneNode> (parentEntity);
 
   return
-      resolveWorldMatrix( registry, entity ) *
-      glm::translate(glm::mat4(1.0f), transform.translation) *
-      glm::mat4(transform.orientation) *
-      glm::scale(glm::mat4(1.0f), sceneNode.scaleWorld);
-
-}
-
-SceneNode::SceneNode()
-  : parent()
-  , scaleWorld()
-  , dirty(true)
-  , modelWorldCache()
-{}
-
-glm::mat4
-SceneNode::modelWorld( entt::registry& registry )
-{
-  if ( dirty == false)
-    return modelWorldCache;
-
-  entt::entity parentNode = parent.get();
-
-  if ( registry.valid(parentNode) == false )
-  {
-
-  }
-
-  Transform& parentTransform = registry.get <Transform> (parentNode);
-  SceneNode& parentNode = registry.get <SceneNode> (parentNode);
-
-  return modelWorldCache =
     parentNode.modelWorld(registry) *
     glm::translate(glm::mat4(1.0f), parentTransform.translation) *
-    glm::mat4(parentTransform.orientation) *
+    glm::toMat4(parentTransform.orientation) *
     glm::scale(glm::mat4(1.0f), scaleWorld);
 }
 
