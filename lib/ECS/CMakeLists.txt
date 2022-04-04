@@ -21,6 +21,9 @@ target_sources(${TARGET} PRIVATE
 
   src/Components/Tag.cpp
   include/${TARGET}/Components/Tag.hpp
+
+  src/Components/VertexBuffer.cpp
+  include/${TARGET}/Components/VertexBuffer.hpp
 )
 
 target_link_libraries(${TARGET} PUBLIC EnTT::EnTT)
