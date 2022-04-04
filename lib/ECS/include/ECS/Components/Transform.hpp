@@ -3,8 +3,9 @@
 
 #include <entt/fwd.hpp>
 
+#include <glm/fwd.hpp>
 #include <glm/vec3.hpp>
-#include <glm/gtc/quaternion.hpp>
+#include <glm/gtx/quaternion.hpp>
 
 #include <string>
 
@@ -15,15 +16,23 @@ namespace ECS
 namespace Components
 {
 
+struct SceneNode;
+
+
 struct Transform
 {
   glm::vec3 translation;
   glm::quat orientation;
   glm::vec3 scale;
+  glm::vec3 scaleWorld;
 
-  Transform();
 
   glm::mat4 modelLocal() const;
+
+  glm::vec3 front() const;
+  glm::vec3 right() const;
+  glm::vec3 up() const;
+
 
   void serialize( const std::string& json ) const;
 
@@ -32,9 +41,6 @@ struct Transform
                     const std::string& json ) const;
 
   static void Register();
-
-private:
-  glm::mat4 modelLocalCache;
 };
 
 } // namespace Components

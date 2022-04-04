@@ -20,9 +20,6 @@ struct SceneNode
 {
   EntityReference parent;
 
-  glm::vec3 scaleWorld;
-
-  glm::mat4 modelWorld( entt::registry& ) const;
 
   void serialize( const std::string& json ) const;
 
