@@ -21,7 +21,6 @@ struct Tag
 {
   entt::hashed_string id;
 
-  Tag();
 
   void serialize( const std::string& json ) const;
 

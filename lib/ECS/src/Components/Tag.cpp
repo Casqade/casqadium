@@ -11,7 +11,7 @@ namespace Components
 
 
 std::map <ENTT_ID_TYPE, entt::entity>&
-entityIdStorage()
+entityTagStorage()
 {
   static std::unique_ptr <std::map <ENTT_ID_TYPE, entt::entity>> storage = std::make_unique <std::map <ENTT_ID_TYPE, entt::entity>> ();
   if ( storage == nullptr )
@@ -20,9 +20,6 @@ entityIdStorage()
   return *storage.get();
 }
 
-Tag::Tag()
-  : id()
-{}
 
 void
 Tag::serialize( const std::string& json ) const
@@ -59,8 +56,8 @@ EntityReference::EntityReference()
 entt::entity
 EntityReference::get() const
 {
-  if ( id.data() != nullptr && entityIdStorage().count(id.value()) > 0 )
-    return entityIdStorage()[id.value()];
+  if ( id.data() != nullptr && entityTagStorage().count(id.value()) > 0 )
+    return entityTagStorage()[id.value()];
 
   return entt::null;
 }
@@ -70,7 +67,7 @@ Tag::Generate( entt::hashed_string string )
 {
   string = string.data() ? string : "";
 
-  for ( size_t i = 0; entityIdStorage().count(string.value()) > 0; ++i )
+  for ( size_t i = 0; entityTagStorage().count(string.value()) > 0; ++i )
     string = entt::hashed_string( (string.data() + std::to_string(i)).c_str() );
 
   Tag tag;
