@@ -13,6 +13,9 @@ target_sources(${TARGET} PRIVATE
   src/Common.cpp
   include/${TARGET}/Common.hpp
 
+  src/Components/Camera.cpp
+  include/${TARGET}/Components/Camera.hpp
+
   src/Components/SceneNode.cpp
   include/${TARGET}/Components/SceneNode.hpp
 
