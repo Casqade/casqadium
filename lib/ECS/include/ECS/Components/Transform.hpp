@@ -45,6 +45,41 @@ struct Transform
 
 } // namespace Components
 
+
+glm::vec3 ToLocalSpace( const glm::vec3& point,
+                        entt::registry&,
+                        const Components::Transform&,
+                        const Components::SceneNode& );
+
+glm::quat ToLocalSpace( const glm::quat& orientation,
+                        entt::registry&,
+                        const Components::Transform&,
+                        const Components::SceneNode& );
+
+glm::mat4 ToLocalSpace( const glm::mat4& matrix,
+                        entt::registry&,
+                        const Components::Transform&,
+                        const Components::SceneNode& );
+
+glm::vec3 ToWorldSpace( const glm::vec3& point,
+                        entt::registry&,
+                        const Components::Transform&,
+                        const Components::SceneNode& );
+
+glm::quat ToWorldSpace( const glm::quat& orientation,
+                        entt::registry&,
+                        const Components::Transform&,
+                        const Components::SceneNode& );
+
+glm::mat4 ToWorldSpace( const glm::mat4& matrix,
+                        entt::registry&,
+                        const Components::Transform&,
+                        const Components::SceneNode& );
+
+glm::mat4 GetWorldMatrix( entt::registry&,
+                          const Components::Transform&,
+                          const Components::SceneNode& );
+
 } // namespace ECS
 
 #endif

@@ -73,4 +73,160 @@ Transform::Register()
 
 } // namespace Components
 
+
+void
+SetOriginWorld(
+  const glm::vec3& origin,
+  entt::registry& registry,
+  Components::Transform& cTransform,
+  const Components::SceneNode& cSceneNode )
+{
+  cTransform.translation = ToLocalSpace(origin,
+                                        registry,
+                                        cTransform,
+                                        cSceneNode );
+}
+
+void
+SetOrientationWorld(
+  const glm::quat& orientation,
+  entt::registry& registry,
+  Components::Transform& cTransform,
+  const Components::SceneNode& cSceneNode )
+{
+  cTransform.orientation = ToLocalSpace(orientation,
+                                        registry,
+                                        cTransform,
+                                        cSceneNode );
+}
+
+void
+SetScaleWorld(
+  const glm::vec3& scale,
+  entt::registry& registry,
+  Components::Transform& cTransform,
+  const Components::SceneNode& cSceneNode )
+{
+  cTransform.scale = (cTransform.modelLocal() *
+                      glm::inverse(GetWorldMatrix(registry,
+                                                  cTransform,
+                                                  cSceneNode)) *
+                      glm::translate(glm::mat4(1.0f), scale))[3];
+}
+
+glm::vec3
+ToLocalSpace(
+  const glm::vec3& point,
+  entt::registry& registry,
+  const Components::Transform& cTransform,
+  const Components::SceneNode& cSceneNode )
+{
+  return glm::translate( cTransform.modelLocal() *
+                         glm::inverse(GetWorldMatrix(registry,
+                                                     cTransform,
+                                                     cSceneNode)),
+                         point )[3];
+}
+
+glm::quat
+ToLocalSpace(
+  const glm::quat& orientation,
+  entt::registry& registry,
+  const Components::Transform& cTransform,
+  const Components::SceneNode& cSceneNode )
+{
+  return glm::normalize( glm::quat(cTransform.modelLocal() *
+                                   glm::inverse(GetWorldMatrix(registry,
+                                                               cTransform,
+                                                               cSceneNode))) *
+                         orientation );
+}
+
+glm::mat4
+ToLocalSpace(
+  const glm::mat4& matrix,
+  entt::registry& registry,
+  const Components::Transform& cTransform,
+  const Components::SceneNode& cSceneNode )
+{
+  return  cTransform.modelLocal() *
+          glm::inverse(GetWorldMatrix(registry,
+                                      cTransform,
+                                      cSceneNode)) *
+          matrix;
+}
+
+
+glm::vec3 ToWorldSpace(
+  const glm::vec3& point,
+  entt::registry& registry,
+  const Components::Transform& cTransform,
+  const Components::SceneNode& cSceneNode )
+{
+  return glm::translate( GetWorldMatrix(registry,
+                                        cTransform,
+                                        cSceneNode) *
+                         glm::inverse(cTransform.modelLocal()),
+                         point )[3];
+}
+
+glm::quat ToWorldSpace(
+  const glm::quat& orientation,
+  entt::registry& registry,
+  const Components::Transform& cTransform,
+  const Components::SceneNode& cSceneNode )
+{
+  return glm::normalize(  glm::quat(GetWorldMatrix( registry,
+                                                    cTransform,
+                                                    cSceneNode) *
+                                   glm::inverse(cTransform.modelLocal())) *
+                          orientation );
+}
+
+glm::mat4
+ToWorldSpace(
+  const glm::mat4& matrix,
+  entt::registry& registry,
+  const Components::Transform& cTransform,
+  const Components::SceneNode& cSceneNode )
+{
+  return GetWorldMatrix(registry,
+                        cTransform,
+                        cSceneNode) *
+                        glm::inverse(cTransform.modelLocal()) *
+                        matrix;
+}
+
+glm::mat4
+GetWorldMatrix(
+  entt::registry& registry,
+  const Components::Transform& cTransform,
+  const Components::SceneNode& cSceneNode )
+{
+  using Components::SceneNode;
+  using Components::Transform;
+
+  std::function <glm::mat4(const SceneNode&)> parentModelWorld =
+  [&] ( const SceneNode& child ) -> glm::mat4
+  {
+    entt::entity eParent = child.parent.get();
+
+    if ( registry.valid(eParent) == false )
+      return glm::mat4(1.0f);
+
+    const auto& [parentTransform, parentSceneNode] = registry.get <Transform, SceneNode> (eParent);
+
+    return
+    {
+      parentModelWorld(parentSceneNode) *
+      glm::translate(glm::mat4(1.0f), parentTransform.translation) *
+      glm::toMat4(parentTransform.orientation) *
+      glm::scale(glm::mat4(1.0f), parentTransform.scaleWorld)
+    };
+  };
+
+  return parentModelWorld(cSceneNode) * cTransform.modelLocal();
+}
+
+
 } // namespace ECS
