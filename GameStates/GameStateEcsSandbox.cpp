@@ -10,6 +10,7 @@
 #include <ECS/Components/SceneNode.hpp>
 #include <ECS/Components/Transform.hpp>
 #include <ECS/Components/VertexBuffer.hpp>
+#include <ECS/Components/GeometryBuffer.hpp>
 
 
 ECS::Components::VertexBuffer::WindingOrder

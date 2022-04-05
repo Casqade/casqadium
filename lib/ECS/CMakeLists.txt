@@ -13,6 +13,7 @@ target_sources(${TARGET} PRIVATE
   src/Common.cpp
   include/${TARGET}/Common.hpp
 
+
   src/Components/Camera.cpp
   include/${TARGET}/Components/Camera.hpp
 
@@ -24,6 +25,9 @@ target_sources(${TARGET} PRIVATE
 
   src/Components/Tag.cpp
   include/${TARGET}/Components/Tag.hpp
+
+  src/Components/GeometryBuffer.cpp
+  include/${TARGET}/Components/GeometryBuffer.hpp
 
   src/Components/VertexBuffer.cpp
   include/${TARGET}/Components/VertexBuffer.hpp
