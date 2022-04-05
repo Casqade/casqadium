@@ -12,6 +12,17 @@ namespace ECS
 namespace Components
 {
 
+Transform::Transform(
+  const glm::vec3& _translation,
+  const glm::quat& _orientation,
+  const glm::vec3& _scale,
+  const glm::vec3& _scaleWorld )
+  : translation(_translation)
+  , orientation(_orientation)
+  , scale(_scale)
+  , scaleWorld(_scaleWorld)
+{}
+
 glm::mat4
 Transform::modelLocal() const
 {

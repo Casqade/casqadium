@@ -27,6 +27,11 @@ struct Transform
   glm::vec3 scaleWorld;
 
 
+  Transform(  const glm::vec3& origin = {},
+              const glm::quat& orientation = glm::vec3{},
+              const glm::vec3& scale = glm::vec3(1.0f),
+              const glm::vec3& scaleWorld = glm::vec3(1.0f) );
+
   glm::mat4 modelLocal() const;
 
   glm::vec3 front() const;
