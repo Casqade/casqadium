@@ -11,6 +11,11 @@ namespace ECS
 namespace Components
 {
 
+SceneNode::SceneNode()
+  : parent()
+  , children()
+{}
+
 void
 SceneNode::serialize( const std::string& json ) const
 {}

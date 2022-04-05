@@ -5,6 +5,7 @@
 
 #include <glm/vec3.hpp>
 
+#include <set>
 #include <string>
 
 #include <ECS/Components/Tag.hpp>
@@ -19,7 +20,10 @@ namespace Components
 struct SceneNode
 {
   EntityReference parent;
+  std::set <EntityReference> children;
 
+
+  SceneNode();
 
   void serialize( const std::string& json ) const;
 
