@@ -7,9 +7,10 @@
 namespace ECS
 {
 
+extern entt::entity AssetStorage;
+
 void registryInit( entt::registry& registry );
 
 } // namespace ECS
-
 
 #endif

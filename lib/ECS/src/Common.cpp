@@ -7,6 +7,8 @@
 namespace ECS
 {
 
+entt::entity AssetStorage{};
+
 void
 registryInit( entt::registry& registry )
 {
