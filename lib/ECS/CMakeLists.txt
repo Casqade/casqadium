@@ -37,6 +37,11 @@ target_sources(${TARGET} PRIVATE
 
   src/Components/VertexBuffer.cpp
   include/${TARGET}/Components/VertexBuffer.hpp
+
+
+  src/Systems/CullingSystem.cpp
+  include/${TARGET}/Systems/CullingSystem.hpp
+
 )
 
 target_link_libraries(${TARGET} PUBLIC EnTT::EnTT)
