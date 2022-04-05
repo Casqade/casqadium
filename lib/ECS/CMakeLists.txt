@@ -29,6 +29,9 @@ target_sources(${TARGET} PRIVATE
   src/Components/GeometryBuffer.cpp
   include/${TARGET}/Components/GeometryBuffer.hpp
 
+  src/Components/TextureBuffer.cpp
+  include/${TARGET}/Components/TextureBuffer.hpp
+
   src/Components/VertexBuffer.cpp
   include/${TARGET}/Components/VertexBuffer.hpp
 )
