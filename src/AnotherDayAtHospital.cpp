@@ -58,26 +58,26 @@ AnotherDayAtHospital::loadResources()
 {
   std::forward_list <std::pair <StringId, std::string>> strings =
   {
-    { StringId::Foreword, "A long time ago in a galaxy far,\nfar away..." },
-    { StringId::Title, "Another Day;At Hospital" },
-    { StringId::Backstory, backStoryText },
-    { StringId::ForewordInputPrompt, "Hold any key" },
+//    { StringId::Foreword, "A long time ago in a galaxy far,\nfar away..." },
+//    { StringId::Title, "Another Day;At Hospital" },
+//    { StringId::Backstory, backStoryText },
+//    { StringId::ForewordInputPrompt, "Hold any key" },
   };
 
   std::forward_list <std::pair <FontId, std::string>> fonts =
   {
 //    { FontId::Munro, "munro.png" },
-    { FontId::Jetbrains, "jetbrains.png" },
-    { FontId::FranklinGothic30, "framd30.png" },
-    { FontId::FranklinGothic40, "framd40.png" },
-    { FontId::FranklinGothic64, "framd64.png" },
-    { FontId::FranklinGothic128, "framd128.png" },
-    { FontId::FranklinGothicItalic, "framdit.png" },
+//    { FontId::Jetbrains, "jetbrains.png" },
+//    { FontId::FranklinGothic30, "framd30.png" },
+//    { FontId::FranklinGothic40, "framd40.png" },
+//    { FontId::FranklinGothic64, "framd64.png" },
+//    { FontId::FranklinGothic128, "framd128.png" },
+//    { FontId::FranklinGothicItalic, "framdit.png" },
   };
 
   std::forward_list <std::pair <SpriteId, std::string>> sprites =
   {
-    { SpriteId::WindowIcon, "window_icon.png" },
+//    { SpriteId::WindowIcon, "window_icon.png" },
   };
 
   std::forward_list <std::pair <SoundId, std::string>> sounds =
@@ -87,7 +87,7 @@ AnotherDayAtHospital::loadResources()
 
   std::forward_list <std::pair <MusicId, std::string>> musics =
   {
-    { MusicId::TitleTheme, "title.ogg" },
+//    { MusicId::TitleTheme, "title.ogg" },
   };
 
   for ( const auto& string : strings )
@@ -124,13 +124,13 @@ AnotherDayAtHospital::loadResources()
   std::string entry {};
   std::vector <std::string> lines {};
 
-  std::istringstream titleText ( Strings::Get( StringId::Title ));
-  while ( std::getline( titleText, entry, ';' ) )
-    TitleTextEntries.push_back( entry );
+//  std::istringstream titleText ( Strings::Get( StringId::Title ));
+//  while ( std::getline( titleText, entry, ';' ) )
+//    TitleTextEntries.push_back( entry );
 
-  std::istringstream backStoryText( Strings::Get( StringId::Backstory ) );
-  while ( std::getline( backStoryText, entry, ';' ) )
-    BackStoryTextEntries.push_back( entry );
+//  std::istringstream backStoryText( Strings::Get( StringId::Backstory ) );
+//  while ( std::getline( backStoryText, entry, ';' ) )
+//    BackStoryTextEntries.push_back( entry );
 
   return true;
 }
@@ -207,7 +207,7 @@ AnotherDayAtHospital::OnUserUpdate( float )
 
   if ( frames != 0 )
   {
-    SetDrawTarget(1);
+    SetDrawTarget(1); // Dead ImGui compatibility
     mGameStateController.render();
   }
 

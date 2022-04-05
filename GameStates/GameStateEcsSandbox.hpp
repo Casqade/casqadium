@@ -3,6 +3,8 @@
 
 #include <GameState.hpp>
 
+#include <entt/entt.hpp>
+
 
 class GameStateEcsSandbox
   : public GameState
@@ -13,6 +15,8 @@ class GameStateEcsSandbox
 
   } mState;
 
+  entt::registry mRegistry;
+
 //  void keyEvent( const olc::Event ) override;
 //  void mouseMoveEvent( const olc::Event::MouseMoveEvent ) override;
 //  void mouseButtonEvent( const olc::Event ) override;
@@ -22,7 +26,7 @@ public:
 
   bool update( const uint32_t ticks,
                const TimeUtils::Duration ) override;
-//  void render() override;
+  void render() override;
 };
 
 #endif
