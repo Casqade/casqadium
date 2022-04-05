@@ -42,6 +42,8 @@ target_sources(${TARGET} PRIVATE
   src/Systems/CullingSystem.cpp
   include/${TARGET}/Systems/CullingSystem.hpp
 
+  src/Systems/RenderSystem.cpp
+  include/${TARGET}/Systems/RenderSystem.hpp
 )
 
 target_link_libraries(${TARGET} PUBLIC EnTT::EnTT)
