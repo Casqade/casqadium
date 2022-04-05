@@ -41,6 +41,54 @@ SceneNode::Register()
   factory.func <&SceneNode::deserialize> ("deserialize"_hs);
 }
 
+void
+AttachChildNode(
+  entt::registry& registry,
+  const entt::entity eParent,
+  const entt::entity eChild )
+{
+  SceneNode& cParentNode = registry.get <SceneNode> (eParent);
+  SceneNode& cChildNode = registry.get <SceneNode> (eChild);
+
+  Tag& cParentTag = registry.get <Tag> (eParent);
+  Tag& cChildTag = registry.get <Tag> (eChild);
+
+  cParentNode.children.insert(EntityReference(cChildTag));
+  cChildNode.parent = EntityReference(cParentTag);
+}
+
+entt::entity
+DetachChildNode(
+  entt::registry& registry,
+  const entt::entity eParent,
+  const entt::entity eChild )
+{
+  SceneNode& cParentNode = registry.get <SceneNode> (eParent);
+  SceneNode& cChildNode = registry.get <SceneNode> (eChild);
+
+  Tag& cParentTag = registry.get <Tag> (eParent);
+  Tag& cChildTag = registry.get <Tag> (eChild);
+
+  cParentNode.children.erase(EntityReference(cChildTag));
+  cChildNode.parent = EntityReference();
+
+  return eChild;
+}
+
+void
+RemoveChildNode(
+  entt::registry& registry,
+  const entt::entity eParent,
+  const entt::entity eChild )
+{
+  SceneNode& cParentNode = registry.get <SceneNode> (eParent);
+
+  Tag& cChildTag = registry.get <Tag> (eChild);
+
+  cParentNode.children.erase(EntityReference(cChildTag));
+  registry.destroy(eChild);
+}
+
 } // namespace Components
 
 } // namespace ECS
