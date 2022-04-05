@@ -37,9 +37,13 @@ struct EntityReference
 {
   entt::hashed_string id;
 
+
   EntityReference();
+  EntityReference(const Tag&);
 
   entt::entity get() const;
+
+  bool operator < ( const EntityReference& ) const;
 };
 
 } // namespace Components
