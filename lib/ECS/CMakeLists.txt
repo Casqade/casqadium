@@ -32,6 +32,9 @@ target_sources(${TARGET} PRIVATE
   src/Components/TextureBuffer.cpp
   include/${TARGET}/Components/TextureBuffer.hpp
 
+  src/Components/TextureStorage.cpp
+  include/${TARGET}/Components/TextureStorage.hpp
+
   src/Components/VertexBuffer.cpp
   include/${TARGET}/Components/VertexBuffer.hpp
 )
