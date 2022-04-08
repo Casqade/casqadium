@@ -37,7 +37,7 @@ GeometryBuffer::Register()
   using namespace entt::literals;
 
   auto factory = entt::meta <GeometryBuffer> ();
-  factory.type(entt::hashed_string{"VertexBuffer"});
+  factory.type(entt::hashed_string{"GeometryBuffer"});
   factory.func <&GeometryBuffer::serialize> ("serialze"_hs);
   factory.func <&GeometryBuffer::deserialize> ("deserialize"_hs);
 }
