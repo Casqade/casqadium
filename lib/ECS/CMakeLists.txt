@@ -15,6 +15,9 @@ target_sources(${TARGET} PRIVATE
 
   include/${TARGET}/Alias.hpp
 
+  src/Types/CallbackStorage.cpp
+  include/${TARGET}/Types/CallbackStorage.hpp
+
   src/Types/EntityReference.cpp
   include/${TARGET}/Types/EntityReference.hpp
 
