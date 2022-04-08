@@ -1,5 +1,5 @@
-#ifndef ECS_COMPONENTS_TEXTUREBUFFER_HPP
-#define ECS_COMPONENTS_TEXTUREBUFFER_HPP
+#ifndef ECS_COMPONENTS_TEXTURE_BUFFER_HPP
+#define ECS_COMPONENTS_TEXTURE_BUFFER_HPP
 
 #include <entt/fwd.hpp>
 #include <entt/core/hashed_string.hpp>
