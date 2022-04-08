@@ -1,4 +1,5 @@
 #include <ECS/Common.hpp>
+#include <ECS/Components/InputController.hpp>
 #include <ECS/Components/SceneNode.hpp>
 #include <ECS/Components/Tag.hpp>
 #include <ECS/Components/Transform.hpp>
@@ -12,6 +13,7 @@ entt::entity AssetStorage{};
 void
 registryInit( entt::registry& registry )
 {
+  Components::InputController::Register();
   Components::SceneNode::Register();
   Components::Tag::Register();
   Components::Transform::Register();

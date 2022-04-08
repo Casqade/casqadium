@@ -40,6 +40,9 @@ target_sources(${TARGET} PRIVATE
   src/Components/GeometryBuffer.cpp
   include/${TARGET}/Components/GeometryBuffer.hpp
 
+  src/Components/InputController.cpp
+  include/${TARGET}/Components/InputController.hpp
+
   src/Components/TextureBuffer.cpp
   include/${TARGET}/Components/TextureBuffer.hpp
 
