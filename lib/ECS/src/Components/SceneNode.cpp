@@ -1,6 +1,5 @@
 #include <ECS/Components/SceneNode.hpp>
-
-#include <glm/gtx/quaternion.hpp>
+#include <ECS/Components/Tag.hpp>
 
 #include <entt/entt.hpp>
 
@@ -53,6 +52,8 @@ AttachChildNode(
   Tag& cParentTag = registry.get <Tag> (eParent);
   Tag& cChildTag = registry.get <Tag> (eChild);
 
+  cParentNode.children.insert(Types::EntityReference(cChildTag));
+  cChildNode.parent = Types::EntityReference(cParentTag);
 }
 
 entt::entity
@@ -67,6 +68,8 @@ DetachChildNode(
   Tag& cParentTag = registry.get <Tag> (eParent);
   Tag& cChildTag = registry.get <Tag> (eChild);
 
+  cParentNode.children.erase(Types::EntityReference(cChildTag));
+  cChildNode.parent = Types::EntityReference();
 
   return eChild;
 }
@@ -81,7 +84,7 @@ RemoveChildNode(
 
   Tag& cChildTag = registry.get <Tag> (eChild);
 
-  cParentNode.children.erase(EntityReference(cChildTag));
+  cParentNode.children.erase(Types::EntityReference(cChildTag));
   registry.destroy(eChild);
 }
 
