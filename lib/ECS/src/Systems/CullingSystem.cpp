@@ -5,8 +5,8 @@
 #include <ECS/Components/TextureBuffer.hpp>
 #include <ECS/Components/TextureStorage.hpp>
 #include <ECS/Components/Transform.hpp>
-#include <ECS/Components/VertexBuffer.hpp>
 #include <ECS/Components/SceneNode.hpp>
+#include <ECS/Types/VertexBuffer.hpp>
 
 #include <entt/entt.hpp>
 
@@ -16,7 +16,7 @@ namespace ECS
 namespace Systems
 {
 
-ECS::Components::VertexBuffer
+ECS::Types::VertexBuffer
 vertexShader(
   const ECS::Components::GeometryBuffer& cGeometryBuffer,
   const glm::mat4& modelViewMatrix,
@@ -25,7 +25,7 @@ vertexShader(
 {
   bool offScreen = true;
 
-  ECS::Components::VertexBuffer vertexBuffer{};
+  ECS::Types::VertexBuffer vertexBuffer{};
   vertexBuffer.vertices.reserve(cGeometryBuffer.vertexes.size());
 
   for ( const glm::vec3& srcVert : cGeometryBuffer.vertexes )
@@ -50,7 +50,7 @@ vertexShader(
 //  if ( offScreen )
 //    return {{}, -1.0f};
 
-  vertexBuffer.windingOrder = ECS::Components::GetWindingOrder(vertexBuffer);
+  vertexBuffer.windingOrder = ECS::Types::GetWindingOrder(vertexBuffer);
 
   vertexBuffer.depth /= vertexBuffer.vertices.size();
 

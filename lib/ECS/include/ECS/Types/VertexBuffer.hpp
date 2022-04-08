@@ -1,16 +1,15 @@
-#ifndef ECS_COMPONENTS_VERTEXBUFFER_HPP
-#define ECS_COMPONENTS_VERTEXBUFFER_HPP
+#ifndef ECS_TYPES_VERTEX_BUFFER_HPP
+#define ECS_TYPES_VERTEX_BUFFER_HPP
 
 #include <olcPGE/olcPixelGameEngine.hpp>
 
 #include <vector>
-#include <string>
 
 
 namespace ECS
 {
 
-namespace Components
+namespace Types
 {
 
 struct VertexBuffer
@@ -34,8 +33,10 @@ VertexBuffer::WindingOrder
 GetWindingOrder(  const VertexBuffer& vertices,
                   const bool yAxisUp = false );
 
-} // namespace Components
+} // namespace Types
+
 
 } // namespace ECS
 
 #endif
+

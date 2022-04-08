@@ -13,6 +13,9 @@ target_sources(${TARGET} PRIVATE
   src/Common.cpp
   include/${TARGET}/Common.hpp
 
+  src/Types/VertexBuffer.cpp
+  include/${TARGET}/Types/VertexBuffer.hpp
+
 
   src/Components/Camera.cpp
   include/${TARGET}/Components/Camera.hpp
@@ -34,9 +37,6 @@ target_sources(${TARGET} PRIVATE
 
   src/Components/TextureStorage.cpp
   include/${TARGET}/Components/TextureStorage.hpp
-
-  src/Components/VertexBuffer.cpp
-  include/${TARGET}/Components/VertexBuffer.hpp
 
 
   src/Systems/CullingSystem.cpp

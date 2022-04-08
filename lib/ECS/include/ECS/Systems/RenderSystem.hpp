@@ -12,13 +12,17 @@ namespace ECS
 namespace Components
 {
 struct GeometryBuffer;
+}
+
+namespace Types
+{
 struct VertexBuffer;
 }
 
 namespace Systems
 {
 
-Components::VertexBuffer vertexShader(
+Types::VertexBuffer vertexShader(
   const Components::GeometryBuffer& cGeometryBuffer,
   const glm::mat4& modelViewMatrix,
   const glm::mat4& projectionMatrix,

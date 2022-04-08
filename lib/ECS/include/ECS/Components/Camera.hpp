@@ -1,6 +1,8 @@
 #ifndef ECS_COMPONENTS_CAMERA_HPP
 #define ECS_COMPONENTS_CAMERA_HPP
 
+#include <ECS/Types/VertexBuffer.hpp>
+
 #include <entt/fwd.hpp>
 
 #include <glm/vec3.hpp>
@@ -8,7 +10,6 @@
 #include <string>
 
 #include <ECS/Components/Tag.hpp>
-#include <ECS/Components/VertexBuffer.hpp>
 
 
 namespace ECS
@@ -64,9 +65,8 @@ struct Camera
   TextureMode   textureMode;
   LightingMode  lightingMode;
 
-  std::multimap < VertexBuffer,
-                  entt::entity,
-                  std::greater <VertexBuffer>> zBuffer;
+  std::multimap < Types::VertexBuffer, entt::entity,
+                  std::greater <Types::VertexBuffer>> zBuffer;
 
 
   Camera( const Projection& = Projection::Perspective,

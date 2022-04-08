@@ -1,10 +1,10 @@
-#include <ECS/Components/VertexBuffer.hpp>
+#include <ECS/Types/VertexBuffer.hpp>
 
 
 namespace ECS
 {
 
-namespace Components
+namespace Types
 {
 
 bool
@@ -26,9 +26,10 @@ GetWindingOrder(  const VertexBuffer& vertexBuffer,
     area += (vertices[iNext].x - vertices[i].x)
           * (vertices[iNext].y + vertices[i].y);
 
-  return ECS::Components::VertexBuffer::WindingOrder(yAxisUp ? area > 0.0f : area < 0.0f);
+  return ECS::Types::VertexBuffer::WindingOrder(yAxisUp ? area > 0.0f : area < 0.0f);
 }
 
 } // namespace Components
 
 } // namespace ECS
+
