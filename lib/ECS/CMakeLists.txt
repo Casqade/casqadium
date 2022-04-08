@@ -18,6 +18,9 @@ target_sources(${TARGET} PRIVATE
   src/Types/EntityReference.cpp
   include/${TARGET}/Types/EntityReference.hpp
 
+  src/Types/InputAxis.cpp
+  include/${TARGET}/Types/InputAxis.hpp
+
   src/Types/VertexBuffer.cpp
   include/${TARGET}/Types/VertexBuffer.hpp
 
