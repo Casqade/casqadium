@@ -13,6 +13,8 @@ target_sources(${TARGET} PRIVATE
   src/Common.cpp
   include/${TARGET}/Common.hpp
 
+  include/${TARGET}/Alias.hpp
+
   src/Types/VertexBuffer.cpp
   include/${TARGET}/Types/VertexBuffer.hpp
 
