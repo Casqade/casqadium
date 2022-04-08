@@ -64,30 +64,6 @@ Tag::Generate( entt::hashed_string string )
   return tag;
 }
 
-
-EntityReference::EntityReference()
-  : id("null")
-{}
-
-EntityReference::EntityReference( const Tag& tag )
-  : id(tag.id)
-{}
-
-entt::entity
-EntityReference::get() const
-{
-  if ( id.data() != nullptr && entityTagStorage().count(id.value()) > 0 )
-    return entityTagStorage()[id.value()];
-
-  return entt::null;
-}
-
-bool
-EntityReference::operator < ( const EntityReference& other ) const
-{
-  return id.value() < other.id.value();
-}
-
 } // namespace Components
 
 } // namespace ECS
