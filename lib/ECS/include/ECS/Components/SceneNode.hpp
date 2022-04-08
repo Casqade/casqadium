@@ -1,14 +1,10 @@
 #ifndef ECS_COMPONENTS_SCENE_NODE_HPP
 #define ECS_COMPONENTS_SCENE_NODE_HPP
 
-#include <entt/fwd.hpp>
-
-#include <glm/vec3.hpp>
+#include <ECS/Types/EntityReference.hpp>
 
 #include <set>
 #include <string>
-
-#include <ECS/Components/Tag.hpp>
 
 
 namespace ECS
@@ -19,11 +15,12 @@ namespace Components
 
 struct SceneNode
 {
-  EntityReference parent;
-  std::set <EntityReference> children;
+  Types::EntityReference parent;
+  std::set <Types::EntityReference> children;
 
 
   SceneNode();
+
 
   void serialize( const std::string& json ) const;
 

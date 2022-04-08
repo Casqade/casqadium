@@ -53,8 +53,6 @@ AttachChildNode(
   Tag& cParentTag = registry.get <Tag> (eParent);
   Tag& cChildTag = registry.get <Tag> (eChild);
 
-  cParentNode.children.insert(EntityReference(cChildTag));
-  cChildNode.parent = EntityReference(cParentTag);
 }
 
 entt::entity
@@ -69,8 +67,6 @@ DetachChildNode(
   Tag& cParentTag = registry.get <Tag> (eParent);
   Tag& cChildTag = registry.get <Tag> (eChild);
 
-  cParentNode.children.erase(EntityReference(cChildTag));
-  cChildNode.parent = EntityReference();
 
   return eChild;
 }

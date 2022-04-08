@@ -3,8 +3,6 @@
 
 #include <entt/fwd.hpp>
 
-#include <glm/fwd.hpp>
-
 
 namespace ECS
 {

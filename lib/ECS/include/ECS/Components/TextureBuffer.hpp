@@ -1,8 +1,9 @@
 #ifndef ECS_COMPONENTS_TEXTURE_BUFFER_HPP
 #define ECS_COMPONENTS_TEXTURE_BUFFER_HPP
 
+#include <ECS/Alias.hpp>
+
 #include <entt/fwd.hpp>
-#include <entt/core/hashed_string.hpp>
 
 #include <vector>
 #include <string>
@@ -16,10 +17,11 @@ namespace Components
 
 struct TextureBuffer
 {
-  std::vector <entt::hashed_string> textures;
+  std::vector <ECS::TextureId> textures;
 
 
   TextureBuffer();
+
 
   void serialize( const std::string& json ) const;
 

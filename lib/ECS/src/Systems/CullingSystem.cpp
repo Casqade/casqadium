@@ -2,13 +2,12 @@
 
 #include <ECS/Components/Camera.hpp>
 #include <ECS/Components/GeometryBuffer.hpp>
-#include <ECS/Components/TextureBuffer.hpp>
-#include <ECS/Components/TextureStorage.hpp>
 #include <ECS/Components/Transform.hpp>
 #include <ECS/Components/SceneNode.hpp>
 #include <ECS/Types/VertexBuffer.hpp>
 
 #include <entt/entt.hpp>
+
 
 namespace ECS
 {

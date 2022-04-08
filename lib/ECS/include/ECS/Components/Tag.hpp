@@ -1,14 +1,11 @@
 #ifndef ECS_COMPONENTS_TAG_HPP
 #define ECS_COMPONENTS_TAG_HPP
 
-#include <entt/fwd.hpp>
-#include <entt/core/hashed_string.hpp>
+#include <ECS/Alias.hpp>
 
-#include <glm/vec3.hpp>
-#include <glm/gtc/quaternion.hpp>
+#include <entt/fwd.hpp>
 
 #include <string>
-#include <map>
 
 
 namespace ECS
@@ -19,7 +16,10 @@ namespace Components
 
 struct Tag
 {
-  entt::hashed_string id;
+  EntityId id;
+
+
+  static Tag Generate( entt::hashed_string = {} );
 
 
   void serialize( const std::string& json ) const;
@@ -29,8 +29,6 @@ struct Tag
                     const std::string& json ) const;
 
   static void Register();
-
-  static Tag Generate( entt::hashed_string = {} );
 };
 
 } // namespace Components

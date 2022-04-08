@@ -1,12 +1,12 @@
 #ifndef ECS_COMPONENTS_TEXTURE_STORAGE_HPP
 #define ECS_COMPONENTS_TEXTURE_STORAGE_HPP
 
-#include <entt/fwd.hpp>
+#include <ECS/Alias.hpp>
+#include <ECS/Common.hpp>
 
 #include <olcPGE/olcPixelGameEngine.hpp>
 
 #include <map>
-#include <string>
 
 
 namespace ECS
@@ -17,7 +17,8 @@ namespace Components
 
 struct TextureStorage
 {
-  std::map <ENTT_ID_TYPE, olc::Renderable> textures;
+  std::map <ECS::TextureId, olc::Renderable,
+            entt::hashed_string_comparator> textures;
 };
 
 } // namespace Components

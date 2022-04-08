@@ -4,7 +4,6 @@
 #include <ECS/Components/Camera.hpp>
 #include <ECS/Components/TextureBuffer.hpp>
 #include <ECS/Components/TextureStorage.hpp>
-#include <ECS/Components/Transform.hpp>
 
 #include <entt/entt.hpp>
 
