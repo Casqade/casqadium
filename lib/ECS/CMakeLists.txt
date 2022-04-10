@@ -15,6 +15,9 @@ target_sources(${TARGET} PRIVATE
 
   include/${TARGET}/Alias.hpp
 
+  src/PackageLoader.cpp
+  include/${TARGET}/PackageLoader.hpp
+
   src/Types/CallbackStorage.cpp
   include/${TARGET}/Types/CallbackStorage.hpp
 
