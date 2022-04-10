@@ -2,6 +2,7 @@
 #define ECS_COMPONENTS_INPUT_CONTROLLER_HPP
 
 #include <ECS/Alias.hpp>
+#include <ECS/Common.hpp>
 #include <ECS/Types/InputAxis.hpp>
 
 #include <entt/fwd.hpp>
@@ -18,7 +19,8 @@ namespace Components
 
 struct InputController
 {
-  std::map <InputId, Types::InputAxis> inputs;
+  std::map <InputDestinationId, Types::InputAxis,
+            entt::hashed_string_comparator> inputs;
 
 
   void serialize( const std::string& json ) const;
