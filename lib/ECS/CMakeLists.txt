@@ -36,6 +36,9 @@ target_sources(${TARGET} PRIVATE
   src/Components/SceneNode.cpp
   include/${TARGET}/Components/SceneNode.hpp
 
+  src/Components/SequenceManager.cpp
+  include/${TARGET}/Components/SequenceManager.hpp
+
   src/Components/Transform.cpp
   include/${TARGET}/Components/Transform.hpp
 
