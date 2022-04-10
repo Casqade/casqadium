@@ -24,6 +24,8 @@ target_sources(${TARGET} PRIVATE
   src/Types/InputAxis.cpp
   include/${TARGET}/Types/InputAxis.hpp
 
+  include/${TARGET}/Types/SequenceStep.hpp
+
   src/Types/VertexBuffer.cpp
   include/${TARGET}/Types/VertexBuffer.hpp
 
