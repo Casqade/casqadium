@@ -22,6 +22,8 @@ struct InputAxis
   std::set <InputCallbackId> callbacks;
 
 
+  bool operator == ( const InputAxis& ) const;
+
   static std::string  toJson( const InputAxis& );
   static InputAxis    fromJson( const std::string& );
 };
