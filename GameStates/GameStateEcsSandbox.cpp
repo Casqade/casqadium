@@ -79,12 +79,9 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
 
   ECS::registryInit(mRegistry);
 
-  ECS::AssetStorage = mRegistry.create();
-  auto& textureStorage = mRegistry.emplace <TextureStorage> (ECS::AssetStorage);
+  const olc::vi2d textSize = mPGE->GetTextSize( "T" );
 
   olc::Renderable texture = olc::Renderable();
-
-  const olc::vi2d textSize = mPGE->GetTextSize( "T" );
   texture.Create( textSize.x, textSize.y );
 
   mPGE->SetDrawTarget( texture.Sprite() );
@@ -94,7 +91,10 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
 
   texture.Decal()->Update();
 
+  ECS::AssetStorage = mRegistry.create();
+  auto& textureStorage = mRegistry.emplace <TextureStorage> (ECS::AssetStorage);
   textureStorage.textures.emplace("test"_hs, std::move(texture));
+
 
   auto eQuad = mRegistry.create();
   auto eCamera = mRegistry.create();
