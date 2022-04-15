@@ -2,6 +2,7 @@
 #define ECS_TYPES_INPUT_AXIS_HPP
 
 #include <ECS/Alias.hpp>
+#include <ECS/Common.hpp>
 
 #include <set>
 #include <string>
@@ -19,7 +20,8 @@ struct InputAxis
   float sensitivity;
   std::pair <float, float> constraint;
 
-  std::set <InputCallbackId> callbacks;
+  std::set <InputCallbackId,
+            entt::hashed_string_comparator> callbacks;
 
 
   bool operator == ( const InputAxis& ) const;
