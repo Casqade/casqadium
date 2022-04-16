@@ -191,13 +191,13 @@ GameStateEcsSandbox::update(  const uint32_t ticks,
   for ( auto&& [eCamera, cCamera, cController, cTransform] : mRegistry.view <Camera, InputController, Transform>().each() )
   {
     const float translationX = cController.inputs[ECS::InputDestinationId("TranslateX")].value * cameraVelocity * dt;
-    cTransform.translation += cTransform.right() * glm::vec3{translationX, 0.0f, 0.0f};
+    cTransform.translation += cTransform.right() * translationX;
 
     const float translationY = cController.inputs[ECS::InputDestinationId("TranslateY")].value * cameraVelocity * dt;
-    cTransform.translation += cTransform.up() * glm::vec3{0.0f, translationY, 0.0f};
+    cTransform.translation += cTransform.up() * translationY;
 
     const float translationZ = cController.inputs[ECS::InputDestinationId("TranslateZ")].value * cameraVelocity * dt;
-    cTransform.translation += cTransform.front() * glm::vec3{0.0f, 0.0f, translationZ};
+    cTransform.translation += cTransform.front() * translationZ;
   }
 
   return (ticks_total += ticks) < 6000;
