@@ -91,6 +91,11 @@ std::map <ECS::InputSourceId, ECS::InputDestinationId,
   {ECS::InputSourceId("Key_W"), ECS::InputDestinationId("+TranslateZ")},
   {ECS::InputSourceId("Key_Space"), ECS::InputDestinationId("+TranslateY")},
   {ECS::InputSourceId("Key_Shift"), ECS::InputDestinationId("-TranslateY")},
+
+  {ECS::InputSourceId("Mouse_MoveX"), ECS::InputDestinationId("-Yaw")},
+  {ECS::InputSourceId("Mouse_MoveY"), ECS::InputDestinationId("-Pitch")},
+
+  {ECS::InputSourceId("MouseButton_Middle"), ECS::InputDestinationId("CameraLookToggle")},
 };
 
 
@@ -146,22 +151,60 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
   iAxisTranslateY.sensitivity = 1.0f;
   iAxisTranslateY.constraint = {-1.0f, 1.0f};
   iAxisTranslateY.value = 0.0f;
-  iAxisTranslateY.callbacks.insert(ECS::InputCallbackId("CameraMoveUpward"));
 
   ECS::Types::InputAxis iAxisTranslateZ{};
   iAxisTranslateZ.sensitivity = 1.0f;
   iAxisTranslateZ.constraint = {-1.0f, 1.0f};
   iAxisTranslateZ.value = 0.0f;
 
+  ECS::Types::InputAxis iAxisPitch{};
+  iAxisPitch.sensitivity = 0.0f;
+  iAxisPitch.constraint = {-90.0f, 90.0f};
+  iAxisPitch.value = 0.0f;
+
+  ECS::Types::InputAxis iAxisYaw{};
+  iAxisYaw.sensitivity = 0.0f;
+  iAxisYaw.constraint = {-3600.0f, 3600.0f};
+  iAxisYaw.value = 0.0f;
+  iAxisYaw.callbacks.insert(ECS::InputCallbackId("CameraYawClamp"));
+
+  ECS::Types::InputAxis iAxisCameraLookToggle{};
+  iAxisCameraLookToggle.sensitivity = 1.0f;
+  iAxisCameraLookToggle.constraint = {0.0f, 1.0f};
+  iAxisCameraLookToggle.value = 0.0f;
+  iAxisCameraLookToggle.callbacks.insert(ECS::InputCallbackId("CameraLookToggle"));
+
   auto& cInputController = mRegistry.emplace <InputController> (eCamera);
   cInputController.inputs[ECS::InputDestinationId("TranslateX")] = iAxisTranslateX;
   cInputController.inputs[ECS::InputDestinationId("TranslateY")] = iAxisTranslateY;
   cInputController.inputs[ECS::InputDestinationId("TranslateZ")] = iAxisTranslateZ;
+  cInputController.inputs[ECS::InputDestinationId("Pitch")] = iAxisPitch;
+  cInputController.inputs[ECS::InputDestinationId("Yaw")] = iAxisYaw;
+  cInputController.inputs[ECS::InputDestinationId("CameraLookToggle")] = iAxisCameraLookToggle;
 
-  inputCallbackStorage.Register( ECS::InputCallbackId("CameraMoveUpward"),
+  inputCallbackStorage.Register( ECS::InputCallbackId("CameraLookToggle"),
   [this] ( const entt::entity entity, ECS::Components::InputController& cController )
   {
-    std::cout << "CameraMoveUpward callback\n";
+    ECS::Types::InputAxis& pitch = cController.inputs["Pitch"];
+    ECS::Types::InputAxis& yaw = cController.inputs["Yaw"];
+
+    if ( pitch.sensitivity > 0.0f )
+      pitch.sensitivity = 0.0f;
+    else
+      pitch.sensitivity = 0.5f;
+
+    if ( yaw.sensitivity > 0.0f )
+      yaw.sensitivity = 0.0f;
+    else
+      yaw.sensitivity = 0.5f;
+  });
+
+  inputCallbackStorage.Register( ECS::InputCallbackId("CameraYawClamp"),
+  [this] ( const entt::entity entity, ECS::Components::InputController& cController )
+  {
+    float& yaw = cController.inputs["Yaw"].value;
+    yaw = yaw > 180.0f ? yaw - 360.0f : yaw;
+    yaw = yaw < -180.0f ? yaw + 360.0f : yaw;
   });
 }
 
@@ -281,6 +324,11 @@ GameStateEcsSandbox::update(  const uint32_t ticks,
 
     const float translationZ = cController.inputs[ECS::InputDestinationId("TranslateZ")].value * cameraVelocity * dt;
     cTransform.translation += cTransform.front() * translationZ;
+
+    const float pitch = glm::radians( cController.inputs[ECS::InputDestinationId("Pitch")].value );
+    const float yaw = glm::radians( cController.inputs[ECS::InputDestinationId("Yaw")].value );
+
+    cTransform.orientation = glm::quat( {pitch, yaw, 0.0f} );
   }
 
   return (ticks_total += ticks) < 6000;
