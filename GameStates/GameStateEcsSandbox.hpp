@@ -17,6 +17,8 @@ class GameStateEcsSandbox
 
   entt::registry mRegistry;
 
+  bool mRunning;
+
   void keyEvent( const olc::Event ) override;
   void mouseMoveEvent( const olc::Event::MouseMoveEvent ) override;
   void mouseButtonEvent( const olc::Event ) override;

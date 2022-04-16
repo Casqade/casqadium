@@ -71,6 +71,7 @@ std::map <int32_t, ECS::InputSourceId> keyMap
   {olc::Key::W, ECS::InputSourceId("Key_W")},
   {olc::Key::SHIFT, ECS::InputSourceId("Key_Shift")},
   {olc::Key::SPACE, ECS::InputSourceId("Key_Space")},
+  {olc::Key::ENTER, ECS::InputSourceId("Key_Enter")},
 
   {int32_t(MouseInput::ButtonLeft), ECS::InputSourceId("MouseButton_Left")},
   {int32_t(MouseInput::ButtonRight), ECS::InputSourceId("MouseButton_Right")},
@@ -92,6 +93,8 @@ std::map <ECS::InputSourceId, ECS::InputDestinationId,
   {ECS::InputSourceId("Key_Space"), ECS::InputDestinationId("+TranslateY")},
   {ECS::InputSourceId("Key_Shift"), ECS::InputDestinationId("-TranslateY")},
 
+  {ECS::InputSourceId("Key_Enter"), ECS::InputDestinationId("Quit")},
+
   {ECS::InputSourceId("Mouse_MoveX"), ECS::InputDestinationId("-Yaw")},
   {ECS::InputSourceId("Mouse_MoveY"), ECS::InputDestinationId("-Pitch")},
 
@@ -102,6 +105,8 @@ std::map <ECS::InputSourceId, ECS::InputDestinationId,
 GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateController )
   : GameState(stateController)
   , mState(StateLocal::Idle)
+  , mRegistry()
+  , mRunning(true)
 {
   using namespace entt::literals;
   using namespace ECS::Components;
@@ -174,6 +179,12 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
   iAxisCameraLookToggle.value = 0.0f;
   iAxisCameraLookToggle.callbacks.insert(ECS::InputCallbackId("CameraLookToggle"));
 
+  ECS::Types::InputAxis iAxisExitListener{};
+  iAxisExitListener.sensitivity = 1.0f;
+  iAxisExitListener.constraint = {0.0f, 1.0f};
+  iAxisExitListener.value = 0.0f;
+  iAxisExitListener.callbacks.insert(ECS::InputCallbackId("QuitGame"));
+
   auto& cInputController = mRegistry.emplace <InputController> (eCamera);
   cInputController.inputs[ECS::InputDestinationId("TranslateX")] = iAxisTranslateX;
   cInputController.inputs[ECS::InputDestinationId("TranslateY")] = iAxisTranslateY;
@@ -181,6 +192,7 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
   cInputController.inputs[ECS::InputDestinationId("Pitch")] = iAxisPitch;
   cInputController.inputs[ECS::InputDestinationId("Yaw")] = iAxisYaw;
   cInputController.inputs[ECS::InputDestinationId("CameraLookToggle")] = iAxisCameraLookToggle;
+  cInputController.inputs[ECS::InputDestinationId("Quit")] = iAxisExitListener;
 
   inputCallbackStorage.Register( ECS::InputCallbackId("CameraLookToggle"),
   [this] ( const entt::entity entity, ECS::Components::InputController& cController )
@@ -205,6 +217,12 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
     float& yaw = cController.inputs["Yaw"].value;
     yaw = yaw > 180.0f ? yaw - 360.0f : yaw;
     yaw = yaw < -180.0f ? yaw + 360.0f : yaw;
+  });
+
+  inputCallbackStorage.Register( ECS::InputCallbackId("QuitGame"),
+  [this] ( const entt::entity entity, ECS::Components::InputController& cController )
+  {
+    mRunning = false;
   });
 }
 
@@ -314,6 +332,7 @@ GameStateEcsSandbox::update(  const uint32_t ticks,
   const double dt = static_cast <double> (elapsed);
   const float cameraVelocity = 10.0f;
 
+// Camera control system
   for ( auto&& [eCamera, cCamera, cController, cTransform] : mRegistry.view <Camera, InputController, Transform>().each() )
   {
     const float translationX = cController.inputs[ECS::InputDestinationId("TranslateX")].value * cameraVelocity * dt;
@@ -331,7 +350,7 @@ GameStateEcsSandbox::update(  const uint32_t ticks,
     cTransform.orientation = glm::quat( {pitch, yaw, 0.0f} );
   }
 
-  return (ticks_total += ticks) < 6000;
+  return mRunning && (ticks_total += ticks) < 6000;
 }
 
 void
