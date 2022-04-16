@@ -47,15 +47,39 @@ InputCallbackStorage::Execute(
 InputCallbackStorage inputCallbackStorage{};
 
 
-std::map <olc::Key, ECS::InputSourceId> keyMap
+enum class MouseInput
 {
-  {olc::Key::NONE, ECS::InputSourceId("Key_None")},
+  ENUM_BEGIN = olc::Key::ENUM_END,
+  ButtonLeft = ENUM_BEGIN,
+  ButtonRight,
+  ButtonMiddle,
+  ButtonX1,
+  ButtonX2,
+
+  MoveX,
+  MoveY,
+
+  Wheel
+};
+
+std::map <int32_t, ECS::InputSourceId> keyMap
+{
+//  {olc::Key::NONE, ECS::InputSourceId("Key_None")},
   {olc::Key::A, ECS::InputSourceId("Key_A")},
   {olc::Key::D, ECS::InputSourceId("Key_D")},
   {olc::Key::S, ECS::InputSourceId("Key_S")},
   {olc::Key::W, ECS::InputSourceId("Key_W")},
   {olc::Key::SHIFT, ECS::InputSourceId("Key_Shift")},
   {olc::Key::SPACE, ECS::InputSourceId("Key_Space")},
+
+  {int32_t(MouseInput::ButtonLeft), ECS::InputSourceId("MouseButton_Left")},
+  {int32_t(MouseInput::ButtonRight), ECS::InputSourceId("MouseButton_Right")},
+  {int32_t(MouseInput::ButtonMiddle), ECS::InputSourceId("MouseButton_Middle")},
+  {int32_t(MouseInput::ButtonX1), ECS::InputSourceId("MouseButton_X1")},
+  {int32_t(MouseInput::ButtonX2), ECS::InputSourceId("MouseButton_X2")},
+  {int32_t(MouseInput::MoveX), ECS::InputSourceId("Mouse_MoveX")},
+  {int32_t(MouseInput::MoveY), ECS::InputSourceId("Mouse_MoveY")},
+  {int32_t(MouseInput::Wheel), ECS::InputSourceId("Wheel_Move")},
 };
 
 std::map <ECS::InputSourceId, ECS::InputDestinationId,
@@ -142,39 +166,98 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
 }
 
 void
-GameStateEcsSandbox::keyEvent( const olc::Event event )
+GameStateEcsSandbox::handleAxisInput(
+  const float amount,
+  const float direction,
+  const std::string& inputDestinationId )
 {
   using namespace ECS::Components;
 
+  const ECS::InputDestinationId inputDst( inputDestinationId.c_str() );
+
   for ( auto&& [entity, cInputController] : mRegistry.view <InputController>().each() )
   {
-    const ECS::InputSourceId inputSrc = keyMap[event.key.code];
-
-    if ( controlMap.count(inputSrc) == 0 )
-      continue;
-
-    std::string inputDstStr( controlMap[inputSrc].data() );
-
-    const float inputDir = event.type == olc::Event::KeyPressed ? 1.0f : -1.0f;
-    const float controlDir = inputDstStr[0] == '-' ? -1.0f : 1.0f;
-
-    if ( inputDstStr[0] == '+' || inputDstStr[0] == '-' )
-      inputDstStr.erase( 0, 1 );
-
-    const ECS::InputDestinationId inputDst( inputDstStr.c_str() );
-
     if ( cInputController.inputs.count(inputDst) == 0 )
       continue;
 
     ECS::Types::InputAxis& iAxis = cInputController.inputs[inputDst];
 
-    iAxis.value = std::clamp(iAxis.value + iAxis.sensitivity * inputDir * controlDir,
+    iAxis.value = std::clamp(iAxis.value + iAxis.sensitivity * amount * direction,
                              iAxis.constraint.first,
                              iAxis.constraint.second );
 
     for ( const ECS::InputCallbackId callbackId : iAxis.callbacks )
       inputCallbackStorage.Execute( callbackId, entity, cInputController );
   }
+}
+
+void
+GameStateEcsSandbox::keyEvent( const olc::Event event )
+{
+  using namespace ECS::Components;
+
+  const ECS::InputSourceId inputSrc = keyMap[event.key.code];
+
+//  assert( controlMap.count(inputSrc) != 0 );
+
+  if ( controlMap.count(inputSrc) == 0 )
+    return;
+
+  std::string inputDstStr( controlMap[inputSrc].data() );
+
+  const float inputAmount = event.type == olc::Event::KeyPressed ? 1.0f : -1.0f;
+  const float controlDir = inputDstStr[0] == '-' ? -1.0f : 1.0f;
+
+  if ( inputDstStr[0] == '+' || inputDstStr[0] == '-' )
+    inputDstStr.erase( 0, 1 );
+
+  handleAxisInput( inputAmount, controlDir, inputDstStr );
+}
+
+void
+GameStateEcsSandbox::handleMouseInput(
+  const int32_t inputId,
+  const float inputAmount )
+{
+  using namespace ECS::Components;
+
+  const ECS::InputSourceId inputSrc = keyMap[inputId];
+
+//  assert( controlMap.count(inputSrc) != 0 );
+
+  if ( controlMap.count(inputSrc) == 0 )
+    return;
+
+  std::string inputDstStr( controlMap[inputSrc].data() );
+
+  const float controlDir = inputDstStr[0] == '-' ? -1.0f : 1.0f;
+
+  if ( inputDstStr[0] == '+' || inputDstStr[0] == '-' )
+    inputDstStr.erase( 0, 1 );
+
+  handleAxisInput( inputAmount, controlDir, inputDstStr );
+}
+
+void
+GameStateEcsSandbox::mouseMoveEvent( const olc::Event::MouseMoveEvent event )
+{
+  using namespace ECS::Components;
+
+  if ( event.dx != 0 )
+    handleMouseInput( int32_t(MouseInput::MoveX), event.dx );
+
+  if ( event.dy != 0 )
+    handleMouseInput( int32_t(MouseInput::MoveY), event.dy );
+}
+
+void
+GameStateEcsSandbox::mouseButtonEvent( const olc::Event event )
+{
+  const float inputAmount = event.type == olc::Event::MouseButtonPressed
+                          ? 1.0f
+                          : -1.0f;
+
+  handleMouseInput( int32_t(MouseInput::ENUM_BEGIN) + int32_t(event.mouseButton.button), inputAmount );
 }
 
 bool
