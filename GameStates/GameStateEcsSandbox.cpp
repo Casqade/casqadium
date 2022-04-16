@@ -21,12 +21,6 @@
 #include <ECS/Systems/CullingSystem.hpp>
 
 
-void callbackTest( entt::entity, ECS::Components::InputController& )
-{
-  std::cout << "hello\n";
-}
-
-
 class InputCallbackStorage : public ECS::Types::CallbackStorage <std::function <void(const entt::entity, ECS::Components::InputController&)>>
 {
 public:
