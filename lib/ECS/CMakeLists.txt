@@ -89,15 +89,12 @@ if(NOT EnTT_FOUND)
 
 endif()
 
-if(NOT TARGET glm)
-  find_package(glm REQUIRED)
-endif()
-
+find_package(glm REQUIRED)
 find_package(JsonCPP REQUIRED)
 
 target_link_libraries(${TARGET} PUBLIC
   EnTT::EnTT
-  glm::glm
+  glm
   olcPGE::olcPGE
 )
 

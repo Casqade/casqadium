@@ -95,32 +95,12 @@ if(NOT SFML_FOUND)
 
 endif()
 
-find_package(glm QUIET)
-
-if(NOT glm_FOUND)
-  include(FetchContent)
-
-  FetchContent_Declare(glm
-    GIT_REPOSITORY https://github.com/g-truc/glm
-    GIT_TAG        0.9.9.8
-    GIT_SHALLOW    TRUE
-  )
-
-  if(${BUILD_SHARED_LIBS})
-    set(BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)
-  else()
-    set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
-  endif()
-
-  FetchContent_MakeAvailable(glm)
-
-endif()
-
+find_package(glm REQUIRED)
 find_package(JsonCPP REQUIRED)
 
 target_link_libraries(${TARGET} PRIVATE
   sfml-audio
-  glm::glm
+  glm
 )
 
 if(${BUILD_SHARED_LIBS})

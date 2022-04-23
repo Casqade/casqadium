@@ -23,7 +23,8 @@ target_sources(${TARGET} PRIVATE
   include/${TARGET}/Quad.hpp
 )
 
-target_link_libraries(${TARGET} PUBLIC glm::glm)
+find_package(glm REQUIRED)
+target_link_libraries(${TARGET} PUBLIC glm)
 target_link_libraries(${TARGET} PUBLIC olcPGE::olcPGE)
 
 include(GNUInstallDirs)
