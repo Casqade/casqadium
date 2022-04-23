@@ -9,13 +9,13 @@
 #include <ECS/Alias.hpp>
 #include <ECS/Common.hpp>
 #include <ECS/Types/CallbackStorage.hpp>
+#include <ECS/Types/TextureStorage.hpp>
 #include <ECS/Components/Camera.hpp>
 #include <ECS/Components/SceneNode.hpp>
 #include <ECS/Components/Transform.hpp>
 #include <ECS/Components/GeometryBuffer.hpp>
 #include <ECS/Components/InputController.hpp>
 #include <ECS/Components/TextureBuffer.hpp>
-#include <ECS/Components/TextureStorage.hpp>
 
 #include <ECS/Systems/RenderSystem.hpp>
 #include <ECS/Systems/CullingSystem.hpp>
@@ -120,8 +120,7 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
 
   texture->Decal()->Update();
 
-  ECS::AssetStorage = mRegistry.create();
-  auto& textureStorage = mRegistry.emplace <TextureStorage> (ECS::AssetStorage);
+  auto& textureStorage = mRegistry.ctx_or_set <ECS::Types::TextureStorage> ();
   textureStorage.textures.emplace("test"_hs, texture );
 
   auto eQuad = mRegistry.create();

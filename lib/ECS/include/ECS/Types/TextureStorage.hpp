@@ -12,16 +12,18 @@
 namespace ECS
 {
 
-namespace Components
+namespace Types
 {
 
 struct TextureStorage
 {
   std::map <ECS::TextureId, std::shared_ptr <olc::Renderable>,
             entt::hashed_string_comparator> textures;
+
+  TextureStorage();
 };
 
-} // namespace Components
+} // namespace Types
 
 } // namespace ECS
 

@@ -3,7 +3,7 @@
 #include <ECS/Common.hpp>
 #include <ECS/Components/Camera.hpp>
 #include <ECS/Components/TextureBuffer.hpp>
-#include <ECS/Components/TextureStorage.hpp>
+#include <ECS/Types/TextureStorage.hpp>
 
 #include <entt/entt.hpp>
 
@@ -27,6 +27,7 @@ void
 RenderSystem( entt::registry& registry )
 {
   using namespace ECS::Components;
+  using namespace ECS::Types;
 
   for ( auto&& [eCamera, cCamera] : registry.view <Camera>().each() )
   {
@@ -37,10 +38,10 @@ RenderSystem( entt::registry& registry )
       TextureBuffer* textureBuffer = registry.try_get <TextureBuffer> (entity);
       if ( textureBuffer != nullptr )
       {
-          TextureStorage& textureStorage = registry.get <TextureStorage> (ECS::AssetStorage);
           const auto      textureId = textureBuffer->textures[(int) buffer.windingOrder];
+          const TextureStorage& textureStorage = registry.ctx <TextureStorage> ();
 
-          decal = textureStorage.textures[textureId]->Decal();
+          decal = textureStorage.textures.at(textureId)->Decal();
       }
 
       auto vertices = vec_to_array(buffer.vertices);

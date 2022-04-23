@@ -29,6 +29,9 @@ target_sources(${TARGET} PRIVATE
 
   include/${TARGET}/Types/SequenceStep.hpp
 
+  src/Types/TextureStorage.cpp
+  include/${TARGET}/Types/TextureStorage.hpp
+
   src/Types/VertexBuffer.cpp
   include/${TARGET}/Types/VertexBuffer.hpp
 
@@ -56,9 +59,6 @@ target_sources(${TARGET} PRIVATE
 
   src/Components/TextureBuffer.cpp
   include/${TARGET}/Components/TextureBuffer.hpp
-
-  src/Components/TextureStorage.cpp
-  include/${TARGET}/Components/TextureStorage.hpp
 
 
   src/Systems/CullingSystem.cpp
