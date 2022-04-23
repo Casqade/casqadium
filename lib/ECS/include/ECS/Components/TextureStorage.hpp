@@ -17,7 +17,7 @@ namespace Components
 
 struct TextureStorage
 {
-  std::map <ECS::TextureId, olc::Renderable,
+  std::map <ECS::TextureId, std::shared_ptr <olc::Renderable>,
             entt::hashed_string_comparator> textures;
 };
 

@@ -107,22 +107,22 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
 
   ECS::registryInit(mRegistry);
 
-  const olc::vi2d textSize = mPGE->GetTextSize( "T" );
+  auto texture = std::make_shared <olc::Renderable> ();
 
-  olc::Renderable texture = olc::Renderable();
-  texture.Create( textSize.x, textSize.y );
+  auto text = "T";
+  const olc::vi2d textSize = mPGE->GetTextSize(text);
+  texture->Create( textSize.x, textSize.y );
 
-  mPGE->SetDrawTarget( texture.Sprite() );
+  mPGE->SetDrawTarget( texture->Sprite() );
   mPGE->Clear( olc::BLANK );
-  mPGE->DrawString( 0, 0, "T", olc::WHITE );
+  mPGE->DrawString( 0, 0, text, olc::WHITE );
   mPGE->SetDrawTarget(nullptr);
 
-  texture.Decal()->Update();
+  texture->Decal()->Update();
 
   ECS::AssetStorage = mRegistry.create();
   auto& textureStorage = mRegistry.emplace <TextureStorage> (ECS::AssetStorage);
-  textureStorage.textures.emplace("test"_hs, std::move(texture));
-
+  textureStorage.textures.emplace("test"_hs, texture );
 
   auto eQuad = mRegistry.create();
   auto eCamera = mRegistry.create();

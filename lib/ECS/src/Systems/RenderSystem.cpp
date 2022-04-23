@@ -40,7 +40,7 @@ RenderSystem( entt::registry& registry )
           TextureStorage& textureStorage = registry.get <TextureStorage> (ECS::AssetStorage);
           const auto      textureId = textureBuffer->textures[(int) buffer.windingOrder];
 
-          decal = textureStorage.textures[textureId].Decal();
+          decal = textureStorage.textures[textureId]->Decal();
       }
 
       auto vertices = vec_to_array(buffer.vertices);
