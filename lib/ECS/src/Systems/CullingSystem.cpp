@@ -61,7 +61,7 @@ void CullSystem( entt::registry& registry )
 {
   using namespace ECS::Components;
 
-  for ( auto&& [eCamera, cCamera, cCameraNode, cCameraTransform]
+  for ( const auto&& [eCamera, cCamera, cCameraNode, cCameraTransform]
           : registry.view <Camera, SceneNode, Transform>().each() )
   {
     cCamera.zBuffer.clear();
@@ -70,7 +70,7 @@ void CullSystem( entt::registry& registry )
     const glm::mat4 camProjection = cCamera.projMatrix();
     const glm::vec4 camViewport = cCamera.viewport;
 
-    for ( auto&& [eDrawable, cGeometryBuffer, cNode, cTransform]
+    for ( const auto&& [eDrawable, cGeometryBuffer, cNode, cTransform]
             : registry.view <GeometryBuffer, SceneNode, Transform>().each() )
     {
       const glm::mat4 modelView = camView *

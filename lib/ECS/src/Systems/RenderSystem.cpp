@@ -29,24 +29,25 @@ RenderSystem( entt::registry& registry )
   using namespace ECS::Components;
   using namespace ECS::Types;
 
-  for ( auto&& [eCamera, cCamera] : registry.view <Camera>().each() )
+  for ( const auto&& [eCamera, cCamera] : registry.view <Camera>().each() )
   {
-    for ( auto& [buffer, entity] : cCamera.zBuffer )
+    for ( const auto& [buffer, entity] : cCamera.zBuffer )
     {
       olc::Decal* decal = nullptr;
 
-      TextureBuffer* textureBuffer = registry.try_get <TextureBuffer> (entity);
+      const TextureBuffer* textureBuffer = registry.try_get <TextureBuffer> (entity);
       if ( textureBuffer != nullptr )
       {
-          const auto      textureId = textureBuffer->textures[(int) buffer.windingOrder];
-          const TextureStorage& textureStorage = registry.ctx <TextureStorage> ();
+        const TextureStorage& textureStorage = registry.ctx <TextureStorage> ();
+        const TextureId       textureId = textureBuffer->textures.at((int) buffer.windingOrder);
 
-          decal = textureStorage.textures.at(textureId)->Decal();
+        decal = textureStorage.textures.at(textureId)->Decal();
       }
 
       auto vertices = vec_to_array(buffer.vertices);
       olc::renderer->ptrPGE->DrawWarpedDecal( decal, vec_to_array(buffer.vertices) );
 
+//      Draw outline
       for ( size_t i = 0, iNext = 1;
             i < vertices.size();
             ++i, iNext = (i + 1) % vertices.size() )
