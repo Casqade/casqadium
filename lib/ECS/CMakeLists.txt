@@ -89,7 +89,9 @@ if(NOT EnTT_FOUND)
 
 endif()
 
-find_package(glm REQUIRED)
+if(NOT TARGET glm)
+  find_package(glm REQUIRED)
+endif()
 
 target_link_libraries(${TARGET} PUBLIC
   EnTT::EnTT
