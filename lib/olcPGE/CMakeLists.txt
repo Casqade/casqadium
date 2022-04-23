@@ -15,6 +15,9 @@ target_sources(${TARGET} PRIVATE
   include/${TARGET}/olcPGEX_CustomFont.hpp
   src/olcPGEX_CustomFont.cpp
 
+  include/${TARGET}/olcPGEX_TTF.hpp
+  src/olcPGEX_TTF.cpp
+
   imgui/imgui.h
   imgui/imgui.cpp
   imgui/imgui_demo.cpp
@@ -47,6 +50,9 @@ set_target_properties(${TARGET} PROPERTIES
 if(NOT ${BUILD_SHARED_LIBS})
   target_link_libraries(${TARGET} PUBLIC -static)
 endif()
+
+find_package(Freetype REQUIRED)
+target_link_libraries(${TARGET} PUBLIC Freetype::Freetype)
 
 find_package(glm REQUIRED)
 target_link_libraries(${TARGET} PUBLIC glm)
