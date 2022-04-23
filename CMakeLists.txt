@@ -116,10 +116,18 @@ if(NOT glm_FOUND)
 
 endif()
 
+find_package(JsonCPP REQUIRED)
+
 target_link_libraries(${TARGET} PRIVATE
   sfml-audio
   glm::glm
 )
+
+if(${BUILD_SHARED_LIBS})
+  target_link_libraries(${TARGET} PUBLIC jsoncpp_lib)
+else()
+  target_link_libraries(${TARGET} PUBLIC jsoncpp_static)
+endif()
 
 add_subdirectory(lib)
 

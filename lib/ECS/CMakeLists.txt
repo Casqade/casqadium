@@ -93,11 +93,19 @@ if(NOT TARGET glm)
   find_package(glm REQUIRED)
 endif()
 
+find_package(JsonCPP REQUIRED)
+
 target_link_libraries(${TARGET} PUBLIC
   EnTT::EnTT
   glm::glm
   olcPGE::olcPGE
 )
+
+if(${BUILD_SHARED_LIBS})
+  target_link_libraries(${TARGET} PUBLIC jsoncpp_lib)
+else()
+  target_link_libraries(${TARGET} PUBLIC jsoncpp_static)
+endif()
 
 include(GNUInstallDirs)
 
