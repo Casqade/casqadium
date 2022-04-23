@@ -10,9 +10,8 @@ namespace Components
 {
 
 TextureBuffer::TextureBuffer()
-{
-  textures.reserve(2);  // front+back faces
-}
+  : textures(2, TextureId("null"))  // front & back faces
+{}
 
 void
 TextureBuffer::serialize( const std::string& json ) const

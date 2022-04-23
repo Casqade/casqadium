@@ -138,7 +138,6 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
   cCamera.viewport = { 0.0f, 0.0f, mPGE->GetWindowSize().x, mPGE->GetWindowSize().y };
 
   textureBuffer.textures[0] = "test"_hs;
-//  textureBuffer.textures[1] = "test"_hs;
 
   ECS::Types::InputAxis iAxisTranslateX{};
   iAxisTranslateX.sensitivity = 1.0f;
