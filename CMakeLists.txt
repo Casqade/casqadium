@@ -95,14 +95,14 @@ if(NOT SFML_FOUND)
 
 endif()
 
-find_package(EnTT QUIET)
+find_package(glm QUIET)
 
-if(NOT EnTT_FOUND)
+if(NOT glm_FOUND)
   include(FetchContent)
 
-  FetchContent_Declare(EnTT
-    GIT_REPOSITORY https://github.com/skypjack/entt
-    GIT_TAG        v3.8.0
+  FetchContent_Declare(glm
+    GIT_REPOSITORY https://github.com/g-truc/glm
+    GIT_TAG        0.9.9.8
     GIT_SHALLOW    TRUE
   )
 
@@ -112,21 +112,23 @@ if(NOT EnTT_FOUND)
     set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
   endif()
 
-  FetchContent_MakeAvailable(EnTT)
+  FetchContent_MakeAvailable(glm)
 
 endif()
 
-target_link_libraries(${TARGET} PUBLIC
+target_link_libraries(${TARGET} PRIVATE
   sfml-audio
-  EnTT::EnTT
+  glm::glm
 )
 
 add_subdirectory(lib)
 
-target_link_libraries(${TARGET} PRIVATE TimeUtils::TimeUtils)
-target_link_libraries(${TARGET} PRIVATE Graphics3D::Graphics3D)
-target_link_libraries(${TARGET} PRIVATE olcPGE::olcPGE)
-target_link_libraries(${TARGET} PRIVATE ECS::ECS)
+target_link_libraries(${TARGET} PRIVATE
+  TimeUtils::TimeUtils
+  Graphics3D::Graphics3D
+  olcPGE::olcPGE
+  ECS::ECS
+)
 
 if(WIN32)
   if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
