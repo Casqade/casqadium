@@ -1,0 +1,22 @@
+{
+  "assets":
+  {
+    "fonts":
+    {
+      "null": null
+    },
+    "sounds":
+    {
+      "null": null
+    },
+    "textures":
+    {
+      "null": null
+    }
+  },
+  "entities":
+  {
+    
+  },
+  "title": "editor"
+}
