@@ -1,5 +1,4 @@
-#ifndef ECS_PACKAGE_LOADER_HPP
-#define ECS_PACKAGE_LOADER_HPP
+#pragma once
 
 #include <ECS/Alias.hpp>
 
@@ -45,5 +44,3 @@ public:
 };
 
 } // namespace ECS
-
-#endif

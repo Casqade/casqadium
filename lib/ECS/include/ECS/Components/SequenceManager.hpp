@@ -1,5 +1,4 @@
-#ifndef ECS_TYPES_SEQUENCE_MANAGER_HPP
-#define ECS_TYPES_SEQUENCE_MANAGER_HPP
+#pragma once
 
 #include <ECS/Types/SequenceStep.hpp>
 
@@ -34,5 +33,3 @@ struct SequenceManager
 } // namespace Components
 
 } // namespace ECS
-
-#endif

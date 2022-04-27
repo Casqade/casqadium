@@ -1,5 +1,4 @@
-#ifndef ECS_TYPES_ENTITY_REFERENCE_HPP
-#define ECS_TYPES_ENTITY_REFERENCE_HPP
+#pragma once
 
 #include <ECS/Alias.hpp>
 
@@ -34,6 +33,3 @@ struct EntityReference
 
 
 } // namespace ECS
-
-#endif
-

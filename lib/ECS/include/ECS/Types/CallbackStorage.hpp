@@ -1,5 +1,4 @@
-#ifndef ECS_TYPES_CALLBACK_STORAGE_HPP
-#define ECS_TYPES_CALLBACK_STORAGE_HPP
+#pragma once
 
 #include <ECS/Alias.hpp>
 #include <ECS/Common.hpp>
@@ -27,5 +26,3 @@ public:
 } // namespace Types
 
 } // namespace ECS
-
-#endif

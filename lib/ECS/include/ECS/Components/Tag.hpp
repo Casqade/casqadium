@@ -1,5 +1,4 @@
-#ifndef ECS_COMPONENTS_TAG_HPP
-#define ECS_COMPONENTS_TAG_HPP
+#pragma once
 
 #include <ECS/Alias.hpp>
 
@@ -34,5 +33,3 @@ struct Tag
 } // namespace Components
 
 } // namespace ECS
-
-#endif

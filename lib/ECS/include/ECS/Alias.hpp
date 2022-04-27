@@ -1,5 +1,4 @@
-#ifndef ECS_ALIAS_HPP
-#define ECS_ALIAS_HPP
+#pragma once
 
 #include <entt/core/hashed_string.hpp>
 
@@ -16,5 +15,3 @@ typedef entt::hashed_string PackageId;
 typedef entt::hashed_string TextureId;
 
 } // namespace ECS
-
-#endif

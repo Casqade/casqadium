@@ -1,5 +1,4 @@
-#ifndef ECS_COMPONENTS_CAMERA_HPP
-#define ECS_COMPONENTS_CAMERA_HPP
+#pragma once
 
 #include <ECS/Types/VertexBuffer.hpp>
 
@@ -93,5 +92,3 @@ struct Camera
 } // namespace Components
 
 } // namespace ECS
-
-#endif

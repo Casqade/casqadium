@@ -1,5 +1,4 @@
-#ifndef ECS_TYPES_INPUT_AXIS_HPP
-#define ECS_TYPES_INPUT_AXIS_HPP
+#pragma once
 
 #include <ECS/Alias.hpp>
 #include <ECS/Common.hpp>
@@ -33,5 +32,3 @@ struct InputAxis
 } // namespace Types
 
 } // namespace ECS
-
-#endif

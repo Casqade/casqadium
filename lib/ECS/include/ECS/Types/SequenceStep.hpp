@@ -1,5 +1,4 @@
-#ifndef ECS_TYPES_SEQUENCE_STEP_HPP
-#define ECS_TYPES_SEQUENCE_STEP_HPP
+#pragma once
 
 #include <ECS/Alias.hpp>
 
@@ -28,5 +27,3 @@ public:
 } // namespace Types
 
 } // namespace ECS
-
-#endif

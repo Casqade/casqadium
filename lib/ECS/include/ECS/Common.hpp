@@ -1,5 +1,4 @@
-#ifndef ECS_COMMON_HPP
-#define ECS_COMMON_HPP
+#pragma once
 
 #include <entt/fwd.hpp>
 #include <entt/core/hashed_string.hpp>
@@ -21,6 +20,5 @@ public:
   bool operator () ( const entt::hashed_string& lhs, const entt::hashed_string& rhs ) const;
 };
 
-}
+} // namespace entt
 
-#endif

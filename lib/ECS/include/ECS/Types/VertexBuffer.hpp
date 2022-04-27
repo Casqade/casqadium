@@ -1,5 +1,4 @@
-#ifndef ECS_TYPES_VERTEX_BUFFER_HPP
-#define ECS_TYPES_VERTEX_BUFFER_HPP
+#pragma once
 
 #include <olcPGE/olcPixelGameEngine.hpp>
 
@@ -37,6 +36,3 @@ GetWindingOrder(  const VertexBuffer& vertices,
 
 
 } // namespace ECS
-
-#endif
-

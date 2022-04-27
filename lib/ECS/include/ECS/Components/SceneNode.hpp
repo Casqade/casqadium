@@ -1,5 +1,4 @@
-#ifndef ECS_COMPONENTS_SCENE_NODE_HPP
-#define ECS_COMPONENTS_SCENE_NODE_HPP
+#pragma once
 
 #include <ECS/Types/EntityReference.hpp>
 
@@ -38,5 +37,3 @@ void RemoveChildNode( entt::registry&, entt::entity parent, entt::entity child )
 } // namespace Components
 
 } // namespace ECS
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef ECS_COMPONENTS_TEXTURE_BUFFER_HPP
-#define ECS_COMPONENTS_TEXTURE_BUFFER_HPP
+#pragma once
 
 #include <ECS/Alias.hpp>
 
@@ -35,5 +34,3 @@ struct TextureBuffer
 } // namespace Components
 
 } // namespace ECS
-
-#endif

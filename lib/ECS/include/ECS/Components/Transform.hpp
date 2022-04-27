@@ -1,5 +1,4 @@
-#ifndef ECS_COMPONENTS_TRANSFORM_HPP
-#define ECS_COMPONENTS_TRANSFORM_HPP
+#pragma once
 
 #include <entt/fwd.hpp>
 
@@ -86,5 +85,3 @@ glm::mat4 GetWorldMatrix( entt::registry&,
                           const Components::SceneNode& );
 
 } // namespace ECS
-
-#endif

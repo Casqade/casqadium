@@ -1,5 +1,4 @@
-#ifndef ECS_SYSTEMS_RENDER_SYSTEM_HPP
-#define ECS_SYSTEMS_RENDER_SYSTEM_HPP
+#pragma once
 
 #include <entt/fwd.hpp>
 
@@ -36,5 +35,3 @@ RenderSystem( entt::registry& );
 } // namespace Systems
 
 } // namespace ECS
-
-#endif

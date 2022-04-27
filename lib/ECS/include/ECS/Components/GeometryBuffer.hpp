@@ -1,5 +1,4 @@
-#ifndef ECS_COMPONENTS_GEOMETRY_BUFFER_HPP
-#define ECS_COMPONENTS_GEOMETRY_BUFFER_HPP
+#pragma once
 
 #include <entt/fwd.hpp>
 
@@ -45,5 +44,3 @@ struct GeometryBuffer
 } // namespace Components
 
 } // namespace ECS
-
-#endif

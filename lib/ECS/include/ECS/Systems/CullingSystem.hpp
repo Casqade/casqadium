@@ -1,5 +1,4 @@
-#ifndef ECS_SYSTEMS_CULLING_SYSTEM_HPP
-#define ECS_SYSTEMS_CULLING_SYSTEM_HPP
+#pragma once
 
 #include <entt/fwd.hpp>
 
@@ -15,5 +14,3 @@ void CullSystem( entt::registry& registry );
 } // namespace Systems
 
 } // namespace ECS
-
-#endif

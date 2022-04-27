@@ -1,5 +1,4 @@
-#ifndef ECS_COMPONENTS_INPUT_CONTROLLER_HPP
-#define ECS_COMPONENTS_INPUT_CONTROLLER_HPP
+#pragma once
 
 #include <ECS/Alias.hpp>
 #include <ECS/Common.hpp>
@@ -35,5 +34,3 @@ struct InputController
 } // namespace Components
 
 } // namespace ECS
-
-#endif

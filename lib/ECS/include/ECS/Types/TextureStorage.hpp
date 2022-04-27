@@ -1,5 +1,4 @@
-#ifndef ECS_COMPONENTS_TEXTURE_STORAGE_HPP
-#define ECS_COMPONENTS_TEXTURE_STORAGE_HPP
+#pragma once
 
 #include <ECS/Alias.hpp>
 #include <ECS/Common.hpp>
@@ -26,5 +25,3 @@ struct TextureStorage
 } // namespace Types
 
 } // namespace ECS
-
-#endif
