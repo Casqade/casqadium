@@ -9,6 +9,7 @@
 #include <cqde/alias.hpp>
 #include <cqde/common.hpp>
 #include <cqde/types/InputCallbackStorage.hpp>
+#include <cqde/types/EntityTagStorage.hpp>
 #include <cqde/components/Camera.hpp>
 #include <cqde/components/SceneNode.hpp>
 #include <cqde/components/Transform.hpp>
@@ -43,6 +44,30 @@ initSwControls( cqde::types::SwControlMap& controlMap )
   };
 }
 
+struct Entity
+{
+  using entity_type = std::uint32_t;
+
+  cqde::EntityId id;
+
+  constexpr Entity( entity_type value ) ENTT_NOEXCEPT
+    : id{cqde::null_id}
+    , type{value}
+  {}
+
+  constexpr Entity( const Entity& other ) ENTT_NOEXCEPT
+    : id{cqde::null_id}
+    , type{other.type}
+  {}
+
+  constexpr operator entity_type() const ENTT_NOEXCEPT
+  {
+    return type;
+  }
+
+private:
+  entity_type type;
+};
 
 GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateController )
   : GameState(stateController)
@@ -56,6 +81,16 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
 
   cqde::engineInit(mRegistry);
   initSwControls( mRegistry.ctx <SwControlMap> () );
+
+  entt::basic_registry <Entity> reg{};
+  auto& tagStorage = mRegistry.ctx <EntityTagStorage> ();
+
+  auto entity = reg.create();
+//  tagStorage.tags.emplace(tagStorage.generate(), entity);
+//  tagStorage.tags.emplace(tagStorage.generate(), entity);
+
+//  entity.id = tagStorage.generate();
+//  entity.id = tagStorage.generate();
 
   auto texture = std::make_shared <olc::Renderable> ();
 
