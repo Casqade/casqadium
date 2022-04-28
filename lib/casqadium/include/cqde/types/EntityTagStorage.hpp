@@ -11,13 +11,13 @@ namespace cqde::types
 
 struct EntityTagStorage
 {
-  std::map <cqde::EntityId, entt::entity,
+  std::map <EntityId, entt::entity,
             entt::hashed_string_comparator> tags;
 
   EntityTagStorage();
 
-  entt::entity get( const entt::hashed_string& ) const;
-  entt::hashed_string generate( entt::hashed_string ) const;
+  entt::entity get( const EntityId& ) const;
+  EntityId generate( EntityId hint = {"entity_"} ) const;
 };
 
 } // namespace cqde::types

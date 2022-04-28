@@ -13,7 +13,7 @@ EntityTagStorage::EntityTagStorage()
 {}
 
 entt::entity
-EntityTagStorage::get( const entt::hashed_string& id ) const
+EntityTagStorage::get( const EntityId& id ) const
 {
   try
   {
@@ -25,17 +25,18 @@ EntityTagStorage::get( const entt::hashed_string& id ) const
   }
 }
 
-entt::hashed_string
-EntityTagStorage::generate( entt::hashed_string string ) const
+EntityId
+EntityTagStorage::generate( EntityId hint ) const
 {
-  string = string.data() ? string : "";
+  hint = hint.data() ? hint : "";
 
-  for ( size_t i = 0;
-        tags.count(string) > 0;
-        ++i )
-    string = entt::hashed_string( (string.data() + std::to_string(i)).c_str() );
+  std::string idBase {hint.data()};
+  size_t      idInc {};
 
-  return string;
+  while ( tags.count(EntityId{(idBase + std::to_string(idInc)).c_str()}) > 0 )
+    ++idInc;
+
+  return EntityId{(idBase + std::to_string(idInc)).c_str()};
 }
 
 } // namespace cqde::types
