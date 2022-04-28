@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cqde/types/VertexBuffer.hpp>
+#include <cqde/fwd.hpp>
 
 #include <entt/fwd.hpp>
 
@@ -14,10 +15,6 @@
 
 namespace cqde::compos
 {
-
-struct SceneNode;
-struct Transform;
-
 
 struct Camera
 {

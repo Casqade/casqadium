@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cqde/fwd.hpp>
+
 #include <entt/fwd.hpp>
 
 #include <glm/fwd.hpp>
@@ -14,9 +16,6 @@ namespace cqde
 
 namespace compos
 {
-
-struct SceneNode;
-
 
 struct Transform
 {
