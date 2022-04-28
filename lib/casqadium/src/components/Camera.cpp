@@ -64,7 +64,7 @@ Camera::Register()
   using namespace entt::literals;
 
   auto factory = entt::meta <Camera> ();
-  factory.type(entt::hashed_string{"Camera"});
+  factory.type("Camera"_hs);
   factory.func <&Camera::serialize> ("serialize"_hs);
   factory.func <&Camera::deserialize> ("deserialize"_hs);
 }

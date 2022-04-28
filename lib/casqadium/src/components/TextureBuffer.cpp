@@ -31,7 +31,7 @@ TextureBuffer::Register()
   using namespace entt::literals;
 
   auto factory = entt::meta <TextureBuffer> ();
-  factory.type(entt::hashed_string{"TextureBuffer"});
+  factory.type("TextureBuffer"_hs);
   factory.data <&TextureBuffer::textures> ("TextureBuffer"_hs);
   factory.func <&TextureBuffer::serialize> ("serialize"_hs);
   factory.func <&TextureBuffer::deserialize> ("deserialize"_hs);

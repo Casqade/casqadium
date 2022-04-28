@@ -36,7 +36,7 @@ GeometryBuffer::Register()
   using namespace entt::literals;
 
   auto factory = entt::meta <GeometryBuffer> ();
-  factory.type(entt::hashed_string{"GeometryBuffer"});
+  factory.type("GeometryBuffer"_hs);
   factory.func <&GeometryBuffer::serialize> ("serialize"_hs);
   factory.func <&GeometryBuffer::deserialize> ("deserialize"_hs);
 }

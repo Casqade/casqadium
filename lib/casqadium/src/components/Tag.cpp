@@ -45,7 +45,7 @@ Tag::Register()
   using namespace entt::literals;
 
   auto factory = entt::meta <Tag> ();
-  factory.type(entt::hashed_string{"Tag"});
+  factory.type("Tag"_hs);
   factory.data <&Tag::id> ("id"_hs);
   factory.func <&Tag::serialize> ("serialize"_hs);
   factory.func <&Tag::deserialize> ("deserialize"_hs);

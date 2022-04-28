@@ -68,7 +68,7 @@ Transform::Register()
   using namespace entt::literals;
 
   auto factory = entt::meta <Transform> ();
-  factory.type(entt::hashed_string{"Transform"});
+  factory.type("Transform"_hs);
   factory.data <&Transform::translation> ("translation"_hs);
   factory.data <&Transform::orientation> ("orientation"_hs);
   factory.data <&Transform::scale> ("scale"_hs);
