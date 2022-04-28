@@ -11,6 +11,15 @@ namespace cqde::compos
 {
 
 void
+Tag::invalidate( entt::registry& registry )
+{
+  using namespace entt::literals;
+
+  if ( id != "null"_hs )
+    registry.ctx <types::EntityTagStorage> ().tags.erase(id);
+}
+
+void
 Tag::serialize( Json::Value& json ) const
 {
 }

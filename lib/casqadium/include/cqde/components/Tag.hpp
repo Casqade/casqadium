@@ -17,6 +17,7 @@ struct Tag
 
   static Tag Generate( entt::registry&, entt::hashed_string = {} );
 
+  void invalidate( entt::registry& );
 
   void serialize( Json::Value& ) const;
 
