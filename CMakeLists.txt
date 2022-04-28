@@ -21,11 +21,9 @@ target_sources(${TARGET} PRIVATE
 
   include/Assets.hpp
   include/Logger.hpp
-  include/Widgets.hpp
   include/AnotherDayAtHospital.hpp
 
   src/Assets.cpp
-  src/Widgets.cpp
   src/Logger.cpp
 
   src/AnotherDayAtHospital.cpp
@@ -96,18 +94,10 @@ if(NOT SFML_FOUND)
 endif()
 
 find_package(glm REQUIRED)
-find_package(JsonCPP REQUIRED)
 
 target_link_libraries(${TARGET} PRIVATE
   sfml-audio
-  glm
 )
-
-if(${BUILD_SHARED_LIBS})
-  target_link_libraries(${TARGET} PUBLIC jsoncpp_lib)
-else()
-  target_link_libraries(${TARGET} PUBLIC jsoncpp_static)
-endif()
 
 add_subdirectory(lib)
 
@@ -115,7 +105,7 @@ target_link_libraries(${TARGET} PRIVATE
   TimeUtils::TimeUtils
   Graphics3D::Graphics3D
   olcPGE::olcPGE
-  ECS::ECS
+  casqadium::casqadium
 )
 
 if(WIN32)

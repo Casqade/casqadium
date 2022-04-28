@@ -1,6 +1,5 @@
 #include <AnotherDayAtHospital.hpp>
 
-#include <GameStateForeword.hpp>
 #include <GameStateEcsSandbox.hpp>
 #include <Variables.hpp>
 #include <Logger.hpp>

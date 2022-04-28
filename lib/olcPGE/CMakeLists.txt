@@ -38,8 +38,7 @@ target_sources(${TARGET} PRIVATE
   include/${TARGET}/olcEventHandler.hpp
   src/olcEventHandler.cpp
 
-  include/${TARGET}/Math.hpp
-  src/Math.cpp
+  include/${TARGET}/olcMouseInputId.hpp
 )
 
 set_target_properties(${TARGET} PROPERTIES

@@ -1,9 +1,9 @@
 #include <GameStateController.hpp>
 
 #include <GameStateEcsSandbox.hpp>
-#include <GameStateSandbox.hpp>
-#include <GameStateForeword.hpp>
-#include <GameStateTitle.hpp>
+//#include <GameStateSandbox.hpp>
+//#include <GameStateForeword.hpp>
+//#include <GameStateTitle.hpp>
 
 #include <TimeUtils/Duration.hpp>
 
@@ -55,17 +55,17 @@ GameStateController::render()
   mCurrentState->render();
 }
 
-template
-void
-GameStateController::setState <GameStateForeword> ();
+//template
+//void
+//GameStateController::setState <GameStateForeword> ();
 
-template
-void
-GameStateController::setState <GameStateTitle> ();
+//template
+//void
+//GameStateController::setState <GameStateTitle> ();
 
-template
-void
-GameStateController::setState <GameStateSandbox> ();
+//template
+//void
+//GameStateController::setState <GameStateSandbox> ();
 
 template
 void
