@@ -1,5 +1,4 @@
-#ifndef GAME_STATE_ECS_SANDBOX_HPP
-#define GAME_STATE_ECS_SANDBOX_HPP
+#pragma once
 
 #include <GameState.hpp>
 
@@ -37,5 +36,3 @@ public:
                const TimeUtils::Duration ) override;
   void render() override;
 };
-
-#endif

@@ -1,5 +1,4 @@
-#ifndef GAME_STATE_CONTROLLER_HPP
-#define GAME_STATE_CONTROLLER_HPP
+#pragma once
 
 #include <memory>
 #include <GameState.hpp>
@@ -32,6 +31,3 @@ public:
                const TimeUtils::Duration );
   void render();
 };
-
-
-#endif

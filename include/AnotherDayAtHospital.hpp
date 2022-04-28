@@ -1,5 +1,4 @@
-#ifndef ANOTHER_DAY_AT_HOSPITAL_HPP
-#define ANOTHER_DAY_AT_HOSPITAL_HPP
+#pragma once
 
 #include <TimeUtils/Duration.hpp>
 
@@ -35,5 +34,3 @@ public:
   bool OnUserCreate() override;
   bool OnUserUpdate( float ) override;
 };
-
-#endif

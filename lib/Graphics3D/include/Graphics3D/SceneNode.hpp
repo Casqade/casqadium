@@ -1,5 +1,4 @@
-#ifndef GRAPHICS_3D_SCENE_NODE_HPP
-#define GRAPHICS_3D_SCENE_NODE_HPP
+#pragma once
 
 #include <Graphics3D/Transformable.hpp>
 
@@ -59,6 +58,3 @@ public:
 };
 
 } // namespace Graphics3D
-
-
-#endif

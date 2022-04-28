@@ -1,5 +1,4 @@
-#ifndef OLC_PGE_EVENT
-#define OLC_PGE_EVENT
+#pragma once
 
 #include <olcPGE/olcPixelGameEngine.hpp>
 
@@ -80,5 +79,3 @@ public:
 };
 
 } // namespace olc
-
-#endif

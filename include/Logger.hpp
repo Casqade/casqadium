@@ -1,5 +1,4 @@
-#ifndef LOGGER_HPP
-#define LOGGER_HPP
+#pragma once
 
 #include <iostream>
 #include <fstream>
@@ -35,6 +34,3 @@ public:
 
   std::string outputFileName() const;
 };
-
-
-#endif

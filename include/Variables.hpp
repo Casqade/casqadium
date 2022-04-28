@@ -1,5 +1,4 @@
-#ifndef VARIABLES_HPP
-#define VARIABLES_HPP
+#pragma once
 
 #include <Assets.hpp>
 
@@ -68,5 +67,3 @@ class Sounds : public Assets <sf::SoundBuffer, SoundId>
 class Music : public Assets <sf::Music, MusicId>
 {};
 
-
-#endif

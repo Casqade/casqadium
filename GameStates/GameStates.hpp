@@ -1,7 +1,5 @@
-#ifndef GAME_STATES_HPP
-#define GAME_STATES_HPP
+#pragma once
 
 #include <GameStateForeword.hpp>
 #include <GameStateTitle.hpp>
 
-#endif

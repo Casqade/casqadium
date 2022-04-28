@@ -1,5 +1,4 @@
-#ifndef ASSETS_HPP
-#define ASSETS_HPP
+#pragma once
 
 #include <map>
 #include <string>
@@ -38,6 +37,3 @@ public:
   static bool Load( const AssetId, const std::string& );
   static Asset& Get( const AssetId );
 };
-
-
-#endif

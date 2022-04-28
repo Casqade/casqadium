@@ -1,5 +1,4 @@
-#ifndef GRAPHICS_3D_TRANSFORMABLE_HPP
-#define GRAPHICS_3D_TRANSFORMABLE_HPP
+#pragma once
 
 #include <glm/vec3.hpp>
 #include <glm/mat4x4.hpp>
@@ -45,6 +44,3 @@ public:
 };
 
 } // namespace Graphics3D
-
-
-#endif

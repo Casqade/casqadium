@@ -1,5 +1,4 @@
-#ifndef GRAPHICS_3D_CAMERA_HPP
-#define GRAPHICS_3D_CAMERA_HPP
+#pragma once
 
 #include <Graphics3D/SceneNode.hpp>
 
@@ -114,6 +113,3 @@ public:
 };
 
 } // namespace Graphics3D
-
-
-#endif

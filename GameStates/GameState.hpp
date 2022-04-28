@@ -1,5 +1,4 @@
-#ifndef GAME_STATE_HPP
-#define GAME_STATE_HPP
+#pragma once
 
 #include <olcPGE/olcEvent.hpp>
 
@@ -41,6 +40,3 @@ public:
 
   virtual void handleEvent( const olc::Event );
 };
-
-
-#endif

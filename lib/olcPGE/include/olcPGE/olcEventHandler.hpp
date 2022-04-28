@@ -1,5 +1,4 @@
-#ifndef OLC_PGE_EVENT_HANDLER
-#define OLC_PGE_EVENT_HANDLER
+#pragma once
 
 #include <olcPGE/olcEvent.hpp>
 #include <deque>
@@ -24,5 +23,3 @@ public:
 };
 
 } // namespace olc
-
-#endif

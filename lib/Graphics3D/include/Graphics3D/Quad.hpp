@@ -1,5 +1,4 @@
-#ifndef GRAPHICS_3D_QUAD_HPP
-#define GRAPHICS_3D_QUAD_HPP
+#pragma once
 
 #include <olcPGE/olcPixelGameEngine.hpp>
 
@@ -60,5 +59,4 @@ public:
   void setBackFace( olc::Decal* );
 };
 
-}
-#endif
+} // namespace Graphics3D
