@@ -9,7 +9,7 @@ namespace cqde::types
 {
 
 EntityTagStorage::EntityTagStorage()
-  : tags({{entt::hashed_string("null"), entt::null}})
+  : tags({{cqde::null_id, entt::null}})
 {}
 
 entt::entity

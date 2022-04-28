@@ -7,6 +7,8 @@
 namespace cqde
 {
 
+static constexpr auto null_id = entt::hashed_string{"null"};
+
 void engineInit( entt::registry& registry );
 
 } // namespace cqde

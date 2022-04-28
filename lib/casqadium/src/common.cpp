@@ -54,7 +54,7 @@ engineInit( entt::registry& registry )
 
   registry.set <EntityTagStorage> ();
   registry.set <InputCallbackStorage> ();
-  registry.set <TextureStorage> ().emplace( entt::hashed_string("null"),
+  registry.set <TextureStorage> ().emplace( null_id,
                                             std::make_shared <olc::Renderable> () );
 
   initHwControls( registry.set <HwControlMap> () );
