@@ -28,7 +28,7 @@ SequenceManager::Register()
 
   auto factory = entt::meta <SequenceManager> ();
   factory.type(entt::hashed_string{"SequenceManager"});
-  factory.func <&SequenceManager::serialize> ("serialze"_hs);
+  factory.func <&SequenceManager::serialize> ("serialize"_hs);
   factory.func <&SequenceManager::deserialize> ("deserialize"_hs);
 }
 

@@ -29,8 +29,8 @@ InputController::Register()
   auto factory = entt::meta <InputController> ();
   factory.type(entt::hashed_string{"InputController"});
   factory.data <&InputController::inputs> ("inputs"_hs);
-  factory.func <&InputController::serialize> ("serialze"_hs);
-  factory.func <&InputController::deserialize> ("deserialze"_hs);
+  factory.func <&InputController::serialize> ("serialize"_hs);
+  factory.func <&InputController::deserialize> ("deserialize"_hs);
 }
 
 

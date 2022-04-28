@@ -77,8 +77,8 @@ Transform::Register()
   factory.func <&Transform::front> ("front"_hs);
   factory.func <&Transform::right> ("right"_hs);
   factory.func <&Transform::up> ("up"_hs);
-  factory.func <&Transform::serialize> ("serialze"_hs);
-  factory.func <&Transform::deserialize> ("deserialze"_hs);
+  factory.func <&Transform::serialize> ("serialize"_hs);
+  factory.func <&Transform::deserialize> ("deserialize"_hs);
 }
 
 } // namespace cqde::compos

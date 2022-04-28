@@ -35,7 +35,7 @@ SceneNode::Register()
   auto factory = entt::meta <SceneNode> ();
   factory.type(entt::hashed_string{"SceneNode"});
   factory.data <&SceneNode::parent> ("parent"_hs);
-  factory.func <&SceneNode::serialize> ("serialze"_hs);
+  factory.func <&SceneNode::serialize> ("serialize"_hs);
   factory.func <&SceneNode::deserialize> ("deserialize"_hs);
 }
 

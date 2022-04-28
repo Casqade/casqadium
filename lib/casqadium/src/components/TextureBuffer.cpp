@@ -33,8 +33,8 @@ TextureBuffer::Register()
   auto factory = entt::meta <TextureBuffer> ();
   factory.type(entt::hashed_string{"TextureBuffer"});
   factory.data <&TextureBuffer::textures> ("TextureBuffer"_hs);
-  factory.func <&TextureBuffer::serialize> ("serialze"_hs);
-  factory.func <&TextureBuffer::deserialize> ("deserialze"_hs);
+  factory.func <&TextureBuffer::serialize> ("serialize"_hs);
+  factory.func <&TextureBuffer::deserialize> ("deserialize"_hs);
 }
 
 } // namespace cqde::compos
