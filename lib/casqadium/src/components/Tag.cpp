@@ -50,7 +50,7 @@ Tag::Register()
 
 Tag
 Tag::Generate(
-  entt::registry& registry,
+  const entt::registry& registry,
   entt::hashed_string string )
 {
   return

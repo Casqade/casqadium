@@ -15,7 +15,7 @@ struct Tag
   EntityId id;
 
 
-  static Tag Generate( entt::registry&, entt::hashed_string = {} );
+  static Tag Generate( const entt::registry&, entt::hashed_string = {} );
 
   void invalidate( entt::registry& );
 
