@@ -84,6 +84,8 @@ RemoveChildNode(
   Tag& cChildTag = registry.get <Tag> (eChild);
 
   cParentNode.children.erase(types::EntityReference(cChildTag));
+
+  cChildTag.invalidate(registry);
   registry.destroy(eChild);
 }
 
