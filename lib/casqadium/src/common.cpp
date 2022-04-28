@@ -15,11 +15,11 @@ namespace cqde
 {
 
 void
-initHwControls( types::HwControlMap& keyMap )
+initHwControls( types::HwControlMap& controlMap )
 {
   using olc::MouseInputId;
 
-  keyMap =
+  controlMap =
   {
     {olc::Key::NONE, cqde::InputSourceId("Key_None")},
     {olc::Key::A, cqde::InputSourceId("Key_A")},
@@ -42,7 +42,7 @@ initHwControls( types::HwControlMap& keyMap )
 }
 
 void
-registryInit( entt::registry& registry )
+engineInit( entt::registry& registry )
 {
   using namespace cqde::compos;
   using namespace cqde::types;
@@ -55,7 +55,7 @@ registryInit( entt::registry& registry )
   registry.set <EntityTagStorage> ();
   registry.set <InputCallbackStorage> ();
   registry.set <TextureStorage> ().emplace( entt::hashed_string("null"),
-                                                   std::make_shared <olc::Renderable> () );
+                                            std::make_shared <olc::Renderable> () );
 
   initHwControls( registry.set <HwControlMap> () );
   registry.set <SwControlMap> ();

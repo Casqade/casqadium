@@ -54,7 +54,7 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
   using namespace cqde::compos;
   using namespace cqde::types;
 
-  cqde::registryInit(mRegistry);
+  cqde::engineInit(mRegistry);
   initSwControls( mRegistry.ctx <SwControlMap> () );
 
   auto texture = std::make_shared <olc::Renderable> ();
@@ -205,16 +205,16 @@ GameStateEcsSandbox::keyEvent( const olc::Event event )
   using namespace cqde::types;
 
   auto& hwControls = mRegistry.ctx <HwControlMap> ();
-  auto& SwControls = mRegistry.ctx <SwControlMap> ();
+  auto& swControls = mRegistry.ctx <SwControlMap> ();
 
   const cqde::InputSourceId inputSrc = hwControls[event.key.code];
 
-  assert( SwControls.count(inputSrc) != 0 );
+  assert( swControls.count(inputSrc) != 0 );
 
-  if ( SwControls.count(inputSrc) == 0 )
+  if ( swControls.count(inputSrc) == 0 )
     return;
 
-  std::string inputDstStr( SwControls[inputSrc].data() );
+  std::string inputDstStr( swControls[inputSrc].data() );
 
   const float inputAmount = event.type == olc::Event::KeyPressed ? 1.0f : -1.0f;
   const float controlDir = inputDstStr[0] == '-' ? -1.0f : 1.0f;

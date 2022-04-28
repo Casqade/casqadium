@@ -7,7 +7,7 @@
 namespace cqde
 {
 
-void registryInit( entt::registry& registry );
+void engineInit( entt::registry& registry );
 
 } // namespace cqde
 

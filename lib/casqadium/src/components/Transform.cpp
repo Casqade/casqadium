@@ -191,7 +191,7 @@ glm::quat ToWorldSpace(
   return glm::normalize(  glm::quat(GetWorldMatrix( registry,
                                                     cTransform,
                                                     cSceneNode) *
-                                   glm::inverse(cTransform.modelLocal())) *
+                                    glm::inverse(cTransform.modelLocal())) *
                           orientation );
 }
 
@@ -202,11 +202,11 @@ ToWorldSpace(
   const compos::Transform& cTransform,
   const compos::SceneNode& cSceneNode )
 {
-  return GetWorldMatrix(registry,
-                        cTransform,
-                        cSceneNode) *
-                        glm::inverse(cTransform.modelLocal()) *
-                        matrix;
+  return  GetWorldMatrix( registry,
+                          cTransform,
+                          cSceneNode) *
+          glm::inverse(cTransform.modelLocal()) *
+          matrix;
 }
 
 glm::mat4
