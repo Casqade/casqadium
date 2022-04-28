@@ -22,6 +22,7 @@ Tag::invalidate( entt::registry& registry )
 void
 Tag::serialize( Json::Value& json ) const
 {
+  json["id"] = id.data();
 }
 
 void
@@ -32,8 +33,10 @@ Tag::deserialize(
 {
   auto& comp = registry.emplace <Tag> (entity);
 
-//  if ( idStorage.emplace(comp.id.value(), entity).second == false )
-//    throw "duplicate id encountered";
+  comp.id = EntityId(content.get("id", "null").asCString());
+
+  if ( registry.ctx <types::EntityTagStorage> ().tags.emplace(comp.id, entity).second == false )
+    throw "duplicate id encountered";
 }
 
 void
