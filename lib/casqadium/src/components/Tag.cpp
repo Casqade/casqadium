@@ -51,15 +51,4 @@ Tag::Register()
   factory.func <&Tag::deserialize> ("deserialize"_hs);
 }
 
-Tag
-Tag::Generate(
-  const entt::registry& registry,
-  entt::hashed_string string )
-{
-  return
-  {
-    registry.ctx <types::EntityTagStorage> ().generate(string)
-  };
-}
-
 } // namespace cqde::compos
