@@ -88,6 +88,11 @@ if(NOT EnTT_FOUND)
     set(BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)
   else()
     set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+    set(ENTT_USE_LIBCPP ON CACHE BOOL "" FORCE)
+  endif()
+
+  if(CMAKE_BUILD_TYPE MATCHES RELEASE)
+    target_compile_definitions(${TARGET} PUBLIC ENTT_DISABLE_ASSERT)
   endif()
 
   FetchContent_MakeAvailable(EnTT)
