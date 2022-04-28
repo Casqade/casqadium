@@ -20,6 +20,8 @@ struct InputAxis
             entt::hashed_string_comparator> callbacks;
 
 
+  InputAxis() = default;
+
   bool operator == ( const InputAxis& ) const;
 
   static std::string  toJson( const InputAxis& );
