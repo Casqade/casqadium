@@ -3,6 +3,8 @@
 
 #include <entt/entt.hpp>
 
+#include <json/value.h>
+
 
 namespace cqde::compos
 {
@@ -44,14 +46,14 @@ Camera::viewMatrix(
 }
 
 void
-Camera::serialize( const std::string& json ) const
+Camera::serialize( Json::Value& json ) const
 {}
 
 void
 Camera::deserialize(
   entt::registry& registry,
   entt::entity entity,
-  const std::string& content ) const
+  const Json::Value& content ) const
 {
   auto& comp = registry.emplace <Camera> (entity);
 }

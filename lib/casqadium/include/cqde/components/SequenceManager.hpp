@@ -4,6 +4,8 @@
 
 #include <entt/fwd.hpp>
 
+#include <json/forwards.h>
+
 #include <memory>
 #include <set>
 
@@ -18,11 +20,11 @@ struct SequenceManager
   std::set <std::shared_ptr <types::SequenceStep>>::iterator currentStep;
 
 
-  void serialize( const std::string& json ) const;
+  void serialize( Json::Value& ) const;
 
   void deserialize( entt::registry&,
                     entt::entity,
-                    const std::string& json ) const;
+                    const Json::Value& ) const;
 
   static void Register();
 };

@@ -4,19 +4,22 @@
 #include <entt/entt.hpp>
 #include <entt/core/hashed_string.hpp>
 
+#include <json/value.h>
+
 
 namespace cqde::compos
 {
 
 void
-Tag::serialize( const std::string& json ) const
-{}
+Tag::serialize( Json::Value& json ) const
+{
+}
 
 void
 Tag::deserialize(
   entt::registry& registry,
   entt::entity entity,
-  const std::string& content ) const
+  const Json::Value& content ) const
 {
   auto& comp = registry.emplace <Tag> (entity);
 

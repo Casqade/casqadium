@@ -4,10 +4,11 @@
 
 #include <glm/vec3.hpp>
 
+#include <json/forwards.h>
+
 #include <olcPGE/olcPixelGameEngine.hpp>
 
 #include <vector>
-#include <string>
 
 
 namespace cqde::compos
@@ -29,11 +30,11 @@ struct GeometryBuffer
   GeometryBuffer( const std::array <glm::vec3, 4>& = defaultQuadVerts );
 
 
-  void serialize( const std::string& json ) const;
+  void serialize( Json::Value& ) const;
 
   void deserialize( entt::registry&,
                     entt::entity,
-                    const std::string& json ) const;
+                    const Json::Value& ) const;
 
   static void Register();
 };

@@ -8,7 +8,7 @@
 #include <glm/vec3.hpp>
 #include <glm/gtx/quaternion.hpp>
 
-#include <string>
+#include <json/forwards.h>
 
 
 namespace cqde
@@ -37,11 +37,11 @@ struct Transform
   glm::vec3 up() const;
 
 
-  void serialize( const std::string& json ) const;
+  void serialize( Json::Value& ) const;
 
   void deserialize( entt::registry&,
                     entt::entity,
-                    const std::string& json ) const;
+                    const Json::Value& ) const;
 
   static void Register();
 };

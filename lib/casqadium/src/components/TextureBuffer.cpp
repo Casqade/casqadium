@@ -2,6 +2,8 @@
 
 #include <entt/entt.hpp>
 
+#include <json/value.h>
+
 
 namespace cqde::compos
 {
@@ -11,14 +13,14 @@ TextureBuffer::TextureBuffer()
 {}
 
 void
-TextureBuffer::serialize( const std::string& json ) const
+TextureBuffer::serialize( Json::Value& json ) const
 {}
 
 void
 TextureBuffer::deserialize(
   entt::registry& registry,
   entt::entity entity,
-  const std::string& content ) const
+  const Json::Value& content ) const
 {
   auto& comp = registry.emplace <TextureBuffer> (entity);
 }

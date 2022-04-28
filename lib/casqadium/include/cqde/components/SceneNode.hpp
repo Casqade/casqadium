@@ -2,8 +2,9 @@
 
 #include <cqde/types/EntityReference.hpp>
 
+#include <json/forwards.h>
+
 #include <set>
-#include <string>
 
 
 namespace cqde::compos
@@ -18,11 +19,11 @@ struct SceneNode
   SceneNode();
 
 
-  void serialize( const std::string& json ) const;
+  void serialize( Json::Value& ) const;
 
   void deserialize( entt::registry&,
                     entt::entity,
-                    const std::string& json ) const;
+                    const Json::Value& ) const;
 
   static void Register();
 };

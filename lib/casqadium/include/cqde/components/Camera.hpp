@@ -10,7 +10,7 @@
 #include <glm/mat4x4.hpp>
 #include <glm/trigonometric.hpp>
 
-#include <string>
+#include <json/forwards.h>
 
 
 namespace cqde::compos
@@ -74,11 +74,11 @@ struct Camera
                         const Transform&  cTransform ) const;
 
 
-  void serialize( const std::string& json ) const;
+  void serialize( Json::Value& ) const;
 
   void deserialize( entt::registry&,
                     entt::entity,
-                    const std::string& json ) const;
+                    const Json::Value& ) const;
 
   static void Register();
 };

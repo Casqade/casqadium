@@ -2,6 +2,8 @@
 
 #include <entt/entt.hpp>
 
+#include <json/value.h>
+
 
 namespace cqde::compos
 {
@@ -16,14 +18,14 @@ GeometryBuffer::GeometryBuffer( const std::array <glm::vec3, 4>& _vertexes )
 }
 
 void
-GeometryBuffer::serialize( const std::string& json ) const
+GeometryBuffer::serialize( Json::Value& json ) const
 {}
 
 void
 GeometryBuffer::deserialize(
   entt::registry& registry,
   entt::entity entity,
-  const std::string& content ) const
+  const Json::Value& content ) const
 {
   auto& comp = registry.emplace <GeometryBuffer> (entity);
 }

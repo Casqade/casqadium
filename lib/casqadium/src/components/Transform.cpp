@@ -5,6 +5,8 @@
 
 #include <glm/mat4x4.hpp>
 
+#include <json/value.h>
+
 
 namespace cqde::compos
 {
@@ -48,14 +50,14 @@ Transform::up() const
 }
 
 void
-Transform::serialize( const std::string& json ) const
+Transform::serialize( Json::Value& json ) const
 {}
 
 void
 Transform::deserialize(
   entt::registry& registry,
   entt::entity entity,
-  const std::string& content ) const
+  const Json::Value& content ) const
 {
   auto& comp = registry.emplace <Transform> (entity);
 }

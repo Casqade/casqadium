@@ -6,8 +6,9 @@
 
 #include <entt/fwd.hpp>
 
+#include <json/forwards.h>
+
 #include <map>
-#include <string>
 
 
 namespace cqde::compos
@@ -19,11 +20,11 @@ struct InputController
             entt::hashed_string_comparator> inputs;
 
 
-  void serialize( const std::string& json ) const;
+  void serialize( Json::Value& ) const;
 
   void deserialize( entt::registry&,
                     entt::entity,
-                    const std::string& json ) const;
+                    const Json::Value& ) const;
 
   static void Register();
 };

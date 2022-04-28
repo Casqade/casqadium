@@ -2,19 +2,21 @@
 
 #include <entt/entt.hpp>
 
+#include <json/value.h>
+
 
 namespace cqde::compos
 {
 
 void
-InputController::serialize( const std::string& json ) const
+InputController::serialize( Json::Value& json ) const
 {}
 
 void
 InputController::deserialize(
   entt::registry& registry,
   entt::entity entity,
-  const std::string& content ) const
+  const Json::Value& content ) const
 {
   auto& comp = registry.emplace <InputController> (entity);
 }
