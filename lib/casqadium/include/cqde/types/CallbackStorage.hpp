@@ -13,8 +13,7 @@ template <typename CallbackType>
 class CallbackStorage
 {
 protected:
-  std::map <cqde::CallbackId, CallbackType,
-            entt::hashed_string_comparator> mCallbacks;
+  std::map <cqde::CallbackId, CallbackType> mCallbacks;
 
 public:
   void Register( const cqde::CallbackId, const CallbackType );

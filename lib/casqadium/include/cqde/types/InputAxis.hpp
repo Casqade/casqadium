@@ -16,8 +16,7 @@ struct InputAxis
   float sensitivity;
   std::pair <float, float> constraint;
 
-  std::set <InputCallbackId,
-            entt::hashed_string_comparator> callbacks;
+  std::set <InputCallbackId> callbacks;
 
 
   InputAxis() = default;

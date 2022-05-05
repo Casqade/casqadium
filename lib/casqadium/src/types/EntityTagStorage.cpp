@@ -28,15 +28,12 @@ EntityTagStorage::get( const EntityId& id ) const
 EntityId
 EntityTagStorage::generate( EntityId hint ) const
 {
-  hint = hint.data() ? hint : "";
+  size_t idInc {};
 
-  std::string idBase {hint.data()};
-  size_t      idInc {};
-
-  while ( tags.count(EntityId{(idBase + std::to_string(idInc)).c_str()}) > 0 )
+  while ( tags.count(EntityId{(hint.str() + std::to_string(idInc)).c_str()}) > 0 )
     ++idInc;
 
-  return EntityId{(idBase + std::to_string(idInc)).c_str()};
+  return EntityId{(hint.str() + std::to_string(idInc)).c_str()};
 }
 
 } // namespace cqde::types

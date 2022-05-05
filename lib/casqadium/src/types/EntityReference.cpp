@@ -25,7 +25,7 @@ EntityReference::get( entt::registry& registry ) const
 bool
 EntityReference::operator < ( const EntityReference& other ) const
 {
-  return id.value() < other.id.value();
+  return id.hash().value() < other.id.hash().value();
 }
 
 } // namespace cqde::types

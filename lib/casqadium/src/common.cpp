@@ -63,17 +63,3 @@ engineInit( entt::registry& registry )
 
 
 } // namespace cqde
-
-
-namespace entt
-{
-
-bool
-hashed_string_comparator::operator () (
-  const entt::hashed_string& lhs,
-  const entt::hashed_string& rhs ) const
-{
-  return lhs.value() < rhs.value();
-}
-
-} // namespace entt

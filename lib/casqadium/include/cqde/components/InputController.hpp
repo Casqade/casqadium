@@ -16,8 +16,7 @@ namespace cqde::compos
 
 struct InputController
 {
-  std::map <InputDestinationId, types::InputAxis,
-            entt::hashed_string_comparator> inputs;
+  std::map <InputDestinationId, types::InputAxis> inputs;
 
 
   void serialize( Json::Value& ) const;

@@ -4,6 +4,8 @@
 namespace cqde
 {
 
+class identifier;
+
 namespace compos
 {
 

@@ -15,14 +15,14 @@ Tag::invalidate( entt::registry& registry )
 {
   using namespace entt::literals;
 
-  if ( id != null_id )
+  if ( !(id == null_id) )
     registry.ctx <types::EntityTagStorage> ().tags.erase(id);
 }
 
 void
 Tag::serialize( Json::Value& json ) const
 {
-  json["id"] = id.data();
+  json["id"] = id.str();
 }
 
 void
@@ -33,7 +33,7 @@ Tag::deserialize(
 {
   auto& comp = registry.emplace <Tag> (entity);
 
-  comp.id = EntityId{content.get("id", null_id.data()).asCString()};
+  comp.id = EntityId{content.get("id", null_id.str()).asCString()};
 
   if ( registry.ctx <types::EntityTagStorage> ().tags.emplace(comp.id, entity).second == false )
     throw "duplicate id encountered";

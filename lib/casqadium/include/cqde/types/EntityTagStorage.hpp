@@ -11,8 +11,7 @@ namespace cqde::types
 
 struct EntityTagStorage
 {
-  std::map <EntityId, entt::entity,
-            entt::hashed_string_comparator> tags;
+  std::map <EntityId, entt::entity> tags;
 
   EntityTagStorage();
 

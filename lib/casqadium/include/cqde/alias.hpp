@@ -1,8 +1,7 @@
 #pragma once
 
-#include <cqde/common.hpp>
-
-#include <entt/core/hashed_string.hpp>
+#include <cqde/fwd.hpp>
+#include <cqde/identifier.hpp>
 
 #include <olcPGE/olcPixelGameEngine.hpp>
 
@@ -13,28 +12,25 @@
 namespace cqde
 {
 
-typedef entt::hashed_string CallbackId;
-typedef entt::hashed_string EntityId;
-typedef entt::hashed_string InputSourceId;
-typedef entt::hashed_string InputDestinationId;
-typedef entt::hashed_string InputCallbackId;
-typedef entt::hashed_string PackageId;
-typedef entt::hashed_string StringId;
-typedef entt::hashed_string TextureId;
+typedef identifier CallbackId;
+typedef identifier EntityId;
+typedef identifier InputSourceId;
+typedef identifier InputDestinationId;
+typedef identifier InputCallbackId;
+typedef identifier PackageId;
+typedef identifier StringId;
+typedef identifier TextureId;
 
 namespace types
 {
 
-typedef std::map <StringId, std::string,
-                  entt::hashed_string_comparator> StringStorage;
+typedef std::map <StringId, std::string> StringStorage;
 
-typedef std::map <TextureId, std::shared_ptr <olc::Renderable>,
-                  entt::hashed_string_comparator> TextureStorage;
+typedef std::map <TextureId, std::shared_ptr <olc::Renderable>> TextureStorage;
 
 typedef std::map <int32_t, InputSourceId> HwControlMap;
 
-typedef std::map <InputSourceId, InputDestinationId,
-                  entt::hashed_string_comparator> SwControlMap;
+typedef std::map <InputSourceId, InputDestinationId> SwControlMap;
 
 }
 
