@@ -22,6 +22,8 @@
 
 #include <olcPGE/olcMouseInputId.hpp>
 
+#include <json/value.h>
+
 
 void
 initSwControls( cqde::types::SwControlMap& controlMap )
@@ -44,6 +46,120 @@ initSwControls( cqde::types::SwControlMap& controlMap )
   };
 }
 
+template<typename Component>
+decltype(auto) get(
+  entt::registry& registry,
+  entt::entity entity)
+{
+  std::cout << "got\n";
+  return registry.template get <Component> (entity);
+}
+
+struct MyComponent
+{
+  std::string name;
+
+
+  Json::Value serialize() const
+  {
+    std::cout << "serialize " << name << "\n";
+
+    Json::Value component;
+    component["name"] = name;
+
+    return component;
+  }
+
+  static void deserialize( entt::registry& registry, entt::entity entity, const Json::Value& component )
+  {
+    auto& comp = registry.emplace_or_replace <MyComponent> (entity);
+    comp.name = component.get("name", "defName").asString();
+
+    std::cout << "deserialized " << comp.name << "\n";
+  }
+};
+
+template <typename Func>
+void each_component(  const entt::entity entity,
+                      const entt::registry& registry,
+                      Func func )
+{
+  for ( const auto [componentType, entities] : registry.storage() )
+    if ( const auto iter = entities.find(entity); iter != entities.end() )
+      func( componentType, *iter );
+}
+
+void
+testSerialization()
+{
+  using namespace entt::literals;
+
+  entt::registry registry {};
+
+
+  entt::meta<MyComponent>().type("MyComponent"_hs)
+    .props(std::make_pair("typeName"_hs, std::string("MyComponent")))
+    .func<&MyComponent::serialize>("serialize"_hs)
+    .func<&MyComponent::deserialize>("deserialize"_hs)
+    .func<&get <MyComponent>>("Get"_hs);
+
+  auto entity1 = registry.create();
+  auto entity2 = registry.create();
+  auto& comp1 = registry.emplace <MyComponent> (entity1);
+  auto& comp2 = registry.emplace <MyComponent> (entity2);
+  comp1.name = "test1";
+  comp2.name = "test2";
+
+  registry.each(
+  [&registry] ( const entt::entity entity )
+  {
+    std::cout << "entity " << entt::id_type(entity) << "\n";
+    std::cout << "components: " << "\n";
+
+    each_component( entity, registry,
+    [&registry] ( const entt::id_type componentType, const entt::entity entity )
+    {
+      auto prop = entt::resolve(componentType).prop("typeName"_hs);
+
+      std::cout << prop.value().cast <std::string> () << "\n";
+    });
+
+    std::cout << "\n";
+  });
+
+  return;
+
+  for ( auto [componentType, entities] : registry.storage() )
+    for ( auto entity : entities )
+    {
+      auto type = entt::resolve(componentType);
+
+      entt::meta_any any;
+      if ( auto getFunc = type.func("Get"_hs) )
+        any = getFunc.invoke(any, entt::forward_as_meta(registry), entity);
+
+      if ( auto serialize = type.func("serialize"_hs) )
+        std::cout << serialize.invoke(any).cast <Json::Value> ().toStyledString() << "\n";
+    }
+
+  std::cout << "comp names: " << comp1.name << " " << comp2.name << "\n";
+
+  auto prop = entt::resolve("MyComponent"_hs).prop("typeName"_hs);
+  Json::Value components;
+  components[prop.value().cast <std::string> ()]["name"] = "serializedName";
+
+  auto type = entt::resolve(entt::hashed_string(std::string(components.getMemberNames().front()).c_str()));
+
+  entt::meta_any any;
+  if ( auto getFunc = type.func("Get"_hs) )
+    any = getFunc.invoke(any, entt::forward_as_meta(registry), entity1);
+
+  if ( auto deserialize = type.func("deserialize"_hs) )
+    deserialize.invoke(any, entt::forward_as_meta(registry), entity1, entt::forward_as_meta(components["MyComponent"]));
+
+  std::cout << "comp names: " << registry.get <MyComponent> (entity1).name << " " << registry.get <MyComponent> (entity2).name << "\n";
+}
+
 
 GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateController )
   : GameState(stateController)
@@ -58,7 +174,8 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
   cqde::engineInit(mRegistry);
   initSwControls( mRegistry.ctx().at <SwControlMap> () );
 
-  auto& tagStorage = mRegistry.ctx().at <EntityTagStorage> ();
+  testSerialization();
+  return;
 
   auto texture = std::make_shared <olc::Renderable> ();
 
