@@ -29,9 +29,14 @@ olc::rcode PGE_ImGUI::ImGui_ImplPGE_Init()
 
 #ifdef OLC_GFX_OPENGL33
   GLenum err = glewInit();
-  ImGui_ImplOpenGL3_Init();
+  if ( err != GLEW_OK )
+    return rcode::FAIL;
+
+  if ( ImGui_ImplOpenGL3_Init() == false )
+    return rcode::FAIL;
 #else
-  ImGui_ImplOpenGL2_Init();
+  if ( ImGui_ImplOpenGL2_Init() == false )
+    return rcode::FAIL;
 #endif
   ImGuiIO& io = ImGui::GetIO();
 
@@ -141,7 +146,7 @@ olc::rcode PGE_ImGUI::ImGui_ImplPGE_Init()
     {olc::MINUS, '-', '_'}
   };
 
-  return olc::OK;
+  return rcode::OK;
 }
 
 //This currently does nothing, but is defined in the event that it needs to eventually do something
