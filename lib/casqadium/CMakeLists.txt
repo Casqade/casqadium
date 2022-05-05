@@ -12,10 +12,13 @@ add_library(${TARGET}::${TARGET} ALIAS ${TARGET})
 set(CASQADIUM_SHORT cqde)
 
 target_sources(${TARGET} PRIVATE
+  include/${CASQADIUM_SHORT}/alias.hpp
+
   src/common.cpp
   include/${CASQADIUM_SHORT}/common.hpp
 
-  include/${CASQADIUM_SHORT}/alias.hpp
+  src/identifier.cpp
+  include/${CASQADIUM_SHORT}/identifier.hpp
 
   src/PackageLoader.cpp
   include/${CASQADIUM_SHORT}/PackageLoader.hpp
