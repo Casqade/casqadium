@@ -16,7 +16,7 @@ Tag::invalidate( entt::registry& registry )
   using namespace entt::literals;
 
   if ( !(id == null_id) )
-    registry.ctx <types::EntityTagStorage> ().tags.erase(id);
+    registry.ctx().at <types::EntityTagStorage> ().tags.erase(id);
 }
 
 void
@@ -35,7 +35,7 @@ Tag::deserialize(
 
   comp.id = EntityId{content.get("id", null_id.str()).asCString()};
 
-  if ( registry.ctx <types::EntityTagStorage> ().tags.emplace(comp.id, entity).second == false )
+  if ( registry.ctx().at <types::EntityTagStorage> ().tags.emplace(comp.id, entity).second == false )
     throw "duplicate id encountered";
 }
 

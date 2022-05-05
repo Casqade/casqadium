@@ -52,13 +52,13 @@ engineInit( entt::registry& registry )
   Tag::Register();
   Transform::Register();
 
-  registry.set <EntityTagStorage> ();
-  registry.set <InputCallbackStorage> ();
-  registry.set <TextureStorage> ().emplace( null_id,
+  registry.ctx().emplace <EntityTagStorage> ();
+  registry.ctx().emplace <InputCallbackStorage> ();
+  registry.ctx().emplace <TextureStorage> ().emplace( null_id,
                                             std::make_shared <olc::Renderable> () );
 
-  initHwControls( registry.set <HwControlMap> () );
-  registry.set <SwControlMap> ();
+  initHwControls( registry.ctx().emplace <HwControlMap> () );
+  registry.ctx().emplace <SwControlMap> ();
 }
 
 

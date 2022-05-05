@@ -34,7 +34,7 @@ RenderSystem( entt::registry& registry )
       const TextureBuffer* textureBuffer = registry.try_get <TextureBuffer> (entity);
       if ( textureBuffer != nullptr )
       {
-        const auto&     textures  = registry.ctx <TextureStorage> ();
+        const auto&     textures  = registry.ctx().at <TextureStorage> ();
         const TextureId textureId = textureBuffer->textures.at((int) buffer.windingOrder);
 
         decal = textures.at(textureId)->Decal();

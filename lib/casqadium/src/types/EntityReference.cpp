@@ -19,7 +19,7 @@ EntityReference::EntityReference( const compos::Tag& tag )
 entt::entity
 EntityReference::get( entt::registry& registry ) const
 {
-  return registry.ctx <EntityTagStorage> ().get(id);
+  return registry.ctx().at <EntityTagStorage> ().get(id);
 }
 
 bool

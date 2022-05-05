@@ -56,9 +56,9 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
   using namespace cqde::types;
 
   cqde::engineInit(mRegistry);
-  initSwControls( mRegistry.ctx <SwControlMap> () );
+  initSwControls( mRegistry.ctx().at <SwControlMap> () );
 
-  auto& tagStorage = mRegistry.ctx <EntityTagStorage> ();
+  auto& tagStorage = mRegistry.ctx().at <EntityTagStorage> ();
 
   auto texture = std::make_shared <olc::Renderable> ();
 
@@ -73,7 +73,7 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
 
   texture->Decal()->Update();
 
-  auto& textures = mRegistry.ctx <TextureStorage> ();
+  auto& textures = mRegistry.ctx().at <TextureStorage> ();
   textures.emplace("test"_hs, texture );
 
   auto eQuad = mRegistry.create();
@@ -139,7 +139,7 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
   cInputController.inputs[cqde::InputDestinationId("CameraLookToggle")] = iAxisCameraLookToggle;
   cInputController.inputs[cqde::InputDestinationId("Quit")] = iAxisExitListener;
 
-  auto& inputCallbacks = mRegistry.ctx <InputCallbackStorage> ();
+  auto& inputCallbacks = mRegistry.ctx().at <InputCallbackStorage> ();
 
   inputCallbacks.Register( cqde::InputCallbackId("CameraLookToggle"),
   [this] ( const entt::entity entity, InputController& cController )
@@ -195,7 +195,7 @@ GameStateEcsSandbox::handleAxisInput(
                              iAxis.constraint.first,
                              iAxis.constraint.second );
 
-    auto& inputCallbacks = mRegistry.ctx <InputCallbackStorage> ();
+    auto& inputCallbacks = mRegistry.ctx().at <InputCallbackStorage> ();
     for ( const cqde::InputCallbackId callbackId : iAxis.callbacks )
       inputCallbacks.Execute( callbackId, entity, cInputController );
   }
@@ -207,8 +207,8 @@ GameStateEcsSandbox::keyEvent( const olc::Event event )
   using namespace cqde::compos;
   using namespace cqde::types;
 
-  auto& hwControls = mRegistry.ctx <HwControlMap> ();
-  auto& swControls = mRegistry.ctx <SwControlMap> ();
+  auto& hwControls = mRegistry.ctx().at <HwControlMap> ();
+  auto& swControls = mRegistry.ctx().at <SwControlMap> ();
 
   const cqde::InputSourceId inputSrc = hwControls[event.key.code];
 
@@ -236,8 +236,8 @@ GameStateEcsSandbox::handleMouseInput(
   using namespace cqde::compos;
   using namespace cqde::types;
 
-  auto& hwControls = mRegistry.ctx <HwControlMap> ();
-  auto& swControls = mRegistry.ctx <SwControlMap> ();
+  auto& hwControls = mRegistry.ctx().at <HwControlMap> ();
+  auto& swControls = mRegistry.ctx().at <SwControlMap> ();
 
   const cqde::InputSourceId inputSrc = hwControls[inputId];
 
