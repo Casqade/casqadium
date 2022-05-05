@@ -5,6 +5,8 @@ project(${TARGET} VERSION 1.0 LANGUAGES CXX)
 
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 
+option(${TARGET}_USE_OPENGL33 "${TARGET}: Use OpenGL 3.3" OFF)
+
 add_library(${TARGET})
 add_library(${TARGET}::${TARGET} ALIAS ${TARGET})
 
@@ -41,6 +43,13 @@ target_sources(${TARGET} PRIVATE
   include/${TARGET}/olcMouseInputId.hpp
 )
 
+if(${TARGET}_USE_OPENGL33)
+  target_sources(${TARGET} PRIVATE
+    imgui/backends/imgui_impl_opengl3.h
+    imgui/backends/imgui_impl_opengl3.cpp
+  )
+endif()
+
 set_target_properties(${TARGET} PROPERTIES
   CXX_STANDARD_REQUIRED ON
   CXX_STANDARD 17
@@ -68,6 +77,18 @@ if(WIN32)
   endif()
 
   target_link_libraries(${TARGET} PUBLIC user32 gdi32 opengl32 gdiplus Shlwapi dwmapi)
+
+  if(${TARGET}_USE_OPENGL33)
+    find_package(glew REQUIRED)
+
+    target_compile_definitions(${TARGET} PUBLIC OLC_GFX_OPENGL33)
+
+    if(${BUILD_SHARED_LIBS})
+     target_link_libraries(${TARGET} PUBLIC GLEW::glew)
+    else()
+     target_link_libraries(${TARGET} PUBLIC GLEW::glew_s)
+    endif()
+  endif()
 
 else()
   target_link_libraries(${TARGET} PRIVATE X11 GL png)
