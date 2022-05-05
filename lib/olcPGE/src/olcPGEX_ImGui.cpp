@@ -201,6 +201,9 @@ void PGE_ImGUI::ImGui_ImplPGE_UpdateKeys(void)
 
 void PGE_ImGUI::ImGui_ImplPGE_NewFrame(void)
 {
+  if ( pge->GetElapsedTime() <= 0.0f )
+    return;
+
 #ifdef OLC_GFX_OPENGL33
   ImGui_ImplOpenGL3_NewFrame();
 #else
