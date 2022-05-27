@@ -28,7 +28,6 @@ InputController::Register()
 
   auto factory = entt::meta <InputController> ();
   factory.type("InputController"_hs);
-  factory.data <&InputController::inputs> ("inputs"_hs);
   factory.func <&InputController::serialize> ("serialize"_hs);
   factory.func <&InputController::deserialize> ("deserialize"_hs);
 }
