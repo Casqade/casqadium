@@ -32,7 +32,8 @@ vertexShader(
                     projectionMatrix,
                     viewport );
 
-    vertexBuffer.vertices.push_back({ vert.x, viewport.w - vert.y });
+    vertexBuffer.vertices.push_back({ vert.x, // converting y axis to top-left origin
+                                      viewport.y * 2 + viewport.w - vert.y });
     vertexBuffer.depth += vert.z;
 
     if ( vert.z < 0.0f || vert.z > 1.0f )
