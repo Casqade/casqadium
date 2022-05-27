@@ -31,8 +31,8 @@ Camera::projMatrix() const
           glm::perspectiveFov(fov,
                               viewport.z, viewport.w,
                               zRange.first, zRange.second )
-        : glm::ortho( viewport.x, viewport.z,
-                      viewport.y, viewport.w,
+        : glm::ortho( -viewport.z * 0.5f, viewport.z * 0.5f,
+                      -viewport.w * 0.5f, viewport.w * 0.5f,
                       zRange.first, zRange.second );
 }
 
