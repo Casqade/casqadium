@@ -132,6 +132,8 @@ if(NOT JsonCPP_FOUND)
 
 endif()
 
+target_compile_definitions(${TARGET} PUBLIC GLM_FORCE_DEPTH_ZERO_TO_ONE)
+
 target_link_libraries(${TARGET} PUBLIC
   EnTT::EnTT
   glm

@@ -28,9 +28,9 @@ glm::mat4
 Camera::projMatrix() const
 {
   return  projectionType == Projection::Perspective ?
-          glm::perspectiveFovRH_ZO( fov,
-                                    viewport.z, viewport.w,
-                                    zRange.first, zRange.second )
+          glm::perspectiveFov(fov,
+                              viewport.z, viewport.w,
+                              zRange.first, zRange.second )
         : glm::ortho( viewport.x, viewport.z,
                       viewport.y, viewport.w,
                       zRange.first, zRange.second );

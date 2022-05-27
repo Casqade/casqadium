@@ -59,10 +59,10 @@ Quad::appendCulled( std::multimap < float, SceneNode*, std::greater <float>>& de
         ++i )
   {
     const glm::vec3 vert
-      = glm::projectZO( mVerts[i],
-                        modelView,
-                        projection,
-                        viewport );
+      = glm::project( mVerts[i],
+                      modelView,
+                      projection,
+                      viewport );
 
     mVertsProjected[i] = { vert.x, viewport.w - vert.y };
     polygonDepth += vert.z;

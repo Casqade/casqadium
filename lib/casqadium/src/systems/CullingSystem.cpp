@@ -27,10 +27,10 @@ vertexShader(
   for ( const glm::vec3& srcVert : cGeometryBuffer.vertexes )
   {
     const glm::vec3 vert =
-      glm::projectZO( srcVert,
-                      modelViewMatrix,
-                      projectionMatrix,
-                      viewport );
+      glm::project( srcVert,
+                    modelViewMatrix,
+                    projectionMatrix,
+                    viewport );
 
     vertexBuffer.vertices.push_back({ vert.x, viewport.w - vert.y });
     vertexBuffer.depth += vert.z;
