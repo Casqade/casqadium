@@ -40,7 +40,7 @@ vertexShader(
       return {{}, -1.0f};
 
     if (    (vert.x >= viewport.x && vert.y >= viewport.y)
-         && (vert.x <= viewport.z && vert.y <= viewport.w) )
+         && (vert.x <= viewport.x + viewport.z && vert.y <= viewport.y + viewport.w) )
       offScreen = false;
   }
 
