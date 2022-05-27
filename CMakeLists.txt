@@ -93,8 +93,6 @@ if(NOT SFML_FOUND)
 
 endif()
 
-find_package(glm REQUIRED)
-
 target_link_libraries(${TARGET} PRIVATE
   sfml-audio
 )
@@ -103,7 +101,6 @@ add_subdirectory(lib)
 
 target_link_libraries(${TARGET} PRIVATE
   TimeUtils::TimeUtils
-  Graphics3D::Graphics3D
   olcPGE::olcPGE
   casqadium::casqadium
 )

@@ -62,9 +62,6 @@ endif()
 find_package(Freetype REQUIRED)
 target_link_libraries(${TARGET} PUBLIC Freetype::Freetype)
 
-find_package(glm REQUIRED)
-target_link_libraries(${TARGET} PUBLIC glm)
-
 find_package(Threads REQUIRED)
 target_link_libraries(${TARGET} PRIVATE Threads::Threads)
 
