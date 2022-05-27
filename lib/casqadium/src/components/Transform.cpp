@@ -13,13 +13,9 @@ namespace cqde::compos
 
 Transform::Transform(
   const glm::vec3& _translation,
-  const glm::quat& _orientation,
-  const glm::vec3& _scale,
-  const glm::vec3& _scaleWorld )
+  const glm::quat& _orientation )
   : translation(_translation)
   , orientation(_orientation)
-  , scale(_scale)
-  , scaleWorld(_scaleWorld)
 {}
 
 glm::mat4
@@ -40,7 +36,7 @@ Transform::front() const
 glm::vec3
 Transform::right() const
 {
-  return glm::rotate(  orientation, {1.0f, 0.0f, 0.0f} );
+  return glm::rotate( orientation, {1.0f, 0.0f, 0.0f} );
 }
 
 glm::vec3

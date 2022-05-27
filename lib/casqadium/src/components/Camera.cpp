@@ -10,18 +10,10 @@ namespace cqde::compos
 {
 
 Camera::Camera(
-  const Projection& _projection,
-  const float _fov,
   const glm::vec4& _viewport,
-  const std::pair <float, float>& _zRange )
-  : fov(_fov)
-  , viewport(_viewport)
-  , zRange(_zRange)
-  , projectionType(_projection)
-  , renderMode(RenderMode::Solid)
-  , textureMode(TextureMode::Textured)
-  , lightingMode(LightingMode::Diffuse)
-  , zBuffer()
+  const Projection _projectionType )
+  : viewport(_viewport)
+  , projectionType(_projectionType)
 {}
 
 glm::mat4

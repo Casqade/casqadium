@@ -50,23 +50,22 @@ struct Camera
     Diffuse,
   };
 
-  float fov;
-  glm::vec4 viewport;
-  std::pair <float, float> zRange;
+  glm::vec4 viewport {};
+  std::pair <float, float> zRange = {0.1f, 1000.0f};
+  float fov = glm::radians(45.0f);
 
-  Projection    projectionType;
-  RenderMode    renderMode;
-  TextureMode   textureMode;
-  LightingMode  lightingMode;
+  Projection    projectionType = Projection::Perspective;
+  RenderMode    renderMode = RenderMode::Solid;
+  TextureMode   textureMode = TextureMode::Textured;
+  LightingMode  lightingMode = LightingMode::Diffuse;
 
   std::multimap < types::VertexBuffer, entt::entity,
-                  std::greater <types::VertexBuffer>> zBuffer;
+                  std::greater <types::VertexBuffer>> zBuffer {};
 
 
-  Camera( const Projection& = Projection::Perspective,
-          const float fov = glm::radians(45.0f),
-          const glm::vec4& viewport = {0.0f, 0.0f, 800.0f, 600.0f},
-          const std::pair <float, float>& zRange = {0.1f, 1000.0f} );
+  Camera() = default;
+  Camera( const glm::vec4& viewport,
+          const Projection projection = Projection::Perspective );
 
   glm::mat4 projMatrix() const;
   glm::mat4 viewMatrix( entt::registry&   registry,

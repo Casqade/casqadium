@@ -19,16 +19,15 @@ namespace compos
 
 struct Transform
 {
-  glm::vec3 translation;
-  glm::quat orientation;
-  glm::vec3 scale;
-  glm::vec3 scaleWorld;
+  glm::vec3 translation {};
+  glm::quat orientation = glm::vec3{};
+  glm::vec3 scale {1.0f};
+  glm::vec3 scaleWorld{1.0f};
 
 
-  Transform(  const glm::vec3& origin = {},
-              const glm::quat& orientation = glm::vec3{},
-              const glm::vec3& scale = glm::vec3(1.0f),
-              const glm::vec3& scaleWorld = glm::vec3(1.0f) );
+  Transform() = default;
+  Transform(  const glm::vec3& origin,
+              const glm::quat& orientation = glm::vec3{} );
 
   glm::mat4 modelLocal() const;
 
