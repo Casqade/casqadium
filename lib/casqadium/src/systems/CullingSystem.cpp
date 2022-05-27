@@ -71,8 +71,7 @@ void CullingSystem( entt::registry& registry )
             : registry.view <GeometryBuffer, SceneNode, Transform>().each() )
     {
       const glm::mat4 modelView = camView *
-                                  cqde::GetWorldMatrix(registry, cTransform, cNode) *
-                                  cTransform.modelLocal();
+                                  cqde::GetWorldMatrix(registry, cTransform, cNode);
 
       auto buffer = vertexShader( cGeometryBuffer,
                                   modelView,
