@@ -173,14 +173,16 @@ testSerialization()
   comp1.name = "test1";
   comp2.name = "test2";
 
+  std::cout << "registry.each\n";
+
   registry.each(
   [&registry] ( const entt::entity entity )
   {
-    std::cout << "entity " << entt::id_type(entity) << "\n";
-    std::cout << "components: " << "\n";
+    std::cout << "  entity " << entt::id_type(entity) << "\n";
+    std::cout << "  components: " << "\n";
 
     each_component( entity, registry,
-    [&registry] ( const entt::id_type componentType, const entt::entity entity )
+    [] ( const entt::id_type componentType, const entt::entity )
     {
       auto prop = entt::resolve(componentType).prop("typeName"_hs);
 
@@ -190,20 +192,25 @@ testSerialization()
     std::cout << "\n";
   });
 
-  return;
+//  return;
+
+  std::cout << "[comp, entities] registry storage\n";
 
   for ( auto [componentType, entities] : registry.storage() )
+  {
+    std::cout << "  each entity\n";
     for ( auto entity : entities )
-    {
-      auto type = entt::resolve(componentType);
+      {
+        auto type = entt::resolve(componentType);
 
-      entt::meta_any any;
-      if ( auto getFunc = type.func("Get"_hs) )
-        any = getFunc.invoke(any, entt::forward_as_meta(registry), entity);
+        entt::meta_any any;
+        if ( auto getFunc = type.func("Get"_hs) )
+          any = getFunc.invoke(any, entt::forward_as_meta(registry), entity);
 
-      if ( auto serialize = type.func("serialize"_hs) )
-        std::cout << serialize.invoke(any).cast <Json::Value> ().toStyledString() << "\n";
-    }
+        if ( auto serialize = type.func("serialize"_hs) )
+          std::cout << serialize.invoke(any).cast <Json::Value> ().toStyledString() << "\n";
+      }
+  }
 
   std::cout << "comp names: " << comp1.name << " " << comp2.name << "\n";
 
@@ -220,7 +227,7 @@ testSerialization()
   if ( auto deserialize = type.func("deserialize"_hs) )
     deserialize.invoke(any, entt::forward_as_meta(registry), entity1, entt::forward_as_meta(components["MyComponent"]));
 
-  std::cout << "comp names: " << registry.get <MyComponent> (entity1).name << " " << registry.get <MyComponent> (entity2).name << "\n";
+  std::cout << "comp names: " << comp1.name << " " << comp2.name << "\n";
 }
 
 
@@ -237,8 +244,8 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
   cqde::engineInit(mRegistry);
   initSwControls( mRegistry.ctx().at <InputBindings> () );
 
-  testSerialization();
-  return;
+//  testSerialization();
+//  return;
 
   auto texture = std::make_shared <olc::Renderable> ();
 
