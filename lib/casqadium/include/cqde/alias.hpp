@@ -7,6 +7,7 @@
 
 #include <map>
 #include <memory>
+#include <set>
 
 
 namespace cqde
@@ -14,9 +15,9 @@ namespace cqde
 
 typedef identifier CallbackId;
 typedef identifier EntityId;
-typedef identifier InputSourceId;
-typedef identifier InputDestinationId;
+typedef identifier InputAxisId;
 typedef identifier InputCallbackId;
+typedef identifier InputHwId;
 typedef identifier PackageId;
 typedef identifier StringId;
 typedef identifier TextureId;
@@ -28,9 +29,10 @@ typedef std::map <StringId, std::string> StringStorage;
 
 typedef std::map <TextureId, std::shared_ptr <olc::Renderable>> TextureStorage;
 
-typedef std::map <int32_t, InputSourceId> HwControlMap;
+typedef std::map <int32_t, InputHwId> HwControlMap;
 
-typedef std::map <InputSourceId, InputDestinationId> SwControlMap;
+typedef std::multimap < std::shared_ptr <InputBinding>, InputAxisId,
+                        InputBindingComparator> InputBindings;
 
 }
 

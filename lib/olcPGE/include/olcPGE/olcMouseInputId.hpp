@@ -18,6 +18,9 @@ enum class MouseInputId
   MoveX,
   MoveY,
 
+  PosX,
+  PosY,
+
   Wheel
 };
 

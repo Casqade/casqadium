@@ -10,6 +10,11 @@
 #include <cqde/common.hpp>
 #include <cqde/types/InputCallbackStorage.hpp>
 #include <cqde/types/EntityTagStorage.hpp>
+
+#include <cqde/types/input/InputBinding.hpp>
+#include <cqde/types/input/InputBindingAbsolute.hpp>
+#include <cqde/types/input/InputBindingRelative.hpp>
+
 #include <cqde/components/Camera.hpp>
 #include <cqde/components/SceneNode.hpp>
 #include <cqde/components/Transform.hpp>
@@ -26,24 +31,82 @@
 
 
 void
-initSwControls( cqde::types::SwControlMap& controlMap )
+assignBinding(
+  cqde::types::InputBindings& inputBindings,
+  const cqde::InputAxisId axisId,
+  const std::set <std::shared_ptr <cqde::types::InputBinding>,
+    cqde::types::InputBindingComparator>& axisBindings )
 {
-  controlMap =
+  for ( auto& binding : axisBindings )
+    inputBindings.insert({ binding, axisId });
+}
+
+void
+initSwControls( cqde::types::InputBindings& bindings )
+{
+  using namespace cqde::types;
+
+  using cqde::InputAxisId;
+  using cqde::InputHwId;
+
+  assignBinding( bindings, "TranslateX",
   {
-    {cqde::InputSourceId("Key_A"), cqde::InputDestinationId("-TranslateX")},
-    {cqde::InputSourceId("Key_D"), cqde::InputDestinationId("+TranslateX")},
-    {cqde::InputSourceId("Key_S"), cqde::InputDestinationId("-TranslateZ")},
-    {cqde::InputSourceId("Key_W"), cqde::InputDestinationId("+TranslateZ")},
-    {cqde::InputSourceId("Key_Space"), cqde::InputDestinationId("+TranslateY")},
-    {cqde::InputSourceId("Key_Shift"), cqde::InputDestinationId("-TranslateY")},
+    std::make_shared <InputBindingRelative> ( InputHwId("-Key_A"), +1.0f ),
+    std::make_shared <InputBindingRelative> ( InputHwId("+Key_A"), -1.0f ),
+    std::make_shared <InputBindingRelative> ( InputHwId("+Key_D"), +1.0f ),
+    std::make_shared <InputBindingRelative> ( InputHwId("-Key_D"), -1.0f ),
+  });
 
-    {cqde::InputSourceId("Key_Enter"), cqde::InputDestinationId("Quit")},
+  assignBinding( bindings, "TranslateY",
+  {
+    std::make_shared <InputBindingRelative> ( InputHwId("-Key_Shift"), +1.0f ),
+    std::make_shared <InputBindingRelative> ( InputHwId("+Key_Shift"), -1.0f ),
+    std::make_shared <InputBindingRelative> ( InputHwId("+Key_Space"), +1.0f ),
+    std::make_shared <InputBindingRelative> ( InputHwId("-Key_Space"), -1.0f ),
+  });
 
-    {cqde::InputSourceId("Mouse_MoveX"), cqde::InputDestinationId("-Yaw")},
-    {cqde::InputSourceId("Mouse_MoveY"), cqde::InputDestinationId("-Pitch")},
+  assignBinding( bindings, "TranslateZ",
+  {
+    std::make_shared <InputBindingRelative> ( InputHwId("-Key_S"), +1.0f ),
+    std::make_shared <InputBindingRelative> ( InputHwId("+Key_S"), -1.0f ),
+    std::make_shared <InputBindingRelative> ( InputHwId("+Key_W"), +1.0f ),
+    std::make_shared <InputBindingRelative> ( InputHwId("-Key_W"), -1.0f ),
+  });
 
-    {cqde::InputSourceId("MouseButton_Middle"), cqde::InputDestinationId("CameraLookToggle")},
-  };
+  assignBinding( bindings, "Yaw",
+  {
+    std::make_shared <InputBindingRelative> ( InputHwId("+MouseMove_X"), -0.5f ),
+    std::make_shared <InputBindingRelative> ( InputHwId("-MouseMove_X"), +0.5f ),
+  });
+
+  assignBinding( bindings, "Pitch",
+  {
+    std::make_shared <InputBindingRelative> ( InputHwId("+MouseMove_Y"), -0.5f ),
+    std::make_shared <InputBindingRelative> ( InputHwId("-MouseMove_Y"), +0.5f ),
+  });
+
+  assignBinding( bindings, "CursorPosX",
+  {
+    std::make_shared <InputBindingAbsolute> ( InputHwId("+MousePos_X"), +1.0f ),
+    std::make_shared <InputBindingAbsolute> ( InputHwId("-MousePos_X"), +1.0f ),
+  });
+
+  assignBinding( bindings, "CursorPosY",
+  {
+    std::make_shared <InputBindingAbsolute> ( InputHwId("+MousePos_Y"), +1.0f ),
+    std::make_shared <InputBindingAbsolute> ( InputHwId("-MousePos_Y"), +1.0f ),
+  });
+
+  assignBinding( bindings, "CameraLookToggle",
+  {
+    std::make_shared <InputBindingRelative> ( InputHwId("+MouseButton_Middle"), +1.0f ),
+    std::make_shared <InputBindingRelative> ( InputHwId("-MouseButton_Middle"), -1.0f ),
+  });
+
+  assignBinding( bindings, "EngineShutdown",
+  {
+    std::make_shared <InputBindingRelative> ( InputHwId("-Key_Enter"), +1.0f ),
+  });
 }
 
 template<typename Component>
@@ -172,7 +235,7 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
   using namespace cqde::types;
 
   cqde::engineInit(mRegistry);
-  initSwControls( mRegistry.ctx().at <SwControlMap> () );
+  initSwControls( mRegistry.ctx().at <InputBindings> () );
 
   testSerialization();
   return;
@@ -205,86 +268,91 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
   mRegistry.emplace <Transform> (eCamera) = Transform();
   mRegistry.emplace <SceneNode> (eCamera) = SceneNode();
 
-  cCamera.viewport = { 0.0f, 0.0f, mPGE->GetWindowSize().x, mPGE->GetWindowSize().y };
+  cCamera.viewport = { 0.0f, 0.0f, mPGE->GetWindowSize().x, mPGE->GetWindowSize().y};
 
   textureBuffer.textures[0] = "test"_hs;
 
-  InputAxis iAxisTranslateX{};
-  iAxisTranslateX.sensitivity = 1.0f;
+  ControlAxis iAxisTranslateX{};
   iAxisTranslateX.constraint = {-1.0f, 1.0f};
   iAxisTranslateX.value = 0.0f;
 
-  InputAxis iAxisTranslateY{};
-  iAxisTranslateY.sensitivity = 1.0f;
+  ControlAxis iAxisTranslateY{};
   iAxisTranslateY.constraint = {-1.0f, 1.0f};
   iAxisTranslateY.value = 0.0f;
 
-  InputAxis iAxisTranslateZ{};
-  iAxisTranslateZ.sensitivity = 1.0f;
+  ControlAxis iAxisTranslateZ{};
   iAxisTranslateZ.constraint = {-1.0f, 1.0f};
   iAxisTranslateZ.value = 0.0f;
 
-  InputAxis iAxisPitch{};
-  iAxisPitch.sensitivity = 0.0f;
-  iAxisPitch.constraint = {-90.0f, 90.0f};
-  iAxisPitch.value = 0.0f;
-
-  InputAxis iAxisYaw{};
-  iAxisYaw.sensitivity = 0.0f;
-  iAxisYaw.constraint = {-3600.0f, 3600.0f};
-  iAxisYaw.value = 0.0f;
-  iAxisYaw.callbacks.insert(cqde::InputCallbackId("CameraYawClamp"));
-
-  InputAxis iAxisCameraLookToggle{};
-  iAxisCameraLookToggle.sensitivity = 1.0f;
+  ControlAxis iAxisCameraLookToggle{};
   iAxisCameraLookToggle.constraint = {0.0f, 1.0f};
   iAxisCameraLookToggle.value = 0.0f;
   iAxisCameraLookToggle.callbacks.insert(cqde::InputCallbackId("CameraLookToggle"));
 
-  InputAxis iAxisExitListener{};
-  iAxisExitListener.sensitivity = 1.0f;
+  ControlAxis iAxisExitListener{};
   iAxisExitListener.constraint = {0.0f, 1.0f};
   iAxisExitListener.value = 0.0f;
   iAxisExitListener.callbacks.insert(cqde::InputCallbackId("QuitGame"));
 
+  ControlAxis iAxisCursorListener{};
+  iAxisCursorListener.constraint = {0, mPGE->GetWindowSize().x};
+  iAxisCursorListener.value = mPGE->GetMouseX();
+
   auto& cInputController = mRegistry.emplace <InputController> (eCamera);
-  cInputController.inputs[cqde::InputDestinationId("TranslateX")] = iAxisTranslateX;
-  cInputController.inputs[cqde::InputDestinationId("TranslateY")] = iAxisTranslateY;
-  cInputController.inputs[cqde::InputDestinationId("TranslateZ")] = iAxisTranslateZ;
-  cInputController.inputs[cqde::InputDestinationId("Pitch")] = iAxisPitch;
-  cInputController.inputs[cqde::InputDestinationId("Yaw")] = iAxisYaw;
-  cInputController.inputs[cqde::InputDestinationId("CameraLookToggle")] = iAxisCameraLookToggle;
-  cInputController.inputs[cqde::InputDestinationId("Quit")] = iAxisExitListener;
+  cInputController.inputs[cqde::InputAxisId("TranslateX")] = iAxisTranslateX;
+  cInputController.inputs[cqde::InputAxisId("TranslateY")] = iAxisTranslateY;
+  cInputController.inputs[cqde::InputAxisId("TranslateZ")] = iAxisTranslateZ;
+  cInputController.inputs[cqde::InputAxisId("CameraLookToggle")] = iAxisCameraLookToggle;
+  cInputController.inputs[cqde::InputAxisId("EngineShutdown")] = iAxisExitListener;
+  cInputController.inputs[cqde::InputAxisId("CursorPosX")] = iAxisCursorListener;
 
   auto& inputCallbacks = mRegistry.ctx().at <InputCallbackStorage> ();
 
   inputCallbacks.Register( cqde::InputCallbackId("CameraLookToggle"),
-  [this] ( const entt::entity entity, InputController& cController )
+  [] ( const entt::entity, InputController& cController )
   {
-    InputAxis& pitch = cController.inputs["Pitch"];
-    InputAxis& yaw = cController.inputs["Yaw"];
+    static float valPitch{};
+    static float valYaw{};
 
-    if ( pitch.sensitivity > 0.0f )
-      pitch.sensitivity = 0.0f;
-    else
-      pitch.sensitivity = 0.5f;
+    if ( cController.inputs.count("Pitch") > 0 || cController.inputs.count("Yaw") > 0 )
+    {
+      valPitch = cController.inputs["Pitch"].value;
+      valYaw = cController.inputs["Yaw"].value;
 
-    if ( yaw.sensitivity > 0.0f )
-      yaw.sensitivity = 0.0f;
-    else
-      yaw.sensitivity = 0.5f;
+      cController.inputs.erase("Pitch");
+      cController.inputs.erase("Yaw");
+
+      return;
+    }
+
+    ControlAxis iAxisPitch{};
+    iAxisPitch.constraint = {-90.0f, 90.0f};
+    iAxisPitch.value = valPitch;
+
+    ControlAxis iAxisYaw{};
+    iAxisYaw.constraint = {-3600.0f, 3600.0f};
+    iAxisYaw.value = valYaw;
+    iAxisYaw.callbacks.insert(cqde::InputCallbackId("CameraYawClamp"));
+
+    cController.inputs["Pitch"] = iAxisPitch;
+    cController.inputs["Yaw"] = iAxisYaw;
+
+    return;
   });
 
   inputCallbacks.Register( cqde::InputCallbackId("CameraYawClamp"),
-  [this] ( const entt::entity entity, InputController& cController )
+  [] ( const entt::entity, InputController& cController )
   {
+    if ( cController.inputs.count("Yaw") == 0 )
+      return;
+
     float& yaw = cController.inputs["Yaw"].value;
     yaw = yaw > 180.0f ? yaw - 360.0f : yaw;
     yaw = yaw < -180.0f ? yaw + 360.0f : yaw;
   });
 
   inputCallbacks.Register( cqde::InputCallbackId("QuitGame"),
-  [this] ( const entt::entity entity, InputController& cController )
+  [this] ( const entt::entity, InputController& )
   {
     mRunning = false;
   });
@@ -292,29 +360,37 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
 
 void
 GameStateEcsSandbox::handleAxisInput(
+  const cqde::InputHwId inputSrc,
   const float amount,
-  const float direction,
-  const std::string& inputDestinationId )
+  const float direction )
 {
   using namespace cqde::compos;
   using namespace cqde::types;
 
-  const cqde::InputDestinationId inputDst( inputDestinationId.c_str() );
+  auto& bindings = mRegistry.ctx().at <InputBindings> ();
 
-  for ( auto&& [entity, cInputController] : mRegistry.view <InputController>().each() )
+  const std::string inputDir  = direction > 0.0f
+                              ? "+"
+                              : "-";
+
+  auto& inputCallbacks = mRegistry.ctx().at <InputCallbackStorage> ();
+
+  const auto [axesBegin, axesEnd] = bindings.equal_range( inputDir + inputSrc.str() );
+
+  for ( auto iter = axesBegin;
+        iter != axesEnd;
+        ++iter )
   {
-    if ( cInputController.inputs.count(inputDst) == 0 )
-      continue;
+    auto& [binding, axisId] = *iter;
 
-    InputAxis& iAxis = cInputController.inputs[inputDst];
+    for ( auto&& [entity, cController] : mRegistry.view <InputController> ().each() )
+      if ( cController.inputs.count(iter->second) != 0 )
+      {
+        binding->handleInput( cController.inputs[axisId], amount );
 
-    iAxis.value = std::clamp(iAxis.value + iAxis.sensitivity * amount * direction,
-                             iAxis.constraint.first,
-                             iAxis.constraint.second );
-
-    auto& inputCallbacks = mRegistry.ctx().at <InputCallbackStorage> ();
-    for ( const cqde::InputCallbackId callbackId : iAxis.callbacks )
-      inputCallbacks.Execute( callbackId, entity, cInputController );
+          for ( const auto& callbackId : cController.inputs[axisId].callbacks )
+            inputCallbacks.Execute(callbackId, entity, cController);
+      }
   }
 }
 
@@ -325,52 +401,12 @@ GameStateEcsSandbox::keyEvent( const olc::Event event )
   using namespace cqde::types;
 
   auto& hwControls = mRegistry.ctx().at <HwControlMap> ();
-  auto& swControls = mRegistry.ctx().at <SwControlMap> ();
 
-  const cqde::InputSourceId inputSrc = hwControls[event.key.code];
+  const float inputDirection = event.type == olc::Event::KeyPressed
+                          ? +1.0f
+                          : -1.0f;
 
-  assert( swControls.count(inputSrc) != 0 );
-
-  if ( swControls.count(inputSrc) == 0 )
-    return;
-
-  std::string inputDstStr = swControls[inputSrc].str();
-
-  const float inputAmount = event.type == olc::Event::KeyPressed ? 1.0f : -1.0f;
-  const float controlDir = inputDstStr[0] == '-' ? -1.0f : 1.0f;
-
-  if ( inputDstStr[0] == '+' || inputDstStr[0] == '-' )
-    inputDstStr.erase( 0, 1 );
-
-  handleAxisInput( inputAmount, controlDir, inputDstStr );
-}
-
-void
-GameStateEcsSandbox::handleMouseInput(
-  const int32_t inputId,
-  const float inputAmount )
-{
-  using namespace cqde::compos;
-  using namespace cqde::types;
-
-  auto& hwControls = mRegistry.ctx().at <HwControlMap> ();
-  auto& swControls = mRegistry.ctx().at <SwControlMap> ();
-
-  const cqde::InputSourceId inputSrc = hwControls[inputId];
-
-  assert( swControls.count(inputSrc) != 0 );
-
-  if ( swControls.count(inputSrc) == 0 )
-    return;
-
-  std::string inputDstStr = swControls[inputSrc].str();
-
-  const float controlDir = inputDstStr[0] == '-' ? -1.0f : 1.0f;
-
-  if ( inputDstStr[0] == '+' || inputDstStr[0] == '-' )
-    inputDstStr.erase( 0, 1 );
-
-  handleAxisInput( inputAmount, controlDir, inputDstStr );
+  handleAxisInput( hwControls[event.key.code], 1.0f, inputDirection );
 }
 
 void
@@ -378,24 +414,38 @@ GameStateEcsSandbox::mouseMoveEvent( const olc::Event::MouseMoveEvent event )
 {
   using olc::MouseInputId;
   using namespace cqde::compos;
+  using namespace cqde::types;
+
+  auto& hwControls = mRegistry.ctx().at <HwControlMap> ();
 
   if ( event.dx != 0 )
-    handleMouseInput( int32_t(MouseInputId::MoveX), event.dx );
+  {
+    handleAxisInput( hwControls[int32_t(MouseInputId::MoveX)], std::abs(event.dx), event.dx );
+    handleAxisInput( hwControls[int32_t(MouseInputId::PosX)], mPGE->GetMouseX(), event.dx );
+  }
 
   if ( event.dy != 0 )
-    handleMouseInput( int32_t(MouseInputId::MoveY), event.dy );
+  {
+    handleAxisInput( hwControls[int32_t(MouseInputId::MoveY)], std::abs(event.dy), event.dy );
+    handleAxisInput( hwControls[int32_t(MouseInputId::PosY)], mPGE->GetMouseY(), event.dy );
+  }
 }
 
 void
 GameStateEcsSandbox::mouseButtonEvent( const olc::Event event )
 {
   using olc::MouseInputId;
+  using namespace cqde::types;
 
-  const float inputAmount = event.type == olc::Event::MouseButtonPressed
-                          ? 1.0f
-                          : -1.0f;
+  auto& hwControls = mRegistry.ctx().at <HwControlMap> ();
 
-  handleMouseInput( int32_t(MouseInputId::ENUM_BEGIN) + int32_t(event.mouseButton.button), inputAmount );
+  const int32_t inputId = int32_t(MouseInputId::ENUM_BEGIN) + int32_t(event.mouseButton.button);
+
+  const float inputDirection = event.type == olc::Event::MouseButtonPressed
+                            ? 1.0f
+                            : -1.0f;
+
+  handleAxisInput( hwControls[inputId], 1.0f, inputDirection );
 }
 
 bool
@@ -412,17 +462,20 @@ GameStateEcsSandbox::update(  const uint32_t ticks,
 // Camera control system
   for ( auto&& [eCamera, cCamera, cController, cTransform] : mRegistry.view <Camera, InputController, Transform>().each() )
   {
-    const float translationX = cController.inputs[cqde::InputDestinationId("TranslateX")].value * cameraVelocity * dt;
+    const float translationX = cController.inputs[cqde::InputAxisId("TranslateX")].value * cameraVelocity * dt;
     cTransform.translation += cTransform.right() * translationX;
 
-    const float translationY = cController.inputs[cqde::InputDestinationId("TranslateY")].value * cameraVelocity * dt;
+    const float translationY = cController.inputs[cqde::InputAxisId("TranslateY")].value * cameraVelocity * dt;
     cTransform.translation += cTransform.up() * translationY;
 
-    const float translationZ = cController.inputs[cqde::InputDestinationId("TranslateZ")].value * cameraVelocity * dt;
+    const float translationZ = cController.inputs[cqde::InputAxisId("TranslateZ")].value * cameraVelocity * dt;
     cTransform.translation += cTransform.front() * translationZ;
 
-    const float pitch = glm::radians( cController.inputs[cqde::InputDestinationId("Pitch")].value );
-    const float yaw = glm::radians( cController.inputs[cqde::InputDestinationId("Yaw")].value );
+    if ( cController.inputs.count("Pitch") == 0 || cController.inputs.count("Yaw") == 0 )
+      continue;
+
+    const float pitch = glm::radians( cController.inputs[cqde::InputAxisId("Pitch")].value );
+    const float yaw = glm::radians( cController.inputs[cqde::InputAxisId("Yaw")].value );
 
     cTransform.orientation = glm::quat( {pitch, yaw, 0.0f} );
   }

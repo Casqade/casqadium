@@ -35,8 +35,17 @@ target_sources(${TARGET} PRIVATE
   src/types/EntityTagStorage.cpp
   include/${CASQADIUM_SHORT}/types/EntityTagStorage.hpp
 
-  src/types/InputAxis.cpp
-  include/${CASQADIUM_SHORT}/types/InputAxis.hpp
+  src/types/input/ControlAxis.cpp
+  include/${CASQADIUM_SHORT}/types/input/ControlAxis.hpp
+
+  src/types/input/InputBinding.cpp
+  include/${CASQADIUM_SHORT}/types/input/InputBinding.hpp
+
+  src/types/input/InputBindingAbsolute.cpp
+  include/${CASQADIUM_SHORT}/types/input/InputBindingAbsolute.hpp
+
+  src/types/input/InputBindingRelative.cpp
+  include/${CASQADIUM_SHORT}/types/input/InputBindingRelative.hpp
 
   include/${CASQADIUM_SHORT}/types/SequenceStep.hpp
 

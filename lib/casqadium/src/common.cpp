@@ -3,6 +3,8 @@
 #include <cqde/components/SceneNode.hpp>
 #include <cqde/components/Tag.hpp>
 #include <cqde/components/Transform.hpp>
+
+#include <cqde/types/input/InputBinding.hpp>
 #include <cqde/types/EntityTagStorage.hpp>
 #include <cqde/types/InputCallbackStorage.hpp>
 
@@ -21,23 +23,28 @@ initHwControls( types::HwControlMap& controlMap )
 
   controlMap =
   {
-    {olc::Key::NONE, cqde::InputSourceId("Key_None")},
-    {olc::Key::A, cqde::InputSourceId("Key_A")},
-    {olc::Key::D, cqde::InputSourceId("Key_D")},
-    {olc::Key::S, cqde::InputSourceId("Key_S")},
-    {olc::Key::W, cqde::InputSourceId("Key_W")},
-    {olc::Key::SHIFT, cqde::InputSourceId("Key_Shift")},
-    {olc::Key::SPACE, cqde::InputSourceId("Key_Space")},
-    {olc::Key::ENTER, cqde::InputSourceId("Key_Enter")},
+    {olc::Key::NONE, cqde::InputHwId("Key_None")},
+    {olc::Key::A, cqde::InputHwId("Key_A")},
+    {olc::Key::D, cqde::InputHwId("Key_D")},
+    {olc::Key::S, cqde::InputHwId("Key_S")},
+    {olc::Key::W, cqde::InputHwId("Key_W")},
+    {olc::Key::SHIFT, cqde::InputHwId("Key_Shift")},
+    {olc::Key::SPACE, cqde::InputHwId("Key_Space")},
+    {olc::Key::ENTER, cqde::InputHwId("Key_Enter")},
 
-    {int32_t(MouseInputId::ButtonLeft), cqde::InputSourceId("MouseButton_Left")},
-    {int32_t(MouseInputId::ButtonRight), cqde::InputSourceId("MouseButton_Right")},
-    {int32_t(MouseInputId::ButtonMiddle), cqde::InputSourceId("MouseButton_Middle")},
-    {int32_t(MouseInputId::ButtonX1), cqde::InputSourceId("MouseButton_X1")},
-    {int32_t(MouseInputId::ButtonX2), cqde::InputSourceId("MouseButton_X2")},
-    {int32_t(MouseInputId::MoveX), cqde::InputSourceId("Mouse_MoveX")},
-    {int32_t(MouseInputId::MoveY), cqde::InputSourceId("Mouse_MoveY")},
-    {int32_t(MouseInputId::Wheel), cqde::InputSourceId("Wheel_Move")},
+    {int32_t(MouseInputId::ButtonLeft), cqde::InputHwId("MouseButton_Left")},
+    {int32_t(MouseInputId::ButtonRight), cqde::InputHwId("MouseButton_Right")},
+    {int32_t(MouseInputId::ButtonMiddle), cqde::InputHwId("MouseButton_Middle")},
+    {int32_t(MouseInputId::ButtonX1), cqde::InputHwId("MouseButton_X1")},
+    {int32_t(MouseInputId::ButtonX2), cqde::InputHwId("MouseButton_X2")},
+
+    {int32_t(MouseInputId::Wheel), cqde::InputHwId("MouseWheel_Y")},
+
+    {int32_t(MouseInputId::MoveX), cqde::InputHwId("MouseMove_X")},
+    {int32_t(MouseInputId::MoveY), cqde::InputHwId("MouseMove_Y")},
+    {int32_t(MouseInputId::PosX), cqde::InputHwId("MousePos_X")},
+    {int32_t(MouseInputId::PosY), cqde::InputHwId("MousePos_Y")},
+
   };
 }
 
@@ -58,7 +65,7 @@ engineInit( entt::registry& registry )
                                             std::make_shared <olc::Renderable> () );
 
   initHwControls( registry.ctx().emplace <HwControlMap> () );
-  registry.ctx().emplace <SwControlMap> ();
+  registry.ctx().emplace <InputBindings> ();
 }
 
 

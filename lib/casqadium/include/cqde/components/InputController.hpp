@@ -2,7 +2,7 @@
 
 #include <cqde/alias.hpp>
 #include <cqde/common.hpp>
-#include <cqde/types/InputAxis.hpp>
+#include <cqde/types/input/ControlAxis.hpp>
 
 #include <entt/fwd.hpp>
 
@@ -16,7 +16,7 @@ namespace cqde::compos
 
 struct InputController
 {
-  std::map <InputDestinationId, types::InputAxis> inputs;
+  std::map <InputAxisId, types::ControlAxis> inputs;
 
 
   void serialize( Json::Value& ) const;

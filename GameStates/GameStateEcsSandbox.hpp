@@ -2,6 +2,8 @@
 
 #include <GameState.hpp>
 
+#include <cqde/alias.hpp>
+
 #include <entt/entt.hpp>
 
 
@@ -22,12 +24,9 @@ class GameStateEcsSandbox
   void mouseMoveEvent( const olc::Event::MouseMoveEvent ) override;
   void mouseButtonEvent( const olc::Event ) override;
 
-  void handleMouseInput( const int32_t  inputId,
-                         const float    inputAmount );
-
-  void handleAxisInput( const float amount,
-                        const float direction,
-                        const std::string& inputDestinationId );
+  void handleAxisInput( const cqde::InputHwId inputSrc,
+                        const float amount,
+                        const float direction );
 
 public:
   GameStateEcsSandbox( GameStateController* const );

@@ -24,7 +24,10 @@ namespace types
 {
 
 struct EntityReference;
-struct InputAxis;
+struct ControlAxis;
+struct InputAxisComparator;
+struct InputBinding;
+struct InputBindingComparator;
 struct SequenceStep;
 struct VertexBuffer;
 
