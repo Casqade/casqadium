@@ -21,7 +21,9 @@ enum class MouseInputId
   PosX,
   PosY,
 
-  Wheel
+  Wheel,
+
+  ENUM_END = Wheel,
 };
 
 } // namespace olc

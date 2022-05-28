@@ -23,7 +23,7 @@ initHwControls( types::HwControlMap& controlMap )
 
   controlMap =
   {
-    {olc::Key::NONE, cqde::InputHwId("Key_None")},
+    {olc::Key::NONE, cqde::InputHwId("Key_Unknown")},
     {olc::Key::A, cqde::InputHwId("Key_A")},
     {olc::Key::D, cqde::InputHwId("Key_D")},
     {olc::Key::S, cqde::InputHwId("Key_S")},
@@ -45,6 +45,7 @@ initHwControls( types::HwControlMap& controlMap )
     {int32_t(MouseInputId::PosX), cqde::InputHwId("MousePos_X")},
     {int32_t(MouseInputId::PosY), cqde::InputHwId("MousePos_Y")},
 
+    {int32_t(MouseInputId::ENUM_END) + 1, cqde::InputHwId("Undefined")},
   };
 }
 
