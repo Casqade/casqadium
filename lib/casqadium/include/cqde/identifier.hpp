@@ -10,12 +10,14 @@ namespace cqde
 
 class identifier
 {
-  std::string mStr;
-  entt::hashed_string mHash;
+  std::string mStr {"null"};
+  entt::hashed_string mHash {"null"};
 
 public:
+  identifier() = default;
+
   identifier( const char* );
-  identifier( const std::string& = "null" );
+  identifier( const std::string& );
   identifier( const entt::hashed_string& );
 
   void setId( const std::string& );
