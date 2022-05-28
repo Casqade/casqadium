@@ -461,8 +461,6 @@ GameStateEcsSandbox::update(  const uint32_t ticks,
 {
   using namespace cqde::compos;
 
-  static uint32_t ticks_total = 0;
-
   const double dt = static_cast <double> (elapsed);
   const float cameraVelocity = 10.0f;
 
@@ -487,7 +485,7 @@ GameStateEcsSandbox::update(  const uint32_t ticks,
     cTransform.orientation = glm::quat( {pitch, yaw, 0.0f} );
   }
 
-  return mRunning && (ticks_total += ticks) < 6000;
+  return mRunning;
 }
 
 void
