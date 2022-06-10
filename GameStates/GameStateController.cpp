@@ -7,7 +7,7 @@
 
 #include <TimeUtils/Duration.hpp>
 
-#include <Logger.hpp>
+#include <cqde/util/logger.hpp>
 #include <Variables.hpp>
 
 #include <cxxabi.h>
@@ -31,7 +31,7 @@ template <class NewState>
 void
 GameStateController::setState()
 {
-  Log << "Changing state to "_s + getTypeName <NewState> ();
+  LOG_TRACE("Changing state to {}", getTypeName <NewState> ());
   mCurrentState = std::make_unique <NewState> ( this );
 }
 

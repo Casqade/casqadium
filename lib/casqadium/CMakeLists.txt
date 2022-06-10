@@ -83,6 +83,9 @@ target_sources(${TARGET} PRIVATE
 
   src/systems/RenderSystem.cpp
   include/${CASQADIUM_SHORT}/systems/RenderSystem.hpp
+
+  src/util/logger.cpp
+  include/${CASQADIUM_SHORT}/util/logger.hpp
 )
 
 find_package(EnTT QUIET)
@@ -141,12 +144,38 @@ if(NOT JsonCPP_FOUND)
 
 endif()
 
+find_package(spdlog QUIET)
+
+if(NOT spdlog_FOUND)
+  include(FetchContent)
+
+  FetchContent_Declare(spdlog
+    GIT_REPOSITORY https://github.com/gabime/spdlog
+    GIT_TAG        1.10.0
+    GIT_SHALLOW    TRUE
+  )
+
+  set(SPDLOG_DISABLE_DEFAULT_LOGGER OFF CACHE BOOL "" FORCE)
+
+  if(${BUILD_SHARED_LIBS})
+    set(BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)
+    set(SPDLOG_BUILD_SHARED ON CACHE BOOL "" FORCE)
+  else()
+    set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+    set(SPDLOG_BUILD_SHARED OFF CACHE BOOL "" FORCE)
+  endif()
+
+  FetchContent_MakeAvailable(spdlog)
+
+endif()
+
 target_compile_definitions(${TARGET} PUBLIC GLM_FORCE_DEPTH_ZERO_TO_ONE)
 
 target_link_libraries(${TARGET} PUBLIC
   EnTT::EnTT
   glm
   olcPGE::olcPGE
+  spdlog::spdlog
 )
 
 if(${BUILD_SHARED_LIBS})

@@ -1,9 +1,6 @@
 #include <AnotherDayAtHospital.hpp>
 
-#include <Logger.hpp>
 
-
-Logger Log;
 
 int
 main( int , char*[] )

@@ -2,7 +2,7 @@
 
 #include <GameStateEcsSandbox.hpp>
 #include <Variables.hpp>
-#include <Logger.hpp>
+#include <cqde/util/logger.hpp>
 
 #include <forward_list>
 
@@ -96,28 +96,28 @@ AnotherDayAtHospital::loadResources()
   for ( const auto& font : fonts )
     if ( Fonts::Load( font.first, font.second ) == false )
     {
-      Log << "ERROR: Failed to load font " << font.second;
+      LOG_ERROR("Failed to load font '{}'", font.second);
       return false;
     }
 
   for ( const auto& sprite : sprites )
     if ( Sprites::Load( sprite.first, sprite.second ) == false )
     {
-      Log << "ERROR: Failed to load sprite " << sprite.second;
+      LOG_ERROR("Failed to load sprite '{}'", sprite.second);
       return false;
     }
 
   for ( const auto& sound : sounds )
     if ( Sounds::Load( sound.first, sound.second ) == false )
     {
-      Log << "ERROR: Failed to load sound " << sound.second;
+      LOG_ERROR("Failed to load sound '{}'", sound.second);
       return false;
     }
 
   for ( const auto& music : musics )
     if ( Music::Load( music.first, music.second ) == false )
     {
-      Log << "ERROR: Failed to load music " << music.second;
+      LOG_ERROR("Failed to load music '{}'", music.second);
       return false;
     }
 

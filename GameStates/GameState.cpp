@@ -1,10 +1,11 @@
 #include <GameState.hpp>
 
+#include <cqde/util/logger.hpp>
+
 #include <olcPGE/olcPixelGameEngine.hpp>
 
 #include <TimeUtils/Duration.hpp>
 
-#include <Logger.hpp>
 #include <Variables.hpp>
 #include <cxxabi.h>
 
@@ -30,26 +31,26 @@ GameState::GameState( GameStateController* const stateController )
 
 GameState::~GameState()
 {
-  Log << "Destroying state "_s + getTypeName ( this );
+  LOG_TRACE("Destroying state {}", getTypeName ( this ));
 }
 
 void
 GameState::enter()
 {
-  Log << __FUNCTION__;
+  LOG_TRACE("{}", __FUNCTION__);
 }
 
 void
 GameState::render()
 {
-  Log << __FUNCTION__;
+  LOG_TRACE("{}", __FUNCTION__);
 }
 
 bool
 GameState::update( const uint32_t ticks,
                    const TimeUtils::Duration )
 {
-  Log << __FUNCTION__;
+  LOG_TRACE("{}", __FUNCTION__);
 
   return true;
 }
@@ -81,17 +82,17 @@ GameState::handleEvent( const olc::Event event )
 void
 GameState::keyEvent( const olc::Event )
 {
-  Log << __FUNCTION__;
+  LOG_TRACE("{}", __FUNCTION__);
 }
 
 void
 GameState::mouseMoveEvent( const olc::Event::MouseMoveEvent )
 {
-  Log << __FUNCTION__;
+  LOG_TRACE("{}", __FUNCTION__);
 }
 
 void
 GameState::mouseButtonEvent( const olc::Event )
 {
-  Log << __FUNCTION__;
+  LOG_TRACE("{}", __FUNCTION__);
 }

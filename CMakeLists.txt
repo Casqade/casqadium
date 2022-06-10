@@ -20,11 +20,9 @@ target_sources(${TARGET} PRIVATE
   include/Variables.hpp
 
   include/Assets.hpp
-  include/Logger.hpp
   include/AnotherDayAtHospital.hpp
 
   src/Assets.cpp
-  src/Logger.cpp
 
   src/AnotherDayAtHospital.cpp
 
