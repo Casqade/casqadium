@@ -52,6 +52,9 @@ target_sources(${TARGET} PRIVATE
   src/types/VertexBuffer.cpp
   include/${CASQADIUM_SHORT}/types/VertexBuffer.hpp
 
+  src/types/ResourceManager.cpp
+  include/${CASQADIUM_SHORT}/types/ResourceManager.hpp
+
 
   src/components/Camera.cpp
   include/${CASQADIUM_SHORT}/components/Camera.hpp
@@ -89,6 +92,8 @@ target_sources(${TARGET} PRIVATE
 
   src/util/ConfigManager.cpp
   include/${CASQADIUM_SHORT}/util/ConfigManager.hpp
+
+  thirdparty/ctpl/ctpl_stl.h
 )
 
 find_package(EnTT QUIET)
@@ -190,6 +195,7 @@ endif()
 include(GNUInstallDirs)
 
 target_include_directories(${TARGET} PUBLIC
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/${CMAKE_INSTALL_INCLUDEDIR}>
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
