@@ -48,8 +48,8 @@ ConfigManager::setConfig( const Json::Value& config )
   mLogLevelCmd = spdlog::level::from_str(config["log"]["level"]["cmd"].asString());
   mLogLevelFile = spdlog::level::from_str(config["log"]["level"]["file"].asString());
 
-  mWindowWidth = config["video"]["window width"].asUInt();
-  mWindowHeight = config["video"]["window height"].asUInt();
+  mWindowWidth = config["video"]["window-width"].asUInt();
+  mWindowHeight = config["video"]["window-height"].asUInt();
   mFullscreenEnabled = config["video"]["fullscreen"].asBool();
 
   mTickRate = config["engine"]["tick-rate"].asUInt64();
@@ -87,14 +87,14 @@ ConfigManager::read( const std::string& filename ) const
     config["log"]["level"]["cmd"] = configSrc["log"]["level"]["cmd"].asString();
     config["log"]["level"]["file"] = configSrc["log"]["level"]["file"].asString();
 
-    const uint32_t windowW = configSrc["video"]["window width"].asUInt();
-    const uint32_t windowH = configSrc["video"]["window height"].asUInt();
+    const uint32_t windowW = configSrc["video"]["window-width"].asUInt();
+    const uint32_t windowH = configSrc["video"]["window-height"].asUInt();
 
     if ( windowW == 0 || windowH == 0 )
       throw Json::LogicError("Window dimensions can't be zero");
 
-    config["video"]["window width"] = windowW;
-    config["video"]["window height"] = windowH;
+    config["video"]["window-width"] = windowW;
+    config["video"]["window-height"] = windowH;
 
     config["engine"]["tick-rate"] = configSrc["tick-rate"];
     config["engine"]["frame-rate"] = configSrc["frame-rate"];
