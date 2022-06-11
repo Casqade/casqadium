@@ -70,14 +70,14 @@ ConfigManager::read( const std::string& filename ) const
   }
 
   Json::Value configSrc {};
+  Json::String parseErrors {};
 
-  Json::Reader configReader {};
-
-  if ( configReader.parse( configIn, configSrc ) == false )
+  if ( Json::parseFromStream( configReader(), configIn,
+                              &configSrc, &parseErrors ) == false )
   {
     configSrc = ConfigManager().config();
     std::cerr << "Error: failed to parse config " << filename << ": "
-              << configReader.getFormattedErrorMessages();
+              << parseErrors;
   }
   configIn.close();
 
@@ -120,8 +120,8 @@ ConfigManager::write( const std::string& filename )
     return;
   }
 
-  Json::StyledStreamWriter configWriter("  ");
-  configWriter.write( configOut, config() );
+  std::unique_ptr <Json::StreamWriter> writer(configWriter().newStreamWriter());
+  writer->write( config(), &configOut );
   configOut.close();
 }
 
@@ -171,6 +171,45 @@ uint64_t
 ConfigManager::frameRate() const
 {
   return mFrameRate;
+}
+
+Json::CharReaderBuilder
+ConfigManager::configReader()
+{
+  Json::CharReaderBuilder reader {};
+
+  reader["collectComments"] = true;
+  reader["allowComments"] = true;
+  reader["allowTrailingCommas"] = true;
+  reader["strictRoot"] = false;
+  reader["allowDroppedNullPlaceholders"] = false;
+  reader["allowNumericKeys"] = false;
+  reader["allowSingleQuotes"] = false;
+  reader["stackLimit"] = 1000;
+  reader["failIfExtra"] = false;
+  reader["rejectDupKeys"] = true;
+  reader["allowSpecialFloats"] = true;
+  reader["skipBom"] = true;
+
+  return reader;
+}
+
+Json::StreamWriterBuilder
+ConfigManager::configWriter()
+{
+  Json::StreamWriterBuilder writer {};
+
+  writer["indentation"] = "  ";
+  writer["commentStyle"] = "All";
+  writer["precisionType"] = "  ";
+  writer["enableYAMLCompatibility"] = false;
+  writer["dropNullPlaceholders"] = false;
+  writer["useSpecialFloats"] = true;
+  writer["emitUTF8"] = true;
+  writer["precision"] = 17;
+  writer["precisionType"] = "significant";
+
+  return writer;
 }
 
 } // namespace cqde

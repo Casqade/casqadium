@@ -31,6 +31,9 @@ public:
   ConfigManager() = default;
   ConfigManager( const std::string& filename );
 
+  static Json::CharReaderBuilder configReader();
+  static Json::StreamWriterBuilder configWriter();
+
   virtual void write( const std::string& filename );
   virtual void setConfig( const Json::Value& config );
 
