@@ -34,8 +34,8 @@ ConfigManager::config() const
 
   config["video"]["fullscreen"] = mFullscreenEnabled;
 
-  config["tick-rate"] = mTickRate;
-  config["frame-rate"] = mFrameRate;
+  config["engine"]["tick-rate"] = mTickRate;
+  config["engine"]["frame-rate"] = mFrameRate;
 
   return config;
 }
@@ -52,8 +52,8 @@ ConfigManager::setConfig( const Json::Value& config )
   mWindowHeight = config["video"]["window height"].asUInt();
   mFullscreenEnabled = config["video"]["fullscreen"].asBool();
 
-  mTickRate = config["tick-rate"].asUInt64();
-  mFrameRate = config["frame-rate"].asUInt64();
+  mTickRate = config["engine"]["tick-rate"].asUInt64();
+  mFrameRate = config["engine"]["frame-rate"].asUInt64();
 }
 
 Json::Value
@@ -96,8 +96,8 @@ ConfigManager::read( const std::string& filename ) const
     config["video"]["window width"] = windowW;
     config["video"]["window height"] = windowH;
 
-    config["tick-rate"] = configSrc["tick-rate"];
-    config["frame-rate"] = configSrc["frame-rate"];
+    config["engine"]["tick-rate"] = configSrc["tick-rate"];
+    config["engine"]["frame-rate"] = configSrc["frame-rate"];
   }
   catch ( Json::LogicError& e )
   {
