@@ -24,6 +24,9 @@ class ConfigManager
 
   bool mFullscreenEnabled {false};
 
+  uint64_t mTickRate {60};
+  uint64_t mFrameRate {0};
+
 public:
   ConfigManager() = default;
   ConfigManager( const std::string& filename );
@@ -45,6 +48,9 @@ public:
   uint32_t windowHeight() const;
 
   bool fullscreenEnabled() const;
+
+  uint64_t tickRate() const;
+  uint64_t frameRate() const;
 };
 
 } // namespace cqde

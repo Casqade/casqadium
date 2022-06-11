@@ -29,10 +29,13 @@ ConfigManager::config() const
   config["log"]["level"]["cmd"] = to_string_view(mLogLevelCmd).data();
   config["log"]["level"]["file"] = to_string_view(mLogLevelFile).data();
 
-  config["video"]["window width"] = mWindowWidth;
-  config["video"]["window height"] = mWindowHeight;
+  config["video"]["window-width"] = mWindowWidth;
+  config["video"]["window-height"] = mWindowHeight;
 
   config["video"]["fullscreen"] = mFullscreenEnabled;
+
+  config["tick-rate"] = mTickRate;
+  config["frame-rate"] = mFrameRate;
 
   return config;
 }
@@ -48,6 +51,9 @@ ConfigManager::setConfig( const Json::Value& config )
   mWindowWidth = config["video"]["window width"].asUInt();
   mWindowHeight = config["video"]["window height"].asUInt();
   mFullscreenEnabled = config["video"]["fullscreen"].asBool();
+
+  mTickRate = config["tick-rate"].asUInt64();
+  mFrameRate = config["frame-rate"].asUInt64();
 }
 
 Json::Value
@@ -85,10 +91,13 @@ ConfigManager::read( const std::string& filename ) const
     const uint32_t windowH = configSrc["video"]["window height"].asUInt();
 
     if ( windowW == 0 || windowH == 0 )
-      throw Json::LogicError("Window dimensions can't be zero/negative");
+      throw Json::LogicError("Window dimensions can't be zero");
 
     config["video"]["window width"] = windowW;
     config["video"]["window height"] = windowH;
+
+    config["tick-rate"] = configSrc["tick-rate"];
+    config["frame-rate"] = configSrc["frame-rate"];
   }
   catch ( Json::LogicError& e )
   {
@@ -150,6 +159,18 @@ bool
 ConfigManager::fullscreenEnabled() const
 {
   return mFullscreenEnabled;
+}
+
+uint64_t
+ConfigManager::tickRate() const
+{
+  return mTickRate;
+}
+
+uint64_t
+ConfigManager::frameRate() const
+{
+  return mFrameRate;
 }
 
 } // namespace cqde

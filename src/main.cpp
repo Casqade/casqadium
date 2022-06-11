@@ -34,7 +34,8 @@ main( int , char*[] )
 
   cqde::loggerInit( configManager.logPattern(), sinks );
 
-  AnotherDayAtHospital game( 60, 0 );
+  AnotherDayAtHospital game( configManager.tickRate(),
+                             configManager.frameRate() );
 
   const olc::rcode result = game.Construct(
     configManager.windowWidth(),
