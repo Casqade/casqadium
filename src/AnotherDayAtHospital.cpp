@@ -1,41 +1,6 @@
 #include <AnotherDayAtHospital.hpp>
 
 #include <GameStateEcsSandbox.hpp>
-#include <Variables.hpp>
-#include <cqde/util/logger.hpp>
-
-#include <forward_list>
-
-
-
-std::string backStoryText {
-R"text(Episode IV
-A NEW HOPE
-It is a period of civil war.
-Rebel spaceships, striking
-from a hidden base, have won
-their first victory against
-the evil Galactic Empire.
-
-During the battle, Rebel
-spies managed to steal secret
-plans to the Empire's
-ultimate weapon, the DEATH
-STAR, an armored space
-station with enough power to
-destroy an entire planet.
-
-Pursued by the Empire's
-sinister agents, Princess
-Leia races home aboard her
-starship, custodian of the
-stolen plans that can save
-her people and restore
-freedom to the galaxy....")text"};
-
-
-std::vector <std::string> TitleTextEntries;
-std::vector <std::string> BackStoryTextEntries;
 
 
 AnotherDayAtHospital::AnotherDayAtHospital(
@@ -51,88 +16,6 @@ AnotherDayAtHospital::AnotherDayAtHospital(
   , mEventHandler(this)
 {
   sAppName = u8"Another Day At Hospital";
-}
-
-bool
-AnotherDayAtHospital::loadResources()
-{
-  std::forward_list <std::pair <StringId, std::string>> strings =
-  {
-//    { StringId::Foreword, "A long time ago in a galaxy far,\nfar away..." },
-//    { StringId::Title, "Another Day;At Hospital" },
-//    { StringId::Backstory, backStoryText },
-//    { StringId::ForewordInputPrompt, "Hold any key" },
-  };
-
-  std::forward_list <std::pair <FontId, std::string>> fonts =
-  {
-//    { FontId::Munro, "munro.png" },
-//    { FontId::Jetbrains, "jetbrains.png" },
-//    { FontId::FranklinGothic30, "framd30.png" },
-//    { FontId::FranklinGothic40, "framd40.png" },
-//    { FontId::FranklinGothic64, "framd64.png" },
-//    { FontId::FranklinGothic128, "framd128.png" },
-//    { FontId::FranklinGothicItalic, "framdit.png" },
-  };
-
-  std::forward_list <std::pair <SpriteId, std::string>> sprites =
-  {
-//    { SpriteId::WindowIcon, "window_icon.png" },
-  };
-
-  std::forward_list <std::pair <SoundId, std::string>> sounds =
-  {
-//    { SoundId::Null, "" },
-  };
-
-  std::forward_list <std::pair <MusicId, std::string>> musics =
-  {
-//    { MusicId::TitleTheme, "title.ogg" },
-  };
-
-  for ( const auto& string : strings )
-    Strings::Load( string.first, string.second );
-
-  for ( const auto& font : fonts )
-    if ( Fonts::Load( font.first, font.second ) == false )
-    {
-      LOG_ERROR("Failed to load font '{}'", font.second);
-      return false;
-    }
-
-  for ( const auto& sprite : sprites )
-    if ( Sprites::Load( sprite.first, sprite.second ) == false )
-    {
-      LOG_ERROR("Failed to load sprite '{}'", sprite.second);
-      return false;
-    }
-
-  for ( const auto& sound : sounds )
-    if ( Sounds::Load( sound.first, sound.second ) == false )
-    {
-      LOG_ERROR("Failed to load sound '{}'", sound.second);
-      return false;
-    }
-
-  for ( const auto& music : musics )
-    if ( Music::Load( music.first, music.second ) == false )
-    {
-      LOG_ERROR("Failed to load music '{}'", music.second);
-      return false;
-    }
-
-  std::string entry {};
-  std::vector <std::string> lines {};
-
-//  std::istringstream titleText ( Strings::Get( StringId::Title ));
-//  while ( std::getline( titleText, entry, ';' ) )
-//    TitleTextEntries.push_back( entry );
-
-//  std::istringstream backStoryText( Strings::Get( StringId::Backstory ) );
-//  while ( std::getline( backStoryText, entry, ';' ) )
-//    BackStoryTextEntries.push_back( entry );
-
-  return true;
 }
 
 bool
@@ -155,9 +38,6 @@ AnotherDayAtHospital::OnUserCreate()
   const uint32_t mainLayer = CreateLayer();
   EnableLayer( mainLayer, true );
   SetDrawTarget( mainLayer );
-
-  if ( loadResources() == false )
-    return false;
 
   mGameStateController.setState <GameStateEcsSandbox> ();
 

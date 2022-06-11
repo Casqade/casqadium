@@ -21,8 +21,6 @@ class AnotherDayAtHospital : public olc::PixelGameEngine
   olc::EventHandler   mEventHandler;
   olc::imgui::PGE_ImGUI mImGui;
 
-  bool loadResources();
-
   bool update( const uint32_t,
                const TimeUtils::Duration );
 

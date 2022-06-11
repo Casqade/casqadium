@@ -17,12 +17,7 @@ option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 add_executable(${TARGET})
 target_sources(${TARGET} PRIVATE
 
-  include/Variables.hpp
-
-  include/Assets.hpp
   include/AnotherDayAtHospital.hpp
-
-  src/Assets.cpp
 
   src/AnotherDayAtHospital.cpp
 
@@ -61,39 +56,6 @@ include(GNUInstallDirs)
 
 find_package(Threads REQUIRED)
 target_link_libraries(${TARGET} PRIVATE Threads::Threads)
-
-find_package(SFML COMPONENTS audio QUIET)
-
-if(NOT SFML_FOUND)
-  include(FetchContent)
-
-  FetchContent_Declare(SFML
-    GIT_REPOSITORY https://github.com/SFML/SFML
-    GIT_TAG        2.5.1
-    GIT_SHALLOW    TRUE
-  )
-
-  set(SFML_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-  set(SFML_BUILD_AUDIO ON CACHE BOOL "" FORCE)
-  set(SFML_BUILD_GRAPHICS OFF CACHE BOOL "" FORCE)
-  set(SFML_BUILD_WINDOW OFF CACHE BOOL "" FORCE)
-  set(SFML_BUILD_NETWORK OFF CACHE BOOL "" FORCE)
-  set(SFML_USE_SYSTEM_DEPS OFF CACHE BOOL "" FORCE)
-
-  if(${BUILD_SHARED_LIBS})
-    set(BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)
-  else()
-    set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
-    set(SFML_USE_STATIC_STD_LIBS ON CACHE BOOL "" FORCE)
-  endif()
-
-  FetchContent_MakeAvailable(SFML)
-
-endif()
-
-target_link_libraries(${TARGET} PRIVATE
-  sfml-audio
-)
 
 add_subdirectory(lib)
 
