@@ -8,12 +8,16 @@
 
 #include <cqde/alias.hpp>
 #include <cqde/common.hpp>
+
 #include <cqde/types/InputCallbackStorage.hpp>
 #include <cqde/types/EntityTagStorage.hpp>
+#include <cqde/types/ResourceManager.hpp>
 
 #include <cqde/types/input/InputBinding.hpp>
 #include <cqde/types/input/InputBindingAbsolute.hpp>
 #include <cqde/types/input/InputBindingRelative.hpp>
+
+#include <cqde/util/logger.hpp>
 
 #include <cqde/components/Camera.hpp>
 #include <cqde/components/SceneNode.hpp>
@@ -26,6 +30,8 @@
 #include <cqde/systems/CullingSystem.hpp>
 
 #include <olcPGE/olcMouseInputId.hpp>
+#include <olcPGE/olcPGEX_CustomFont.hpp>
+#include <olcPGE/olcPGEX_TTF.hpp>
 
 #include <json/value.h>
 
@@ -247,18 +253,18 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
 //  testSerialization();
 //  return;
 
-  auto texture = std::make_shared <olc::Renderable> ();
+  auto& fonts = mRegistry.ctx().emplace <ResourceManager <olc::Font>> ();
 
-  auto text = "T";
-  const olc::vi2d textSize = mPGE->GetTextSize(text);
-  texture->Create( textSize.x, textSize.y );
+  auto fMunro = std::make_shared <olc::Font> ("data/editor/fonts/munro.ttf", 20);
+  auto fJetbrains = std::make_shared <olc::Font> ("data/editor/fonts/jetbrains.ttf", 20);
 
-  mPGE->SetDrawTarget( texture->Sprite() );
-  mPGE->Clear( olc::BLANK );
-  mPGE->DrawString( 0, 0, text, olc::WHITE );
-  mPGE->SetDrawTarget(nullptr);
+  fonts.create( "f_munro", fMunro );
+  fonts.create( "f_jetbrains", fJetbrains );
 
-  texture->Decal()->Update();
+  LOG_INFO("munro status {}", (int) fonts.status("f_munro"));
+  LOG_INFO("jb status {}", (int) fonts.status("f_jetbrains"));
+
+  auto texture = std::make_shared <olc::Renderable> (fonts.get("f_munro")->RenderStringToRenderable(U"T", olc::WHITE));
 
   auto& textures = mRegistry.ctx().at <TextureStorage> ();
   textures.emplace("test"_hs, texture );

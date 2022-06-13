@@ -16,6 +16,10 @@ namespace cqde::types
 template <typename Resource>
 class ResourceManager
 {
+  using ResourceId = cqde::identifier;
+  using ResourcePath = cqde::identifier;
+  using ResourcePtr = std::shared_ptr <Resource>;
+
 public:
   ResourceManager() = default;
 
@@ -31,21 +35,20 @@ public:
   void parseRegistry( const Json::Value& registry );
 
   virtual void load( const std::set <cqde::identifier>& );
-  virtual void unload( const cqde::identifier& ) const;
+  virtual void unload( const cqde::identifier& );
+  virtual void create( const cqde::identifier&, const ResourcePtr );
 
   ResourceStatus status( const cqde::identifier& ) const;
   std::shared_ptr <Resource> get( const cqde::identifier& ) const;
 
 private:
-  Json::Value mRegistry;
-  entt::dense_map < cqde::identifier, cqde::identifier,
-                    entt::identity> mPaths {};
+  std::map <ResourceId, ResourcePath> mIdMap {};
 
-  entt::dense_map < cqde::identifier, std::pair <ResourceStatus, std::shared_ptr <Resource>>,
-                    entt::identity> mResources {};
+  std::map <ResourcePath,
+            std::pair <ResourceStatus, ResourcePtr>> mResources {};
 
   ctpl::thread_pool mJobs {4};
-  std::recursive_mutex mResourcesMutex {};
+  mutable std::recursive_mutex mResourcesMutex {};
 };
 
 } // namespace cqde::types

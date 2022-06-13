@@ -1,5 +1,9 @@
 #include <cqde/types/ResourceManager.hpp>
 
+#include <cqde/util/logger.hpp>
+
+#include <olcPGE/olcPGEX_TTF.hpp>
+
 
 namespace cqde::types
 {
@@ -12,10 +16,7 @@ ResourceManager <Resource>::parseRegistry(
   std::lock_guard guard(mResourcesMutex);
 
   for ( const auto& id : registry.getMemberNames())
-  {
-    mRegistry[id] = registry[id];
-    mPaths.insert_or_assign(id, registry[id].asString());
-  }
+    mIdMap[id] = registry[id].asString();
 }
 
 template <typename Resource>
@@ -24,19 +25,24 @@ ResourceManager <Resource>::load(
   const std::set <cqde::identifier>& ids )
 {
   mJobs.push(
-  [this, &ids]
+  [this, &ids] ( const int32_t threadId )
   {
     for ( const auto& id : ids )
     {
-      if ( status(id) == ResourceStatus::Loading )
-        return;
-
       mResourcesMutex.lock();
+
+      if ( status(id) == ResourceStatus::Loading )
+      {
+        mResourcesMutex.unlock();
+        return;
+      }
+
       mResources.at(id).first = ResourceStatus::Loading;
       mResourcesMutex.unlock();
 
+      // load impl //
       auto ptr = std::make_shared <Resource> ();
-      // load //
+      //
 
       std::lock_guard guard(mResourcesMutex);
 
@@ -46,7 +52,7 @@ ResourceManager <Resource>::load(
         return;
       }
 
-      auto& [status, handle] = mResources[mPaths[id]];
+      auto& [status, handle] = mResources[mIdMap[id]];
 
       status = ResourceStatus::Loaded;
       handle = std::move(ptr);
@@ -57,13 +63,28 @@ ResourceManager <Resource>::load(
 template <typename Resource>
 void
 ResourceManager <Resource>::unload(
-  const cqde::identifier& id ) const
+  const cqde::identifier& id )
 {
   std::lock_guard guard(mResourcesMutex);
 
-  auto& [status, handle] = mResources.at(cqde::identifier(mPaths.at(id)));
+  auto& [status, handle] = mResources.at(cqde::identifier(mIdMap.at(id)));
   status = ResourceStatus::Unloaded;
   handle.reset();
+}
+
+template <typename Resource>
+void
+ResourceManager <Resource>::create(
+  const cqde::identifier& id,
+  const ResourcePtr res )
+{
+  std::lock_guard guard(mResourcesMutex);
+
+  auto& [status, handle] = mResources[id];
+  status = ResourceStatus::Loaded;
+  handle = res;
+
+  mIdMap[id] = id;
 }
 
 template <typename Resource>
@@ -73,13 +94,14 @@ ResourceManager <Resource>::status(
 {
   std::lock_guard guard(mResourcesMutex);
 
-  if ( mPaths.contains(id) == false )
+  if ( mIdMap.count(id) == 0 )
     return ResourceStatus::Undefined;
 
-  if ( mResources.contains(mPaths.at(id)) == false )
+  if ( mResources.count(mIdMap.at(id)) == 0 )
     return ResourceStatus::Unloaded;
 
-  return mResources.at(cqde::identifier(mPaths.at(id))).first;
+  const auto& [status, ptr] = mResources.at(mIdMap.at(id));
+  return status;
 }
 
 template <typename Resource>
@@ -88,7 +110,12 @@ ResourceManager <Resource>::get(
   const cqde::identifier& id ) const
 {
   std::lock_guard guard(mResourcesMutex);
-  return mResources.at(cqde::identifier(mPaths.at(id))).second;
+
+  const auto& [status, ptr] = mResources.at(mIdMap.at(id));
+  return ptr;
 }
 
 } // namespace cqde::types
+
+template class
+cqde::types::ResourceManager <olc::Font>;
