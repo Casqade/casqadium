@@ -35,6 +35,12 @@ GameStateController::setState()
 }
 
 void
+GameStateController::clearState()
+{
+  mCurrentState.reset();
+}
+
+void
 GameStateController::handleEvent( const olc::Event event )
 {
   mCurrentState->handleEvent( event );

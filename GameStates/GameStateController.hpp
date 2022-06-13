@@ -25,6 +25,8 @@ public:
   template <class NewState>
   void setState();
 
+  void clearState();
+
   void handleEvent( const olc::Event );
 
   bool update( const uint32_t ticks,
