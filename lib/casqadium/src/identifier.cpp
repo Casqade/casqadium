@@ -53,3 +53,9 @@ identifier::operator < ( const identifier& other ) const
 }
 
 } // namespace cqde
+
+cqde::identifier
+operator ""_id ( const char* str )
+{
+  return {str};
+}
