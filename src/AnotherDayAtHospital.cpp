@@ -2,6 +2,10 @@
 
 #include <GameStateEcsSandbox.hpp>
 
+#include <olcPGE/olcPGEX_TTF.hpp>
+
+#include <cqde/util/logger.hpp>
+
 
 AnotherDayAtHospital::AnotherDayAtHospital(
   const uint64_t tickRate,
@@ -16,6 +20,12 @@ AnotherDayAtHospital::AnotherDayAtHospital(
   , mEventHandler(this)
 {
   sAppName = u8"Another Day At Hospital";
+}
+
+AnotherDayAtHospital::~AnotherDayAtHospital()
+{
+  mGameStateController.clearState();
+  olc::Font::deinit();
 }
 
 bool
@@ -34,6 +44,12 @@ bool
 AnotherDayAtHospital::OnUserCreate()
 {
 //  SetCursor(NULL);
+
+  if ( olc::Font::init() == false )
+  {
+    LOG_ERROR("Failed to initialize olc::Font");
+    return false;
+  }
 
   const uint32_t mainLayer = CreateLayer();
   EnableLayer( mainLayer, true );

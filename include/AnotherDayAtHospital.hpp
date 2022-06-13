@@ -26,6 +26,7 @@ class AnotherDayAtHospital : public olc::PixelGameEngine
 
 public:
   AnotherDayAtHospital() = delete;
+  ~AnotherDayAtHospital();
   AnotherDayAtHospital( const uint64_t tickRate,
                         const uint64_t frameRate );
 
