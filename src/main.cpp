@@ -50,8 +50,5 @@ main( int , char*[] )
     configManager.fullscreenEnabled(),
     false, true );
 
-  if ( result != olc::rcode::OK )
-    return result;
-
-  return game.Start() == olc::rcode::OK;
+  return result != olc::rcode::OK || game.Start() != olc::rcode::OK;
 }
