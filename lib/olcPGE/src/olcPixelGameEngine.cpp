@@ -1,6 +1,8 @@
 #define UNICODE
 #include <olcPGE/olcPixelGameEngine.hpp>
 
+#include <cassert>
+
 
 // O------------------------------------------------------------------------------O
 // | olcPixelGameEngine INTERFACE IMPLEMENTATION (CORE)                           |
@@ -2218,6 +2220,16 @@ namespace olc
 
     uint32_t CreateTexture(const uint32_t width, const uint32_t height, const bool filtered, const bool clamp) override
     {
+#if defined(OLC_PLATFORM_WINAPI)
+      auto currentContext = wglGetCurrentContext();
+#endif
+
+#if defined(OLC_PLATFORM_X11)
+      auto currentContext = X11::glXGetCurrentContext();
+#endif
+
+      assert(currentContext != nullptr);
+
       UNUSED(width);
       UNUSED(height);
       uint32_t id = 0;
