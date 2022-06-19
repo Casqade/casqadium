@@ -17,11 +17,6 @@ main( int , char*[] )
 
   std::vector <std::shared_ptr <spdlog::sinks::sink>> sinks {};
 
-  auto stdErrSink = std::make_shared <spdlog::sinks::stderr_color_sink_mt> ();
-  stdErrSink->set_level(spdlog::level::level_enum::err);
-
-  sinks.push_back(stdErrSink);
-
   if ( configManager.logLevelCmd() < spdlog::level::level_enum::off )
   {
     auto stdoutSink = std::make_shared <spdlog::sinks::stdout_color_sink_mt> ();
