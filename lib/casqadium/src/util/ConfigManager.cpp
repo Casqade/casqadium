@@ -28,6 +28,7 @@ ConfigManager::config() const
 
   config["log"]["level"]["cmd"] = to_string_view(mLogLevelCmd).data();
   config["log"]["level"]["file"] = to_string_view(mLogLevelFile).data();
+  config["log"]["level"]["flush-on"] = to_string_view(mLogFlushLevel).data();
 
   config["video"]["window-width"] = mWindowWidth;
   config["video"]["window-height"] = mWindowHeight;
@@ -47,6 +48,7 @@ ConfigManager::setConfig( const Json::Value& config )
 
   mLogLevelCmd = spdlog::level::from_str(config["log"]["level"]["cmd"].asString());
   mLogLevelFile = spdlog::level::from_str(config["log"]["level"]["file"].asString());
+  mLogFlushLevel = spdlog::level::from_str(config["log"]["level"]["flush-on"].asString());
 
   mWindowWidth = config["video"]["window-width"].asUInt();
   mWindowHeight = config["video"]["window-height"].asUInt();
@@ -98,6 +100,10 @@ ConfigManager::read( const std::string& filename ) const
   else
     config["log"]["level"]["file"] = configDefault["log"]["level"]["file"].asString();
 
+  if ( configSrc["log"]["level"]["flush-on"].isString() )
+    config["log"]["level"]["flush-on"] = configSrc["log"]["level"]["flush-on"].asString();
+  else
+    config["log"]["level"]["flush-on"] = configDefault["log"]["level"]["flush-on"].asString();
 
 
   if ( configSrc["video"]["window-width"].isUInt() && configSrc["video"]["window-width"].asUInt() > 0 )
@@ -157,6 +163,12 @@ spdlog::level::level_enum
 ConfigManager::logLevelFile() const
 {
   return mLogLevelFile;
+}
+
+spdlog::level::level_enum
+ConfigManager::logFlushLevel() const
+{
+  return mLogFlushLevel;
 }
 
 uint32_t

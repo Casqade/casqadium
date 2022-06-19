@@ -33,7 +33,9 @@ main( int , char*[] )
     sinks.push_back(fileSink);
   }
 
-  cqde::loggerInit( configManager.logPattern(), sinks );
+  cqde::loggerInit( configManager.logPattern(),
+                    configManager.logFlushLevel(),
+                    sinks );
 
   AnotherDayAtHospital game( configManager.tickRate(),
                              configManager.frameRate() );

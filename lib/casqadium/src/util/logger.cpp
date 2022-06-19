@@ -11,6 +11,7 @@ namespace cqde
 void
 loggerInit(
   const std::string& pattern,
+  const spdlog::level::level_enum flushLevel,
   const std::vector <std::shared_ptr <spdlog::sinks::sink>>& sinks )
 {
   auto dist_sink = std::make_shared <spdlog::sinks::dist_sink_mt> (sinks);
@@ -23,6 +24,7 @@ loggerInit(
   auto logger = std::make_shared <spdlog::logger> ( "cqde", dist_sink );
   logger->set_level(spdlog::level::trace);
   logger->set_pattern(pattern);
+  logger->flush_on(flushLevel);
 
   spdlog::register_logger(logger);
   spdlog::set_default_logger(logger);

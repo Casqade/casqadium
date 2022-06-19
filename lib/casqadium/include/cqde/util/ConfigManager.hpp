@@ -18,6 +18,7 @@ class ConfigManager
 
   level mLogLevelCmd {level::err};
   level mLogLevelFile {level::info};
+  level mLogFlushLevel {level::warn};
 
   uint32_t mWindowWidth {800u};
   uint32_t mWindowHeight {600u};
@@ -46,6 +47,7 @@ public:
 
   spdlog::level::level_enum logLevelCmd() const;
   spdlog::level::level_enum logLevelFile() const;
+  spdlog::level::level_enum logFlushLevel() const;
 
   uint32_t windowWidth() const;
   uint32_t windowHeight() const;
