@@ -5,6 +5,7 @@
 #include <cqde/util/logger.hpp>
 
 #include <json/value.h>
+#include <json/reader.h>
 
 
 namespace cqde::types
@@ -24,7 +25,7 @@ AssetManager <Asset>::parseJson(
 {
   std::lock_guard guard(mAssetsMutex);
 
-  for ( const auto& id : assetList.getMemberNames())
+  for ( const auto& id : assetList.getMemberNames() )
   {
     LOG_ASSERT_DEBUG(id.empty() != true, continue);
 
@@ -54,8 +55,14 @@ AssetManager <Asset>::parseJson(
     }
     catch ( const std::exception& e )
     {
-      throw std::runtime_error(cqde::format("Failed to parse JSON entry for asset '{}': {}",
-                                            id, e.what()));
+      LOG_ERROR("Failed to parse JSON entry for asset '{}': {}",
+                id, e.what());
+
+      mAssets[id].path = {};
+      mAssets[id].handle = {};
+      mAssets[id].status = AssetStatus::Error;
+
+      continue;
     }
 
     mAssets[id].path = assetList[id]["path"].asString();
