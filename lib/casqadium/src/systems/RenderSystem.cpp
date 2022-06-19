@@ -3,6 +3,7 @@
 #include <cqde/common.hpp>
 #include <cqde/components/Camera.hpp>
 #include <cqde/components/TextureBuffer.hpp>
+#include <cqde/types/assets/TextureAssetManager.hpp>
 
 #include <entt/entt.hpp>
 
@@ -29,19 +30,35 @@ RenderSystem( entt::registry& registry )
   {
     for ( const auto& [buffer, entity] : cCamera.zBuffer )
     {
-      olc::Decal* decal = nullptr;
-
-      const TextureBuffer* textureBuffer = registry.try_get <TextureBuffer> (entity);
-      if ( textureBuffer != nullptr )
-      {
-        const auto&     textures  = registry.ctx().at <TextureStorage> ();
-        const TextureId textureId = textureBuffer->textures.at((int) buffer.windingOrder);
-
-        decal = textures.at(textureId)->Decal();
-      }
-
       auto vertices = vec_to_array(buffer.vertices);
-      olc::renderer->ptrPGE->DrawWarpedDecal( decal, vec_to_array(buffer.vertices) );
+
+      if ( cCamera.textureMode == Camera::TextureMode::Textured )
+      {
+        const TextureBuffer* textureBuffer = registry.try_get <TextureBuffer> (entity);
+        if ( textureBuffer != nullptr )
+        {
+          if ( (textureBuffer->textures.size() > 0 &&
+                buffer.windingOrder == VertexBuffer::WindingOrder::CounterClockWise) ||
+               (textureBuffer->textures.size() > 1 &&
+                buffer.windingOrder == VertexBuffer::WindingOrder::ClockWise) )
+          {
+            const auto&     textures  = registry.ctx().at <TextureAssetManager> ();
+            const TextureId textureId = textureBuffer->textures.at((int) buffer.windingOrder);
+
+            const auto  texture = textures.try_get(textureId);
+            olc::Decal* decal = texture ?
+                                texture->Decal() : nullptr;
+
+            if ( decal != nullptr )
+            {
+              if ( buffer.windingOrder == VertexBuffer::WindingOrder::ClockWise )
+                std::reverse(vertices.begin(), vertices.end());
+
+              olc::renderer->ptrPGE->DrawWarpedDecal( decal, vertices );
+            }
+          }
+        }
+      }
 
 //      Draw outline
       for ( size_t i = 0, iNext = 1;

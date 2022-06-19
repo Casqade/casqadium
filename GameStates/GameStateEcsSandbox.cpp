@@ -11,7 +11,9 @@
 
 #include <cqde/types/InputCallbackStorage.hpp>
 #include <cqde/types/EntityTagStorage.hpp>
-#include <cqde/types/ResourceManager.hpp>
+
+#include <cqde/types/assets/FontAssetManager.hpp>
+#include <cqde/types/assets/TextureAssetManager.hpp>
 
 #include <cqde/types/input/InputBinding.hpp>
 #include <cqde/types/input/InputBindingAbsolute.hpp>
@@ -30,8 +32,6 @@
 #include <cqde/systems/CullingSystem.hpp>
 
 #include <olcPGE/olcMouseInputId.hpp>
-#include <olcPGE/olcPGEX_CustomFont.hpp>
-#include <olcPGE/olcPGEX_TTF.hpp>
 
 #include <json/value.h>
 
@@ -236,6 +236,52 @@ testSerialization()
   std::cout << "comp names: " << comp1.name << " " << comp2.name << "\n";
 }
 
+std::shared_ptr <olc::Renderable>
+textureFromText(
+  const std::string& text,
+  const olc::Pixel& color,
+  const bool monospaced,
+  olc::PixelGameEngine* pge )
+{
+  const auto textSize = monospaced ?
+                          pge->GetTextSize(text)
+                        : pge->GetTextSizeProp(text);
+
+  auto texture = std::make_shared <olc::Renderable> ();
+  texture->Create(textSize.x, textSize.y);
+
+  const auto drawTargetPrev = pge->GetDrawTarget();
+
+  pge->SetDrawTarget(texture->Sprite());
+  monospaced ?
+      pge->DrawString({0, 0}, text, color)
+    : pge->DrawStringProp({0, 0}, text, color);
+  pge->SetDrawTarget(drawTargetPrev);
+
+  texture->Decal()->Update();
+
+  return texture;
+}
+
+std::shared_ptr <olc::Renderable>
+texturePlaceholder()
+{
+  auto texture = std::make_shared <olc::Renderable> ();
+  texture->Create(16, 16);
+
+  for ( int32_t px = 0;
+        px < texture->Sprite()->width;
+        ++px )
+    for ( int32_t py = 0;
+          py < texture->Sprite()->height;
+          ++py )
+    texture->Sprite()->SetPixel(px, py,
+                                (px + py) % 2 == 0 ? olc::BLACK : olc::MAGENTA);
+
+  texture->Decal()->Update();
+
+  return texture;
+}
 
 GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateController )
   : GameState(stateController)
@@ -253,21 +299,56 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
 //  testSerialization();
 //  return;
 
-  auto& fonts = mRegistry.ctx().emplace <ResourceManager <olc::Font>> ();
+  auto& fonts = mRegistry.ctx().at <FontAssetManager> ();
+  auto& textures = mRegistry.ctx().at <TextureAssetManager> ();
 
-  auto fMunro = std::make_shared <olc::Font> ("data/editor/fonts/munro.ttf", 20);
-  auto fJetbrains = std::make_shared <olc::Font> ("data/editor/fonts/jetbrains.ttf", 20);
+  auto textureNull = texturePlaceholder();
+  auto textureError = textureFromText("ERROR", olc::RED, true, mPGE);
 
-  fonts.create( "f_munro", fMunro );
-  fonts.create( "f_jetbrains", fJetbrains );
+  textures.insert("null", textureNull);
+  textures.insert("error", textureError);
 
-  LOG_INFO("munro status {}", (int) fonts.status("f_munro"));
-  LOG_INFO("jb status {}", (int) fonts.status("f_jetbrains"));
+  try
+  {
+    Json::Value reg {};
+    reg["font_test"]["path"] = "data/editor/fonts/munro.ttf";
+    reg["font_test"]["size"] = 20;
 
-  auto texture = std::make_shared <olc::Renderable> (fonts.get("f_munro")->RenderStringToRenderable(U"T", olc::WHITE));
+    fonts.parseJson(reg);
+    fonts.load({"font_test"});
+  }
+  catch ( const std::exception& e )
+  {
+    LOG_ERROR("Failed to parse font db: {}", e.what());
+    return;
+  }
 
-  auto& textures = mRegistry.ctx().at <TextureStorage> ();
-  textures.emplace("test"_hs, texture );
+  try
+  {
+    Json::Value reg {};
+    reg["texture_test"]["path"] = "data/editor/textures/map-diffuse1.png";
+    reg["texture_test"]["filter"] = false;
+    reg["texture_test"]["clamp"] = true;
+
+    reg["texture_test1"]["path"] = "data/editor/textures/map-height.png";
+    reg["texture_test1"]["filter"] = false;
+    reg["texture_test1"]["clamp"] = true;
+
+    textures.parseJson(reg);
+    textures.load({"texture_test"});
+    textures.load({"texture_test1"});
+  }
+  catch ( const std::exception& e )
+  {
+    LOG_ERROR("Failed to parse texture db: {}", e.what());
+    return;
+  }
+
+  while (fonts.status("font_test") != AssetStatus::Loaded)
+    ;
+
+  auto textTexture = std::make_shared <olc::Renderable> (fonts.get("font_test")->RenderStringToRenderable(U"T", olc::WHITE));
+  textures.insert("text_texture", textTexture);
 
   auto eQuad = mRegistry.create();
   auto eCamera = mRegistry.create();
@@ -283,7 +364,8 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
 
   cCamera.viewport = { 0.0f, 0.0f, mPGE->GetWindowSize().x, mPGE->GetWindowSize().y};
 
-  textureBuffer.textures[0] = "test"_hs;
+  textureBuffer.textures.push_back("texture_test");
+  textureBuffer.textures.push_back("text_texture2");
 
   ControlAxis iAxisTranslateX{};
   iAxisTranslateX.constraint = {-1.0f, 1.0f};
@@ -466,7 +548,6 @@ GameStateEcsSandbox::update(  const uint32_t ticks,
                               const TimeUtils::Duration elapsed )
 {
   using namespace cqde::compos;
-
   const double dt = static_cast <double> (elapsed);
   const float cameraVelocity = 10.0f;
 

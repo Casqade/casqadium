@@ -52,8 +52,14 @@ target_sources(${TARGET} PRIVATE
   src/types/VertexBuffer.cpp
   include/${CASQADIUM_SHORT}/types/VertexBuffer.hpp
 
-  src/types/ResourceManager.cpp
-  include/${CASQADIUM_SHORT}/types/ResourceManager.hpp
+  include/${CASQADIUM_SHORT}/types/assets/AssetManager.hpp
+  include/${CASQADIUM_SHORT}/types/assets/AssetManager-inl.hpp
+
+  src/types/assets/FontAssetManager.cpp
+  include/${CASQADIUM_SHORT}/types/assets/FontAssetManager.hpp
+
+  src/types/assets/TextureAssetManager.cpp
+  include/${CASQADIUM_SHORT}/types/assets/TextureAssetManager.hpp
 
 
   src/components/Camera.cpp

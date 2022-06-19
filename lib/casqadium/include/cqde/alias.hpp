@@ -25,10 +25,6 @@ typedef identifier TextureId;
 namespace types
 {
 
-typedef std::map <StringId, std::string> StringStorage;
-
-typedef std::map <TextureId, std::shared_ptr <olc::Renderable>> TextureStorage;
-
 typedef std::map <int32_t, InputHwId> HwControlMap;
 
 typedef std::multimap < std::shared_ptr <InputBinding>, InputAxisId,

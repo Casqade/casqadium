@@ -8,10 +8,6 @@
 namespace cqde::compos
 {
 
-TextureBuffer::TextureBuffer()
-  : textures(2, TextureId("null"))  // front & back faces
-{}
-
 void
 TextureBuffer::serialize( Json::Value& json ) const
 {}

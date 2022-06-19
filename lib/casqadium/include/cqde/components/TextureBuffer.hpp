@@ -14,10 +14,10 @@ namespace cqde::compos
 
 struct TextureBuffer
 {
-  std::vector <cqde::TextureId> textures;
+  std::vector <cqde::TextureId> textures {};
 
 
-  TextureBuffer();
+  TextureBuffer() = default;
 
 
   void serialize( Json::Value& ) const;

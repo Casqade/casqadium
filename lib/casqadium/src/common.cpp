@@ -8,6 +8,9 @@
 #include <cqde/types/EntityTagStorage.hpp>
 #include <cqde/types/InputCallbackStorage.hpp>
 
+#include <cqde/types/assets/FontAssetManager.hpp>
+#include <cqde/types/assets/TextureAssetManager.hpp>
+
 #include <entt/entity/registry.hpp>
 
 #include <olcPGE/olcMouseInputId.hpp>
@@ -62,11 +65,12 @@ engineInit( entt::registry& registry )
 
   registry.ctx().emplace <EntityTagStorage> ();
   registry.ctx().emplace <InputCallbackStorage> ();
-  registry.ctx().emplace <TextureStorage> ().emplace( null_id,
-                                                      std::make_shared <olc::Renderable> () );
 
   initHwControls( registry.ctx().emplace <HwControlMap> () );
   registry.ctx().emplace <InputBindings> ();
+
+  registry.ctx().emplace <FontAssetManager> ();
+  registry.ctx().emplace <TextureAssetManager> ();
 }
 
 
