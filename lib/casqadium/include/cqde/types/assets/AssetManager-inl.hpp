@@ -73,6 +73,59 @@ AssetManager <Asset>::parseJson(
 
 template <typename Asset>
 void
+AssetManager <Asset>::parseFile(
+  const std::string& path )
+{
+  Json::CharReaderBuilder jsonReader {};
+
+  jsonReader["collectComments"] = true;
+  jsonReader["allowComments"] = true;
+  jsonReader["allowTrailingCommas"] = true;
+  jsonReader["strictRoot"] = false;
+  jsonReader["allowDroppedNullPlaceholders"] = false;
+  jsonReader["allowNumericKeys"] = false;
+  jsonReader["allowSingleQuotes"] = false;
+  jsonReader["stackLimit"] = 1000;
+  jsonReader["failIfExtra"] = false;
+  jsonReader["rejectDupKeys"] = true;
+  jsonReader["allowSpecialFloats"] = true;
+  jsonReader["skipBom"] = true;
+
+
+  LOG_DEBUG("Opening asset DB '{}'", path);
+
+  Json::Value assetDb {};
+
+  std::ifstream assetDbFile( path, std::ios::in );
+
+  try
+  {
+    if ( assetDbFile.is_open() == false )
+      throw std::runtime_error("Can't open DB file");
+
+    LOG_DEBUG("Parsing asset DB '{}'", path);
+
+    Json::String parseErrors {};
+
+    if ( Json::parseFromStream( jsonReader, assetDbFile,
+                                &assetDb, &parseErrors ) == false )
+      throw std::runtime_error(parseErrors);
+  }
+  catch ( const std::exception& e )
+  {
+    if ( assetDbFile.is_open() == true )
+      assetDbFile.close();
+
+    throw std::runtime_error(cqde::format("Failed to parse asset DB '{}': {}",
+                                          path, e.what()));
+  }
+  assetDbFile.close();
+
+  parseJson(assetDb);
+}
+
+template <typename Asset>
+void
 AssetManager <Asset>::load(
   const std::set <AssetId>& ids )
 {

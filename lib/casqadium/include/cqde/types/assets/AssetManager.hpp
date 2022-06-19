@@ -40,6 +40,7 @@ public:
   AssetManager() = default;
   ~AssetManager();
 
+  void parseFile( const std::string& path );
   void parseJson( const Json::Value& );
 
   void load( const std::set <AssetId>& );
