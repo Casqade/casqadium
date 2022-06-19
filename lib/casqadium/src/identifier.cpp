@@ -47,6 +47,12 @@ identifier::operator == ( const identifier& other ) const
 }
 
 bool
+identifier::operator != ( const identifier& other ) const
+{
+  return !(*this == other);
+}
+
+bool
 identifier::operator < ( const identifier& other ) const
 {
   return this->mHash.value() < other.mHash.value();

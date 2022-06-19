@@ -26,6 +26,8 @@ public:
   entt::hashed_string hash() const;
 
   bool operator == ( const identifier& ) const;
+  bool operator != ( const identifier& ) const;
+
   bool operator < ( const identifier& ) const;
 };
 
