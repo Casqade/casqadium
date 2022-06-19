@@ -81,29 +81,45 @@ ConfigManager::read( const std::string& filename ) const
   }
   configIn.close();
 
-  try
-  {
+  const auto configDefault = ConfigManager().config();
+
+  if ( configSrc["log"]["pattern"].isString() )
     config["log"]["pattern"] = configSrc["log"]["pattern"].asString();
+  else
+    config["log"]["pattern"] = configDefault["log"]["pattern"].asString();
+
+  if ( configSrc["log"]["level"]["cmd"].isString() )
     config["log"]["level"]["cmd"] = configSrc["log"]["level"]["cmd"].asString();
+  else
+    config["log"]["level"]["cmd"] = configDefault["log"]["level"]["cmd"].asString();
+
+  if ( configSrc["log"]["level"]["file"].isString() )
     config["log"]["level"]["file"] = configSrc["log"]["level"]["file"].asString();
+  else
+    config["log"]["level"]["file"] = configDefault["log"]["level"]["file"].asString();
 
-    const uint32_t windowW = configSrc["video"]["window-width"].asUInt();
-    const uint32_t windowH = configSrc["video"]["window-height"].asUInt();
 
-    if ( windowW == 0 || windowH == 0 )
-      throw Json::LogicError("Window dimensions can't be zero");
 
-    config["video"]["window-width"] = windowW;
-    config["video"]["window-height"] = windowH;
+  if ( configSrc["video"]["window-width"].isUInt() && configSrc["video"]["window-width"].asUInt() > 0 )
+     config["video"]["window-width"] = configSrc["video"]["window-width"].asUInt();
+  else
+    config["video"]["window-width"] = configDefault["video"]["window-width"].asUInt();
 
-    config["engine"]["tick-rate"] = configSrc["tick-rate"];
-    config["engine"]["frame-rate"] = configSrc["frame-rate"];
-  }
-  catch ( Json::LogicError& e )
-  {
-    std::cerr << "Error: invalid values in config " << filename << ": " << e.what() << "\n";
-    config = ConfigManager().config();
-  }
+  if ( configSrc["video"]["window-height"].isUInt() && configSrc["video"]["window-height"].asUInt() > 0 )
+     config["video"]["window-height"] = configSrc["video"]["window-height"].asUInt();
+  else
+    config["video"]["window-height"] = configDefault["video"]["window-height"].asUInt();
+
+
+  if ( configSrc["engine"]["tick-rate"].isUInt() )
+    config["engine"]["tick-rate"] = configSrc["engine"]["tick-rate"];
+  else
+    config["engine"]["tick-rate"] = configDefault["engine"]["tick-rate"];
+
+  if ( configSrc["engine"]["frame-rate"].isUInt() )
+    config["engine"]["frame-rate"] = configSrc["engine"]["frame-rate"];
+  else
+    config["engine"]["frame-rate"] = configDefault["engine"]["frame-rate"];
 
   return config;
 }
