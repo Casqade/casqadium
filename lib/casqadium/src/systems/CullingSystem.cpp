@@ -37,7 +37,7 @@ vertexShader(
     vertexBuffer.depth += vert.z;
 
     if ( vert.z < 0.0f || vert.z > 1.0f )
-      return {{}, -1.0f};
+      return {{}, -1.0f, {}};
 
     if (    (vert.x >= viewport.x && vert.y >= viewport.y)
          && (vert.x <= viewport.x + viewport.z && vert.y <= viewport.y + viewport.w) )

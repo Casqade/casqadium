@@ -14,7 +14,7 @@ vec_to_array( const std::vector <olc::vf2d>& src )
   std::array <olc::vf2d, 4> dest;
   std::copy( src.begin(), src.begin() + 4, dest.begin() );
 
-  return std::move(dest);
+  return dest;
 }
 
 namespace cqde::systems
