@@ -16,6 +16,10 @@ loggerInit(
   auto dist_sink = std::make_shared <spdlog::sinks::dist_sink_mt> (sinks);
   dist_sink->set_level(spdlog::level::trace);
 
+//  spdlog::init_thread_pool(spdlog::details::default_async_q_size, 1 );
+//  auto logger = std::make_shared <spdlog::async_logger> ( "cqde", dist_sink,
+//                                                          spdlog::thread_pool() );
+
   auto logger = std::make_shared <spdlog::logger> ( "cqde", dist_sink );
   logger->set_level(spdlog::level::trace);
   logger->set_pattern(pattern);
