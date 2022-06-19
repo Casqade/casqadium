@@ -310,37 +310,24 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
 
   try
   {
-    Json::Value reg {};
-    reg["font_test"]["path"] = "data/editor/fonts/munro.ttf";
-    reg["font_test"]["size"] = 20;
-
-    fonts.parseJson(reg);
-    fonts.load({"font_test"});
+    fonts.parseFile("data/editor/fonts.json");
+    fonts.load({"munro"});
   }
   catch ( const std::exception& e )
   {
-    LOG_ERROR("Failed to parse font db: {}", e.what());
+    LOG_ERROR("{}", e.what());
     return;
   }
 
   try
   {
-    Json::Value reg {};
-    reg["texture_test"]["path"] = "data/editor/textures/map-diffuse1.png";
-    reg["texture_test"]["filter"] = false;
-    reg["texture_test"]["clamp"] = true;
-
-    reg["texture_test1"]["path"] = "data/editor/textures/map-height.png";
-    reg["texture_test1"]["filter"] = false;
-    reg["texture_test1"]["clamp"] = true;
-
-    textures.parseJson(reg);
-    textures.load({"texture_test"});
-    textures.load({"texture_test1"});
+    textures.parseFile("data/editor/textures.json");
+    textures.load({"map_diffuse"});
+    textures.load({"map_height"});
   }
   catch ( const std::exception& e )
   {
-    LOG_ERROR("Failed to parse texture db: {}", e.what());
+    LOG_ERROR("{}", e.what());
     return;
   }
 
@@ -364,7 +351,7 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
 
   cCamera.viewport = { 0.0f, 0.0f, mPGE->GetWindowSize().x, mPGE->GetWindowSize().y};
 
-  textureBuffer.textures.push_back("texture_test");
+  textureBuffer.textures.push_back("map_diffuse");
   textureBuffer.textures.push_back("text_texture2");
 
   ControlAxis iAxisTranslateX{};
