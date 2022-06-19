@@ -55,8 +55,14 @@ target_sources(${TARGET} PRIVATE
   include/${CASQADIUM_SHORT}/types/assets/AssetManager.hpp
   include/${CASQADIUM_SHORT}/types/assets/AssetManager-inl.hpp
 
+#  src/types/assets/AudioAssetManager.cpp
+#  include/${CASQADIUM_SHORT}/types/assets/AudioAssetManager.hpp
+
   src/types/assets/FontAssetManager.cpp
   include/${CASQADIUM_SHORT}/types/assets/FontAssetManager.hpp
+
+#  src/types/assets/GeometryAssetManager.cpp
+#  include/${CASQADIUM_SHORT}/types/assets/GeometryAssetManager.hpp
 
   src/types/assets/TextureAssetManager.cpp
   include/${CASQADIUM_SHORT}/types/assets/TextureAssetManager.hpp
