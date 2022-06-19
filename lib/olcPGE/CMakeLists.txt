@@ -55,15 +55,29 @@ set_target_properties(${TARGET} PROPERTIES
   CXX_STANDARD 17
 )
 
-if(NOT ${BUILD_SHARED_LIBS})
+if(${BUILD_SHARED_LIBS})
+  set(BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)
+else()
+  set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
   target_link_libraries(${TARGET} PUBLIC -static)
 endif()
 
-find_package(Freetype REQUIRED)
-target_link_libraries(${TARGET} PUBLIC Freetype::Freetype)
+
+include(FetchContent)
+
+FetchContent_Declare(Freetype
+  GIT_REPOSITORY https://gitlab.freedesktop.org/freetype/freetype
+  GIT_TAG        VER-2-12-1
+  GIT_SHALLOW    TRUE
+)
+FetchContent_MakeAvailable(Freetype)
+
+target_compile_definitions(freetype PRIVATE FT_CONFIG_OPTION_ERROR_STRINGS)
+target_link_libraries(${TARGET} PUBLIC freetype)
 
 find_package(Threads REQUIRED)
 target_link_libraries(${TARGET} PRIVATE Threads::Threads)
+
 
 if(WIN32)
   if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
@@ -90,6 +104,7 @@ if(WIN32)
 else()
   target_link_libraries(${TARGET} PRIVATE X11 GL png)
 endif()
+
 
 include(GNUInstallDirs)
 

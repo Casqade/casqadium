@@ -96,100 +96,91 @@ target_sources(${TARGET} PRIVATE
   thirdparty/ctpl/ctpl_stl.h
 )
 
-find_package(EnTT QUIET)
-
-if(NOT EnTT_FOUND)
-  include(FetchContent)
-
-  FetchContent_Declare(EnTT
-    GIT_REPOSITORY https://github.com/skypjack/entt
-    GIT_TAG        v3.10.1
-    GIT_SHALLOW    TRUE
-  )
-
-  if(${BUILD_SHARED_LIBS})
-    set(BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)
-  else()
-    set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
-    set(ENTT_USE_LIBCPP ON CACHE BOOL "" FORCE)
-  endif()
-
-  if(CMAKE_BUILD_TYPE MATCHES RELEASE)
-    target_compile_definitions(${TARGET} PUBLIC ENTT_DISABLE_ASSERT)
-  endif()
-
-  FetchContent_MakeAvailable(EnTT)
-
+if(${BUILD_SHARED_LIBS})
+  set(BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)
+  set(SPDLOG_BUILD_SHARED ON CACHE BOOL "" FORCE)
+  set(BUILD_STATIC_LIBS OFF CACHE BOOL "" FORCE) # JsonCPP
+else()
+  set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
+  set(SPDLOG_BUILD_SHARED OFF CACHE BOOL "" FORCE)
+  set(ENTT_USE_LIBCPP ON CACHE BOOL "" FORCE)
+  set(BUILD_STATIC_LIBS ON CACHE BOOL "" FORCE) # JsonCpp
+  set(JSONCPP_STATIC_WINDOWS_RUNTIME ON CACHE BOOL "" FORCE)
 endif()
 
-find_package(glm REQUIRED)
+set(JSONCPP_WITH_TESTS OFF CACHE BOOL "" FORCE)
+set(JSONCPP_WITH_POST_BUILD_UNITTEST OFF CACHE BOOL "" FORCE)
+set(JSONCPP_WITH_PKGCONFIG_SUPPORT OFF CACHE BOOL "" FORCE)
 
-find_package(JsonCPP QUIET)
+set(SPDLOG_DISABLE_DEFAULT_LOGGER ON CACHE BOOL "" FORCE)
 
-if(NOT JsonCPP_FOUND)
-  include(FetchContent)
 
-  FetchContent_Declare(JsonCPP
-    GIT_REPOSITORY https://github.com/open-source-parsers/jsoncpp
-    GIT_TAG        1.9.5
-    GIT_SHALLOW    TRUE
-  )
+include(FetchContent)
 
-  set(JSONCPP_WITH_TESTS OFF CACHE BOOL "" FORCE)
-  set(JSONCPP_WITH_POST_BUILD_UNITTEST OFF CACHE BOOL "" FORCE)
-  set(JSONCPP_WITH_PKGCONFIG_SUPPORT OFF CACHE BOOL "" FORCE)
 
-  if(${BUILD_SHARED_LIBS})
-    set(BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)
-    set(BUILD_STATIC_LIBS OFF CACHE BOOL "" FORCE)
-  else()
-    set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
-    set(BUILD_STATIC_LIBS ON CACHE BOOL "" FORCE)
-    set(JSONCPP_STATIC_WINDOWS_RUNTIME ON CACHE BOOL "" FORCE)
-  endif()
+#   EnTT
+FetchContent_Declare(EnTT
+  GIT_REPOSITORY https://github.com/skypjack/entt
+  GIT_TAG        v3.10.1
+  GIT_SHALLOW    TRUE
+)
 
-  FetchContent_MakeAvailable(JsonCPP)
-
+if(CMAKE_BUILD_TYPE MATCHES RELEASE)
+  target_compile_definitions(${TARGET} PUBLIC ENTT_DISABLE_ASSERT)
 endif()
 
-find_package(spdlog QUIET)
+FetchContent_MakeAvailable(EnTT)
 
-if(NOT spdlog_FOUND)
-  include(FetchContent)
 
-  FetchContent_Declare(spdlog
-    GIT_REPOSITORY https://github.com/gabime/spdlog
-    GIT_TAG        v1.10.0
-    GIT_SHALLOW    TRUE
-  )
+FetchContent_Declare(glm
+  GIT_REPOSITORY https://github.com/g-truc/glm
+  GIT_TAG        0.9.9.8
+  GIT_SHALLOW    TRUE
+)
+FetchContent_MakeAvailable(glm)
 
-  set(SPDLOG_DISABLE_DEFAULT_LOGGER ON CACHE BOOL "" FORCE)
 
-  if(${BUILD_SHARED_LIBS})
-    set(BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)
-    set(SPDLOG_BUILD_SHARED ON CACHE BOOL "" FORCE)
-  else()
-    set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
-    set(SPDLOG_BUILD_SHARED OFF CACHE BOOL "" FORCE)
-  endif()
+FetchContent_Declare(JsonCPP
+  GIT_REPOSITORY https://github.com/open-source-parsers/jsoncpp
+  GIT_TAG        1.9.5
+  GIT_SHALLOW    TRUE
+)
+FetchContent_MakeAvailable(JsonCPP)
 
-  FetchContent_MakeAvailable(spdlog)
 
+FetchContent_Declare(spdlog
+  GIT_REPOSITORY https://github.com/gabime/spdlog
+  GIT_TAG        v1.10.0
+  GIT_SHALLOW    TRUE
+)
+FetchContent_MakeAvailable(spdlog)
+
+
+if(${BUILD_SHARED_LIBS})
+  target_compile_definitions(glm_shared PUBLIC GLM_FORCE_DEPTH_ZERO_TO_ONE)
+#  target_compile_definitions(glm_shared PRIVATE GLM_FORCE_MESSAGES)
+else()
+  target_compile_definitions(glm_static PUBLIC GLM_FORCE_DEPTH_ZERO_TO_ONE)
+#  target_compile_definitions(glm_static PRIVATE GLM_FORCE_MESSAGES)
 endif()
 
-target_compile_definitions(${TARGET} PUBLIC GLM_FORCE_DEPTH_ZERO_TO_ONE)
 
 target_link_libraries(${TARGET} PUBLIC
   EnTT::EnTT
-  glm
   olcPGE::olcPGE
   spdlog::spdlog
 )
 
 if(${BUILD_SHARED_LIBS})
-  target_link_libraries(${TARGET} PUBLIC jsoncpp_lib)
+  target_link_libraries(${TARGET} PUBLIC
+    jsoncpp_lib
+    glm::glm_shared
+  )
 else()
-  target_link_libraries(${TARGET} PUBLIC jsoncpp_static)
+  target_link_libraries(${TARGET} PUBLIC
+    jsoncpp_static
+    glm::glm_static
+  )
 endif()
 
 include(GNUInstallDirs)
