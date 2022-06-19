@@ -64,6 +64,9 @@ target_sources(${TARGET} PRIVATE
 #  src/types/assets/GeometryAssetManager.cpp
 #  include/${CASQADIUM_SHORT}/types/assets/GeometryAssetManager.hpp
 
+  src/types/assets/TextStringAssetManager.cpp
+  include/${CASQADIUM_SHORT}/types/assets/TextStringAssetManager.hpp
+
   src/types/assets/TextureAssetManager.cpp
   include/${CASQADIUM_SHORT}/types/assets/TextureAssetManager.hpp
 
