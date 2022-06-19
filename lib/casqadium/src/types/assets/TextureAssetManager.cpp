@@ -39,7 +39,7 @@ AssetManager <olc::Renderable>::loadImpl(
 
   auto texture = std::make_shared <olc::Renderable> ();
   auto sprite = new olc::Sprite();
-std::this_thread::sleep_for(std::chrono::seconds(3));
+
   const olc::rcode result = sprite->LoadFromFile(path.str());
   switch (result)
   {
