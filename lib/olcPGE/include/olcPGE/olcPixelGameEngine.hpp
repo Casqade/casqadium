@@ -745,6 +745,8 @@ public:
   Renderable(const Renderable&) = delete;
   olc::rcode Load(const std::string& sFile, ResourcePack* pack = nullptr, bool filter = false, bool clamp = true);
   void Create(uint32_t width, uint32_t height, bool filter = false, bool clamp = true);
+  void SetDecal(olc::Decal* decal);
+  void SetSprite(olc::Sprite* spr);
   olc::Decal* Decal() const;
   olc::Sprite* Sprite() const;
 

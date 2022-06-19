@@ -281,6 +281,22 @@ olc::rcode Renderable::Load(const std::string& sFile, ResourcePack* pack, bool f
     }
 }
 
+void Renderable::SetDecal(olc::Decal* decal)
+{
+  pDecal.reset(decal);
+}
+
+void Renderable::SetSprite(olc::Sprite* spr)
+{
+  pSprite.reset(spr);
+
+  if (pDecal == nullptr)
+    return;
+
+  pDecal->sprite = spr;
+  pDecal->Update();
+}
+
 olc::Decal* Renderable::Decal() const
 { return pDecal.get(); }
 
