@@ -297,11 +297,11 @@ AssetManager <std::string>::try_get(
     case AssetStatus::Loading:
       return std::make_shared <std::string> ("...");
 
-    case AssetStatus::Loaded:
-      return mAssets.at(id).handle;
-
     case AssetStatus::Error:
       return std::make_shared <std::string> ("STR_ERROR_" + id.str());
+
+    default:
+      return mAssets.at(id).handle;
   }
 }
 
