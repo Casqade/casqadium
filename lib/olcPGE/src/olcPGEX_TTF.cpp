@@ -14,7 +14,9 @@
 namespace olc
 {
 
-FT_Library olc::Font::library;
+FT_Library olc::Font::library {};
+
+std::string olc::Font::libraryErrorMessage {};
 
 
 Font::~Font()
@@ -25,34 +27,12 @@ Font::~Font()
     }
 }
 
-Font::Font(std::string path, int fontSize)
+Font::Font(const std::string& path, const int _fontSize)
   : fontFace(nullptr)
   , fallbacks()
-  , fontSize(fontSize)
+  , fontSize(_fontSize)
 {
-    FT_Error error = FT_New_Face(library, path.c_str(), 0, &fontFace);
-    if (error) {
-        const char *errorString = FT_Error_String(error);
-        if (errorString == nullptr) {
-            std::cerr
-                    << "An unknown error occured while loading the font! Error code: "
-                    << error << "\n";
-        } else {
-            std::cerr << errorString << "\n";
-        }
-    }
-
-    error = FT_Set_Pixel_Sizes(fontFace, 0, fontSize);
-    if (error) {
-        const char *errorString = FT_Error_String(error);
-        if (errorString == nullptr) {
-            std::cerr
-                    << "An unknown error occured while loading the font!Error Code: "
-                    << error << "\n";
-        } else {
-            std::cerr << errorString << "\n";
-        }
-    }
+    LoadFromFile(path, fontSize);
 }
 
 Font::Font(Font&& other)
@@ -75,7 +55,43 @@ Font::operator = (Font&& other)
     return *this;
 }
 
-void
+olc::rcode
+Font::LoadFromFile(const std::string& path, const int _fontSize)
+{
+    FT_Error error = FT_New_Face(library, path.c_str(), 0, &fontFace);
+    if (error)
+    {
+        const char *errorString = FT_Error_String(error);
+        if (errorString == nullptr)
+        {
+            errorMessage = "An unknown error occured while creating font face! Error code: ";
+            errorMessage += std::to_string(error);
+        }
+        else
+            errorMessage = errorString;
+
+        return olc::rcode::FAIL;
+    }
+
+    error = FT_Set_Pixel_Sizes(fontFace, 0, _fontSize);
+    if (error)
+    {
+        const char *errorString = FT_Error_String(error);
+        if (errorString == nullptr)
+        {
+            errorMessage = "An unknown error occured while setting font pixel size! Error code: ";
+            errorMessage += std::to_string(error);
+        }
+        else
+            errorMessage = errorString;
+
+        return olc::rcode::FAIL;
+    }
+
+    return olc::rcode::OK;
+}
+
+olc::rcode
 Font::DrawString( std::u32string string, int x, int y,
                   olc::Pixel color, float angle)
 {
@@ -121,16 +137,18 @@ Font::DrawString( std::u32string string, int x, int y,
         FT_Set_Transform(toUse->fontFace, &rotMat, &pen);
         FT_Error error = FT_Load_Char(toUse->fontFace, chr,
                                       FT_LOAD_RENDER | FT_LOAD_COLOR);
-        if (error) {
+        if (error)
+        {
             const char *errorString = FT_Error_String(error);
-            if (errorString == nullptr) {
-                std::cerr
-                        << "An unknown error occured while rendering a glyph!  Error code: "
-                        << error << "\n";
-            } else {
-                std::cerr << errorString << "\n";
+            if (errorString == nullptr)
+            {
+                errorMessage = "An unknown error occured while rendering a glyph! Error code: ";
+                errorMessage += std::to_string(error);
             }
-            return;
+            else
+                errorMessage = errorString;
+
+            return olc::rcode::FAIL;
         }
 
         FT_Bitmap bmp = toUse->fontFace->glyph->bitmap;
@@ -145,13 +163,15 @@ Font::DrawString( std::u32string string, int x, int y,
     }
 
     pge->SetPixelMode(prevMode);
+
+    return olc::rcode::OK;
 }
 
-void
+olc::rcode
 Font::DrawString(std::u32string string, olc::vi2d pos,
                  olc::Pixel color, float angle)
 {
-    DrawString(string, pos.x, pos.y, color, angle);
+    return DrawString(string, pos.x, pos.y, color, angle);
 }
 
 FontRect
@@ -206,15 +226,17 @@ Font::GetStringBounds(std::u32string string, float angle)
         FT_Set_Transform(toUse->fontFace, &rotMat, &pen);
         FT_Error error = FT_Load_Char(toUse->fontFace, chr,
                                       FT_LOAD_BITMAP_METRICS_ONLY);
-        if (error) {
+        if (error)
+        {
             const char *errorString = FT_Error_String(error);
-            if (errorString == nullptr) {
-                std::cerr
-                        << "An unknown error occured while loading a glyph!  Error code: "
-                        << error << "\n";
-            } else {
-                std::cerr << errorString << "\n";
+            if (errorString == nullptr)
+            {
+                errorMessage = "An unknown error occured while loading a glyph! Error code: ";
+                errorMessage += std::to_string(error);
             }
+            else
+                errorMessage = errorString;
+
             return olc::FontRect{{0, 0}, {0, 0}};
         }
 
@@ -300,15 +322,17 @@ Font::RenderStringToSprite(std::u32string string, olc::Pixel color)
         FT_Set_Transform(toUse->fontFace, nullptr, &pen);
         FT_Error error = FT_Load_Char(toUse->fontFace, chr,
                                       FT_LOAD_RENDER | FT_LOAD_COLOR);
-        if (error) {
+        if (error)
+        {
             const char *errorString = FT_Error_String(error);
-            if (errorString == nullptr) {
-                std::cerr
-                        << "An unknown error occured while rendering a glyph!  Error code: "
-                        << error << "\n";
-            } else {
-                std::cerr << errorString << "\n";
+            if (errorString == nullptr)
+            {
+                errorMessage = "An unknown error occured while rendering a glyph! Error code: ";
+                errorMessage += std::to_string(error);
             }
+            else
+                errorMessage = errorString;
+
             return nullptr;
         }
 
@@ -361,43 +385,54 @@ Font::AddFallbackFont(std::string path)
     fallbacks.emplace_back(path, fontSize);
 }
 
-bool
+std::string
+Font::GetErrorMessage() const
+{
+  return errorMessage;
+}
+
+olc::rcode
 Font::init()
 {
     FT_Error error = FT_Init_FreeType(&library);
 
-    if (error) {
+    if (error)
+    {
         const char *errorString = FT_Error_String(error);
-        if (errorString == nullptr) {
-            std::cerr
-                    << "An unknown error occured while loading the font library! "
-                       "Error code: "
-                    << error << "\n";
-        } else {
-            std::cerr << errorString << "\n";
+        if (errorString == nullptr)
+        {
+            libraryErrorMessage = "An unknown error occured while loading the font library! Error code: ";
+            libraryErrorMessage += std::to_string(error);
         }
+        else
+            libraryErrorMessage = errorString;
 
-        return false;
+        return olc::rcode::FAIL;
     }
-    return true;
+
+    return olc::rcode::OK;
 }
 
-void
+olc::rcode
 Font::deinit()
 {
     FT_Error error = FT_Done_FreeType(library);
 
-    if (error) {
+    if (error)
+    {
         const char *errorString = FT_Error_String(error);
-        if (errorString == nullptr) {
-            std::cerr
-                    << "An unknown error occured while unloading the font library! "
-                       "Error code: "
-                    << error << "\n";
-        } else {
-            std::cerr << errorString << "\n";
+        if (errorString == nullptr)
+        {
+            libraryErrorMessage = "An unknown error occured while unloading the font library! Error code: ";
+            libraryErrorMessage += std::to_string(error);
         }
+        else
+            libraryErrorMessage = errorString;
+
+        return olc::rcode::FAIL;
     }
+
+    return olc::rcode::OK;
 }
 
 void

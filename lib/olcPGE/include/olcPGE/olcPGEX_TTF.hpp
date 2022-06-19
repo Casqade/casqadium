@@ -30,7 +30,7 @@ class Font : public olc::PGEX
 public:
   Font() = default;
   ~Font();
-  Font(std::string path, int fontSize);
+  Font(const std::string& path, const int fontSize);
 
   Font(const Font& other) = delete;
   Font(Font&& other);
@@ -38,10 +38,14 @@ public:
   Font& operator=(const Font& other) = delete;
   Font& operator=(Font&& other);
 
-  void DrawString(std::u32string string, int x, int y,
-                  olc::Pixel color = olc::BLACK, float angle = 0.0f);
-  void DrawString(std::u32string string, olc::vi2d pos,
-                  olc::Pixel color = olc::BLACK, float angle = 0.0f);
+  olc::rcode LoadFromFile(const std::string& path, const int fontSize);
+
+  olc::rcode DrawString(std::u32string string, int x, int y,
+                        olc::Pixel color = olc::BLACK,
+                        float angle = 0.0f);
+  olc::rcode DrawString(std::u32string string, olc::vi2d pos,
+                        olc::Pixel color = olc::BLACK,
+                        float angle = 0.0f);
 
   FontRect GetStringBounds(std::u32string string, float angle = 0.0f);
 
@@ -55,8 +59,10 @@ public:
 
   void AddFallbackFont(std::string path);
 
-  static bool init();
-  static void deinit();
+  std::string GetErrorMessage() const;
+
+  static olc::rcode init();
+  static olc::rcode deinit();
 
 private:
   void DrawBitmap(int x, int y, FT_Bitmap bmp, olc::Pixel color);
@@ -65,11 +71,14 @@ private:
 
   FT_UInt GetCharIndex(char32_t charCode);
 
-  FT_Face fontFace;
-  std::vector<Font> fallbacks;
-  int fontSize;
+  FT_Face fontFace {};
+  std::vector<Font> fallbacks {};
+  int fontSize {};
+
+  std::string errorMessage {};
 
   static FT_Library library;
+  static std::string libraryErrorMessage;
 };
 
 } // namespace olc
