@@ -17,4 +17,23 @@ InputBinding::handleInput(
   const float amount ) const
 {}
 
+
+bool
+InputBindingComparator::operator () ( const std::shared_ptr <InputBinding>& lhs, const std::shared_ptr <InputBinding>& rhs ) const
+{
+  return lhs->inputId < rhs->inputId;
+}
+
+bool
+InputBindingComparator::operator () ( const cqde::InputHwId& lhs, const std::shared_ptr <InputBinding>& rhs ) const
+{
+  return lhs < rhs->inputId;
+}
+
+bool
+InputBindingComparator::operator () ( const std::shared_ptr <InputBinding>& lhs, const cqde::InputHwId& rhs ) const
+{
+  return lhs->inputId < rhs;
+}
+
 } // namespace cqde::types

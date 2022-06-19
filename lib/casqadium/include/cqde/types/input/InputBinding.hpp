@@ -27,20 +27,9 @@ struct InputBindingComparator
 {
   using is_transparent = void;
 
-  bool operator () ( const std::shared_ptr <InputBinding>& lhs, const std::shared_ptr <InputBinding>& rhs ) const
-  {
-    return lhs->inputId < rhs->inputId;
-  }
-
-  bool operator () ( const cqde::InputHwId& lhs, const std::shared_ptr <InputBinding>& rhs ) const
-  {
-    return lhs < rhs->inputId;
-  }
-
-  bool operator () ( const std::shared_ptr <InputBinding>& lhs, const cqde::InputHwId& rhs ) const
-  {
-    return lhs->inputId < rhs;
-  }
+  bool operator () ( const std::shared_ptr <InputBinding>& lhs, const std::shared_ptr <InputBinding>& rhs ) const;
+  bool operator () ( const cqde::InputHwId& lhs, const std::shared_ptr <InputBinding>& rhs ) const;
+  bool operator () ( const std::shared_ptr <InputBinding>& lhs, const cqde::InputHwId& rhs ) const;
 };
 
 } // namespace cqde::types
