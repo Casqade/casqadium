@@ -35,4 +35,5 @@ const identifier null_id {"null"};
 
 } // namespace cqde
 
-cqde::identifier operator ""_id ( const char* );
+cqde::identifier operator ""_id ( const char*,
+                                  const size_t );
