@@ -10,6 +10,7 @@
 
 #include <cqde/types/assets/FontAssetManager.hpp>
 #include <cqde/types/assets/TextureAssetManager.hpp>
+#include <cqde/types/assets/TextStringAssetManager.hpp>
 
 #include <entt/entity/registry.hpp>
 
@@ -71,6 +72,7 @@ engineInit( entt::registry& registry )
 
   registry.ctx().emplace <FontAssetManager> ();
   registry.ctx().emplace <TextureAssetManager> ();
+  registry.ctx().emplace <TextStringAssetManager> ();
 }
 
 

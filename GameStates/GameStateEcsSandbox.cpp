@@ -14,6 +14,7 @@
 
 #include <cqde/types/assets/FontAssetManager.hpp>
 #include <cqde/types/assets/TextureAssetManager.hpp>
+#include <cqde/types/assets/TextStringAssetManager.hpp>
 
 #include <cqde/types/input/InputBinding.hpp>
 #include <cqde/types/input/InputBindingAbsolute.hpp>
@@ -301,6 +302,7 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
 
   auto& fonts = mRegistry.ctx().at <FontAssetManager> ();
   auto& textures = mRegistry.ctx().at <TextureAssetManager> ();
+  auto& strings = mRegistry.ctx().at <TextStringAssetManager> ();
 
   auto textureNull = texturePlaceholder();
   auto textureError = textureFromText("ERROR", olc::RED, true, mPGE);
@@ -324,6 +326,18 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
     textures.parseFile("data/editor/textures.json");
     textures.load({"map_diffuse"});
     textures.load({"map_height"});
+  }
+  catch ( const std::exception& e )
+  {
+    LOG_ERROR("{}", e.what());
+    return;
+  }
+
+  try
+  {
+    strings.parseFile("data/editor/strings.json");
+    strings.load({"one_liner"});
+    strings.load({"multi_liner"});
   }
   catch ( const std::exception& e )
   {
@@ -567,4 +581,8 @@ GameStateEcsSandbox::render()
 {
   cqde::systems::CullingSystem(mRegistry);
   cqde::systems::RenderSystem(mRegistry);
+
+  auto& strings = mRegistry.ctx().at <cqde::types::TextStringAssetManager> ();
+
+  mPGE->DrawStringDecal({0.0f, 0.0f}, *strings.try_get("multi_liner"_id));
 }
