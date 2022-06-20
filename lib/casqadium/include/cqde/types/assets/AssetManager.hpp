@@ -27,7 +27,7 @@ protected:
   using AssetPath = cqde::identifier;
   using AssetHandle = std::shared_ptr <Asset>;
 
-  std::map <AssetPath, Json::Value> mAssetsProperties {};
+  std::map <AssetId, Json::Value> mAssetsProperties {};
 
   struct AssetEntry
   {
@@ -41,15 +41,18 @@ public:
   ~AssetManager();
 
   void parseFile( const std::string& path );
-  void parseJson( const Json::Value& );
+  void parseJson( const Json::Value&,
+                  const std::string& packageDir );
 
   void load( const std::set <AssetId>& );
   void unload( const AssetId& );
 
   void insert( const AssetId&, const AssetHandle );
 
-  void parseJsonEntryImpl( const Json::Value& );
-  AssetHandle loadImpl( const AssetPath& ) const;
+  void parseJsonEntryImpl( const Json::Value&,
+                           const AssetId& );
+  AssetHandle loadImpl( const AssetId&,
+                        const AssetPath& ) const;
   void unloadImpl( AssetHandle& ) const;
 
   AssetStatus status( const AssetId& ) const;

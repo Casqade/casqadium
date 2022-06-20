@@ -12,7 +12,8 @@ namespace cqde::types
 template <>
 void
 AssetManager <olc::Renderable>::parseJsonEntryImpl(
-  const Json::Value& entry )
+  const Json::Value& entry,
+  const AssetId& id )
 {
   if ( entry["filter"].empty() == true )
     throw std::runtime_error("texture filter mode value is undefined");
@@ -26,13 +27,14 @@ AssetManager <olc::Renderable>::parseJsonEntryImpl(
   if ( entry["clamp"].isBool() == false )
     throw std::runtime_error("texture clamp mode value type is not a boolean");
 
-  mAssetsProperties[entry["path"].asString()]["filter"] = entry["filter"];
-  mAssetsProperties[entry["path"].asString()]["clamp"] = entry["clamp"];
+  mAssetsProperties[id]["filter"] = entry["filter"];
+  mAssetsProperties[id]["clamp"] = entry["clamp"];
 }
 
 template <>
 AssetManager <olc::Renderable>::AssetHandle
 AssetManager <olc::Renderable>::loadImpl(
+  const AssetId& id,
   const AssetPath& path ) const
 {
   LOG_INFO("Loading texture '{}'", path.str());
@@ -71,7 +73,7 @@ AssetManager <olc::Renderable>::unloadImpl(
   AssetHandle& handle ) const
 {
   if ( handle != nullptr && handle->Decal() != nullptr )
-    LOG_TRACE("Destroying texture (id {})", handle->Decal()->id);
+    LOG_TRACE("Freeing texture (id {})", handle->Decal()->id);
 
   handle.reset();
 }
@@ -97,8 +99,8 @@ AssetManager <olc::Renderable>::try_get(
 
       const AssetPath path = mAssets.at(id).path;
 
-      const bool filter = mAssetsProperties.at(path)["filter"].asBool();
-      const bool clamp = mAssetsProperties.at(path)["clamp"].asBool();
+      const bool filter = mAssetsProperties.at(id)["filter"].asBool();
+      const bool clamp = mAssetsProperties.at(id)["clamp"].asBool();
 
       LOG_TRACE("Binding texture '{}' (filtered: {}, clamped: {})",
                 id.str(), filter, clamp);

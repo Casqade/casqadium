@@ -21,8 +21,11 @@ AssetManager <Asset>::~AssetManager()
 template <typename Asset>
 void
 AssetManager <Asset>::parseJson(
-  const Json::Value& assetList )
+  const Json::Value& assetList,
+  const std::string& packageDir )
 {
+  LOG_ASSERT_DEBUG(packageDir.empty() != true, return);
+
   std::lock_guard guard(mAssetsMutex);
 
   for ( const auto& id : assetList.getMemberNames() )
@@ -51,7 +54,7 @@ AssetManager <Asset>::parseJson(
            || assetPath.asString().empty() == true )
         throw std::runtime_error("file path is undefined");
 
-      parseJsonEntryImpl(assetList[id]);
+      parseJsonEntryImpl(assetList[id], id);
     }
     catch ( const std::exception& e )
     {
@@ -65,7 +68,7 @@ AssetManager <Asset>::parseJson(
       continue;
     }
 
-    mAssets[id].path = assetList[id]["path"].asString();
+    mAssets[id].path = (std::filesystem::path(packageDir) / assetList[id]["path"].asString()).u8string();
     mAssets[id].handle = {};
     mAssets[id].status = AssetStatus::Unloaded;
   }
@@ -121,7 +124,9 @@ AssetManager <Asset>::parseFile(
   }
   assetDbFile.close();
 
-  parseJson(assetDb);
+  parseJson(assetDb, std::filesystem::path(path).remove_filename());
+
+  LOG_DEBUG("Parsed asset DB '{}'", path);
 }
 
 template <typename Asset>
@@ -167,7 +172,7 @@ AssetManager <Asset>::load(
 
       try
       {
-        AssetHandle resource = loadImpl(assetPath);
+        AssetHandle resource = loadImpl(id, assetPath);
 
         std::lock_guard guard(mAssetsMutex);
 

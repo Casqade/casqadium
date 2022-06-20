@@ -331,10 +331,10 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
     return;
   }
 
-  while (fonts.status("font_test") != AssetStatus::Loaded)
+  while (fonts.status("munro") != AssetStatus::Loaded)
     ;
 
-  auto textTexture = std::make_shared <olc::Renderable> (fonts.get("font_test")->RenderStringToRenderable(U"T", olc::WHITE));
+  auto textTexture = std::make_shared <olc::Renderable> (fonts.get("munro")->RenderStringToRenderable(U"T", olc::WHITE));
   textures.insert("text_texture", textTexture);
 
   auto eQuad = mRegistry.create();

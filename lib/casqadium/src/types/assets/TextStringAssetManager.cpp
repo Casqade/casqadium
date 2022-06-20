@@ -13,7 +13,8 @@ namespace cqde::types
 template <>
 void
 AssetManager <std::string>::parseJson(
-  const Json::Value& stringList )
+  const Json::Value& stringList,
+  const std::string& packageDir )
 {
   std::lock_guard guard(mAssetsMutex);
 
@@ -118,6 +119,8 @@ AssetManager <std::string>::parseFile(
     mAssets[id].handle = {};
     mAssets[id].status = AssetStatus::Unloaded;
   }
+
+  LOG_DEBUG("Parsed text string DB '{}'", path);
 }
 
 template <>

@@ -14,7 +14,8 @@ namespace cqde::types
 template <>
 void
 AssetManager <olc::Font>::parseJsonEntryImpl(
-  const Json::Value& entry )
+  const Json::Value& entry,
+  const AssetId& id )
 {
   if ( entry["size"].empty() == true )
     throw std::runtime_error("font size value is undefined");
@@ -22,15 +23,16 @@ AssetManager <olc::Font>::parseJsonEntryImpl(
   if ( entry["size"].isUInt() == false )
     throw std::runtime_error("font size value type is not an unsigned int");
 
-  mAssetsProperties[entry["path"].asString()]["size"] = entry["size"];
+  mAssetsProperties[id.str()]["size"] = entry["size"];
 }
 
 template <>
 AssetManager <olc::Font>::AssetHandle
 AssetManager <olc::Font>::loadImpl(
+  const AssetId& id,
   const AssetPath& path ) const
 {
-  const FT_UInt fontSize = mAssetsProperties.at(path)["size"].asUInt();
+  const FT_UInt fontSize = mAssetsProperties.at(id)["size"].asUInt();
 
   LOG_INFO("Loading font '{}' (size {})",
            path.str(), fontSize);
@@ -54,7 +56,7 @@ void
 AssetManager <olc::Font>::unloadImpl(
   AssetHandle& handle ) const
 {
-  LOG_TRACE("Destroying font");
+  LOG_TRACE("Freeing font");
   handle.reset();
 }
 
