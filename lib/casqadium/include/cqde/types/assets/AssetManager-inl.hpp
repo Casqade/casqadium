@@ -79,6 +79,7 @@ void
 AssetManager <Asset>::parseFile(
   const std::string& path )
 {
+// TODO: centralize somewhere
   Json::CharReaderBuilder jsonReader {};
 
   jsonReader["collectComments"] = true;
@@ -93,7 +94,7 @@ AssetManager <Asset>::parseFile(
   jsonReader["rejectDupKeys"] = true;
   jsonReader["allowSpecialFloats"] = true;
   jsonReader["skipBom"] = true;
-
+//
 
   LOG_DEBUG("Opening asset DB '{}'", path);
 

@@ -128,6 +128,7 @@ void
 AssetManager <std::string>::load(
   const std::set <AssetId>& ids )
 {
+// TODO: centralize somewhere
   Json::CharReaderBuilder jsonReader {};
 
   jsonReader["collectComments"] = true;
@@ -142,7 +143,7 @@ AssetManager <std::string>::load(
   jsonReader["rejectDupKeys"] = true;
   jsonReader["allowSpecialFloats"] = true;
   jsonReader["skipBom"] = true;
-
+//
 
   mJobs.push(
   [this, ids, jsonReader] ( const int32_t threadId )
