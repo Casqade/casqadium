@@ -279,7 +279,7 @@ void
 AssetManager <std::string>::unloadImpl(
   AssetHandle& handle ) const
 {
-  LOG_INFO("Destroying text string");
+  LOG_TRACE("Freeing text string");
   handle.reset();
 }
 
