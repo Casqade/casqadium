@@ -9,14 +9,14 @@
 namespace cqde::types
 {
 
-struct EntityTagStorage
+struct EntityTagManager
 {
   std::map <EntityId, entt::entity> tags;
 
-  EntityTagStorage();
+  EntityTagManager();
 
   entt::entity get( const EntityId& ) const;
-  EntityId generate( EntityId hint = {"entity_"} ) const;
+  EntityId generate( EntityId hint = {"e_"} ) const;
 };
 
 } // namespace cqde::types

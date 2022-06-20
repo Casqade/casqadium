@@ -32,8 +32,8 @@ target_sources(${TARGET} PRIVATE
   src/types/EntityReference.cpp
   include/${CASQADIUM_SHORT}/types/EntityReference.hpp
 
-  src/types/EntityTagStorage.cpp
-  include/${CASQADIUM_SHORT}/types/EntityTagStorage.hpp
+  src/types/EntityTagManager.cpp
+  include/${CASQADIUM_SHORT}/types/EntityTagManager.hpp
 
   src/types/input/ControlAxis.cpp
   include/${CASQADIUM_SHORT}/types/input/ControlAxis.hpp

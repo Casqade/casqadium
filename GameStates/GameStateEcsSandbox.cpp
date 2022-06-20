@@ -10,7 +10,7 @@
 #include <cqde/common.hpp>
 
 #include <cqde/types/InputCallbackStorage.hpp>
-#include <cqde/types/EntityTagStorage.hpp>
+#include <cqde/types/EntityTagManager.hpp>
 
 #include <cqde/types/assets/FontAssetManager.hpp>
 #include <cqde/types/assets/TextureAssetManager.hpp>

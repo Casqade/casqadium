@@ -5,7 +5,7 @@
 #include <cqde/components/Transform.hpp>
 
 #include <cqde/types/input/InputBinding.hpp>
-#include <cqde/types/EntityTagStorage.hpp>
+#include <cqde/types/EntityTagManager.hpp>
 #include <cqde/types/InputCallbackStorage.hpp>
 
 #include <cqde/types/assets/FontAssetManager.hpp>
@@ -63,7 +63,7 @@ engineInit( entt::registry& registry )
   Tag::Register();
   Transform::Register();
 
-  registry.ctx().emplace <EntityTagStorage> ();
+  registry.ctx().emplace <EntityTagManager> ();
   registry.ctx().emplace <InputCallbackStorage> ();
 
   initHwControls( registry.ctx().emplace <HwControlMap> () );

@@ -1,4 +1,4 @@
-#include <cqde/types/EntityTagStorage.hpp>
+#include <cqde/types/EntityTagManager.hpp>
 
 #include <entt/entity/entity.hpp>
 
@@ -8,12 +8,12 @@
 namespace cqde::types
 {
 
-EntityTagStorage::EntityTagStorage()
+EntityTagManager::EntityTagManager()
   : tags({{cqde::null_id, entt::null}})
 {}
 
 entt::entity
-EntityTagStorage::get( const EntityId& id ) const
+EntityTagManager::get( const EntityId& id ) const
 {
   try
   {
@@ -26,7 +26,7 @@ EntityTagStorage::get( const EntityId& id ) const
 }
 
 EntityId
-EntityTagStorage::generate( EntityId hint ) const
+EntityTagManager::generate( EntityId hint ) const
 {
   size_t idInc {};
 
