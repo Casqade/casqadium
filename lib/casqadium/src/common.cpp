@@ -16,6 +16,8 @@
 
 #include <olcPGE/olcMouseInputId.hpp>
 
+#include <thirdparty/ctpl/ctpl_stl.h>
+
 
 namespace cqde
 {
@@ -70,9 +72,11 @@ engineInit( entt::registry& registry )
   initHwControls( registry.ctx().emplace <HwControlMap> () );
   registry.ctx().emplace <InputBindings> ();
 
-  registry.ctx().emplace <FontAssetManager> ();
-  registry.ctx().emplace <TextureAssetManager> ();
-  registry.ctx().emplace <TextStringAssetManager> ();
+  auto& tp = registry.ctx().emplace <ctpl::thread_pool> (std::thread::hardware_concurrency() | 1);
+
+  registry.ctx().emplace <FontAssetManager> (tp);
+  registry.ctx().emplace <TextureAssetManager> (tp);
+  registry.ctx().emplace <TextStringAssetManager> (tp);
 }
 
 

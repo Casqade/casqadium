@@ -4,8 +4,13 @@
 
 #include <json/value.h>
 
-#include <thirdparty/ctpl/ctpl_stl.h>
+#include <mutex>
 
+
+namespace ctpl
+{
+class thread_pool;
+}
 
 namespace cqde::types
 {
@@ -22,12 +27,9 @@ enum class AssetStatus
 template <typename Asset>
 class AssetManager
 {
-protected:
   using AssetId = cqde::identifier;
   using AssetPath = cqde::identifier;
   using AssetHandle = std::shared_ptr <Asset>;
-
-  std::map <AssetId, Json::Value> mAssetsProperties {};
 
   struct AssetEntry
   {
@@ -36,8 +38,16 @@ protected:
     AssetStatus status {};
   };
 
+
+  ctpl::thread_pool& mThreadPool;
+
+  std::map <AssetId, AssetEntry> mAssets {};
+  std::map <AssetId, Json::Value> mAssetsProperties {};
+
+  mutable std::recursive_mutex mAssetsMutex {};
+
 public:
-  AssetManager() = default;
+  AssetManager( ctpl::thread_pool& );
   ~AssetManager();
 
   void parseFile( const std::string& path );
@@ -59,14 +69,6 @@ public:
 
   AssetHandle try_get( const AssetId& ) const;
   AssetHandle get( const AssetId& );
-
-  size_t activeThreadCount();
-
-private:
-  std::map <AssetId, AssetEntry> mAssets {};
-
-  ctpl::thread_pool mJobs {4};
-  mutable std::recursive_mutex mAssetsMutex {};
 };
 
 } // namespace cqde::types

@@ -7,9 +7,17 @@
 #include <json/value.h>
 #include <json/reader.h>
 
+#include <thirdparty/ctpl/ctpl_stl.h>
+
 
 namespace cqde::types
 {
+
+template <typename Asset>
+AssetManager <Asset>::AssetManager(
+  ctpl::thread_pool& tp )
+  : mThreadPool(tp)
+{}
 
 template <typename Asset>
 AssetManager <Asset>::~AssetManager()
@@ -135,7 +143,7 @@ void
 AssetManager <Asset>::load(
   const std::set <AssetId>& ids )
 {
-  mJobs.push(
+  mThreadPool.push(
   [this, ids] ( const int32_t threadId )
   {
     for ( const auto& id : ids )
@@ -286,13 +294,6 @@ AssetManager <Asset>::get(
     load({id});
 
   return try_get(id);
-}
-
-template <typename Asset>
-size_t
-AssetManager <Asset>::activeThreadCount()
-{
-  return mJobs.size() - mJobs.n_idle();
 }
 
 } // namespace cqde::types

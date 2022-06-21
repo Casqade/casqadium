@@ -145,7 +145,7 @@ AssetManager <std::string>::load(
   jsonReader["skipBom"] = true;
 //
 
-  mJobs.push(
+  mThreadPool.push(
   [this, ids, jsonReader] ( const int32_t threadId )
   {
     std::multimap <AssetPath, AssetId> stringPaths {};
