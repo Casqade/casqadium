@@ -14,20 +14,6 @@ void loggerInit( const std::string& pattern,
                  const spdlog::level::level_enum flushLevel,
                  const std::vector <std::shared_ptr <spdlog::sinks::sink>>& );
 
-template<typename... Args>
-std::string
-format(
-  fmt::string_view message,
-  Args&&... args )
-{
-  fmt::memory_buffer buf {};
-  fmt::detail::vformat_to ( buf,
-                            message,
-                            fmt::make_format_args(args...) );
-
-  return std::string(buf.data(), buf.size());
-}
-
 } // namespace cqde
 
 #define LOG_TRACE(...) ::spdlog::log( \

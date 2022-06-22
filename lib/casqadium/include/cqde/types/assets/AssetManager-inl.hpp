@@ -3,6 +3,7 @@
 #include <cqde/types/assets/AssetManager.hpp>
 
 #include <cqde/util/logger.hpp>
+#include <cqde/common.hpp>
 
 #include <json/value.h>
 #include <json/reader.h>
