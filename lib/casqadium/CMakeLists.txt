@@ -133,6 +133,13 @@ set(SPDLOG_DISABLE_DEFAULT_LOGGER ON CACHE BOOL "" FORCE)
 
 include(FetchContent)
 
+#   TimeUtils
+FetchContent_Declare(TimeUtils
+  GIT_REPOSITORY git@gitlab.com:Casqade/timeutils.git
+  GIT_TAG        main
+  GIT_SHALLOW    TRUE
+)
+FetchContent_MakeAvailable(TimeUtils)
 
 #   EnTT
 FetchContent_Declare(EnTT
@@ -182,6 +189,7 @@ endif()
 
 
 target_link_libraries(${TARGET} PUBLIC
+  TimeUtils::TimeUtils
   EnTT::EnTT
   olcPGE::olcPGE
   spdlog::spdlog

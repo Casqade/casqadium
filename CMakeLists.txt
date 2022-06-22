@@ -60,7 +60,6 @@ target_link_libraries(${TARGET} PRIVATE Threads::Threads)
 add_subdirectory(lib)
 
 target_link_libraries(${TARGET} PRIVATE
-  TimeUtils::TimeUtils
   olcPGE::olcPGE
   casqadium::casqadium
 )
