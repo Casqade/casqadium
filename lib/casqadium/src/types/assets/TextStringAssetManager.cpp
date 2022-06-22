@@ -84,34 +84,19 @@ AssetManager <std::string>::parseAssetDb(
   jsonReader["skipBom"] = true;
 
 
-  LOG_DEBUG("Opening text string DB '{}'", path.string());
+  LOG_DEBUG("Parsing text string DB '{}'", path.string());
 
   Json::Value stringDb {};
 
-  std::ifstream stringDbFile( path, std::ios::in );
-
   try
   {
-    if ( stringDbFile.is_open() == false )
-      throw std::runtime_error("Can't open DB file");
-
-    LOG_DEBUG("Parsing text string DB '{}'", path.string());
-
-    Json::String parseErrors {};
-
-    if ( Json::parseFromStream( jsonReader, stringDbFile,
-                                &stringDb, &parseErrors ) == false )
-      throw std::runtime_error(parseErrors);
+    auto stream = fileOpen(path, std::ios::in);
+    stringDb = jsonParse(stream);
   }
   catch ( const std::exception& e )
   {
-    if ( stringDbFile.is_open() == true )
-      stringDbFile.close();
-
-    throw std::runtime_error(cqde::format("Failed to parse text string DB '{}': {}",
-                                          path.string(), e.what()));
+    throw std::runtime_error(cqde::format("Failed to parse text string DB ({})", e.what()));
   }
-  stringDbFile.close();
 
   for ( const auto& id : stringDb.getMemberNames() )
   {
@@ -192,59 +177,56 @@ AssetManager <std::string>::load(
         pathPrev = path;
         stringDb.clear();
 
-        LOG_DEBUG("Opening text string DB '{}'", path.str());
-
-        std::ifstream stringDbFile( path.str(), std::ios::in );
-        if ( stringDbFile.is_open() == false )
-        {
-          LOG_ERROR("Failed to load text string '{}': can't open text string DB '{}'",
-                    id.str(), path.str());
-          continue;
-        }
-
         LOG_DEBUG("Parsing text string DB '{}'", path.str());
 
-        Json::String parseErrors {};
-
-        if ( Json::parseFromStream( jsonReader, stringDbFile,
-                                    &stringDb, &parseErrors ) == false )
+        try
         {
-          stringDbFile.close();
-          LOG_ERROR("Failed to load text string '{}', text string DB '{}' contains errors: {}",
-                    id.str(), path.str(), parseErrors);
+          auto string = fileOpen(path.str(), std::ios::in);
+          stringDb = jsonParse(string);
+        }
+        catch ( const std::exception& e )
+        {
+          LOG_ERROR("Failed to load text string '{}' ({})",
+                    id.str(), e.what());
           continue;
         }
-        stringDbFile.close();
+
+        LOG_DEBUG("Parsed text string DB '{}'", path.str());
       }
 
       std::shared_ptr <std::string> handle {};
 
       const Json::Value stringEntry = stringDb[id.str()];
 
-      if ( stringEntry.isString() == true )
-        handle = std::make_shared <std::string> (stringEntry.asString());
-
-      else if ( stringEntry.isArray() == true )
+      try
       {
-        handle = std::make_shared <std::string> ();
+        if ( stringEntry.isString() == true )
+          handle = std::make_shared <std::string> (stringEntry.asString());
 
-        for ( const auto& line : stringEntry )
+        else if ( stringEntry.isArray() == true )
         {
-          if ( line.isString() == true )
-            handle->append(line.asString() + "\n");
-          else
+          handle = std::make_shared <std::string> ();
+
+          for ( const auto& line : stringEntry )
           {
-            std::string badJsonEntry = line.toStyledString();
-            if ( badJsonEntry.size() > 0 )
-              badJsonEntry.pop_back(); // get rid of trailing \n
+            if ( line.isString() == true )
+              handle->append(line.asString() + "\n");
+            else
+            {
+              std::string badJsonEntry = line.toStyledString();
+              if ( badJsonEntry.size() > 0 )
+                badJsonEntry.pop_back(); // get rid of trailing \n
 
-            LOG_ERROR("Failed to parse JSON entry for text string '{}': '{}' is not a valid JSON string",
-                      id.str(), badJsonEntry);
-
-            handle.reset();
-            break;
+              handle.reset();
+              throw std::runtime_error(cqde::format("JSON entry '{}' is not a valid JSON string", badJsonEntry));
+            }
           }
         }
+      }
+      catch ( const std::exception& e )
+      {
+        LOG_ERROR("Failed to load text string '{}': {}",
+                  id.str(), e.what());
       }
 
       std::lock_guard guard(mAssetsMutex);
@@ -259,17 +241,12 @@ AssetManager <std::string>::load(
         assetEntry.status = AssetStatus::Loaded;
         assetEntry.handle = std::move(handle);
 
-        LOG_DEBUG("Loaded text string '{}' from '{}'",
-                  id.str(), path.str());
-
+        LOG_DEBUG("Loaded text string '{}'", id.str());
         continue;
       }
 
       assetEntry.status = AssetStatus::Error;
       assetEntry.handle = nullptr;
-
-      LOG_ERROR("Failed to load text string '{}' from '{}'",
-                id.str(), path.str());
     }
   });
 }
