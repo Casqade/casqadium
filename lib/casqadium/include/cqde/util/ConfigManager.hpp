@@ -15,7 +15,8 @@ class ConfigManager
 {
   using level = spdlog::level::level_enum;
 
-  std::string mLogPattern {"[%Y-%m-%d %T.%e] [%^%l%$] [%s:%#] %v"};
+//  [%Y-%m-%d %T.%e] [%^%l%$] [%s:%#] [thread %t] %v
+  std::string mLogPattern {"[%T.%e] [%^%l%$] [%s:%#] [thread %t] %v"};
 
   level mLogLevelCmd {level::err};
   level mLogLevelFile {level::info};
