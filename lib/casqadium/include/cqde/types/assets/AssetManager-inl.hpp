@@ -29,26 +29,27 @@ AssetManager <Asset>::~AssetManager()
 
 template <typename Asset>
 void
-AssetManager <Asset>::parseJson(
-  const Json::Value& assetList,
-  const std::string& packageDir )
+AssetManager <Asset>::parseAssetDb(
+  const Json::Value& assetDb,
+  const std::filesystem::path& dbRootDir )
 {
-  LOG_ASSERT_DEBUG(packageDir.empty() != true, return);
+  LOG_ASSERT_DEBUG(dbRootDir.empty() != true, return);
+  LOG_ASSERT_DEBUG(std::filesystem::is_directory(dbRootDir) == true, return);
 
   std::lock_guard guard(mAssetsMutex);
 
-  for ( const auto& id : assetList.getMemberNames() )
+  for ( const auto& id : assetDb.getMemberNames() )
   {
     LOG_ASSERT_DEBUG(id.empty() != true, continue);
 
     try
     {
-      if ( assetList[id].empty() == true )
+      if ( assetDb[id].empty() == true )
         throw std::runtime_error("JSON value is empty");
 
-      if ( assetList[id].isObject() == false )
+      if ( assetDb[id].isObject() == false )
       {
-        std::string entryString = assetList[id].toStyledString();
+        std::string entryString = assetDb[id].toStyledString();
         if ( entryString.size() > 0 )
           entryString.pop_back(); // get rid of trailing \n
 
@@ -56,14 +57,14 @@ AssetManager <Asset>::parseJson(
                                               entryString));
       }
 
-      const Json::Value assetPath = assetList[id]["path"];
+      const Json::Value assetPath = assetDb[id]["path"];
 
       if (    assetPath.isNull() == true
            || assetPath.isString() == false
            || assetPath.asString().empty() == true )
         throw std::runtime_error("file path is undefined");
 
-      parseJsonEntryImpl(assetList[id], id);
+      parseJsonEntryImpl(assetDb[id], id);
     }
     catch ( const std::exception& e )
     {
@@ -77,7 +78,7 @@ AssetManager <Asset>::parseJson(
       continue;
     }
 
-    mAssets[id].path = (std::filesystem::path(packageDir) / assetList[id]["path"].asString()).u8string();
+    mAssets[id].path = (std::filesystem::path(dbRootDir) / assetDb[id]["path"].asString()).u8string();
     mAssets[id].handle = {};
     mAssets[id].status = AssetStatus::Unloaded;
   }
@@ -85,58 +86,27 @@ AssetManager <Asset>::parseJson(
 
 template <typename Asset>
 void
-AssetManager <Asset>::parseFile(
-  const std::string& path )
+AssetManager <Asset>::parseAssetDb(
+  const std::filesystem::path& path )
 {
-// TODO: centralize somewhere
-  Json::CharReaderBuilder jsonReader {};
-
-  jsonReader["collectComments"] = true;
-  jsonReader["allowComments"] = true;
-  jsonReader["allowTrailingCommas"] = true;
-  jsonReader["strictRoot"] = false;
-  jsonReader["allowDroppedNullPlaceholders"] = false;
-  jsonReader["allowNumericKeys"] = false;
-  jsonReader["allowSingleQuotes"] = false;
-  jsonReader["stackLimit"] = 1000;
-  jsonReader["failIfExtra"] = false;
-  jsonReader["rejectDupKeys"] = true;
-  jsonReader["allowSpecialFloats"] = true;
-  jsonReader["skipBom"] = true;
-//
-
-  LOG_DEBUG("Opening asset DB '{}'", path);
-
   Json::Value assetDb {};
-
-  std::ifstream assetDbFile( path, std::ios::in );
 
   try
   {
-    if ( assetDbFile.is_open() == false )
-      throw std::runtime_error("Can't open DB file");
+    LOG_DEBUG("Parsing asset DB '{}'", path.string());
 
-    LOG_DEBUG("Parsing asset DB '{}'", path);
-
-    Json::String parseErrors {};
-
-    if ( Json::parseFromStream( jsonReader, assetDbFile,
-                                &assetDb, &parseErrors ) == false )
-      throw std::runtime_error(parseErrors);
+    auto string = fileOpen(path, std::ios::in);
+    assetDb = jsonParse(string);
   }
   catch ( const std::exception& e )
   {
-    if ( assetDbFile.is_open() == true )
-      assetDbFile.close();
-
-    throw std::runtime_error(cqde::format("Failed to parse asset DB '{}': {}",
-                                          path, e.what()));
+    throw std::runtime_error(cqde::format("Failed to parse asset DB: {}",
+                                          path.string(), e.what()));
   }
-  assetDbFile.close();
 
-  parseJson(assetDb, std::filesystem::path(path).remove_filename());
+  parseAssetDb(assetDb, std::filesystem::path(path).remove_filename());
 
-  LOG_DEBUG("Parsed asset DB '{}'", path);
+  LOG_DEBUG("Parsed asset DB '{}'", path.string());
 }
 
 template <typename Asset>

@@ -12,27 +12,27 @@ namespace cqde::types
 
 template <>
 void
-AssetManager <std::string>::parseJson(
-  const Json::Value& stringList,
-  const std::string& packageDir )
+AssetManager <std::string>::parseAssetDb(
+  const Json::Value& stringDb,
+  const std::filesystem::path& dbRootDir )
 {
   std::lock_guard guard(mAssetsMutex);
 
-  for ( const auto& id : stringList.getMemberNames() )
+  for ( const auto& id : stringDb.getMemberNames() )
   {
     LOG_ASSERT_DEBUG(id.empty() != true, continue);
 
     try
     {
-      if ( stringList[id].isString() == true )
+      if ( stringDb[id].isString() == true )
       {
         mAssets[id].status = AssetStatus::Unloaded;
         continue;
       }
 
-      if ( stringList[id].isArray() == true )
+      if ( stringDb[id].isArray() == true )
       {
-        for ( const auto& line : stringList[id] )
+        for ( const auto& line : stringDb[id] )
         {
           if ( line.isString() == true )
             continue;
@@ -65,8 +65,8 @@ AssetManager <std::string>::parseJson(
 
 template <>
 void
-AssetManager <std::string>::parseFile(
-  const std::string& path )
+AssetManager <std::string>::parseAssetDb(
+  const std::filesystem::path& path )
 {
   Json::CharReaderBuilder jsonReader {};
 
@@ -84,7 +84,7 @@ AssetManager <std::string>::parseFile(
   jsonReader["skipBom"] = true;
 
 
-  LOG_DEBUG("Opening text string DB '{}'", path);
+  LOG_DEBUG("Opening text string DB '{}'", path.string());
 
   Json::Value stringDb {};
 
@@ -95,7 +95,7 @@ AssetManager <std::string>::parseFile(
     if ( stringDbFile.is_open() == false )
       throw std::runtime_error("Can't open DB file");
 
-    LOG_DEBUG("Parsing text string DB '{}'", path);
+    LOG_DEBUG("Parsing text string DB '{}'", path.string());
 
     Json::String parseErrors {};
 
@@ -109,18 +109,18 @@ AssetManager <std::string>::parseFile(
       stringDbFile.close();
 
     throw std::runtime_error(cqde::format("Failed to parse text string DB '{}': {}",
-                                          path, e.what()));
+                                          path.string(), e.what()));
   }
   stringDbFile.close();
 
   for ( const auto& id : stringDb.getMemberNames() )
   {
-    mAssets[id].path = path;
+    mAssets[id].path = path.string();
     mAssets[id].handle = {};
     mAssets[id].status = AssetStatus::Unloaded;
   }
 
-  LOG_DEBUG("Parsed text string DB '{}'", path);
+  LOG_DEBUG("Parsed text string DB '{}'", path.string());
 }
 
 template <>

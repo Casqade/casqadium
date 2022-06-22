@@ -313,7 +313,7 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
 
   try
   {
-    fonts.parseFile("data/editor/fonts.json");
+    fonts.parseAssetDb("data/editor/fonts.json");
     fonts.load({"munro"});
   }
   catch ( const std::exception& e )
@@ -324,7 +324,7 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
 
   try
   {
-    textures.parseFile("data/editor/textures.json");
+    textures.parseAssetDb("data/editor/textures.json");
     textures.load({"map_diffuse"});
     textures.load({"map_height"});
   }
@@ -336,7 +336,7 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
 
   try
   {
-    strings.parseFile("data/editor/strings.json");
+    strings.parseAssetDb("data/editor/strings.json");
     strings.load({"one_liner"});
     strings.load({"multi_liner"});
   }

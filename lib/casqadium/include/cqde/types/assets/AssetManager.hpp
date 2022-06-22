@@ -50,9 +50,9 @@ public:
   AssetManager( ctpl::thread_pool& );
   ~AssetManager();
 
-  void parseFile( const std::string& path );
-  void parseJson( const Json::Value&,
-                  const std::string& packageDir );
+  void parseAssetDb(const std::filesystem::path& path );
+  void parseAssetDb(const Json::Value& db,
+                    const std::filesystem::path& dbRootDir );
 
   void load( const std::set <AssetId>& );
   void unload( const AssetId& );
