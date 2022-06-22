@@ -827,9 +827,9 @@ public:
 class PGEX;
 
 // The Static Twins (plus one)
-extern std::unique_ptr<Renderer> renderer;
-extern std::unique_ptr<Platform> platform;
-extern std::map<size_t, uint8_t> mapKeys;
+extern std::unique_ptr<Renderer> OLCPGE_EXPORT renderer;
+extern std::unique_ptr<Platform> OLCPGE_EXPORT platform;
+extern std::map<size_t, uint8_t> OLCPGE_EXPORT mapKeys;
 
 // O------------------------------------------------------------------------------O
 // | olc::PixelGameEngine - The main BASE class for your application              |
