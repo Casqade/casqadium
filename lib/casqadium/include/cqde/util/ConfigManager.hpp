@@ -5,6 +5,7 @@
 #include <spdlog/common.h>
 
 #include <string>
+#include <filesystem>
 
 
 namespace cqde
@@ -30,15 +31,12 @@ class ConfigManager
 
 public:
   ConfigManager() = default;
-  ConfigManager( const std::string& filename );
+  ConfigManager( const std::filesystem::path& );
 
-  static Json::CharReaderBuilder configReader();
-  static Json::StreamWriterBuilder configWriter();
-
-  virtual void write( const std::string& filename );
+  virtual void write( const std::filesystem::path& );
   virtual void setConfig( const Json::Value& config );
 
-  virtual Json::Value read( const std::string& filename ) const;
+  virtual Json::Value read( const std::filesystem::path& ) const;
 
 
   virtual Json::Value config() const;

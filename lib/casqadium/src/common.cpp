@@ -16,11 +16,66 @@
 
 #include <olcPGE/olcMouseInputId.hpp>
 
+#include <json/value.h>
+#include <json/reader.h>
+#include <json/writer.h>
+
 #include <thirdparty/ctpl/ctpl_stl.h>
 
 
 namespace cqde
 {
+
+Json::CharReaderBuilder
+jsonReader()
+{
+  static Json::CharReaderBuilder reader =
+  []
+  {
+    Json::CharReaderBuilder reader {};
+
+    reader["collectComments"] = true;
+    reader["allowComments"] = true;
+    reader["allowTrailingCommas"] = true;
+    reader["strictRoot"] = true;
+    reader["allowDroppedNullPlaceholders"] = false;
+    reader["allowNumericKeys"] = false;
+    reader["allowSingleQuotes"] = false;
+    reader["stackLimit"] = 1000;
+    reader["failIfExtra"] = false;
+    reader["rejectDupKeys"] = true;
+    reader["allowSpecialFloats"] = true;
+    reader["skipBom"] = true;
+
+    return reader;
+  }();
+
+  return reader;
+}
+
+Json::StreamWriterBuilder
+jsonWriter()
+{
+  static Json::StreamWriterBuilder writer =
+  []
+  {
+    Json::StreamWriterBuilder writer {};
+
+    writer["indentation"] = "  ";
+    writer["commentStyle"] = "All";
+    writer["precisionType"] = "  ";
+    writer["enableYAMLCompatibility"] = false;
+    writer["dropNullPlaceholders"] = false;
+    writer["useSpecialFloats"] = true;
+    writer["emitUTF8"] = true;
+    writer["precision"] = 17;
+    writer["precisionType"] = "significant";
+
+    return writer;
+  }();
+
+  return writer;
+}
 
 static std::string
 openmodeToString( const std::ios::openmode flags )
@@ -53,7 +108,7 @@ openmodeToString( const std::ios::openmode flags )
 
 std::fstream
 fileOpen(
-  const std::string& path,
+  const std::filesystem::path& path,
   const std::ios::openmode flags )
 {
   std::filesystem::file_status fileStatus {};
@@ -69,17 +124,17 @@ fileOpen(
   catch ( const std::filesystem::filesystem_error& e )
   {
     throw std::runtime_error(cqde::format("Failed to open '{}': {}",
-                                          path, e.code().message()));
+                                          path.string(), e.code().message()));
   }
 
   if ( (flags & std::ios::in) == std::ios::in &&
        fileStatus.type() == std::filesystem::file_type::not_found )
     throw std::runtime_error(cqde::format("Failed to open '{}': {}",
-                                          path, std::strerror(ENOENT)));
+                                          path.string(), std::strerror(ENOENT)));
 
   if ( fileStatus.type() != std::filesystem::file_type::not_found &&
        fileStatus.type() != std::filesystem::file_type::regular )
-    throw std::runtime_error(cqde::format("Failed to open '{}': Is not a regular file", path));
+    throw std::runtime_error(cqde::format("Failed to open '{}': Is not a regular file", path.string()));
 
   std::fstream file {};
   file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
@@ -91,11 +146,41 @@ fileOpen(
   catch ( const std::system_error& e )
   {
     throw std::runtime_error(cqde::format("Failed to open '{}' (mode={}): ",
-                                          path, openmodeToString(flags),
+                                          path.string(), openmodeToString(flags),
                                           std::strerror(errno)));
   }
 
   return std::move(file);
+}
+
+Json::Value
+jsonParse( std::istream& stream )
+{
+  Json::Value result {};
+  Json::String parseErrors {};
+
+  if ( Json::parseFromStream( jsonReader(), stream,
+                              &result, &parseErrors ) == false )
+  {
+    throw std::runtime_error(parseErrors);
+  }
+
+  return result;
+}
+
+Json::Value
+fileParse( const std::filesystem::path& path )
+{
+  try
+  {
+    std::fstream file = fileOpen( path, std::ios::in );
+    return jsonParse(file);
+  }
+  catch ( const std::exception& e )
+  {
+    throw std::runtime_error(cqde::format("Failed to parse JSON '{}': {}",
+                                          path.string(), e.what()));
+  }
 }
 
 void

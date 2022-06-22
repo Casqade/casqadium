@@ -1,15 +1,23 @@
 #pragma once
 
 #include <entt/fwd.hpp>
-#include <entt/core/hashed_string.hpp>
 
+#include <json/forwards.h>
 #include <fmt/format.h>
+
+#include <filesystem>
 
 
 namespace cqde
 {
 
-std::fstream fileOpen( const std::string&, const std::ios::openmode flags );
+Json::CharReaderBuilder   jsonReader();
+Json::StreamWriterBuilder jsonWriter();
+
+std::fstream fileOpen( const std::filesystem::path&, const std::ios::openmode flags );
+
+Json::Value jsonParse( std::istream& stream );
+Json::Value fileParse( const std::filesystem::path& path );
 
 void engineInit( entt::registry& registry );
 

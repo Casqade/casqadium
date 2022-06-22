@@ -1,4 +1,5 @@
 #include <cqde/util/ConfigManager.hpp>
+#include <cqde/common.hpp>
 
 #include <json/value.h>
 #include <json/reader.h>
@@ -12,11 +13,11 @@ namespace cqde
 {
 
 ConfigManager::ConfigManager(
-  const std::string& filename )
+  const std::filesystem::path& path )
   : ConfigManager()
 {
-  setConfig( read(filename) );
-  write(filename);
+  setConfig(read(path));
+  write(path);
 }
 
 Json::Value
@@ -59,92 +60,80 @@ ConfigManager::setConfig( const Json::Value& config )
 }
 
 Json::Value
-ConfigManager::read( const std::string& filename ) const
+ConfigManager::read( const std::filesystem::path& path ) const
 {
-  Json::Value config {};
+  Json::Value result {};
+  Json::Value configIn {};
 
-  std::ifstream configIn( filename, std::ios::in );
-  if ( configIn.is_open() == false )
+  const Json::Value configDefault = ConfigManager().config();
+
+  try
   {
-    std::cerr << "Error: failed to read config from '" << filename << "'\n";
-
-    return ConfigManager().config();
+    configIn = fileParse(path);
+  }
+  catch ( const std::exception& e )
+  {
+    configIn = configDefault;
+    std::cerr << cqde::format("Error: Failed to read configuration file - {}\n", e.what());
   }
 
-  Json::Value configSrc {};
-  Json::String parseErrors {};
-
-  if ( Json::parseFromStream( configReader(), configIn,
-                              &configSrc, &parseErrors ) == false )
-  {
-    configSrc = ConfigManager().config();
-    std::cerr << "Error: failed to parse config " << filename << ": "
-              << parseErrors;
-  }
-  configIn.close();
-
-  const auto configDefault = ConfigManager().config();
-
-  if ( configSrc["log"]["pattern"].isString() )
-    config["log"]["pattern"] = configSrc["log"]["pattern"].asString();
+  if ( configIn["log"]["pattern"].isString() )
+    result["log"]["pattern"] = configIn["log"]["pattern"].asString();
   else
-    config["log"]["pattern"] = configDefault["log"]["pattern"].asString();
+    result["log"]["pattern"] = configDefault["log"]["pattern"].asString();
 
-  if ( configSrc["log"]["level"]["cmd"].isString() )
-    config["log"]["level"]["cmd"] = configSrc["log"]["level"]["cmd"].asString();
+  if ( configIn["log"]["level"]["cmd"].isString() )
+    result["log"]["level"]["cmd"] = configIn["log"]["level"]["cmd"].asString();
   else
-    config["log"]["level"]["cmd"] = configDefault["log"]["level"]["cmd"].asString();
+    result["log"]["level"]["cmd"] = configDefault["log"]["level"]["cmd"].asString();
 
-  if ( configSrc["log"]["level"]["file"].isString() )
-    config["log"]["level"]["file"] = configSrc["log"]["level"]["file"].asString();
+  if ( configIn["log"]["level"]["file"].isString() )
+    result["log"]["level"]["file"] = configIn["log"]["level"]["file"].asString();
   else
-    config["log"]["level"]["file"] = configDefault["log"]["level"]["file"].asString();
+    result["log"]["level"]["file"] = configDefault["log"]["level"]["file"].asString();
 
-  if ( configSrc["log"]["level"]["flush-on"].isString() )
-    config["log"]["level"]["flush-on"] = configSrc["log"]["level"]["flush-on"].asString();
+  if ( configIn["log"]["level"]["flush-on"].isString() )
+    result["log"]["level"]["flush-on"] = configIn["log"]["level"]["flush-on"].asString();
   else
-    config["log"]["level"]["flush-on"] = configDefault["log"]["level"]["flush-on"].asString();
+    result["log"]["level"]["flush-on"] = configDefault["log"]["level"]["flush-on"].asString();
 
 
-  if ( configSrc["video"]["window-width"].isUInt() && configSrc["video"]["window-width"].asUInt() > 0 )
-     config["video"]["window-width"] = configSrc["video"]["window-width"].asUInt();
+  if ( configIn["video"]["window-width"].isUInt() && configIn["video"]["window-width"].asUInt() > 0 )
+     result["video"]["window-width"] = configIn["video"]["window-width"].asUInt();
   else
-    config["video"]["window-width"] = configDefault["video"]["window-width"].asUInt();
+    result["video"]["window-width"] = configDefault["video"]["window-width"].asUInt();
 
-  if ( configSrc["video"]["window-height"].isUInt() && configSrc["video"]["window-height"].asUInt() > 0 )
-     config["video"]["window-height"] = configSrc["video"]["window-height"].asUInt();
+  if ( configIn["video"]["window-height"].isUInt() && configIn["video"]["window-height"].asUInt() > 0 )
+     result["video"]["window-height"] = configIn["video"]["window-height"].asUInt();
   else
-    config["video"]["window-height"] = configDefault["video"]["window-height"].asUInt();
+    result["video"]["window-height"] = configDefault["video"]["window-height"].asUInt();
 
 
-  if ( configSrc["engine"]["tick-rate"].isUInt() )
-    config["engine"]["tick-rate"] = configSrc["engine"]["tick-rate"];
+  if ( configIn["engine"]["tick-rate"].isUInt() )
+    result["engine"]["tick-rate"] = configIn["engine"]["tick-rate"];
   else
-    config["engine"]["tick-rate"] = configDefault["engine"]["tick-rate"];
+    result["engine"]["tick-rate"] = configDefault["engine"]["tick-rate"];
 
-  if ( configSrc["engine"]["frame-rate"].isUInt() )
-    config["engine"]["frame-rate"] = configSrc["engine"]["frame-rate"];
+  if ( configIn["engine"]["frame-rate"].isUInt() )
+    result["engine"]["frame-rate"] = configIn["engine"]["frame-rate"];
   else
-    config["engine"]["frame-rate"] = configDefault["engine"]["frame-rate"];
+    result["engine"]["frame-rate"] = configDefault["engine"]["frame-rate"];
 
-  return config;
+  return result;
 }
 
 void
-ConfigManager::write( const std::string& filename )
+ConfigManager::write( const std::filesystem::path& path )
 {
-  using namespace spdlog::level;
-
-  std::ofstream configOut( filename, std::ios::out | std::ios::trunc );
-  if ( configOut.is_open() == false )
+  try
   {
-    std::cerr << "Error: failed to write config to '" << filename << "'\n";
-    return;
+    auto configOut = fileOpen( path, std::ios::out | std::ios::trunc );
+    configOut << Json::writeString(jsonWriter(), config());
   }
-
-  std::unique_ptr <Json::StreamWriter> writer(configWriter().newStreamWriter());
-  writer->write( config(), &configOut );
-  configOut.close();
+  catch ( const std::exception& e )
+  {
+    std::cerr << cqde::format("Error: Failed to write configuration file - {}\n", e.what());
+  }
 }
 
 std::string
@@ -199,45 +188,6 @@ uint64_t
 ConfigManager::frameRate() const
 {
   return mFrameRate;
-}
-
-Json::CharReaderBuilder
-ConfigManager::configReader()
-{
-  Json::CharReaderBuilder reader {};
-
-  reader["collectComments"] = true;
-  reader["allowComments"] = true;
-  reader["allowTrailingCommas"] = true;
-  reader["strictRoot"] = false;
-  reader["allowDroppedNullPlaceholders"] = false;
-  reader["allowNumericKeys"] = false;
-  reader["allowSingleQuotes"] = false;
-  reader["stackLimit"] = 1000;
-  reader["failIfExtra"] = false;
-  reader["rejectDupKeys"] = true;
-  reader["allowSpecialFloats"] = true;
-  reader["skipBom"] = true;
-
-  return reader;
-}
-
-Json::StreamWriterBuilder
-ConfigManager::configWriter()
-{
-  Json::StreamWriterBuilder writer {};
-
-  writer["indentation"] = "  ";
-  writer["commentStyle"] = "All";
-  writer["precisionType"] = "  ";
-  writer["enableYAMLCompatibility"] = false;
-  writer["dropNullPlaceholders"] = false;
-  writer["useSpecialFloats"] = true;
-  writer["emitUTF8"] = true;
-  writer["precision"] = 17;
-  writer["precisionType"] = "significant";
-
-  return writer;
 }
 
 } // namespace cqde
