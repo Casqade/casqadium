@@ -206,7 +206,7 @@ struct keyCharMap
   char upper;
 };
 
-class PGE_ImGUI : public PGEX
+class OLCPGE_EXPORT PGE_ImGUI : public PGEX
 {
 public:
   //_register_handler set to true will automatically register this plugin to draw on layer 0

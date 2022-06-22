@@ -1,6 +1,8 @@
 #pragma once
 
+#include <olcPGE/olcPGE_export.hpp>
 #include <olcPGE/olcEvent.hpp>
+
 #include <deque>
 
 
@@ -8,7 +10,7 @@ namespace olc
 {
 class Event;
 
-class EventHandler
+class OLCPGE_EXPORT EventHandler
 {
   const PixelGameEngine* const mPGE;
 

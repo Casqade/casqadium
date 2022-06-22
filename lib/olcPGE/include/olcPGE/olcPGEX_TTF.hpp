@@ -25,7 +25,7 @@ struct FontRect
   olc::vi2d size;
 };
 
-class Font : public olc::PGEX
+class OLCPGE_EXPORT Font : public olc::PGEX
 {
 public:
   Font() = default;
@@ -61,8 +61,8 @@ public:
 
   std::string GetErrorMessage() const;
 
-  static olc::rcode init();
-  static olc::rcode deinit();
+  static olc::rcode OLCPGE_EXPORT init();
+  static olc::rcode OLCPGE_EXPORT deinit();
 
 private:
   void DrawBitmap(int x, int y, FT_Bitmap bmp, olc::Pixel color);
@@ -77,8 +77,8 @@ private:
 
   std::string errorMessage {};
 
-  static FT_Library library;
-  static std::string libraryErrorMessage;
+  static FT_Library OLCPGE_EXPORT library;
+  static std::string OLCPGE_EXPORT libraryErrorMessage;
 };
 
 } // namespace olc

@@ -3,8 +3,6 @@ cmake_minimum_required(VERSION 3.13 FATAL_ERROR)
 set(TARGET olcPGE)
 project(${TARGET} VERSION 1.0 LANGUAGES CXX)
 
-set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
-
 option(${TARGET}_USE_OPENGL33 "${TARGET}: Use OpenGL 3.3" OFF)
 
 add_library(${TARGET})
@@ -105,6 +103,8 @@ else()
   target_link_libraries(${TARGET} PRIVATE X11 GL png)
 endif()
 
+include(GenerateExportHeader)
+generate_export_header(${TARGET} EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/exports/${TARGET}/${TARGET}_export.hpp)
 
 include(GNUInstallDirs)
 
@@ -113,6 +113,7 @@ target_include_directories(${TARGET} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/imgui>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/ImGuizmo>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
+  $<BUILD_INTERFACE:${CMAKE_BINARY_DIR}/exports>
   $<INSTALL_INTERFACE:${CMAKE_INSTALL_INCLUDEDIR}>
 )
 
@@ -122,3 +123,8 @@ install(TARGETS ${TARGET}
   PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
   RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
+
+install(FILES ${CMAKE_BINARY_DIR}/exports/${TARGET}/${TARGET}_export.hpp
+  DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${TARGET}"
+)
+

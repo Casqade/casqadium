@@ -450,6 +450,8 @@ namespace X11
 #endif
 #pragma endregion
 
+#include <olcPGE/olcPGE_export.hpp>
+
 // O------------------------------------------------------------------------------O
 // | olcPixelGameEngine INTERFACE DECLARATION                                     |
 // O------------------------------------------------------------------------------O
@@ -468,7 +470,7 @@ enum rcode { FAIL = 0, OK = 1, NO_FILE = -1 };
 // O------------------------------------------------------------------------------O
 // | olc::Pixel - Represents a 32-Bit RGBA colour                                 |
 // O------------------------------------------------------------------------------O
-struct Pixel
+struct OLCPGE_EXPORT Pixel
 {
   union
   {
@@ -495,8 +497,8 @@ struct Pixel
   Pixel  inv() const;
 };
 
-Pixel PixelF(float red, float green, float blue, float alpha = 1.0f);
-Pixel PixelLerp(const olc::Pixel& p1, const olc::Pixel& p2, float t);
+OLCPGE_EXPORT Pixel PixelF(float red, float green, float blue, float alpha = 1.0f);
+OLCPGE_EXPORT Pixel PixelLerp(const olc::Pixel& p1, const olc::Pixel& p2, float t);
 
 
 // O------------------------------------------------------------------------------O
@@ -555,7 +557,7 @@ struct HWButton
 // O------------------------------------------------------------------------------O
 #if !defined(OLC_IGNORE_VEC2D)
 template <class T>
-struct v2d_generic
+struct OLCPGE_EXPORT v2d_generic
 {
   T x = 0;
   T y = 0;
@@ -633,13 +635,13 @@ typedef v2d_generic<double> vd2d;
 // O------------------------------------------------------------------------------O
 // | olc::ResourcePack - A virtual scrambled filesystem to pack your assets into  |
 // O------------------------------------------------------------------------------O
-struct ResourceBuffer : public std::streambuf
+struct OLCPGE_EXPORT ResourceBuffer : public std::streambuf
 {
   ResourceBuffer(std::ifstream& ifs, uint32_t offset, uint32_t size);
   std::vector<char> vMemory;
 };
 
-class ResourcePack : public std::streambuf
+class OLCPGE_EXPORT ResourcePack : public std::streambuf
 {
 public:
   ResourcePack();
@@ -658,7 +660,7 @@ private:
 };
 
 
-class ImageLoader
+class OLCPGE_EXPORT ImageLoader
 {
 public:
   ImageLoader() = default;
@@ -671,7 +673,7 @@ public:
 // O------------------------------------------------------------------------------O
 // | olc::Sprite - An image represented by a 2D array of olc::Pixel               |
 // O------------------------------------------------------------------------------O
-class Sprite
+class OLCPGE_EXPORT Sprite
 {
 public:
   Sprite();
@@ -703,13 +705,13 @@ public:
   std::vector<olc::Pixel> pColData;
   Mode modeSample = Mode::NORMAL;
 
-  static std::unique_ptr<olc::ImageLoader> loader;
+  static std::unique_ptr<olc::ImageLoader> OLCPGE_EXPORT loader;
 };
 
 // O------------------------------------------------------------------------------O
 // | olc::Decal - A GPU resident storage of an olc::Sprite                        |
 // O------------------------------------------------------------------------------O
-class Decal
+class OLCPGE_EXPORT Decal
 {
 public:
   Decal(olc::Sprite* spr, bool filter = false, bool clamp = true);
@@ -737,7 +739,7 @@ enum class DecalMode
 // O------------------------------------------------------------------------------O
 // | olc::Renderable - Convenience class to keep a sprite and decal together      |
 // O------------------------------------------------------------------------------O
-class Renderable
+class OLCPGE_EXPORT Renderable
 {
 public:
   Renderable() = default;
@@ -784,7 +786,7 @@ struct LayerDesc
   std::function<void()> funcHook = nullptr;
 };
 
-class Renderer
+class OLCPGE_EXPORT Renderer
 {
 public:
   virtual ~Renderer() = default;
@@ -806,7 +808,7 @@ public:
   static olc::PixelGameEngine* ptrPGE;
 };
 
-class Platform
+class OLCPGE_EXPORT Platform
 {
 public:
   virtual ~Platform() = default;
@@ -825,14 +827,14 @@ public:
 class PGEX;
 
 // The Static Twins (plus one)
-static std::unique_ptr<Renderer> renderer;
-static std::unique_ptr<Platform> platform;
-static std::map<size_t, uint8_t> mapKeys;
+extern std::unique_ptr<Renderer> renderer;
+extern std::unique_ptr<Platform> platform;
+extern std::map<size_t, uint8_t> mapKeys;
 
 // O------------------------------------------------------------------------------O
 // | olc::PixelGameEngine - The main BASE class for your application              |
 // O------------------------------------------------------------------------------O
-class PixelGameEngine
+class OLCPGE_EXPORT PixelGameEngine
 {
 public:
   PixelGameEngine();
@@ -1057,7 +1059,7 @@ private: // Inner mysterious workings
 
   // If anything sets this flag to false, the engine
   // "should" shut down gracefully
-  static std::atomic<bool> bAtomActive;
+  static std::atomic<bool> OLCPGE_NO_EXPORT bAtomActive;
 
 public:
   // "Break In" Functions
@@ -1097,7 +1099,7 @@ private:
 // O------------------------------------------------------------------------------O
 // | PGE EXTENSION BASE CLASS - Permits access to PGE functions from extension    |
 // O------------------------------------------------------------------------------O
-class PGEX
+class OLCPGE_EXPORT PGEX
 {
   friend class olc::PixelGameEngine;
 public:

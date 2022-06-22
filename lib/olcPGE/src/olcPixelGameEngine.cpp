@@ -1961,6 +1961,9 @@ void PGEX::OnAfterUserUpdate(float fElapsedTime) {}
 
 // Need a couple of statics as these are singleton instances
 // read from multiple locations
+std::unique_ptr<Renderer> renderer{};
+std::unique_ptr<Platform> platform{};
+std::map<size_t, uint8_t> mapKeys{};
 std::atomic<bool> PixelGameEngine::bAtomActive{ false };
 olc::PixelGameEngine* olc::PGEX::pge = nullptr;
 olc::PixelGameEngine* olc::Platform::ptrPGE = nullptr;
