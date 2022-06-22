@@ -9,6 +9,8 @@
 namespace cqde
 {
 
+std::fstream fileOpen( const std::string&, const std::ios::openmode flags );
+
 void engineInit( entt::registry& registry );
 
 template <typename... Args>
