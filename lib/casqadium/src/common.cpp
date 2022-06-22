@@ -85,19 +85,19 @@ openmodeToString( const std::ios::openmode flags )
   if ( (flags & std::ios::binary) == std::ios::binary )
     result += "binary,";
 
-  if ( (flags & std::ios::app) == std::ios::in )
+  if ( (flags & std::ios::in) == std::ios::in )
     result += "in,";
 
-  if ( (flags & std::ios::app) == std::ios::out )
+  if ( (flags & std::ios::out) == std::ios::out )
     result += "out,";
 
   if ( (flags & std::ios::app) == std::ios::app )
     result += "app,";
 
-  if ( (flags & std::ios::app) == std::ios::ate )
+  if ( (flags & std::ios::ate) == std::ios::ate )
     result += "ate,";
 
-  if ( (flags & std::ios::app) == std::ios::trunc )
+  if ( (flags & std::ios::trunc) == std::ios::trunc )
     result += "trunc,";
 
   if ( result.empty() == false )
