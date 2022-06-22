@@ -115,12 +115,18 @@ if(${BUILD_SHARED_LIBS})
   set(BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)
   set(SPDLOG_BUILD_SHARED ON CACHE BOOL "" FORCE)
   set(BUILD_STATIC_LIBS OFF CACHE BOOL "" FORCE) # JsonCPP
+  set(SOLOUD_DYNAMIC ON CACHE BOOL "" FORCE)
+  set(SOLOUD_STATIC OFF CACHE BOOL "" FORCE)
+  set(SOLOUD_LIBMODPLUG_SUPPORT ON CACHE BOOL "" FORCE)
 else()
   set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
   set(SPDLOG_BUILD_SHARED OFF CACHE BOOL "" FORCE)
   set(ENTT_USE_LIBCPP ON CACHE BOOL "" FORCE)
   set(BUILD_STATIC_LIBS ON CACHE BOOL "" FORCE) # JsonCpp
   set(JSONCPP_STATIC_WINDOWS_RUNTIME ON CACHE BOOL "" FORCE)
+  set(SOLOUD_DYNAMIC OFF CACHE BOOL "" FORCE)
+  set(SOLOUD_STATIC ON CACHE BOOL "" FORCE)
+  set(SOLOUD_LIBMODPLUG_SUPPORT_STATIC ON CACHE BOOL "" FORCE)
 endif()
 
 set(BUILD_OBJECT_LIBS OFF CACHE BOOL "" FORCE) # JsonCPP
@@ -133,7 +139,6 @@ set(SPDLOG_DISABLE_DEFAULT_LOGGER ON CACHE BOOL "" FORCE)
 
 include(FetchContent)
 
-#   TimeUtils
 FetchContent_Declare(TimeUtils
   GIT_REPOSITORY git@gitlab.com:Casqade/timeutils.git
   GIT_TAG        main
@@ -141,7 +146,7 @@ FetchContent_Declare(TimeUtils
 )
 FetchContent_MakeAvailable(TimeUtils)
 
-#   EnTT
+
 FetchContent_Declare(EnTT
   GIT_REPOSITORY https://github.com/skypjack/entt
   GIT_TAG        v3.10.1
@@ -179,6 +184,15 @@ FetchContent_Declare(spdlog
 FetchContent_MakeAvailable(spdlog)
 
 
+FetchContent_Declare(soloud
+  GIT_REPOSITORY https://github.com/Casqade/soloud
+  GIT_TAG        master
+  GIT_SHALLOW    TRUE
+  SOURCE_SUBDIR  contrib
+)
+FetchContent_MakeAvailable(soloud)
+
+
 if(${BUILD_SHARED_LIBS})
   target_compile_definitions(glm_shared PUBLIC GLM_FORCE_DEPTH_ZERO_TO_ONE)
 #  target_compile_definitions(glm_shared PRIVATE GLM_FORCE_MESSAGES)
@@ -193,6 +207,7 @@ target_link_libraries(${TARGET} PUBLIC
   EnTT::EnTT
   olcPGE::olcPGE
   spdlog::spdlog
+ soloud
 )
 
 if(${BUILD_SHARED_LIBS})
