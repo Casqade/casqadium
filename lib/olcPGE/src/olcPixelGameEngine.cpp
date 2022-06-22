@@ -2117,11 +2117,11 @@ namespace olc
       if (!bVSYNC)
         {
 #if defined(__APPLE__)
-	  GLint sync = 0;
-	  CGLContextObj ctx = CGLGetCurrentContext();
-	  if (ctx) CGLSetParameter(ctx, kCGLCPSwapInterval, &sync);
+    GLint sync = 0;
+    CGLContextObj ctx = CGLGetCurrentContext();
+    if (ctx) CGLSetParameter(ctx, kCGLCPSwapInterval, &sync);
 #endif
-	}
+  }
 #else
       glEnable(GL_TEXTURE_2D); // Turn on texturing
       glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
@@ -2562,11 +2562,11 @@ namespace olc
       if (!bVSYNC)
         {
 #if defined(__APPLE__)
-	  GLint sync = 0;
-	  CGLContextObj ctx = CGLGetCurrentContext();
-	  if (ctx) CGLSetParameter(ctx, kCGLCPSwapInterval, &sync);
+    GLint sync = 0;
+    CGLContextObj ctx = CGLGetCurrentContext();
+    if (ctx) CGLSetParameter(ctx, kCGLCPSwapInterval, &sync);
 #endif
-	}
+  }
 #else
 #if !defined(OLC_PLATFORM_EMSCRIPTEN)
       glEnable(GL_TEXTURE_2D); // Turn on texturing

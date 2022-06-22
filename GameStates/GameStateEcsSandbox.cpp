@@ -300,7 +300,6 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
 //  testSerialization();
 //  return;
 
-  auto& tp = mRegistry.ctx().at <ctpl::thread_pool> ();
   auto& fonts = mRegistry.ctx().at <FontAssetManager> ();
   auto& textures = mRegistry.ctx().at <TextureAssetManager> ();
   auto& strings = mRegistry.ctx().at <TextStringAssetManager> ();

@@ -150,7 +150,7 @@ fileOpen(
                                           std::strerror(errno)));
   }
 
-  return std::move(file);
+  return file;
 }
 
 Json::Value
