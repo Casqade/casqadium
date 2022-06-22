@@ -74,7 +74,7 @@ ConfigManager::read( const std::filesystem::path& path ) const
   catch ( const std::exception& e )
   {
     configIn = configDefault;
-    std::cerr << cqde::format("Error: Failed to read configuration file - {}\n", e.what());
+    std::cerr << cqde::format("Error: Can't read configuration file ({})\n", e.what());
   }
 
   if ( configIn["log"]["pattern"].isString() )
@@ -132,7 +132,7 @@ ConfigManager::write( const std::filesystem::path& path )
   }
   catch ( const std::exception& e )
   {
-    std::cerr << cqde::format("Error: Failed to write configuration file - {}\n", e.what());
+    std::cerr << cqde::format("Error: Can't write configuration file ({})\n", e.what());
   }
 }
 

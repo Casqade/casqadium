@@ -91,17 +91,17 @@ AssetManager <Asset>::parseAssetDb(
 {
   Json::Value assetDb {};
 
+  LOG_DEBUG("Parsing asset DB '{}'", path.string());
+
   try
   {
-    LOG_DEBUG("Parsing asset DB '{}'", path.string());
-
-    auto string = fileOpen(path, std::ios::in);
-    assetDb = jsonParse(string);
+    auto stream = fileOpen(path, std::ios::in);
+    assetDb = jsonParse(stream);
   }
   catch ( const std::exception& e )
   {
-    throw std::runtime_error(cqde::format("Failed to parse asset DB: {}",
-                                          path.string(), e.what()));
+    throw std::runtime_error(cqde::format("Failed to parse asset DB ({})",
+                                          e.what()));
   }
 
   parseAssetDb(assetDb, std::filesystem::path(path).remove_filename());

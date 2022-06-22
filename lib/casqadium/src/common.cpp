@@ -145,7 +145,7 @@ fileOpen(
   }
   catch ( const std::system_error& e )
   {
-    throw std::runtime_error(cqde::format("Failed to open '{}' (mode={}): ",
+    throw std::runtime_error(cqde::format("Failed to open '{}' (mode={}): {}",
                                           path.string(), openmodeToString(flags),
                                           std::strerror(errno)));
   }

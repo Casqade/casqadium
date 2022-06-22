@@ -5,6 +5,7 @@
 
 #include <cqde/util/ConfigManager.hpp>
 #include <cqde/util/logger.hpp>
+#include <cqde/common.hpp>
 
 
 int
@@ -27,10 +28,16 @@ main( int , char*[] )
 
   if ( configManager.logLevelFile() < spdlog::level::level_enum::off )
   {
-    auto fileSink = std::make_shared <spdlog::sinks::basic_file_sink_mt> (logFilename, true);
-    fileSink->set_level(configManager.logLevelFile());
-
-    sinks.push_back(fileSink);
+    try
+    {
+      auto fileSink = std::make_shared <spdlog::sinks::basic_file_sink_mt> (logFilename, true);
+      fileSink->set_level(configManager.logLevelFile());
+      sinks.push_back(fileSink);
+    }
+    catch ( const std::exception& e )
+    {
+      std::cerr << cqde::format("Error: Can't create file sink for logger ({}). Log output to file will be turned off\n", e.what());
+    }
   }
 
   cqde::loggerInit( configManager.logPattern(),
