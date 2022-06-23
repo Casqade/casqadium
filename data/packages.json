@@ -1,4 +1,7 @@
-[
-  "common/package.json",
-  "editor/package.json"
-]
+{
+  "entry_point": "editor",
+  "load_order":
+  [
+    "editor",
+  ]
+}
