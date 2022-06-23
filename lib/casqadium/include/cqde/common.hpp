@@ -19,6 +19,8 @@ std::fstream fileOpen( const std::filesystem::path&, const std::ios::openmode fl
 Json::Value jsonParse( std::istream& stream );
 Json::Value fileParse( const std::filesystem::path& path );
 
+std::string jsonToString( const Json::Value&, const bool withComments = false );
+
 void engineInit( entt::registry& registry );
 
 template <typename... Args>

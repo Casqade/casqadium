@@ -49,12 +49,8 @@ AssetManager <Asset>::parseAssetDb(
 
       if ( assetDb[id].isObject() == false )
       {
-        std::string entryString = assetDb[id].toStyledString();
-        if ( entryString.size() > 0 )
-          entryString.pop_back(); // get rid of trailing \n
-
         throw std::runtime_error(cqde::format("'{}' is not a valid JSON object",
-                                              entryString));
+                                              jsonToString(assetDb[id])));
       }
 
       const Json::Value assetPath = assetDb[id]["path"];

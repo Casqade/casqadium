@@ -37,11 +37,8 @@ AssetManager <std::string>::parseAssetDb(
           if ( line.isString() == true )
             continue;
 
-          std::string badJsonEntry = line.toStyledString();
-          if ( badJsonEntry.size() > 0 )
-            badJsonEntry.pop_back(); // get rid of trailing \n
-
-          throw std::runtime_error(cqde::format("array element '{}' is not a valid JSON string", badJsonEntry));
+          throw std::runtime_error(cqde::format("array element '{}' is not a valid JSON string",
+                                                jsonToString(line)));
         }
 
         mAssets[id].status = AssetStatus::Unloaded;
@@ -180,12 +177,9 @@ AssetManager <std::string>::load(
               handle->append(line.asString() + "\n");
             else
             {
-              std::string badJsonEntry = line.toStyledString();
-              if ( badJsonEntry.size() > 0 )
-                badJsonEntry.pop_back(); // get rid of trailing \n
-
               handle.reset();
-              throw std::runtime_error(cqde::format("JSON entry '{}' is not a valid JSON string", badJsonEntry));
+              throw std::runtime_error(cqde::format("JSON entry '{}' is not a valid JSON string",
+                                                    jsonToString(line)));
             }
           }
         }

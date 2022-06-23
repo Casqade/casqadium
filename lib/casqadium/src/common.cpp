@@ -183,7 +183,22 @@ fileParse( const std::filesystem::path& path )
   }
 }
 
-void
+std::string
+jsonToString(
+  const Json::Value& json,
+  const bool withComments )
+{
+  if ( withComments == true)
+    return Json::writeString(jsonWriter(), json);
+
+  Json::StreamWriterBuilder writer = jsonWriter();
+
+  writer["commentStyle"] = "None";
+
+  return Json::writeString(writer, json);
+}
+
+static void
 initHwControls( types::HwControlMap& controlMap )
 {
   using olc::MouseInputId;
