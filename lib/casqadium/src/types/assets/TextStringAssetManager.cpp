@@ -68,22 +68,6 @@ void
 AssetManager <std::string>::parseAssetDb(
   const std::filesystem::path& path )
 {
-  Json::CharReaderBuilder jsonReader {};
-
-  jsonReader["collectComments"] = true;
-  jsonReader["allowComments"] = true;
-  jsonReader["allowTrailingCommas"] = true;
-  jsonReader["strictRoot"] = false;
-  jsonReader["allowDroppedNullPlaceholders"] = false;
-  jsonReader["allowNumericKeys"] = false;
-  jsonReader["allowSingleQuotes"] = false;
-  jsonReader["stackLimit"] = 1000;
-  jsonReader["failIfExtra"] = false;
-  jsonReader["rejectDupKeys"] = true;
-  jsonReader["allowSpecialFloats"] = true;
-  jsonReader["skipBom"] = true;
-
-
   LOG_DEBUG("Parsing text string DB '{}'", path.string());
 
   Json::Value stringDb {};
