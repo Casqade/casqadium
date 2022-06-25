@@ -4,13 +4,15 @@
 #include <cqde/components/Tag.hpp>
 #include <cqde/components/Transform.hpp>
 
-#include <cqde/types/input/InputBinding.hpp>
 #include <cqde/types/EntityTagManager.hpp>
 #include <cqde/types/InputCallbackStorage.hpp>
+#include <cqde/types/PackageManager.hpp>
 
 #include <cqde/types/assets/FontAssetManager.hpp>
 #include <cqde/types/assets/TextureAssetManager.hpp>
 #include <cqde/types/assets/TextStringAssetManager.hpp>
+
+#include <cqde/types/input/InputBinding.hpp>
 
 #include <entt/entity/registry.hpp>
 
@@ -311,6 +313,8 @@ engineInit( entt::registry& registry )
   SceneNode::Register();
   Tag::Register();
   Transform::Register();
+
+  registry.ctx().emplace <PackageManager> ();
 
   registry.ctx().emplace <EntityTagManager> ();
   registry.ctx().emplace <InputCallbackStorage> ();

@@ -58,6 +58,12 @@ identifier::operator < ( const identifier& other ) const
   return this->mHash.value() < other.mHash.value();
 }
 
+std::size_t
+identifier_hash::operator () ( const identifier& id ) const
+{
+  return std::hash <entt::hashed_string::hash_type> ()(id.hash().value());
+}
+
 } // namespace cqde
 
 cqde::identifier

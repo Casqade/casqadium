@@ -9,8 +9,9 @@
 #include <cqde/alias.hpp>
 #include <cqde/common.hpp>
 
-#include <cqde/types/InputCallbackStorage.hpp>
 #include <cqde/types/EntityTagManager.hpp>
+#include <cqde/types/InputCallbackStorage.hpp>
+#include <cqde/types/PackageManager.hpp>
 
 #include <cqde/types/assets/FontAssetManager.hpp>
 #include <cqde/types/assets/TextureAssetManager.hpp>
@@ -310,10 +311,11 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
   textures.insert("null", textureNull);
   textures.insert("error", textureError);
 
+  auto& packageManager = mRegistry.ctx().at <PackageManager> ();
+
   try
   {
-    fonts.parseAssetDbFile("data/editor/fonts.json");
-    fonts.load({"munro"});
+    packageManager.load("data/packages.json", mRegistry);
   }
   catch ( const std::exception& e )
   {
@@ -323,19 +325,9 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
 
   try
   {
-    textures.parseAssetDbFile("data/editor/textures.json");
+    fonts.load({"munro"});
     textures.load({"map_diffuse"});
     textures.load({"map_height"});
-  }
-  catch ( const std::exception& e )
-  {
-    LOG_ERROR("{}", e.what());
-    return;
-  }
-
-  try
-  {
-    strings.parseAssetDbFile("data/editor/strings.json");
     strings.load({"one_liner", "multi_liner"});
   }
   catch ( const std::exception& e )

@@ -31,6 +31,12 @@ public:
   bool operator < ( const identifier& ) const;
 };
 
+struct identifier_hash
+{
+  std::size_t operator () ( const identifier& id ) const;
+};
+
+
 const identifier null_id {"null"};
 
 } // namespace cqde
