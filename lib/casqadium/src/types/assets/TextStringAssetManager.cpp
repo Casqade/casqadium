@@ -1,4 +1,3 @@
-#include <cqde/types/assets/AssetManager.hpp>
 #include <cqde/types/assets/AssetManager-inl.hpp>
 
 #include <cqde/util/logger.hpp>
@@ -11,82 +10,59 @@ namespace cqde::types
 {
 
 template <>
+Json::Value
+AssetManager <std::string>::AssetDbReference()
+{
+  return
+  []
+  {
+    using namespace std::string_literals;
+
+    Json::Value reference = Json::ValueType::arrayValue;
+    reference.setComment("// text string value must be either a string or a JSON array"s,
+                         Json::CommentPlacement::commentBefore);
+
+    reference.append(Json::String());
+    reference.begin()->setComment("// text string array element must be a JSON string"s,
+                                  Json::CommentPlacement::commentBefore);
+
+    return reference;
+  }();
+}
+
+template <>
 void
 AssetManager <std::string>::parseAssetDb(
   const Json::Value& stringDb,
-  const std::filesystem::path& dbRootDir )
+  const std::filesystem::path& dbPath )
 {
   std::lock_guard guard(mAssetsMutex);
 
   for ( const auto& id : stringDb.getMemberNames() )
   {
-    LOG_ASSERT_DEBUG(id.empty() != true, continue);
-
     try
     {
-      if ( stringDb[id].isString() == true )
-      {
-        mAssets[id].status = AssetStatus::Unloaded;
-        continue;
-      }
+      if ( stringDb[id].isString() == false )
+        jsonValidateArray(stringDb[id], AssetDbReference());
 
-      if ( stringDb[id].isArray() == true )
-      {
-        for ( const auto& line : stringDb[id] )
-        {
-          if ( line.isString() == true )
-            continue;
+      mAssets[id].path = dbPath;
+      mAssets[id].handle = {};
+      mAssets[id].status = AssetStatus::Unloaded;
 
-          throw std::runtime_error(cqde::format("array element '{}' is not a valid JSON string",
-                                                jsonToString(line)));
-        }
-
-        mAssets[id].status = AssetStatus::Unloaded;
-        continue;
-      }
-
-      throw std::runtime_error("JSON value must be a string or an array of strings");
+      continue;
     }
     catch ( const std::exception& e )
     {
-      LOG_ERROR("Failed to parse JSON entry for text string '{}': {}",
-                id, e.what());
+      LOG_ERROR("Failed to validate JSON entry for asset '{}' ('{}'): {}",
+                id, dbPath.string(), e.what());
 
+      mAssets[id].path = std::filesystem::path{};
       mAssets[id].handle = {};
       mAssets[id].status = AssetStatus::Error;
 
       continue;
     }
   }
-}
-
-template <>
-void
-AssetManager <std::string>::parseAssetDb(
-  const std::filesystem::path& path )
-{
-  LOG_DEBUG("Parsing text string DB '{}'", path.string());
-
-  Json::Value stringDb {};
-
-  try
-  {
-    auto stream = fileOpen(path, std::ios::in);
-    stringDb = jsonParse(stream);
-  }
-  catch ( const std::exception& e )
-  {
-    throw std::runtime_error(cqde::format("Failed to parse text string DB ({})", e.what()));
-  }
-
-  for ( const auto& id : stringDb.getMemberNames() )
-  {
-    mAssets[id].path = path.string();
-    mAssets[id].handle = {};
-    mAssets[id].status = AssetStatus::Unloaded;
-  }
-
-  LOG_DEBUG("Parsed text string DB '{}'", path.string());
 }
 
 template <>
@@ -109,7 +85,7 @@ AssetManager <std::string>::load(
 
       if ( assetStatus == AssetStatus::Undefined )
       {
-        LOG_ERROR("Can't load unknown asset '{}'", id.str());
+        LOG_ERROR("Can't load unknown text string '{}'", id.str());
         continue;
       }
 
@@ -118,8 +94,8 @@ AssetManager <std::string>::load(
 
       const AssetPath assetPath = mAssets.at(id).path;
 
-      LOG_ASSERT_DEBUG(assetPath.str().empty() == false, continue);
-      LOG_ASSERT_DEBUG(assetPath.str() != "***memory***", continue);
+      LOG_ASSERT_DEBUG(assetPath.empty() == false, continue);
+      LOG_ASSERT_DEBUG(assetPath.string() != "***memory***", continue);
 
       mAssets.at(id).status = AssetStatus::Loading;
 
@@ -133,29 +109,29 @@ AssetManager <std::string>::load(
     AssetPath pathPrev {};
     for ( const auto& [path, id] : stringPaths )
     {
-      LOG_INFO("Loading text string '{}' from '{}'",
-               id.str(), path.str());
+      LOG_DEBUG("Loading text string '{}' ('{}')",
+                id.str(), path.string());
 
       if ( path != pathPrev )
       {
         pathPrev = path;
         stringDb.clear();
 
-        LOG_DEBUG("Parsing text string DB '{}'", path.str());
+        LOG_TRACE("Parsing text string DB '{}'", path.string());
 
         try
         {
-          auto string = fileOpen(path.str(), std::ios::in);
-          stringDb = jsonParse(string);
+          stringDb = fileParse(path);
+
+          if ( stringDb.isObject() == false )
+            throw std::runtime_error("JSON root must be an object");
         }
         catch ( const std::exception& e )
         {
-          LOG_ERROR("Failed to load text string '{}' ({})",
+          LOG_ERROR("Failed to load text string '{}' ('{}'): {}",
                     id.str(), e.what());
           continue;
         }
-
-        LOG_DEBUG("Parsed text string DB '{}'", path.str());
       }
 
       std::shared_ptr <std::string> handle {};
@@ -167,21 +143,14 @@ AssetManager <std::string>::load(
         if ( stringEntry.isString() == true )
           handle = std::make_shared <std::string> (stringEntry.asString());
 
-        else if ( stringEntry.isArray() == true )
+        else
         {
+          jsonValidateArray(stringEntry, AssetDbReference());
+
           handle = std::make_shared <std::string> ();
 
           for ( const auto& line : stringEntry )
-          {
-            if ( line.isString() == true )
-              handle->append(line.asString() + "\n");
-            else
-            {
-              handle.reset();
-              throw std::runtime_error(cqde::format("JSON entry '{}' is not a valid JSON string",
-                                                    jsonToString(line)));
-            }
-          }
+            handle->append(line.asString() + "\n");
         }
       }
       catch ( const std::exception& e )
@@ -202,7 +171,6 @@ AssetManager <std::string>::load(
         assetEntry.status = AssetStatus::Loaded;
         assetEntry.handle = std::move(handle);
 
-        LOG_DEBUG("Loaded text string '{}'", id.str());
         continue;
       }
 

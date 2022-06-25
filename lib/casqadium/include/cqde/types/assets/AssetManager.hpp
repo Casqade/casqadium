@@ -28,7 +28,7 @@ template <typename Asset>
 class AssetManager
 {
   using AssetId = cqde::identifier;
-  using AssetPath = cqde::identifier;
+  using AssetPath = std::filesystem::path;
   using AssetHandle = std::shared_ptr <Asset>;
 
   struct AssetEntry
@@ -50,9 +50,11 @@ public:
   AssetManager( ctpl::thread_pool& );
   ~AssetManager();
 
-  void parseAssetDb(const std::filesystem::path& path );
+  static Json::Value AssetDbReference();
+
+  void parseAssetDbFile(const std::filesystem::path& path );
   void parseAssetDb(const Json::Value& db,
-                    const std::filesystem::path& dbRootDir );
+                    const std::filesystem::path& dbPath );
 
   void load( const std::set <AssetId>& );
   void unload( const AssetId& );

@@ -1,4 +1,3 @@
-#include <cqde/types/assets/AssetManager.hpp>
 #include <cqde/types/assets/AssetManager-inl.hpp>
 
 #include <olcPGE/olcPGEX_TTF.hpp>
@@ -12,16 +11,37 @@ namespace cqde::types
 {
 
 template <>
+Json::Value
+AssetManager <olc::Font>::AssetDbReference()
+{
+  return
+  []
+  {
+    using namespace std::string_literals;
+
+    Json::Value reference = Json::ValueType::objectValue;
+    reference.setComment("// font DB entry must be a JSON object"s,
+                         Json::CommentPlacement::commentBefore);
+
+    reference["size"] = Json::UInt();
+    reference["size"].setComment("// font size must be a JSON unsigned integer"s,
+                                    Json::CommentPlacement::commentBefore);
+
+    reference["path"] = Json::String();
+    reference["path"].setComment("// font path must be a JSON string"s,
+                                  Json::CommentPlacement::commentBefore);
+
+    return reference;
+  }();
+}
+
+template <>
 void
 AssetManager <olc::Font>::parseJsonEntryImpl(
   const Json::Value& entry,
   const AssetId& id )
 {
-  if ( entry["size"].empty() == true )
-    throw std::runtime_error("font size value is undefined");
-
-  if ( entry["size"].isUInt() == false )
-    throw std::runtime_error("font size value type is not an unsigned int");
+  jsonValidateObject(entry, AssetDbReference());
 
   mAssetsProperties[id.str()]["size"] = entry["size"];
 }
@@ -35,18 +55,14 @@ AssetManager <olc::Font>::loadImpl(
   const FT_UInt fontSize = mAssetsProperties.at(id)["size"].asUInt();
 
   LOG_INFO("Loading font '{}' (size {})",
-           path.str(), fontSize);
+           path.string(), fontSize);
 
   auto font = std::make_shared <olc::Font> ();
-  if ( font->LoadFromFile(path.str(), fontSize) == olc::rcode::OK )
-  {
-    LOG_DEBUG("Loaded font '{}' (size {})",
-             path.str(), fontSize);
+  if ( font->LoadFromFile(path.string(), fontSize) == olc::rcode::OK )
     return font;
-  }
 
   LOG_ERROR("Failed to load font '{}' (size {}): {}",
-            path.str(), fontSize, font->GetErrorMessage());
+            path.string(), fontSize, font->GetErrorMessage());
 
   return {};
 }

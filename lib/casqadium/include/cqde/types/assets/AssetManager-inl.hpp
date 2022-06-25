@@ -31,78 +31,57 @@ template <typename Asset>
 void
 AssetManager <Asset>::parseAssetDb(
   const Json::Value& assetDb,
-  const std::filesystem::path& dbRootDir )
+  const std::filesystem::path& dbPath )
 {
-  LOG_ASSERT_DEBUG(dbRootDir.empty() != true, return);
-  LOG_ASSERT_DEBUG(std::filesystem::is_directory(dbRootDir) == true, return);
-
   std::lock_guard guard(mAssetsMutex);
 
   for ( const auto& id : assetDb.getMemberNames() )
   {
-    LOG_ASSERT_DEBUG(id.empty() != true, continue);
-
     try
     {
-      if ( assetDb[id].empty() == true )
-        throw std::runtime_error("JSON value is empty");
-
-      if ( assetDb[id].isObject() == false )
-      {
-        throw std::runtime_error(cqde::format("'{}' is not a valid JSON object",
-                                              jsonToString(assetDb[id])));
-      }
-
-      const Json::Value assetPath = assetDb[id]["path"];
-
-      if (    assetPath.isNull() == true
-           || assetPath.isString() == false
-           || assetPath.asString().empty() == true )
-        throw std::runtime_error("file path is undefined");
-
       parseJsonEntryImpl(assetDb[id], id);
+
+      mAssets[id].path = (dbPath.parent_path() / assetDb[id]["path"].asString()).u8string();
+      mAssets[id].handle = {};
+      mAssets[id].status = AssetStatus::Unloaded;
     }
     catch ( const std::exception& e )
     {
-      LOG_ERROR("Failed to parse JSON entry for asset '{}': {}",
-                id, e.what());
+      LOG_ERROR("Failed to validate JSON entry for asset '{}' ('{}'): {}",
+                id, dbPath.string(), e.what());
 
-      mAssets[id].path = {};
+      mAssets[id].path = std::filesystem::path{};
       mAssets[id].handle = {};
       mAssets[id].status = AssetStatus::Error;
 
       continue;
     }
-
-    mAssets[id].path = (std::filesystem::path(dbRootDir) / assetDb[id]["path"].asString()).u8string();
-    mAssets[id].handle = {};
-    mAssets[id].status = AssetStatus::Unloaded;
   }
 }
 
 template <typename Asset>
 void
-AssetManager <Asset>::parseAssetDb(
-  const std::filesystem::path& path )
+AssetManager <Asset>::parseAssetDbFile(
+  const std::filesystem::path& dbPath )
 {
   Json::Value assetDb {};
 
-  LOG_DEBUG("Parsing asset DB '{}'", path.string());
+  LOG_TRACE("Parsing asset DB '{}'", dbPath.string());
 
   try
   {
-    auto stream = fileOpen(path, std::ios::in);
-    assetDb = jsonParse(stream);
+    assetDb = fileParse(dbPath);
+
+    if ( assetDb.isObject() == false )
+      throw std::runtime_error("JSON root must be an object");
   }
   catch ( const std::exception& e )
   {
-    throw std::runtime_error(cqde::format("Failed to parse asset DB ({})",
-                                          e.what()));
+    throw std::runtime_error(cqde::format("Failed to parse asset DB '{}': {}",
+                                          dbPath.string(), e.what()));
   }
 
-  parseAssetDb(assetDb, std::filesystem::path(path).remove_filename());
-
-  LOG_DEBUG("Parsed asset DB '{}'", path.string());
+  parseAssetDb(assetDb, dbPath);
 }
 
 template <typename Asset>
@@ -136,13 +115,13 @@ AssetManager <Asset>::load(
 
       const AssetPath assetPath = mAssets.at(id).path;
 
-      LOG_ASSERT_DEBUG(assetPath.str().empty() == false, continue);
-      LOG_ASSERT_DEBUG(assetPath.str() != "***memory***", continue);
+      LOG_ASSERT_DEBUG(assetPath.string().empty() == false, continue);
+      LOG_ASSERT_DEBUG(assetPath.string() != "***memory***", continue);
 
       mAssets.at(id).status = AssetStatus::Loading;
 
       LOG_DEBUG("Loading asset '{}' ('{}')",
-                id.str(), assetPath.str());
+                id.str(), assetPath.string());
 
       mAssetsMutex.unlock();
 
@@ -165,8 +144,6 @@ AssetManager <Asset>::load(
           assetEntry.status = AssetStatus::Loaded;
           assetEntry.handle = std::move(resource);
 
-          LOG_DEBUG("Loaded asset '{}' ('{}')",
-                    id.str(), assetPath.str());
           continue;
         }
 
@@ -176,7 +153,7 @@ AssetManager <Asset>::load(
       catch ( const std::exception& e )
       {
         LOG_ERROR("Failed to load asset '{}' ('{}'): {}",
-                  id.str(), assetPath.str(), std::string(e.what()));
+                  id.str(), assetPath.string(), std::string(e.what()));
       }
     }
   });
@@ -189,16 +166,15 @@ AssetManager <Asset>::unload(
 {
   std::lock_guard guard(mAssetsMutex);
 
-  const std::string assetPath = mAssets.at(id).path.str();
+  LOG_ASSERT_DEBUG(mAssets.count(id) > 0, return);
+
+  const auto assetPath = mAssets.at(id).path;
 
   LOG_DEBUG("Unloading asset '{}' ('{}')",
-            id.str(), assetPath);
+            id.str(), assetPath.string());
 
   unloadImpl(mAssets.at(id).handle);
   mAssets.at(id).status = AssetStatus::Unloaded;
-
-  LOG_DEBUG("Unloaded asset '{}' ('{}')",
-            id.str(), assetPath);
 }
 
 template <typename Asset>
@@ -219,9 +195,6 @@ AssetStatus
 AssetManager <Asset>::status(
   const AssetId& id ) const
 {
-  LOG_ASSERT_DEBUG(id.str().empty() == false,
-                   return AssetStatus::Undefined);
-
   std::lock_guard guard(mAssetsMutex);
 
   if ( mAssets.count(id) == 0 )

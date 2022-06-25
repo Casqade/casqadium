@@ -1,4 +1,3 @@
-#include <cqde/types/assets/AssetManager.hpp>
 #include <cqde/types/assets/AssetManager-inl.hpp>
 
 #include <cqde/util/logger.hpp>
@@ -10,22 +9,41 @@ namespace cqde::types
 {
 
 template <>
+Json::Value
+AssetManager <olc::Renderable>::AssetDbReference()
+{
+  return
+  []
+  {
+    using namespace std::string_literals;
+
+    Json::Value reference = Json::ValueType::objectValue;
+    reference.setComment("// texture DB entry must be a JSON object"s,
+                         Json::CommentPlacement::commentBefore);
+
+    reference["filter"] = false;
+    reference["filter"].setComment("// texture filter mode must be a JSON boolean"s,
+                                    Json::CommentPlacement::commentBefore);
+
+    reference["clamp"] = false;
+    reference["clamp"].setComment("// texture clamp mode must be a JSON boolean"s,
+                                  Json::CommentPlacement::commentBefore);
+
+    reference["path"] = Json::String();
+    reference["path"].setComment("// texture path must be a JSON string"s,
+                                  Json::CommentPlacement::commentBefore);
+
+    return reference;
+  }();
+}
+
+template <>
 void
 AssetManager <olc::Renderable>::parseJsonEntryImpl(
   const Json::Value& entry,
   const AssetId& id )
 {
-  if ( entry["filter"].empty() == true )
-    throw std::runtime_error("texture filter mode value is undefined");
-
-  if ( entry["filter"].isBool() == false )
-    throw std::runtime_error("texture filter mode value type is not a boolean");
-
-  if ( entry["clamp"].empty() == true )
-    throw std::runtime_error("texture clamp mode value is undefined");
-
-  if ( entry["clamp"].isBool() == false )
-    throw std::runtime_error("texture clamp mode value type is not a boolean");
+  jsonValidateObject( entry, AssetDbReference() );
 
   mAssetsProperties[id]["filter"] = entry["filter"];
   mAssetsProperties[id]["clamp"] = entry["clamp"];
@@ -37,29 +55,26 @@ AssetManager <olc::Renderable>::loadImpl(
   const AssetId& id,
   const AssetPath& path ) const
 {
-  LOG_INFO("Loading texture '{}'", path.str());
+  LOG_INFO("Loading texture '{}'", path.string());
 
   auto texture = std::make_shared <olc::Renderable> ();
   auto sprite = new olc::Sprite();
 
-  const olc::rcode result = sprite->LoadFromFile(path.str());
+  const olc::rcode result = sprite->LoadFromFile(path.string());
   switch (result)
   {
     case olc::rcode::OK:
       texture->SetSprite(sprite);
-
-      LOG_DEBUG("Loaded texture '{}'", path.str());
-
       return texture;
 
     case olc::rcode::NO_FILE:
       LOG_ERROR("Failed to load texture '{}': file not found",
-                path.str());
+                path.string());
       return {};
 
     case olc::rcode::FAIL:
       LOG_ERROR("Failed to load texture '{}': unknown error",
-                path.str());
+                path.string());
       return {};
 
     default:
