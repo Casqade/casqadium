@@ -3,9 +3,12 @@
 #include <entt/fwd.hpp>
 
 #include <json/forwards.h>
-#include <fmt/format.h>
 
-#include <filesystem>
+#include <spdlog/fmt/bundled/format.h>
+
+#include <iosfwd>
+#include <bits/fs_fwd.h>
+
 
 
 namespace cqde

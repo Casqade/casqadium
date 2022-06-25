@@ -22,6 +22,8 @@
 
 #include <thirdparty/ctpl/ctpl_stl.h>
 
+#include <filesystem>
+#include <fstream>
 
 namespace cqde
 {
