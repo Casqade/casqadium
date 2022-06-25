@@ -52,6 +52,12 @@ target_sources(${TARGET} PRIVATE
   src/types/VertexBuffer.cpp
   include/${CASQADIUM_SHORT}/types/VertexBuffer.hpp
 
+  src/types/Package.cpp
+  include/${CASQADIUM_SHORT}/types/Package.hpp
+
+  src/types/PackageManager.cpp
+  include/${CASQADIUM_SHORT}/types/PackageManager.hpp
+
   include/${CASQADIUM_SHORT}/types/assets/AssetManager.hpp
   include/${CASQADIUM_SHORT}/types/assets/AssetManager-inl.hpp
 
