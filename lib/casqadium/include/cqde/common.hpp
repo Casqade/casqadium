@@ -14,22 +14,33 @@
 namespace cqde
 {
 
+template <typename... Args>
+std::string format( const fmt::string_view& message, Args&&... args );
+
+std::string jsonToString( const Json::Value&, const bool withComments = false );
+
+std::fstream fileOpen( const std::filesystem::path&, const std::ios::openmode flags );
+
+
 Json::CharReaderBuilder   jsonReader();
 Json::StreamWriterBuilder jsonWriter();
 
-std::fstream fileOpen( const std::filesystem::path&, const std::ios::openmode flags );
+void jsonValidateArray( const Json::Value&, const Json::Value& reference );
+void jsonValidateObject( const Json::Value&, const Json::Value& reference );
 
 Json::Value jsonParse( std::istream& stream );
 Json::Value fileParse( const std::filesystem::path& path );
 
-std::string jsonToString( const Json::Value&, const bool withComments = false );
 
 void engineInit( entt::registry& registry );
 
+} // namespace cqde
+
+
 template <typename... Args>
 std::string
-format(
-  const fmt::string_view message,
+cqde::format(
+  const fmt::string_view& message,
   Args&&... args )
 {
   fmt::memory_buffer buf {};
@@ -39,5 +50,3 @@ format(
 
   return std::string(buf.data(), buf.size());
 }
-
-} // namespace cqde
