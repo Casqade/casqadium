@@ -15,21 +15,22 @@ AssetManager <olc::Renderable>::AssetDbReference()
   return
   []
   {
+    using ValueType = Json::ValueType;
     using namespace std::string_literals;
 
-    Json::Value reference = Json::ValueType::objectValue;
+    Json::Value reference = ValueType::objectValue;
     reference.setComment("// texture DB entry must be a JSON object"s,
                          Json::CommentPlacement::commentBefore);
 
-    reference["filter"] = false;
+    reference["filter"] = ValueType::booleanValue;
     reference["filter"].setComment("// texture filter mode must be a JSON boolean"s,
                                     Json::CommentPlacement::commentBefore);
 
-    reference["clamp"] = false;
+    reference["clamp"] = ValueType::booleanValue;
     reference["clamp"].setComment("// texture clamp mode must be a JSON boolean"s,
                                   Json::CommentPlacement::commentBefore);
 
-    reference["path"] = Json::String();
+    reference["path"] = ValueType::stringValue;
     reference["path"].setComment("// texture path must be a JSON string"s,
                                   Json::CommentPlacement::commentBefore);
 

@@ -16,13 +16,14 @@ AssetManager <std::string>::AssetDbReference()
   return
   []
   {
+    using ValueType = Json::ValueType;
     using namespace std::string_literals;
 
-    Json::Value reference = Json::ValueType::arrayValue;
+    Json::Value reference = ValueType::arrayValue;
     reference.setComment("// text string value must be either a string or a JSON array"s,
                          Json::CommentPlacement::commentBefore);
 
-    reference.append(Json::String());
+    reference.append(ValueType::stringValue);
     reference.begin()->setComment("// text string array element must be a JSON string"s,
                                   Json::CommentPlacement::commentBefore);
 

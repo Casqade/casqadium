@@ -17,17 +17,18 @@ AssetManager <olc::Font>::AssetDbReference()
   return
   []
   {
+    using ValueType = Json::ValueType;
     using namespace std::string_literals;
 
-    Json::Value reference = Json::ValueType::objectValue;
+    Json::Value reference = ValueType::objectValue;
     reference.setComment("// font DB entry must be a JSON object"s,
                          Json::CommentPlacement::commentBefore);
 
-    reference["size"] = Json::UInt();
+    reference["size"] = ValueType::uintValue;
     reference["size"].setComment("// font size must be a JSON unsigned integer"s,
                                     Json::CommentPlacement::commentBefore);
 
-    reference["path"] = Json::String();
+    reference["path"] = ValueType::stringValue;
     reference["path"].setComment("// font path must be a JSON string"s,
                                   Json::CommentPlacement::commentBefore);
 
