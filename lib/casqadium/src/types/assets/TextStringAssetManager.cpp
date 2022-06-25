@@ -134,8 +134,8 @@ AssetManager <std::string>::load(
           stringDb = fileParse(path);
 
           if ( stringDb.isObject() == false )
-            throw std::runtime_error(cqde::format("JSON root in '{}' must be an object",
-                                                  path.string()));
+            throw std::runtime_error(format("JSON root in '{}' must be an object",
+                                            path.string()));
         }
         catch ( const std::exception& e )
         {

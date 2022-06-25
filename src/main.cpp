@@ -36,7 +36,10 @@ main( int , char*[] )
     }
     catch ( const std::exception& e )
     {
-      std::cerr << cqde::format("Error: Can't create file sink for logger ({}). Log output to file will be turned off\n", e.what());
+      using namespace cqde;
+      std::cerr << format("Error: Can't create file sink for logger ({}). "
+                          "Log output to file will be turned off\n",
+                          e.what());
     }
   }
 
