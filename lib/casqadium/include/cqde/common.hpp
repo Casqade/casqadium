@@ -10,6 +10,10 @@
 #include <bits/fs_fwd.h>
 
 
+// assert in debug build
+// handle condition safely in release
+#define LOG_ASSERT_DEBUG(cond, action)\
+  if (!(cond)) {assert(cond); action;}
 
 namespace cqde
 {

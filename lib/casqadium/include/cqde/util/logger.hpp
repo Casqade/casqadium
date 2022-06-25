@@ -45,7 +45,3 @@ void loggerInit( const std::string& pattern,
   spdlog::source_loc{__FILE__, __LINE__, SPDLOG_FUNCTION}, \
   spdlog::level::critical, \
   __VA_ARGS__)
-
-// assert in debug build; handle condition safely in release
-#define LOG_ASSERT_DEBUG(cond, action)\
-  if (!(cond)) {assert(cond); action;}
