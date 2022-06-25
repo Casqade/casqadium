@@ -73,12 +73,13 @@ AssetManager <Asset>::parseAssetDbFile(
     assetDb = fileParse(dbPath);
 
     if ( assetDb.isObject() == false )
-      throw std::runtime_error("JSON root must be an object");
+      throw std::runtime_error(cqde::format("JSON root in '{}' must be an object",
+                                            dbPath.string()));
   }
   catch ( const std::exception& e )
   {
-    throw std::runtime_error(cqde::format("Failed to parse asset DB '{}': {}",
-                                          dbPath.string(), e.what()));
+    throw std::runtime_error(cqde::format("Failed to parse asset DB ({})",
+                                          e.what()));
   }
 
   parseAssetDb(assetDb, dbPath);

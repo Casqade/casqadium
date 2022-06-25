@@ -54,7 +54,7 @@ AssetManager <std::string>::parseAssetDb(
     }
     catch ( const std::exception& e )
     {
-      LOG_ERROR("Failed to validate JSON entry for asset '{}' ('{}'): {}",
+      LOG_ERROR("Failed to validate JSON entry for text string '{}' ('{}'): {}",
                 id, dbPath.string(), e.what());
 
       mAssets[id].path = std::filesystem::path{};
@@ -107,11 +107,20 @@ AssetManager <std::string>::load(
 
     Json::Value stringDb {};
 
+    bool dbHasErrors = false;
+
     AssetPath pathPrev {};
     for ( const auto& [path, id] : stringPaths )
     {
       LOG_DEBUG("Loading text string '{}' ('{}')",
                 id.str(), path.string());
+
+      if ( path == pathPrev && dbHasErrors == true )
+      {
+        LOG_ERROR("Failed to load text string '{}' (errors in DB '{}')",
+                  id.str(), path.string());
+        continue;
+      }
 
       if ( path != pathPrev )
       {
@@ -125,14 +134,18 @@ AssetManager <std::string>::load(
           stringDb = fileParse(path);
 
           if ( stringDb.isObject() == false )
-            throw std::runtime_error("JSON root must be an object");
+            throw std::runtime_error(cqde::format("JSON root in '{}' must be an object",
+                                                  path.string()));
         }
         catch ( const std::exception& e )
         {
-          LOG_ERROR("Failed to load text string '{}' ('{}'): {}",
-                    id.str(), e.what());
+          dbHasErrors = true;
+          LOG_ERROR("Failed to parse text string DB ({})", e.what());
+          LOG_ERROR("Failed to load text string '{}' (invalid DB '{}')",
+                    id.str(), path.string());
           continue;
         }
+        dbHasErrors = false;
       }
 
       std::shared_ptr <std::string> handle {};
@@ -156,8 +169,8 @@ AssetManager <std::string>::load(
       }
       catch ( const std::exception& e )
       {
-        LOG_ERROR("Failed to load text string '{}': {}",
-                  id.str(), e.what());
+        LOG_ERROR("Failed to load text string '{}' ('{}'): {}",
+                  id.str(), path.string(), e.what());
       }
 
       std::lock_guard guard(mAssetsMutex);

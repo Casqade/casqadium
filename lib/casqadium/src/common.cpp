@@ -254,9 +254,10 @@ jsonParse( std::istream& stream )
 Json::Value
 fileParse( const std::filesystem::path& path )
 {
+  std::fstream file = fileOpen( path, std::ios::in );
+
   try
   {
-    std::fstream file = fileOpen( path, std::ios::in );
     return jsonParse(file);
   }
   catch ( const std::exception& e )
