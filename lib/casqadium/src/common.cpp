@@ -180,7 +180,7 @@ jsonValidateArray(
   if ( array.type() != reference.type() )
   {
     const std::string comment = reference.getComment(Json::CommentPlacement::commentBefore);
-    LOG_ASSERT_DEBUG(comment.size() > 3, throw std::runtime_error("expected different JSON value type"));
+    CQDE_ASSERT_DEBUG(comment.size() > 3, throw std::runtime_error("expected different JSON value type"));
     throw std::runtime_error(comment.substr(3));
   }
 
@@ -194,7 +194,7 @@ jsonValidateArray(
         continue;
 
       const std::string comment = reference.begin()->getComment(Json::CommentPlacement::commentBefore);
-      LOG_ASSERT_DEBUG(comment.size() > 3, throw std::runtime_error(cqde::format("expected different JSON value type for array element {}", i)));
+      CQDE_ASSERT_DEBUG(comment.size() > 3, throw std::runtime_error(cqde::format("expected different JSON value type for array element {}", i)));
       throw std::runtime_error(comment.substr(3));
     }
 
@@ -213,7 +213,7 @@ jsonValidateObject(
   if ( value.type() != reference.type() )
   {
     const std::string comment = reference.getComment(Json::CommentPlacement::commentBefore);
-    LOG_ASSERT_DEBUG(comment.size() > 3, throw std::runtime_error("expected different JSON value type"));
+    CQDE_ASSERT_DEBUG(comment.size() > 3, throw std::runtime_error("expected different JSON value type"));
     throw std::runtime_error(comment.substr(3));
   }
 
@@ -225,7 +225,7 @@ jsonValidateObject(
         continue;
 
       const std::string comment = reference[key].getComment(Json::CommentPlacement::commentBefore);
-      LOG_ASSERT_DEBUG(comment.size() > 3, throw std::runtime_error(cqde::format("expected different JSON value type for key '{}'", key)));
+      CQDE_ASSERT_DEBUG(comment.size() > 3, throw std::runtime_error(cqde::format("expected different JSON value type for key '{}'", key)));
       throw std::runtime_error(comment.substr(3));
     }
 

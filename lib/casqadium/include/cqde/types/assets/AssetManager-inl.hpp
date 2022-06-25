@@ -94,7 +94,7 @@ AssetManager <Asset>::load(
   {
     for ( const auto& id : ids )
     {
-      LOG_ASSERT_DEBUG(id.str().empty() == false, continue);
+      CQDE_ASSERT_DEBUG(id.str().empty() == false, continue);
 
       mAssetsMutex.lock();
 
@@ -115,8 +115,8 @@ AssetManager <Asset>::load(
 
       const AssetPath assetPath = mAssets.at(id).path;
 
-      LOG_ASSERT_DEBUG(assetPath.string().empty() == false, continue);
-      LOG_ASSERT_DEBUG(assetPath.string() != "***memory***", continue);
+      CQDE_ASSERT_DEBUG(assetPath.string().empty() == false, continue);
+      CQDE_ASSERT_DEBUG(assetPath.string() != "***memory***", continue);
 
       mAssets.at(id).status = AssetStatus::Loading;
 
@@ -166,7 +166,7 @@ AssetManager <Asset>::unload(
 {
   std::lock_guard guard(mAssetsMutex);
 
-  LOG_ASSERT_DEBUG(mAssets.count(id) > 0, return);
+  CQDE_ASSERT_DEBUG(mAssets.count(id) > 0, return);
 
   const auto assetPath = mAssets.at(id).path;
 

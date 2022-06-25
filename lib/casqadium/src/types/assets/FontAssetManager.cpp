@@ -92,7 +92,7 @@ AssetManager <olc::Font>::try_get(
       return mAssets.at(id).handle;
 
     default:
-      LOG_ASSERT_DEBUG(false, break);
+      CQDE_ASSERT_DEBUG(false, break);
   }
 
   return {};

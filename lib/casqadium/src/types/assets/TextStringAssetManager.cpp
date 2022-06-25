@@ -79,7 +79,7 @@ AssetManager <std::string>::load(
 
     for ( const auto& id : ids )
     {
-      LOG_ASSERT_DEBUG(id.str().empty() == false, continue);
+      CQDE_ASSERT_DEBUG(id.str().empty() == false, continue);
 
       const AssetStatus assetStatus = status(id);
 
@@ -94,8 +94,8 @@ AssetManager <std::string>::load(
 
       const AssetPath assetPath = mAssets.at(id).path;
 
-      LOG_ASSERT_DEBUG(assetPath.empty() == false, continue);
-      LOG_ASSERT_DEBUG(assetPath.string() != "***memory***", continue);
+      CQDE_ASSERT_DEBUG(assetPath.empty() == false, continue);
+      CQDE_ASSERT_DEBUG(assetPath.string() != "***memory***", continue);
 
       mAssets.at(id).status = AssetStatus::Loading;
 
