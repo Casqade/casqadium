@@ -823,6 +823,7 @@ public:
   virtual olc::rcode HandleSystemEvent() = 0;
 
   virtual olc::rcode CenterMouseCursor() = 0;
+  virtual olc::rcode SetMouseCursorHidden(const bool) = 0;
 
   static olc::PixelGameEngine* ptrPGE;
 };

@@ -3633,6 +3633,30 @@ namespace olc
 
       return olc::OK;
     }
+
+    virtual olc::rcode SetMouseCursorHidden(const bool hidden) override
+    {
+      using namespace X11;
+
+      if (hidden == false)
+      {
+        XUndefineCursor(olc_Display, olc_Window);
+        return olc::OK;
+      }
+
+      XColor color  = { 0 };
+      const char data[] = { 0 };
+
+      Pixmap pixmap = XCreateBitmapFromData(olc_Display, olc_Window, data, 1, 1);
+      Cursor nullCursor = XCreatePixmapCursor(olc_Display, pixmap, pixmap, &color, &color, 0, 0);
+
+      XDefineCursor(olc_Display, olc_Window, nullCursor);
+
+      XFreePixmap(olc_Display, pixmap);
+      XFreeCursor(olc_Display, nullCursor);
+
+      return olc::OK;
+    }
   };
 }
 #endif
