@@ -20,9 +20,6 @@ target_sources(${TARGET} PRIVATE
   src/identifier.cpp
   include/${CASQADIUM_SHORT}/identifier.hpp
 
-  src/PackageLoader.cpp
-  include/${CASQADIUM_SHORT}/PackageLoader.hpp
-
   src/types/CallbackStorage.cpp
   include/${CASQADIUM_SHORT}/types/CallbackStorage.hpp
 
