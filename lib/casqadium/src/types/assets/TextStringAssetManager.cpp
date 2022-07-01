@@ -11,7 +11,7 @@ namespace cqde::types
 
 template <>
 Json::Value
-AssetManager <std::string>::AssetDbReference()
+AssetManager <std::string>::AssetJsonDbEntryReference()
 {
   return
   []
@@ -44,7 +44,7 @@ AssetManager <std::string>::parseAssetDb(
     try
     {
       if ( stringDb[id].isString() == false )
-        jsonValidateArray(stringDb[id], AssetDbReference());
+        jsonValidateArray(stringDb[id], AssetJsonDbEntryReference());
 
       mAssets[id].path = dbPath;
       mAssets[id].handle = {};
@@ -159,7 +159,7 @@ AssetManager <std::string>::load(
 
         else
         {
-          jsonValidateArray(stringEntry, AssetDbReference());
+          jsonValidateArray(stringEntry, AssetJsonDbEntryReference());
 
           handle = std::make_shared <std::string> ();
 

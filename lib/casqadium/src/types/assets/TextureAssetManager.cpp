@@ -10,7 +10,7 @@ namespace cqde::types
 
 template <>
 Json::Value
-AssetManager <olc::Renderable>::AssetDbReference()
+AssetManager <olc::Renderable>::AssetJsonDbEntryReference()
 {
   return
   []
@@ -44,7 +44,7 @@ AssetManager <olc::Renderable>::parseJsonEntryImpl(
   const Json::Value& entry,
   const AssetId& id )
 {
-  jsonValidateObject( entry, AssetDbReference() );
+  jsonValidateObject( entry, AssetJsonDbEntryReference() );
 
   mAssetsProperties[id]["filter"] = entry["filter"];
   mAssetsProperties[id]["clamp"] = entry["clamp"];

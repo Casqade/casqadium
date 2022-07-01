@@ -50,7 +50,7 @@ public:
   AssetManager( ctpl::thread_pool& );
   ~AssetManager();
 
-  static Json::Value AssetDbReference();
+  static Json::Value AssetJsonDbEntryReference();
 
   void parseAssetDbFile(const std::filesystem::path& path );
   void parseAssetDb(const Json::Value& db,

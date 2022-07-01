@@ -12,7 +12,7 @@ namespace cqde::types
 
 template <>
 Json::Value
-AssetManager <olc::Font>::AssetDbReference()
+AssetManager <olc::Font>::AssetJsonDbEntryReference()
 {
   return
   []
@@ -42,7 +42,7 @@ AssetManager <olc::Font>::parseJsonEntryImpl(
   const Json::Value& entry,
   const AssetId& id )
 {
-  jsonValidateObject(entry, AssetDbReference());
+  jsonValidateObject(entry, AssetJsonDbEntryReference());
 
   mAssetsProperties[id.str()]["size"] = entry["size"];
 }
