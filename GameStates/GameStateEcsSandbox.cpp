@@ -328,6 +328,15 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
   while (fonts.status("munro") != AssetStatus::Loaded)
     ;
 
+  while (textures.status("map_height") != AssetStatus::Loaded)
+    ;
+
+  olc::Mouse::Cursor cursor {};
+  cursor.bitmap = textures.get("map_height");
+  cursor.hotspot = {cursor.bitmap->Sprite()->width / 2, cursor.bitmap->Sprite()->height / 2};
+
+  mPGE->SetMouseCursor(cursor);
+
   auto textTexture = std::make_shared <olc::Renderable> (fonts.get("munro")->RenderStringToRenderable(U"T", olc::WHITE));
   textures.insert("text_texture", textTexture);
 
@@ -385,13 +394,16 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
   auto& inputCallbacks = mRegistry.ctx().at <InputCallbackStorage> ();
 
   inputCallbacks.Register( cqde::InputCallbackId("CameraLookToggle"),
-  [] ( const entt::entity, InputController& cController )
+  [this, cursor] ( const entt::entity, InputController& cController )
   {
     static float valPitch{};
     static float valYaw{};
 
     if ( cController.inputs.count("Pitch") > 0 || cController.inputs.count("Yaw") > 0 )
     {
+      mPGE->SetMouseCursor(cursor);
+      mPGE->SetKeepMouseCentered(false);
+
       valPitch = cController.inputs["Pitch"].value;
       valYaw = cController.inputs["Yaw"].value;
 
@@ -400,6 +412,9 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
 
       return;
     }
+
+    mPGE->SetMouseCursor(olc::Mouse::Cursor{});
+    mPGE->SetKeepMouseCentered(true);
 
     ControlAxis iAxisPitch{};
     iAxisPitch.constraint = {-90.0f, 90.0f};
