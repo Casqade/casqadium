@@ -286,7 +286,6 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
   using namespace cqde::types;
 
   cqde::engineInit(mRegistry);
-  initSwControls( mRegistry.ctx().at <InputBindings> () );
 
 //  testSerialization();
 //  return;

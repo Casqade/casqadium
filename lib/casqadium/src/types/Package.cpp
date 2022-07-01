@@ -3,6 +3,13 @@
 #include <cqde/common.hpp>
 #include <cqde/util/logger.hpp>
 
+#include <cqde/types/assets/FontAssetManager.hpp>
+#include <cqde/types/assets/TextureAssetManager.hpp>
+#include <cqde/types/assets/TextStringAssetManager.hpp>
+
+#include <cqde/types/input/InputBinding.hpp>
+#include <cqde/types/input/InputManager.hpp>
+
 #include <json/value.h>
 
 
@@ -43,8 +50,12 @@ const static Json::Value manifestReference =
 }();
 
 void
-Package::parseManifest()
+Package::parseManifest( const std::filesystem::path& manifestPath )
 {
+  CQDE_ASSERT_DEBUG(manifestPath.empty() == false, {});
+
+  mManifestPath = manifestPath;
+
   Json::Value manifest {};
 
   try
@@ -76,14 +87,25 @@ Package::parseManifest()
 }
 
 void
-Package::load(
-  entt::registry& registry,
-  const std::filesystem::path& manifestPath )
+Package::load( entt::registry& registry )
 {
-  LOG_DEBUG("Loading package '{}'", manifestPath.string());
+  LOG_DEBUG("Loading package '{}'", mManifestPath.string());
 
-  mManifestPath = manifestPath;
-  parseManifest();
+  parseManifest(mManifestPath);
+
+  const auto packageRootPath = mManifestPath.parent_path();
+
+  auto& fonts = registry.ctx().at <FontAssetManager> ();
+  fonts.parseAssetDbFile(packageRootPath / "fonts.json");
+
+  auto& textures = registry.ctx().at <TextureAssetManager> ();
+  textures.parseAssetDbFile(packageRootPath / "textures.json");
+
+  auto& text = registry.ctx().at <TextStringAssetManager> ();
+  text.parseAssetDbFile(packageRootPath / "text.json");
+
+  auto& input = registry.ctx().at <InputManager> ();
+  input.parseInputConfigFile(packageRootPath / "input.json");
 }
 
 std::set <PackageId>

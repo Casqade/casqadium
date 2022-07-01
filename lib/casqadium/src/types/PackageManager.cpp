@@ -3,10 +3,6 @@
 #include <cqde/common.hpp>
 #include <cqde/util/logger.hpp>
 
-#include <cqde/types/assets/FontAssetManager.hpp>
-#include <cqde/types/assets/TextureAssetManager.hpp>
-#include <cqde/types/assets/TextStringAssetManager.hpp>
-
 #include <json/value.h>
 
 
@@ -28,10 +24,10 @@ const static Json::Value rootReference =
                                  Json::CommentPlacement::commentBefore);
 
   root["load_order"] = ValueType::arrayValue;
-  root["load_order"].append(ValueType::stringValue);
   root["load_order"].setComment("// load_order must be a JSON array"s,
                                 Json::CommentPlacement::commentBefore);
 
+  root["load_order"].append(ValueType::stringValue);
   root["load_order"].begin()->setComment("// load_order element must be a JSON string"s,
                                           Json::CommentPlacement::commentBefore);
 
@@ -55,6 +51,8 @@ PackageManager::parseRoot()
                                     e.what()));
   }
 
+  LOG_TRACE("Validating packages root '{}'", mPackagesRoot.string());
+
   try
   {
     jsonValidateObject(packages, rootReference);
@@ -72,7 +70,7 @@ PackageManager::parseRoot()
   }
   catch ( const std::exception& e )
   {
-    throw std::runtime_error(format("Failed to parse packages root '{}': {}",
+    throw std::runtime_error(format("Failed to validate packages root '{}': {}",
                                     mPackagesRoot.string(), e.what()));
   }
 
@@ -100,23 +98,15 @@ PackageManager::load(
 
     for ( auto& [packageId, package] : mPackages )
     {
-      const auto packagePath = mPackagesRoot.parent_path() / packageId.str() / "manifest.json";
-      package.load(registry, packagePath);
+      const auto packageManifest = mPackagesRoot.parent_path() / packageId.str() / "manifest.json";
+      package.parseManifest(packageManifest);
 
       for ( const auto& dependency : package.dependencies() )
         if ( loadedPackages.count(dependency) == 0 )
           throw std::runtime_error(format("Dependency '{}' must be loaded before package '{}'",
                                           dependency.str(), packageId.str()));
 
-      auto& fonts = registry.ctx().at <FontAssetManager> ();
-      fonts.parseAssetDbFile(packagePath.parent_path() / "fonts.json");
-
-      auto& textures = registry.ctx().at <TextureAssetManager> ();
-      textures.parseAssetDbFile(packagePath.parent_path() / "textures.json");
-
-      auto& text = registry.ctx().at <TextStringAssetManager> ();
-      text.parseAssetDbFile(packagePath.parent_path() / "text.json");
-
+      package.load(registry);
       loadedPackages.emplace(packageId);
     }
   }

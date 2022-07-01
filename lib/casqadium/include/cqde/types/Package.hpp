@@ -23,14 +23,14 @@ class Package
   std::string mDescription {};
   std::string mVersion {};
 
-  void parseManifest();
 
 public:
   Package() = default;
   Package( Package&& ) = default;
   Package( const Package& ) = delete;
 
-  void load( entt::registry&, const std::filesystem::path& manifestPath );
+  void parseManifest( const std::filesystem::path& manifestPath );
+  void load( entt::registry& );
 
   std::set <PackageId> dependencies() const;
 };
