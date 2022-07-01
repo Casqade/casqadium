@@ -1,10 +1,10 @@
 #pragma once
 
 #include <cqde/alias.hpp>
-#include <cqde/common.hpp>
+
+#include <json/forwards.h>
 
 #include <set>
-#include <string>
 
 
 namespace cqde::types
@@ -12,18 +12,18 @@ namespace cqde::types
 
 struct ControlAxis
 {
-  float value;
-  std::pair <float, float> constraint;
+  float value {};
+  std::pair <float, float> constraint {};
 
-  std::set <InputCallbackId> callbacks;
+  std::set <InputCallbackId> callbacks {};
 
 
   ControlAxis() = default;
+  ControlAxis( const Json::Value& );
 
   bool operator == ( const ControlAxis& ) const;
 
-  static std::string  toJson( const ControlAxis& );
-  static ControlAxis  fromJson( const std::string& );
+  Json::Value toJson() const;
 };
 
 } // namespace cqde::types

@@ -5,6 +5,7 @@
 #include <json/value.h>
 
 #include <mutex>
+#include <set>
 
 
 namespace ctpl

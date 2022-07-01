@@ -108,7 +108,7 @@ initSwControls( cqde::types::InputManager& inputManager )
 }
 
 template<typename Component>
-decltype(auto) get(
+static decltype(auto) get(
   entt::registry& registry,
   entt::entity entity)
 {
@@ -141,16 +141,16 @@ struct MyComponent
 };
 
 template <typename Func>
-void each_component(  const entt::entity entity,
-                      const entt::registry& registry,
-                      Func func )
+static void each_component( const entt::entity entity,
+                            const entt::registry& registry,
+                            Func func )
 {
   for ( const auto [componentType, entities] : registry.storage() )
     if ( const auto iter = entities.find(entity); iter != entities.end() )
       func( componentType, *iter );
 }
 
-void
+static void
 testSerialization()
 {
   using namespace entt::literals;

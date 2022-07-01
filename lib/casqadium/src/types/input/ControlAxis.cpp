@@ -8,6 +8,9 @@
 namespace cqde::types
 {
 
+ControlAxis::ControlAxis( const Json::Value& json )
+{}
+
 bool
 ControlAxis::operator == ( const ControlAxis& other ) const
 {
@@ -16,13 +19,7 @@ ControlAxis::operator == ( const ControlAxis& other ) const
 }
 
 Json::Value
-ControlAxis::toJson( const ControlAxis& axis )
-{
-  return {};
-}
-
-ControlAxis
-ControlAxis::fromJson( const Json::Value& json )
+ControlAxis::toJson() const
 {
   return {};
 }
