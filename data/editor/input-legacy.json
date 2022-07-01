@@ -1,145 +1,145 @@
 {
   "TranslateX":
-  {
-    "-Key_A":
+  [
     {
       "absolute": false,
+      "inputId": "-Key_A",
       "sensitivity": 1.0,
     },
-    "+Key_A":
     {
       "absolute": false,
+      "inputId": "+Key_A",
       "sensitivity": -1.0,
     },
-    "+Key_D":
     {
       "absolute": false,
+      "inputId": "+Key_D",
       "sensitivity": 1.0,
     },
-    "-Key_D":
     {
       "absolute": false,
+      "inputId": "-Key_D",
       "sensitivity": -1.0,
     },
-  },
+  ],
   "TranslateY":
-  {
-    "-Key_Shift":
+  [
     {
       "absolute": false,
+      "inputId": "-Key_Shift",
       "sensitivity": 1.0,
     },
-    "+Key_Shift":
     {
       "absolute": false,
+      "inputId": "+Key_Shift",
       "sensitivity": -1.0,
     },
-    "+Key_Space":
     {
       "absolute": false,
+      "inputId": "+Key_Space",
       "sensitivity": 1.0,
     },
-    "-Key_Space":
     {
       "absolute": false,
+      "inputId": "-Key_Space",
       "sensitivity": -1.0,
     },
-  },
+  ],
   "TranslateZ":
-  {
-    "-Key_S":
+  [
     {
       "absolute": false,
+      "inputId": "-Key_S",
       "sensitivity": 1.0,
     },
-    "+Key_S":
     {
       "absolute": false,
+      "inputId": "+Key_S",
       "sensitivity": -1.0,
     },
-    "+Key_W":
     {
       "absolute": false,
+      "inputId": "+Key_W",
       "sensitivity": 1.0,
     },
-    "-Key_W":
     {
       "absolute": false,
+      "inputId": "-Key_W",
       "sensitivity": -1.0,
     },
-  },
+  ],
   "Yaw":
-  {
-    "+MouseMove_X":
+  [
     {
       "absolute": false,
+      "inputId": "+MouseMove_X",
       "sensitivity": -0.5,
     },
-    "-MouseMove_X":
     {
       "absolute": false,
+      "inputId": "-MouseMove_X",
       "sensitivity": 0.5,
     },
-  },
+  ],
   "Pitch":
-  {
-    "+MouseMove_Y":
+  [
     {
       "absolute": false,
+      "inputId": "+MouseMove_Y",
       "sensitivity": -0.5,
     },
-    "-MouseMove_Y":
     {
       "absolute": false,
+      "inputId": "-MouseMove_Y",
       "sensitivity": 0.5,
     },
-  },
+  ],
   "CursorPosX":
-  {
-    "+MousePos_X":
+  [
     {
       "absolute": true,
+      "inputId": "+MousePos_X",
       "sensitivity": 1.0,
     },
-    "-MousePos_X":
     {
       "absolute": true,
+      "inputId": "-MousePos_X",
       "sensitivity": 1.0,
     },
-  },
+  ],
   "CursorPosY":
-  {
-    "+MousePos_Y":
+  [
     {
       "absolute": true,
+      "inputId": "+MousePos_Y",
       "sensitivity": 1.0,
     },
-    "-MousePos_Y":
     {
       "absolute": true,
+      "inputId": "-MousePos_Y",
       "sensitivity": 1.0,
     },
-  },
+  ],
   "CameraLookToggle":
-  {
-    "+MouseButton_Middle":
+  [
     {
       "absolute": false,
+      "inputId": "+MouseButton_Middle",
       "sensitivity": 1.0,
     },
-    "-MouseButton_Middle":
     {
       "absolute": false,
+      "inputId": "-MouseButton_Middle",
       "sensitivity": -1.0,
     },
-  },
+  ],
   "EngineShutdown":
-  {
-    "-Key_Enter":
+  [
     {
       "absolute": false,
+      "inputId": "-Key_Enter",
       "sensitivity": 1.0,
     },
-  },
+  ],
 }
 

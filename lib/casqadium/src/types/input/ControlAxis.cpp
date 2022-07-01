@@ -1,5 +1,9 @@
 #include <cqde/types/input/ControlAxis.hpp>
 
+#include <entt/entt.hpp>
+
+#include <json/value.h>
+
 
 namespace cqde::types
 {
@@ -11,14 +15,14 @@ ControlAxis::operator == ( const ControlAxis& other ) const
           std::tie(other.value, other.constraint, other.callbacks);
 }
 
-std::string
-ControlAxis::toJson( const ControlAxis& )
+Json::Value
+ControlAxis::toJson( const ControlAxis& axis )
 {
   return {};
 }
 
 ControlAxis
-ControlAxis::fromJson( const std::string& json )
+ControlAxis::fromJson( const Json::Value& json )
 {
   return {};
 }

@@ -2,7 +2,7 @@
 
 #include <cqde/alias.hpp>
 
-#include <entt/fwd.hpp>
+#include <json/forwards.h>
 
 #include <set>
 
@@ -17,10 +17,16 @@ struct InputBinding
 
 
   InputBinding( const cqde::InputHwId&,
+                const Json::Value& );
+  InputBinding( const cqde::InputHwId&,
                 const float sensitivity = 1.0f );
 
   virtual void handleInput( cqde::types::ControlAxis&,
                             const float amount ) const;
+
+  virtual Json::Value toJson() const;
+
+  static std::shared_ptr <InputBinding> FromJson( const InputHwId&, const Json::Value& );
 };
 
 struct InputBindingComparator

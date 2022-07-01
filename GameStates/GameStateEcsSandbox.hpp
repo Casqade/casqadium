@@ -24,10 +24,6 @@ class GameStateEcsSandbox
   void mouseMoveEvent( const olc::Event::MouseMoveEvent ) override;
   void mouseButtonEvent( const olc::Event ) override;
 
-  void handleAxisInput( const cqde::InputHwId inputSrc,
-                        const float amount,
-                        const float direction );
-
 public:
   GameStateEcsSandbox( GameStateController* const );
 

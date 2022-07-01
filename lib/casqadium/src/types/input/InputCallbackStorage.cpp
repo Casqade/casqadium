@@ -1,4 +1,4 @@
-#include <cqde/types/InputCallbackStorage.hpp>
+#include <cqde/types/input/InputCallbackStorage.hpp>
 
 
 namespace cqde::types

@@ -28,6 +28,7 @@ struct ControlAxis;
 struct InputAxisComparator;
 struct InputBinding;
 struct InputBindingComparator;
+struct InputManager;
 struct SequenceStep;
 struct VertexBuffer;
 

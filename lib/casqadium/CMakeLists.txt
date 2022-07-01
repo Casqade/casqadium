@@ -26,14 +26,17 @@ target_sources(${TARGET} PRIVATE
   src/types/CallbackStorage.cpp
   include/${CASQADIUM_SHORT}/types/CallbackStorage.hpp
 
-  src/types/InputCallbackStorage.cpp
-  include/${CASQADIUM_SHORT}/types/InputCallbackStorage.hpp
+  src/types/input/InputCallbackStorage.cpp
+  include/${CASQADIUM_SHORT}/types/input/InputCallbackStorage.hpp
 
   src/types/EntityReference.cpp
   include/${CASQADIUM_SHORT}/types/EntityReference.hpp
 
   src/types/EntityTagManager.cpp
   include/${CASQADIUM_SHORT}/types/EntityTagManager.hpp
+
+  src/types/input/InputManager.cpp
+  include/${CASQADIUM_SHORT}/types/input/InputManager.hpp
 
   src/types/input/ControlAxis.cpp
   include/${CASQADIUM_SHORT}/types/input/ControlAxis.hpp

@@ -5,10 +5,6 @@
 
 #include <olcPGE/olcPixelGameEngine.hpp>
 
-#include <map>
-#include <memory>
-#include <set>
-
 
 namespace cqde
 {
@@ -22,14 +18,7 @@ typedef identifier PackageId;
 typedef identifier StringId;
 typedef identifier TextureId;
 
-namespace types
-{
+typedef int32_t InputHwCode;
 
-typedef std::map <int32_t, InputHwId> HwControlMap;
-
-typedef std::multimap < std::shared_ptr <InputBinding>, InputAxisId,
-                        InputBindingComparator> InputBindings;
-
-}
 
 } // namespace cqde

@@ -10,16 +10,17 @@
 #include <cqde/common.hpp>
 
 #include <cqde/types/EntityTagManager.hpp>
-#include <cqde/types/InputCallbackStorage.hpp>
 #include <cqde/types/PackageManager.hpp>
 
 #include <cqde/types/assets/FontAssetManager.hpp>
 #include <cqde/types/assets/TextureAssetManager.hpp>
 #include <cqde/types/assets/TextStringAssetManager.hpp>
 
+#include <cqde/types/input/InputManager.hpp>
 #include <cqde/types/input/InputBinding.hpp>
 #include <cqde/types/input/InputBindingAbsolute.hpp>
 #include <cqde/types/input/InputBindingRelative.hpp>
+#include <cqde/types/input/InputCallbackStorage.hpp>
 
 #include <cqde/util/logger.hpp>
 
@@ -38,26 +39,15 @@
 #include <json/value.h>
 
 
-void
-assignBinding(
-  cqde::types::InputBindings& inputBindings,
-  const cqde::InputAxisId axisId,
-  const std::set <std::shared_ptr <cqde::types::InputBinding>,
-    cqde::types::InputBindingComparator>& axisBindings )
-{
-  for ( auto& binding : axisBindings )
-    inputBindings.insert({ binding, axisId });
-}
-
-void
-initSwControls( cqde::types::InputBindings& bindings )
+static void
+initSwControls( cqde::types::InputManager& inputManager )
 {
   using namespace cqde::types;
 
   using cqde::InputAxisId;
   using cqde::InputHwId;
 
-  assignBinding( bindings, "TranslateX",
+  inputManager.assignBindings("TranslateX",
   {
     std::make_shared <InputBindingRelative> ( InputHwId("-Key_A"), +1.0f ),
     std::make_shared <InputBindingRelative> ( InputHwId("+Key_A"), -1.0f ),
@@ -65,7 +55,7 @@ initSwControls( cqde::types::InputBindings& bindings )
     std::make_shared <InputBindingRelative> ( InputHwId("-Key_D"), -1.0f ),
   });
 
-  assignBinding( bindings, "TranslateY",
+  inputManager.assignBindings("TranslateY",
   {
     std::make_shared <InputBindingRelative> ( InputHwId("-Key_Shift"), +1.0f ),
     std::make_shared <InputBindingRelative> ( InputHwId("+Key_Shift"), -1.0f ),
@@ -73,7 +63,7 @@ initSwControls( cqde::types::InputBindings& bindings )
     std::make_shared <InputBindingRelative> ( InputHwId("-Key_Space"), -1.0f ),
   });
 
-  assignBinding( bindings, "TranslateZ",
+  inputManager.assignBindings("TranslateZ",
   {
     std::make_shared <InputBindingRelative> ( InputHwId("-Key_S"), +1.0f ),
     std::make_shared <InputBindingRelative> ( InputHwId("+Key_S"), -1.0f ),
@@ -81,37 +71,37 @@ initSwControls( cqde::types::InputBindings& bindings )
     std::make_shared <InputBindingRelative> ( InputHwId("-Key_W"), -1.0f ),
   });
 
-  assignBinding( bindings, "Yaw",
+  inputManager.assignBindings("Yaw",
   {
     std::make_shared <InputBindingRelative> ( InputHwId("+MouseMove_X"), -0.5f ),
     std::make_shared <InputBindingRelative> ( InputHwId("-MouseMove_X"), +0.5f ),
   });
 
-  assignBinding( bindings, "Pitch",
+  inputManager.assignBindings("Pitch",
   {
     std::make_shared <InputBindingRelative> ( InputHwId("+MouseMove_Y"), -0.5f ),
     std::make_shared <InputBindingRelative> ( InputHwId("-MouseMove_Y"), +0.5f ),
   });
 
-  assignBinding( bindings, "CursorPosX",
+  inputManager.assignBindings("CursorPosX",
   {
     std::make_shared <InputBindingAbsolute> ( InputHwId("+MousePos_X"), +1.0f ),
     std::make_shared <InputBindingAbsolute> ( InputHwId("-MousePos_X"), +1.0f ),
   });
 
-  assignBinding( bindings, "CursorPosY",
+  inputManager.assignBindings("CursorPosY",
   {
     std::make_shared <InputBindingAbsolute> ( InputHwId("+MousePos_Y"), +1.0f ),
     std::make_shared <InputBindingAbsolute> ( InputHwId("-MousePos_Y"), +1.0f ),
   });
 
-  assignBinding( bindings, "CameraLookToggle",
+  inputManager.assignBindings("CameraLookToggle",
   {
     std::make_shared <InputBindingRelative> ( InputHwId("+MouseButton_Middle"), +1.0f ),
     std::make_shared <InputBindingRelative> ( InputHwId("-MouseButton_Middle"), -1.0f ),
   });
 
-  assignBinding( bindings, "EngineShutdown",
+  inputManager.assignBindings("EngineShutdown",
   {
     std::make_shared <InputBindingRelative> ( InputHwId("-Key_Enter"), +1.0f ),
   });
@@ -446,93 +436,70 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
 }
 
 void
-GameStateEcsSandbox::handleAxisInput(
-  const cqde::InputHwId inputSrc,
-  const float amount,
-  const float direction )
-{
-  using namespace cqde::compos;
-  using namespace cqde::types;
-
-  auto& bindings = mRegistry.ctx().at <InputBindings> ();
-
-  const std::string inputDir  = direction > 0.0f
-                              ? "+"
-                              : "-";
-
-  auto& inputCallbacks = mRegistry.ctx().at <InputCallbackStorage> ();
-
-  const auto [axesBegin, axesEnd] = bindings.equal_range( inputDir + inputSrc.str() );
-
-  for ( auto iter = axesBegin;
-        iter != axesEnd;
-        ++iter )
-  {
-    auto& [binding, axisId] = *iter;
-
-    for ( auto&& [entity, cController] : mRegistry.view <InputController> ().each() )
-      if ( cController.inputs.count(iter->second) != 0 )
-      {
-        binding->handleInput( cController.inputs[axisId], amount );
-
-          for ( const auto& callbackId : cController.inputs[axisId].callbacks )
-            inputCallbacks.Execute(callbackId, entity, cController);
-      }
-  }
-}
-
-void
 GameStateEcsSandbox::keyEvent( const olc::Event event )
 {
-  using namespace cqde::compos;
   using namespace cqde::types;
+  using cqde::InputHwCode;
 
-  auto& hwControls = mRegistry.ctx().at <HwControlMap> ();
+  auto& inputManager = mRegistry.ctx().at <InputManager> ();
 
   const float inputDirection = event.type == olc::Event::KeyPressed
                           ? +1.0f
                           : -1.0f;
 
-  handleAxisInput( hwControls[event.key.code], 1.0f, inputDirection );
+  inputManager.handleAxisInput( InputHwCode(event.key.code),
+                                1.0f, inputDirection,
+                                mRegistry );
 }
 
 void
 GameStateEcsSandbox::mouseMoveEvent( const olc::Event::MouseMoveEvent event )
 {
-  using olc::MouseInputId;
-  using namespace cqde::compos;
   using namespace cqde::types;
+  using olc::MouseInputId;
+  using cqde::InputHwCode;
 
-  auto& hwControls = mRegistry.ctx().at <HwControlMap> ();
+  auto& inputManager = mRegistry.ctx().at <InputManager> ();
 
   if ( event.dx != 0 )
   {
-    handleAxisInput( hwControls[int32_t(MouseInputId::MoveX)], std::abs(event.dx), event.dx );
-    handleAxisInput( hwControls[int32_t(MouseInputId::PosX)], mPGE->GetMouseX(), event.dx );
+    inputManager.handleAxisInput( InputHwCode(MouseInputId::MoveX),
+                                  std::abs(event.dx), event.dx,
+                                  mRegistry );
+    inputManager.handleAxisInput( InputHwCode(MouseInputId::PosX),
+                                  mPGE->GetMouseX(), event.dx,
+                                  mRegistry );
   }
 
   if ( event.dy != 0 )
   {
-    handleAxisInput( hwControls[int32_t(MouseInputId::MoveY)], std::abs(event.dy), event.dy );
-    handleAxisInput( hwControls[int32_t(MouseInputId::PosY)], mPGE->GetMouseY(), event.dy );
+    inputManager.handleAxisInput( InputHwCode(MouseInputId::MoveY),
+                                  std::abs(event.dy), event.dy,
+                                  mRegistry);
+    inputManager.handleAxisInput( InputHwCode(MouseInputId::PosY),
+                                  mPGE->GetMouseY(), event.dy,
+                                  mRegistry);
   }
 }
 
 void
 GameStateEcsSandbox::mouseButtonEvent( const olc::Event event )
 {
-  using olc::MouseInputId;
   using namespace cqde::types;
+  using olc::MouseInputId;
+  using cqde::InputHwCode;
 
-  auto& hwControls = mRegistry.ctx().at <HwControlMap> ();
+  auto& inputManager = mRegistry.ctx().at <InputManager> ();
 
-  const int32_t inputId = int32_t(MouseInputId::ENUM_BEGIN) + int32_t(event.mouseButton.button);
+  const InputHwCode inputHwCode = InputHwCode(MouseInputId::ENUM_BEGIN) + InputHwCode(event.mouseButton.button);
 
   const float inputDirection = event.type == olc::Event::MouseButtonPressed
                             ? 1.0f
                             : -1.0f;
 
-  handleAxisInput( hwControls[inputId], 1.0f, inputDirection );
+  inputManager.handleAxisInput( inputHwCode,
+                                1.0f, inputDirection,
+                                mRegistry );
 }
 
 bool
@@ -540,26 +507,28 @@ GameStateEcsSandbox::update(  const uint32_t ticks,
                               const TimeUtils::Duration elapsed )
 {
   using namespace cqde::compos;
+  using cqde::InputAxisId;
+
   const double dt = static_cast <double> (elapsed);
   const float cameraVelocity = 10.0f;
 
 // Camera control system
   for ( auto&& [eCamera, cCamera, cController, cTransform] : mRegistry.view <Camera, InputController, Transform>().each() )
   {
-    const float translationX = cController.inputs[cqde::InputAxisId("TranslateX")].value * cameraVelocity * dt;
+    const float translationX = cController.inputs[InputAxisId("TranslateX")].value * cameraVelocity * dt;
     cTransform.translation += cTransform.right() * translationX;
 
-    const float translationY = cController.inputs[cqde::InputAxisId("TranslateY")].value * cameraVelocity * dt;
+    const float translationY = cController.inputs[InputAxisId("TranslateY")].value * cameraVelocity * dt;
     cTransform.translation += cTransform.up() * translationY;
 
-    const float translationZ = cController.inputs[cqde::InputAxisId("TranslateZ")].value * cameraVelocity * dt;
+    const float translationZ = cController.inputs[InputAxisId("TranslateZ")].value * cameraVelocity * dt;
     cTransform.translation += cTransform.front() * translationZ;
 
     if ( cController.inputs.count("Pitch") == 0 || cController.inputs.count("Yaw") == 0 )
       continue;
 
-    const float pitch = glm::radians( cController.inputs[cqde::InputAxisId("Pitch")].value );
-    const float yaw = glm::radians( cController.inputs[cqde::InputAxisId("Yaw")].value );
+    const float pitch = glm::radians( cController.inputs[InputAxisId("Pitch")].value );
+    const float yaw = glm::radians( cController.inputs[InputAxisId("Yaw")].value );
 
     cTransform.orientation = glm::quat( {pitch, yaw, 0.0f} );
   }
@@ -574,6 +543,5 @@ GameStateEcsSandbox::render()
   cqde::systems::RenderSystem(mRegistry);
 
   auto& strings = mRegistry.ctx().at <cqde::types::TextStringAssetManager> ();
-
   mPGE->DrawStringDecal({0.0f, 0.0f}, *strings.try_get("multi_liner"_id));
 }
