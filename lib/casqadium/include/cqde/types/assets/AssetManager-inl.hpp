@@ -205,6 +205,19 @@ AssetManager <Asset>::status(
 }
 
 template <typename Asset>
+std::vector <typename AssetManager <Asset>::AssetId>
+AssetManager <Asset>::assetIdList() const
+{
+  std::lock_guard guard(mAssetsMutex);
+
+  std::vector <AssetId> list { mAssets.size() };
+  for ( const auto& [id, entry] : mAssets )
+    list.push_back(id);
+
+  return list;
+}
+
+template <typename Asset>
 std::shared_ptr <Asset>
 AssetManager <Asset>::try_get(
   const AssetId& id ) const

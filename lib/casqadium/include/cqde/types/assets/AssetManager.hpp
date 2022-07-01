@@ -68,6 +68,7 @@ public:
   void unloadImpl( AssetHandle& ) const;
 
   AssetStatus status( const AssetId& ) const;
+  std::vector <AssetId> assetIdList() const;
 
   AssetHandle try_get( const AssetId& ) const;
   AssetHandle get( const AssetId& );
