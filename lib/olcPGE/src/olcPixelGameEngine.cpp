@@ -679,6 +679,22 @@ void PixelGameEngine::SetKeepMouseCentered(const bool centered)
 {bKeepMouseCentered = centered;}
 
 
+void PixelGameEngine::ResetMouseCursor()
+{
+  bMouseCursor = Mouse::Cursor{};
+  olc::platform->SetMouseCursorHidden(false);
+}
+
+Mouse::Cursor PixelGameEngine::GetMouseCursor() const
+{ return bMouseCursor; }
+
+void PixelGameEngine::SetMouseCursor(const Mouse::Cursor& cursor)
+{
+  bMouseCursor = cursor;
+  olc::platform->SetMouseCursorHidden(true);
+}
+
+
 bool PixelGameEngine::Draw(const olc::vi2d& pos, Pixel p)
 { return Draw(pos.x, pos.y, p); }
 
@@ -1847,7 +1863,12 @@ void PixelGameEngine::olc_CoreUpdate()
 
   // Handle Frame Update
   for (auto& ext : vExtensions) ext->OnBeforeUserUpdate(fElapsedTime);
+
   if (!OnUserUpdate(fElapsedTime)) bAtomActive = false;
+
+  if (bMouseCursor.bitmap != nullptr && bMouseCursor.bitmap->Decal() != nullptr)
+    DrawDecal(vMousePos - bMouseCursor.hotspot, bMouseCursor.bitmap->Decal());
+
   for (auto& ext : vExtensions) ext->OnAfterUserUpdate(fElapsedTime);
 
   // Display Frame

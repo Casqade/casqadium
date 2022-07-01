@@ -786,6 +786,15 @@ struct LayerDesc
   std::function<void()> funcHook = nullptr;
 };
 
+namespace Mouse
+{
+struct Cursor
+{
+  std::shared_ptr <Renderable> bitmap {std::make_shared<Renderable>()};
+  olc::vi2d hotspot {};
+};
+}
+
 class OLCPGE_EXPORT Renderer
 {
 public:
@@ -903,6 +912,10 @@ public: // Utility
 
   void SetKeepMouseCentered(const bool);
   bool GetKeepMouseCentered() const;
+
+  void ResetMouseCursor();
+  void SetMouseCursor(const Mouse::Cursor&);
+  Mouse::Cursor GetMouseCursor() const;
 
 public: // CONFIGURATION ROUTINES
   // Layer targeting functions
@@ -1036,6 +1049,7 @@ private: // Inner mysterious workings
   bool		bHasInputFocus = false;
   bool		bHasMouseFocus = false;
   bool		bKeepMouseCentered = false;
+  Mouse::Cursor bMouseCursor {};
   bool		bEnableVSYNC = false;
   float		fFrameTimer = 1.0f;
   float		fLastElapsed = 0.0f;
