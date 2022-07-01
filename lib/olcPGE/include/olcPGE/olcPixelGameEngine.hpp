@@ -821,6 +821,9 @@ public:
   virtual olc::rcode SetWindowTitle(const std::string& s) = 0;
   virtual olc::rcode StartSystemEventLoop() = 0;
   virtual olc::rcode HandleSystemEvent() = 0;
+
+  virtual olc::rcode CenterMouseCursor() = 0;
+
   static olc::PixelGameEngine* ptrPGE;
 };
 
@@ -896,6 +899,9 @@ public: // Utility
   const olc::vi2d& GetPixelSize() const;
   // Gets actual pixel scale
   const olc::vi2d& GetScreenPixelSize() const;
+
+  void SetKeepMouseCentered(const bool);
+  bool GetKeepMouseCentered() const;
 
 public: // CONFIGURATION ROUTINES
   // Layer targeting functions
@@ -1028,6 +1034,7 @@ private: // Inner mysterious workings
   olc::vf2d	vPixel = { 1.0f, 1.0f };
   bool		bHasInputFocus = false;
   bool		bHasMouseFocus = false;
+  bool		bKeepMouseCentered = false;
   bool		bEnableVSYNC = false;
   float		fFrameTimer = 1.0f;
   float		fLastElapsed = 0.0f;

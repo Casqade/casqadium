@@ -672,6 +672,13 @@ const olc::vi2d& PixelGameEngine::GetScreenPixelSize() const
 const olc::vi2d& PixelGameEngine::GetWindowMouse() const
 { return vMouseWindowPos; }
 
+bool PixelGameEngine::GetKeepMouseCentered() const
+{ return bKeepMouseCentered; }
+
+void PixelGameEngine::SetKeepMouseCentered(const bool centered)
+{bKeepMouseCentered = centered;}
+
+
 bool PixelGameEngine::Draw(const olc::vi2d& pos, Pixel p)
 { return Draw(pos.x, pos.y, p); }
 
@@ -1827,6 +1834,9 @@ void PixelGameEngine::olc_CoreUpdate()
 
   ScanHardware(pKeyboardState, pKeyOldState, pKeyNewState, 256);
   ScanHardware(pMouseState, pMouseOldState, pMouseNewState, nMouseButtons);
+
+  if (GetKeepMouseCentered()== true && IsFocused() == true)
+    platform->CenterMouseCursor();
 
   // Cache mouse coordinates so they remain consistent during frame
   vMousePos = vMousePosCache;
@@ -3611,6 +3621,16 @@ namespace olc
               ptrPGE->olc_Terminate();
             }
         }
+
+      return olc::OK;
+    }
+
+    virtual olc::rcode CenterMouseCursor() override
+    {
+      X11::XWindowAttributes gwa;
+      XGetWindowAttributes(olc_Display, olc_Window, &gwa);
+      XWarpPointer(olc_Display, 0, olc_Window, 0, 0, 0, 0, gwa.width / 2, gwa.height / 2);
+
       return olc::OK;
     }
   };

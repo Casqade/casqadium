@@ -57,6 +57,12 @@ EventHandler::update()
 
   if ( mousePos != mousePosPrev )
   {
+    if ( mPGE->GetKeepMouseCentered() == true )
+    {
+      mousePosPrev.x = mPGE->GetWindowSize().x / 2;
+      mousePosPrev.y = mPGE->GetWindowSize().y / 2;
+    }
+
     Event event;
 
     event.type = Event::EventType::MouseMoved;
