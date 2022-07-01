@@ -220,9 +220,31 @@ jsonValidateObject(
     throw std::runtime_error(comment.substr(3));
   }
 
+  const Json::Value valueReference = reference["cqde_json_anykey"];
+  if ( valueReference.isNull() == false )
+  {
+    for ( const auto& key : value.getMemberNames() )
+    {
+      if ( value[key].type() != valueReference.type() )
+      {
+        const std::string comment = valueReference.getComment(Json::CommentPlacement::commentBefore);
+        CQDE_ASSERT_DEBUG(comment.size() > 3, throw std::runtime_error(format("expected different JSON value type for key '{}'", key)));
+        throw std::runtime_error(comment.substr(3));
+      }
+
+      if ( value[key].isObject() == true )
+        jsonValidateObject(value[key], valueReference);
+      else if ( value[key].isArray() == true )
+        jsonValidateArray(value[key], valueReference);
+    }
+
+    return;
+  }
+
   for ( const auto& key : reference.getMemberNames() )
     if ( value[key].type() != reference[key].type() )
     {
+//      treat negative integers as invalid type when reference is uint
       if ( ( reference[key].isUInt() || reference[key].isUInt64() ) &&
             value[key].isConvertibleTo(reference[key].type()) == true )
         continue;
