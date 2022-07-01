@@ -2200,7 +2200,7 @@ namespace olc
       glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    void SetDecalMode(const olc::DecalMode& mode)
+    void SetDecalMode(const olc::DecalMode& mode) override
     {
       if (mode != nDecalMode)
         {
