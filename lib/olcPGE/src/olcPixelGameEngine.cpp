@@ -3489,6 +3489,19 @@ namespace olc
       return DefWindowProc(hWnd, uMsg, wParam, lParam);
     }
 
+    virtual olc::rcode CenterMouseCursor() override
+    {
+      RECT rc;
+      GetClientRect(olc_hWnd, &rc);
+
+      POINT pt {rc.right / 2, rc.bottom / 2};
+      ClientToScreen(olc_hWnd, &pt);
+
+      SetCursorPos(pt.x, pt.y);
+
+      return olc::OK;
+    }
+
     virtual olc::rcode SetMouseCursorHidden(const bool hidden) override
     {
       if (hidden == true)
