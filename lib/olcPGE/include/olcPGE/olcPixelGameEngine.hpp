@@ -518,12 +518,12 @@ struct HWButton
 template <class T>
 struct OLCPGE_EXPORT v2d_generic
 {
-  T x = 0;
-  T y = 0;
-  v2d_generic() : x(0), y(0) {}
+  T x {};
+  T y {};
+  v2d_generic() = default;
   v2d_generic(T _x, T _y) : x(_x), y(_y) {}
-  v2d_generic(const v2d_generic& v) : x(v.x), y(v.y) {}
-  v2d_generic& operator=(const v2d_generic& v) = default;
+  v2d_generic(const v2d_generic&) = default;
+  v2d_generic& operator=(const v2d_generic&) = default;
   T mag() const { return T(std::sqrt(x * x + y * y)); }
   T mag2() const { return x * x + y * y; }
   v2d_generic  norm() const { T r = 1 / mag(); return v2d_generic(x * r, y * r); }

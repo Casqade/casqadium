@@ -31,6 +31,23 @@ EventHandler::update()
   if ( isInFocus == false )
     return;
 
+  const vi2d windowSize = mPGE->GetWindowSize();
+  static vi2d windowSizePrev = windowSize;
+
+  if ( windowSize != windowSizePrev )
+  {
+    Event event;
+
+    event.type = Event::EventType::WindowResized;
+
+    event.windowResize.newSize = windowSize;
+    event.windowResize.oldSize = windowSizePrev;
+
+    mEvents.push_back(event);
+
+    windowSizePrev = windowSize;
+  }
+
   for ( int32_t key = 0;
         key < Key::ENUM_END;
         ++key )

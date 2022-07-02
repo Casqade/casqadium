@@ -49,6 +49,12 @@ public:
     int y;
   };
 
+  struct WindowResizeEvent
+  {
+    vi2d newSize;
+    vi2d oldSize;
+  };
+
   enum EventType
   {
     LostFocus,
@@ -62,6 +68,7 @@ public:
     MouseMoved,
     MouseEntered,
     MouseLeft,
+    WindowResized,
 
     Count
   };
@@ -75,6 +82,7 @@ public:
     MouseMoveEvent        mouseMove;
     MouseButtonEvent      mouseButton;
     MouseWheelScrollEvent mouseWheelScroll;
+    WindowResizeEvent     windowResize {};
   };
 };
 
