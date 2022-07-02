@@ -112,7 +112,7 @@ static decltype(auto) get(
   entt::registry& registry,
   entt::entity entity)
 {
-  std::cout << "got\n";
+  LOG_INFO("got");
   return registry.template get <Component> (entity);
 }
 
@@ -123,7 +123,7 @@ struct MyComponent
 
   Json::Value serialize() const
   {
-    std::cout << "serialize " << name << "\n";
+    LOG_INFO("serializing {}", name);
 
     Json::Value component;
     component["name"] = name;
@@ -136,7 +136,7 @@ struct MyComponent
     auto& comp = registry.emplace_or_replace <MyComponent> (entity);
     comp.name = component.get("name", "defName").asString();
 
-    std::cout << "deserialized " << comp.name << "\n";
+    LOG_INFO("deserialized {}", comp.name);
   }
 };
 
@@ -171,32 +171,31 @@ testSerialization()
   comp1.name = "test1";
   comp2.name = "test2";
 
-  std::cout << "registry.each\n";
+  LOG_INFO("registry.each");
 
   registry.each(
   [&registry] ( const entt::entity entity )
   {
-    std::cout << "  entity " << entt::id_type(entity) << "\n";
-    std::cout << "  components: " << "\n";
+    LOG_INFO("entity {}", entt::id_type(entity));
+    LOG_INFO("components:");
 
     each_component( entity, registry,
     [] ( const entt::id_type componentType, const entt::entity )
     {
       auto prop = entt::resolve(componentType).prop("typeName"_hs);
 
-      std::cout << prop.value().cast <std::string> () << "\n";
+      LOG_INFO("{}", prop.value().cast <std::string> ());
     });
-
-    std::cout << "\n";
+    LOG_INFO("");
   });
 
 //  return;
 
-  std::cout << "[comp, entities] registry storage\n";
+  LOG_INFO("[comp, entities] registry storage");
 
   for ( auto [componentType, entities] : registry.storage() )
   {
-    std::cout << "  each entity\n";
+    LOG_INFO("each entity");
     for ( auto entity : entities )
       {
         auto type = entt::resolve(componentType);
@@ -206,11 +205,11 @@ testSerialization()
           any = getFunc.invoke(any, entt::forward_as_meta(registry), entity);
 
         if ( auto serialize = type.func("serialize"_hs) )
-          std::cout << serialize.invoke(any).cast <Json::Value> ().toStyledString() << "\n";
+          LOG_INFO("{}", serialize.invoke(any).cast <Json::Value> ().toStyledString());
       }
   }
 
-  std::cout << "comp names: " << comp1.name << " " << comp2.name << "\n";
+  LOG_INFO("comp names before: {} {}", comp1.name, comp2.name);
 
   auto prop = entt::resolve("MyComponent"_hs).prop("typeName"_hs);
   Json::Value components;
@@ -225,7 +224,7 @@ testSerialization()
   if ( auto deserialize = type.func("deserialize"_hs) )
     deserialize.invoke(any, entt::forward_as_meta(registry), entity1, entt::forward_as_meta(components["MyComponent"]));
 
-  std::cout << "comp names: " << comp1.name << " " << comp2.name << "\n";
+  LOG_INFO("comp names after: {} {}", comp1.name, comp2.name);
 }
 
 std::shared_ptr <olc::Renderable>
