@@ -3262,6 +3262,8 @@ namespace olc
   {
   private:
     HWND olc_hWnd = nullptr;
+    HCURSOR olc_hCursor;
+    HCURSOR olc_hCursorDefault;
     std::wstring wsAppName;
 
     std::wstring ConvertS2W(std::string s)
@@ -3317,6 +3319,8 @@ namespace olc
       wc.hbrBackground = nullptr;
       wc.lpszClassName = olcT("OLC_PIXEL_GAME_ENGINE");
       RegisterClass(&wc);
+
+      olc_hCursor = olc_hCursorDefault = wc.hCursor;
 
       // Define window furniture
       DWORD dwExStyle = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
@@ -3418,6 +3422,7 @@ namespace olc
     // Windows Event Handler - this is statically connected to the windows event system
     static LRESULT CALLBACK olc_WindowEvent(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
+      const HCURSOR cursor = static_cast <Platform_Windows*> (platform.get())->olc_hCursor;
       switch (uMsg)
         {
         case WM_MOUSEMOVE:
@@ -3428,6 +3433,11 @@ namespace olc
           return 0;
         case WM_MOUSEWHEEL:
           ptrPGE->olc_UpdateMouseWheel(GET_WHEEL_DELTA_WPARAM(wParam));
+          return 0;
+        case WM_SETCURSOR:
+          if (LOWORD(lParam) != HTCLIENT)
+            break;
+          SetCursor(cursor);
           return 0;
         case WM_MOUSELEAVE:
           ptrPGE->olc_UpdateMouseFocus(false);
@@ -3477,6 +3487,18 @@ namespace olc
           return 0;
         }
       return DefWindowProc(hWnd, uMsg, wParam, lParam);
+    }
+
+    virtual olc::rcode SetMouseCursorHidden(const bool hidden) override
+    {
+      if (hidden == true)
+        olc_hCursor = NULL;
+      else
+        olc_hCursor = olc_hCursorDefault;
+
+      SetCursor(olc_hCursor);
+
+      return olc::OK;
     }
   };
 }
