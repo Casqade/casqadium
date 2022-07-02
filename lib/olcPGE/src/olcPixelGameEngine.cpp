@@ -3393,6 +3393,7 @@ namespace olc
       mapKeys[VK_OEM_MINUS] = Key::MINUS;		// the minus key on any keyboard
       mapKeys[VK_OEM_PERIOD] = Key::PERIOD;	// the period key on any keyboard
       mapKeys[VK_CAPITAL] = Key::CAPS_LOCK;
+      mapKeys[VK_MENU] = Key::MENU;
       return olc::OK;
     }
 
