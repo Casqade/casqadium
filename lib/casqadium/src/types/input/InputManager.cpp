@@ -55,6 +55,8 @@ InputManager::InputManager()
     {olc::Key::D, cqde::InputHwId("Key_D")},
     {olc::Key::S, cqde::InputHwId("Key_S")},
     {olc::Key::W, cqde::InputHwId("Key_W")},
+    {olc::Key::C, cqde::InputHwId("Key_C")},
+    {olc::Key::MENU, cqde::InputHwId("Key_Alt")},
     {olc::Key::SHIFT, cqde::InputHwId("Key_Shift")},
     {olc::Key::SPACE, cqde::InputHwId("Key_Space")},
     {olc::Key::ENTER, cqde::InputHwId("Key_Enter")},

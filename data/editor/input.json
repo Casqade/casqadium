@@ -120,17 +120,28 @@
       "sensitivity": 1.0,
     },
   },
-  "CameraLookToggle":
+  "CameraLookOn":
   {
-    "+MouseButton_Middle":
+    "+Key_Alt":
     {
       "absolute": false,
       "sensitivity": 1.0,
     },
-    "-MouseButton_Middle":
+  },
+  "CameraLookOff":
+  {
+    "-Key_Alt":
     {
       "absolute": false,
-      "sensitivity": -1.0,
+      "sensitivity": 1.0,
+    },
+  },
+  "CameraLookToggle":
+  {
+    "-Key_C":
+    {
+      "absolute": false,
+      "sensitivity": 1.0,
     },
   },
   "EngineShutdown":

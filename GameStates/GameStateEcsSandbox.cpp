@@ -95,10 +95,19 @@ initSwControls( cqde::types::InputManager& inputManager )
     std::make_shared <InputBindingAbsolute> ( InputHwId("-MousePos_Y"), +1.0f ),
   });
 
+  inputManager.assignBindings("CameraLookOn",
+  {
+    std::make_shared <InputBindingRelative> ( InputHwId("+Key_Alt"), +1.0f ),
+  });
+
+  inputManager.assignBindings("CameraLookOff",
+  {
+    std::make_shared <InputBindingRelative> ( InputHwId("-Key_Alt"), +1.0f ),
+  });
+
   inputManager.assignBindings("CameraLookToggle",
   {
-    std::make_shared <InputBindingRelative> ( InputHwId("+MouseButton_Middle"), +1.0f ),
-    std::make_shared <InputBindingRelative> ( InputHwId("-MouseButton_Middle"), -1.0f ),
+    std::make_shared <InputBindingRelative> ( InputHwId("-Key_C"), +1.0f ),
   });
 
   inputManager.assignBindings("EngineShutdown",
@@ -368,6 +377,16 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
   iAxisTranslateZ.constraint = {-1.0f, 1.0f};
   iAxisTranslateZ.value = 0.0f;
 
+  ControlAxis iAxisCameraLookOn{};
+  iAxisCameraLookOn.constraint = {0.0f, 1.0f};
+  iAxisCameraLookOn.value = 0.0f;
+  iAxisCameraLookOn.callbacks.insert(cqde::InputCallbackId("CameraLookOn"));
+
+  ControlAxis iAxisCameraLookOff{};
+  iAxisCameraLookOff.constraint = {0.0f, 1.0f};
+  iAxisCameraLookOff.value = 0.0f;
+  iAxisCameraLookOff.callbacks.insert(cqde::InputCallbackId("CameraLookOff"));
+
   ControlAxis iAxisCameraLookToggle{};
   iAxisCameraLookToggle.constraint = {0.0f, 1.0f};
   iAxisCameraLookToggle.value = 0.0f;
@@ -386,32 +405,20 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
   cInputController.inputs[cqde::InputAxisId("TranslateX")] = iAxisTranslateX;
   cInputController.inputs[cqde::InputAxisId("TranslateY")] = iAxisTranslateY;
   cInputController.inputs[cqde::InputAxisId("TranslateZ")] = iAxisTranslateZ;
+  cInputController.inputs[cqde::InputAxisId("CameraLookOn")] = iAxisCameraLookOn;
+  cInputController.inputs[cqde::InputAxisId("CameraLookOff")] = iAxisCameraLookOff;
   cInputController.inputs[cqde::InputAxisId("CameraLookToggle")] = iAxisCameraLookToggle;
   cInputController.inputs[cqde::InputAxisId("EngineShutdown")] = iAxisExitListener;
   cInputController.inputs[cqde::InputAxisId("CursorPosX")] = iAxisCursorListener;
 
   auto& inputCallbacks = mRegistry.ctx().at <InputCallbackStorage> ();
 
-  inputCallbacks.Register( cqde::InputCallbackId("CameraLookToggle"),
+  static float valPitch{};
+  static float valYaw{};
+
+  const auto cameraLookOn =
   [this, cursor] ( const entt::entity, InputController& cController )
   {
-    static float valPitch{};
-    static float valYaw{};
-
-    if ( cController.inputs.count("Pitch") > 0 || cController.inputs.count("Yaw") > 0 )
-    {
-      mPGE->SetMouseCursor(cursor);
-      mPGE->SetKeepMouseCentered(false);
-
-      valPitch = cController.inputs["Pitch"].value;
-      valYaw = cController.inputs["Yaw"].value;
-
-      cController.inputs.erase("Pitch");
-      cController.inputs.erase("Yaw");
-
-      return;
-    }
-
     mPGE->SetMouseCursor(olc::Mouse::Cursor{});
     mPGE->SetKeepMouseCentered(true);
 
@@ -426,9 +433,32 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
 
     cController.inputs["Pitch"] = iAxisPitch;
     cController.inputs["Yaw"] = iAxisYaw;
+  };
 
-    return;
+  const auto cameraLookOff =
+  [this, cursor] ( const entt::entity, InputController& cController )
+  {
+    mPGE->SetMouseCursor(cursor);
+    mPGE->SetKeepMouseCentered(false);
+
+    valPitch = cController.inputs["Pitch"].value;
+    valYaw = cController.inputs["Yaw"].value;
+
+    cController.inputs.erase("Pitch");
+    cController.inputs.erase("Yaw");
+  };
+
+  inputCallbacks.Register( cqde::InputCallbackId("CameraLookToggle"),
+  [this, cursor, cameraLookOn, cameraLookOff] ( const entt::entity e, InputController& cController )
+  {
+    if ( cController.inputs.count("Pitch") > 0 || cController.inputs.count("Yaw") > 0 )
+      cameraLookOff(e, cController);
+    else
+      cameraLookOn(e, cController);
   });
+
+  inputCallbacks.Register( cqde::InputCallbackId("CameraLookOn"), cameraLookOn);
+  inputCallbacks.Register( cqde::InputCallbackId("CameraLookOff"), cameraLookOff);
 
   inputCallbacks.Register( cqde::InputCallbackId("CameraYawClamp"),
   [] ( const entt::entity, InputController& cController )
