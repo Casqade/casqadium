@@ -7,6 +7,8 @@
 #include <cqde/util/logger.hpp>
 #include <cqde/common.hpp>
 
+#include <iostream>
+
 
 int
 main( int , char*[] )

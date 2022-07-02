@@ -6,6 +6,8 @@
 
 #include <entt/fwd.hpp>
 
+#include <filesystem>
+
 
 namespace cqde::types
 {

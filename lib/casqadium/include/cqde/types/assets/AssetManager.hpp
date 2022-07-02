@@ -4,6 +4,7 @@
 
 #include <json/value.h>
 
+#include <filesystem>
 #include <mutex>
 #include <set>
 

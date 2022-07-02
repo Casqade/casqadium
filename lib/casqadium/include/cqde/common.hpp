@@ -7,7 +7,7 @@
 #include <spdlog/fmt/bundled/format.h>
 
 #include <iosfwd>
-#include <bits/fs_fwd.h>
+#include <filesystem>
 
 
 // assert in debug build

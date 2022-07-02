@@ -293,23 +293,16 @@
 // O------------------------------------------------------------------------------O
 // | STANDARD INCLUDES                                                            |
 // O------------------------------------------------------------------------------O
-#include <cmath>
-#include <cstdint>
-#include <string>
-#include <iostream>
-#include <streambuf>
-#include <sstream>
-#include <chrono>
-#include <vector>
-#include <list>
-#include <thread>
-#include <atomic>
-#include <fstream>
 #include <map>
+#include <cmath>
+#include <chrono>
+#include <fstream>
+#include <memory>
+#include <string>
+#include <vector>
+#include <cstdint>
+#include <streambuf>
 #include <functional>
-#include <algorithm>
-#include <array>
-#include <cstring>
 #pragma endregion
 
 #define PGE_VER 216
@@ -328,18 +321,6 @@
 #if __cplusplus >= 201703L
 #undef USE_EXPERIMENTAL_FS
 #endif
-#endif
-
-
-#if defined(USE_EXPERIMENTAL_FS) || defined(FORCE_EXPERIMENTAL_FS)
-// C++14
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
-#include <experimental/filesystem>
-namespace _gfs = std::experimental::filesystem::v1;
-#else
-// C++17
-#include <filesystem>
-namespace _gfs = std::filesystem;
 #endif
 
 #if defined(UNICODE) || defined(_UNICODE)
@@ -423,30 +404,8 @@ namespace _gfs = std::filesystem;
 #define _WIN32_WINNT 0x0500 // Windows 2000
 #endif
 #endif
-
-#include <windows.h>
-#undef _WINSOCKAPI_
 #endif
 
-#if defined(OLC_PLATFORM_X11)
-namespace X11
-{
-#include <X11/X.h>
-#include <X11/Xlib.h>
-}
-#endif
-
-#if defined(OLC_PLATFORM_GLUT)
-#if defined(__linux__)
-#include <GL/glut.h>
-#include <GL/freeglut_ext.h>
-#endif
-#if defined(__APPLE__)
-#include <GLUT/glut.h>
-#include <objc/message.h>
-#include <objc/NSObjCRuntime.h>
-#endif
-#endif
 #endif
 #pragma endregion
 
