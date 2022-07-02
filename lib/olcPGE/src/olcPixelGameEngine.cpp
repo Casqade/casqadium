@@ -1780,9 +1780,9 @@ void PixelGameEngine::olc_UpdateMouseWheel(int32_t delta)
 
 void PixelGameEngine::olc_UpdateMouse(int32_t x, int32_t y)
 {
+  bHasMouseFocus = true;
   // Mouse coords come in screen space
   // But leave in pixel space
-  bHasMouseFocus = true;
   vMouseWindowPos = { x, y };
   // Full Screen mode may have a weird viewport we must clamp to
   x -= vViewPos.x;
@@ -1802,10 +1802,29 @@ void PixelGameEngine::olc_UpdateKeyState(int32_t key, bool state)
 { pKeyNewState[key] = state; }
 
 void PixelGameEngine::olc_UpdateMouseFocus(bool state)
-{ bHasMouseFocus = state; }
+{
+  bHasMouseFocus = state;
+
+  if (bHasMouseFocus == true)
+    return;
+
+  for (auto& button : pMouseNewState)
+    button = false;
+}
 
 void PixelGameEngine::olc_UpdateKeyFocus(bool state)
-{ bHasInputFocus = state; }
+{
+  bHasInputFocus = state;
+
+  if (bHasInputFocus == true)
+    return;
+
+  for (auto& key : pKeyNewState)
+    key = false;
+
+  for (auto& button : pMouseNewState)
+    button = false;
+}
 
 void PixelGameEngine::olc_Reanimate()
 { bAtomActive = true; }
