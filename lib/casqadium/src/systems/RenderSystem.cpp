@@ -26,7 +26,7 @@ RenderSystem( entt::registry& registry )
   using namespace cqde::compos;
   using namespace cqde::types;
 
-  for ( const auto&& [eCamera, cCamera] : registry.view <Camera>().each() )
+  for ( const auto&& [eCamera, cCamera] : registry.view <Camera> ().each() )
   {
     for ( const auto& [buffer, entity] : cCamera.zBuffer )
     {

@@ -60,7 +60,7 @@ void CullingSystem( entt::registry& registry )
   using namespace cqde::compos;
 
   for ( const auto&& [eCamera, cCamera, cCameraNode, cCameraTransform]
-          : registry.view <Camera, SceneNode, Transform>().each() )
+          : registry.view <Camera, SceneNode, Transform> ().each() )
   {
     cCamera.zBuffer.clear();
 

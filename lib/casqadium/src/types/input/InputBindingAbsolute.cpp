@@ -23,11 +23,11 @@ const static Json::Value InputBindingAbsoluteJsonReference =
 
   reference["curve"] = ValueType::realValue;
   reference["curve"].setComment("// 'curve' must be a JSON float"s,
-                                    Json::CommentPlacement::commentBefore);
+                                Json::CommentPlacement::commentBefore);
 
   reference["deadzone"] = ValueType::realValue;
   reference["deadzone"].setComment("// 'deadzone' must be a JSON float"s,
-                                      Json::CommentPlacement::commentBefore);
+                                    Json::CommentPlacement::commentBefore);
 
   return reference;
 }();

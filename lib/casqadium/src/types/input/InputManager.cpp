@@ -33,7 +33,7 @@ const static Json::Value inputConfigReference =
   Json::Value& axis = reference["cqde_json_anykey"];
   axis = ValueType::objectValue;
   axis.setComment("// input config axis entry must be a JSON object"s,
-                      Json::CommentPlacement::commentBefore);
+                  Json::CommentPlacement::commentBefore);
 
   Json::Value& bindings = axis["cqde_json_anykey"];
   bindings = ValueType::objectValue;
@@ -83,7 +83,8 @@ InputManager::parseInputConfigFile( const std::filesystem::path& configPath )
 {
   Json::Value inputConfig {};
 
-  LOG_TRACE("Parsing input config '{}'", configPath.string());
+  LOG_TRACE("Parsing input config '{}'",
+            configPath.string());
 
   try
   {
@@ -95,7 +96,8 @@ InputManager::parseInputConfigFile( const std::filesystem::path& configPath )
                                     e.what()));
   }
 
-  LOG_TRACE("Validating input config '{}'", configPath.string());
+  LOG_TRACE("Validating input config '{}'",
+            configPath.string());
 
   try
   {
@@ -103,26 +105,36 @@ InputManager::parseInputConfigFile( const std::filesystem::path& configPath )
   }
   catch ( const std::exception& e )
   {
-    throw std::runtime_error(format("Failed to validate input config '{}': {}",
-                                    configPath.string(), e.what()));
+    throw std::runtime_error(
+      format("Failed to validate input config '{}': {}",
+              configPath.string(), e.what()));
   }
-
-  LOG_TRACE("Importing input config '{}'", configPath.string());
 
   for ( const auto& axisId : inputConfig.getMemberNames() )
   {
-    LOG_INFO("Binding inputs to axis '{}' ('{}')", axisId, configPath.string());
+    LOG_DEBUG("Binding inputs to axis '{}' ('{}')",
+              axisId, configPath.string());
 
     for ( const auto& bindingHwId : inputConfig[axisId].getMemberNames() )
     {
+      LOG_TRACE("Binding input '{}' to axis '{}' ('{}')",
+                bindingHwId, axisId, configPath.string());
+
       try
       {
-        assignBinding(axisId, InputBinding::FromJson(bindingHwId, inputConfig[axisId][bindingHwId]));
+        const auto& bindingJson = inputConfig[axisId][bindingHwId];
+
+        auto binding = InputBinding::FromJson(bindingHwId,
+                                              bindingJson);
+
+        assignBinding(axisId, std::move(binding));
       }
       catch ( const std::exception& e )
       {
-        throw std::runtime_error(format("Failed to validate input binding for axis '{}' in '{}': {}",
-                                        axisId, configPath.string(), e.what()));
+        throw std::runtime_error(
+          format("Failed to bind '{}' to axis '{}' ('{}'): {}",
+                  bindingHwId, axisId,
+                  configPath.string(), e.what()));
       }
     }
   }

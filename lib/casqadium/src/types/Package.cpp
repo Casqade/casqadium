@@ -32,19 +32,19 @@ const static Json::Value manifestReference =
 
   manifest["description"] = ValueType::stringValue;
   manifest["description"].setComment("// description must be a JSON string"s,
-                                Json::CommentPlacement::commentBefore);
+                                      Json::CommentPlacement::commentBefore);
 
   manifest["dependencies"] = ValueType::arrayValue;
   manifest["dependencies"].append(ValueType::stringValue);
   manifest["dependencies"].setComment("// dependencies list must be a JSON array"s,
-                                Json::CommentPlacement::commentBefore);
+                                      Json::CommentPlacement::commentBefore);
 
   manifest["dependencies"].begin()->setComment("// dependencies list element must be a JSON string"s,
-                                          Json::CommentPlacement::commentBefore);
+                                                Json::CommentPlacement::commentBefore);
 
   manifest["version"] = ValueType::stringValue;
   manifest["version"].setComment("// version must be a JSON string"s,
-                                Json::CommentPlacement::commentBefore);
+                                  Json::CommentPlacement::commentBefore);
 
   return manifest;
 }();

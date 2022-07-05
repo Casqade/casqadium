@@ -17,16 +17,16 @@ const static Json::Value inputBindingJsonReference =
 
   Json::Value binding = ValueType::objectValue;
   binding.setComment("// input binding value root must be an object"s,
-                       Json::CommentPlacement::commentBefore);
+                     Json::CommentPlacement::commentBefore);
 
 
   binding["absolute"] = ValueType::booleanValue;
   binding["absolute"].setComment("// absolute must be a JSON boolean"s,
-                                Json::CommentPlacement::commentBefore);
+                                  Json::CommentPlacement::commentBefore);
 
   binding["sensitivity"] = ValueType::realValue;
   binding["sensitivity"].setComment("// sensitivity must be a JSON float"s,
-                                Json::CommentPlacement::commentBefore);
+                                    Json::CommentPlacement::commentBefore);
 
   return binding;
 }();

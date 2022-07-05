@@ -17,7 +17,7 @@ const static Json::Value rootReference =
 
   Json::Value root = ValueType::objectValue;
   root.setComment("// JSON root must be an object"s,
-                       Json::CommentPlacement::commentBefore);
+                   Json::CommentPlacement::commentBefore);
 
   root["entry_point"] = ValueType::stringValue;
   root["entry_point"].setComment("// entry_point must be a JSON string"s,
