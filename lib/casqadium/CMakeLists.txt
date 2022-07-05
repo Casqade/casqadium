@@ -109,8 +109,8 @@ target_sources(${TARGET} PRIVATE
   src/util/logger.cpp
   include/${CASQADIUM_SHORT}/util/logger.hpp
 
-  src/util/ConfigManager.cpp
-  include/${CASQADIUM_SHORT}/util/ConfigManager.hpp
+  src/types/ConfigManager.cpp
+  include/${CASQADIUM_SHORT}/types/ConfigManager.hpp
 
   thirdparty/ctpl/ctpl_stl.h
 )

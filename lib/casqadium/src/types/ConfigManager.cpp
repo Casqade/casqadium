@@ -1,4 +1,4 @@
-#include <cqde/util/ConfigManager.hpp>
+#include <cqde/types/ConfigManager.hpp>
 #include <cqde/common.hpp>
 
 #include <json/value.h>
@@ -9,7 +9,7 @@
 #include <fstream>
 
 
-namespace cqde
+namespace cqde::types
 {
 
 

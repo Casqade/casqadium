@@ -8,7 +8,7 @@
 #include <filesystem>
 
 
-namespace cqde
+namespace cqde::types
 {
 
 class ConfigManager

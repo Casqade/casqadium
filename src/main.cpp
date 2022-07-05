@@ -3,7 +3,7 @@
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/sinks/basic_file_sink.h>
 
-#include <cqde/util/ConfigManager.hpp>
+#include <cqde/types/ConfigManager.hpp>
 #include <cqde/util/logger.hpp>
 #include <cqde/common.hpp>
 
@@ -16,7 +16,7 @@ main( int , char*[] )
   const static std::string configFilename = "AnotherDayAtHospital.conf";
   const static std::string logFilename = "AnotherDayAtHospital.log";
 
-  cqde::ConfigManager configManager (configFilename);
+  cqde::types::ConfigManager configManager (configFilename);
 
   std::vector <std::shared_ptr <spdlog::sinks::sink>> sinks {};
 
