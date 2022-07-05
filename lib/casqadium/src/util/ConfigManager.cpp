@@ -12,6 +12,88 @@
 namespace cqde
 {
 
+
+const static Json::Value configReference =
+[]
+{
+  using ValueType = Json::ValueType;
+  using namespace std::string_literals;
+
+  Json::Value root = ValueType::objectValue;
+  root.setComment("// config root must be a JSON object"s,
+                  Json::CommentPlacement::commentBefore);
+
+  Json::Value& engine = root["engine"];
+  engine = ValueType::objectValue;
+  engine.setComment("// 'engine' value must be a JSON object"s,
+                    Json::CommentPlacement::commentBefore);
+
+  Json::Value& framerate = engine["frame-rate"];
+  framerate = ValueType::uintValue;
+  framerate.setComment("// 'frame-rate' value must be a JSON unsigned integer"s,
+                        Json::CommentPlacement::commentBefore);
+
+  Json::Value& tickrate = engine["tick-rate"];
+  tickrate = ValueType::uintValue;
+  tickrate.setComment("// 'tick-rate' value must be a JSON unsigned integer"s,
+                      Json::CommentPlacement::commentBefore);
+
+
+  Json::Value& logConfig = root["log"];
+  logConfig = ValueType::objectValue;
+  logConfig.setComment("// 'log' value must be a JSON object"s,
+                       Json::CommentPlacement::commentBefore);
+
+  Json::Value& pattern = logConfig["pattern"];
+  pattern = ValueType::stringValue;
+  pattern.setComment("// 'pattern' value must be a JSON string"s,
+                      Json::CommentPlacement::commentBefore);
+
+
+  Json::Value& level= logConfig["level"];
+  level = ValueType::objectValue;
+  level.setComment("// 'level' value must be a JSON object"s,
+                    Json::CommentPlacement::commentBefore);
+
+  Json::Value& cmd = level["cmd"];
+  cmd = ValueType::stringValue;
+  cmd.setComment("// 'cmd' value must be a JSON string"s,
+                  Json::CommentPlacement::commentBefore);
+
+  Json::Value& file = level["file"];
+  file = ValueType::stringValue;
+  file.setComment("// 'file' value must be a JSON string"s,
+                  Json::CommentPlacement::commentBefore);
+
+  Json::Value& flushOn = level["flush-on"];
+  flushOn = ValueType::stringValue;
+  flushOn.setComment("// 'flush-on' value must be a JSON string"s,
+                      Json::CommentPlacement::commentBefore);
+
+
+  Json::Value& video = root["video"];
+  video = ValueType::objectValue;
+  video.setComment("// 'video' value must be a JSON object"s,
+                    Json::CommentPlacement::commentBefore);
+
+  Json::Value& fullscreen = video["fullscreen"];
+  fullscreen = ValueType::booleanValue;
+  fullscreen.setComment("// 'fullscreen' value must be a JSON boolean"s,
+                        Json::CommentPlacement::commentBefore);
+
+  Json::Value& windowW = video["window-width"];
+  windowW = ValueType::uintValue;
+  windowW.setComment("// 'window-width' value must be a JSON unsigned integer"s,
+                      Json::CommentPlacement::commentBefore);
+
+  Json::Value& windowH = video["window-height"];
+  windowH = ValueType::uintValue;
+  windowH.setComment("// 'window-height' value must be a JSON unsigned integer"s,
+                      Json::CommentPlacement::commentBefore);
+
+  return root;
+}();
+
 ConfigManager::ConfigManager(
   const std::filesystem::path& path )
   : ConfigManager()
