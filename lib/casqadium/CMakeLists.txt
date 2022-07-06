@@ -13,6 +13,9 @@ target_sources(${TARGET} PRIVATE
   include/${CASQADIUM_SHORT}/alias.hpp
   include/${CASQADIUM_SHORT}/fwd.hpp
 
+  src/ecs_helpers.cpp
+  include/${CASQADIUM_SHORT}/ecs_helpers.hpp
+
   src/file_helpers.cpp
   include/${CASQADIUM_SHORT}/file_helpers.hpp
 

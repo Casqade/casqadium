@@ -8,6 +8,7 @@
 
 #include <cqde/alias.hpp>
 #include <cqde/common.hpp>
+#include <cqde/ecs_helpers.hpp>
 
 #include <cqde/types/EntityTagManager.hpp>
 #include <cqde/types/PackageManager.hpp>
@@ -116,15 +117,6 @@ initSwControls( cqde::types::InputManager& inputManager )
   });
 }
 
-template<typename Component>
-static decltype(auto) get(
-  entt::registry& registry,
-  entt::entity entity)
-{
-  LOG_INFO("got");
-  return registry.template get <Component> (entity);
-}
-
 struct MyComponent
 {
   std::string name;
@@ -149,29 +141,21 @@ struct MyComponent
   }
 };
 
-template <typename Func>
-static void each_component( const entt::entity entity,
-                            const entt::registry& registry,
-                            Func func )
-{
-  for ( const auto [componentType, entities] : registry.storage() )
-    if ( const auto iter = entities.find(entity); iter != entities.end() )
-      func( componentType, *iter );
-}
-
 static void
 testSerialization()
 {
   using namespace entt::literals;
+  using namespace std::literals;
+  using cqde::ComponentType;
+  using cqde::EntityType;
 
   entt::registry registry {};
 
-
   entt::meta<MyComponent>().type("MyComponent"_hs)
-    .props(std::make_pair("typeName"_hs, std::string("MyComponent")))
+    .prop("typename"_hs, "MyComponent"s)
     .func<&MyComponent::serialize>("serialize"_hs)
     .func<&MyComponent::deserialize>("deserialize"_hs)
-    .func<&get <MyComponent>>("Get"_hs);
+    .func<&cqde::component_get <MyComponent>>("get"_hs);
 
   auto entity1 = registry.create();
   auto entity2 = registry.create();
@@ -180,47 +164,45 @@ testSerialization()
   comp1.name = "test1";
   comp2.name = "test2";
 
-  LOG_INFO("registry.each");
 
+  LOG_INFO("each entity");
   registry.each(
   [&registry] ( const entt::entity entity )
   {
-    LOG_INFO("entity {}", entt::id_type(entity));
-    LOG_INFO("components:");
+    LOG_INFO("entity {}", EntityType(entity));
 
-    each_component( entity, registry,
-    [] ( const entt::id_type componentType, const entt::entity )
+
+    cqde::each_component( entity, registry,
+    [&registry, entity] ( const ComponentType componentType )
     {
-      auto prop = entt::resolve(componentType).prop("typeName"_hs);
+      auto type = entt::resolve(componentType);
+      auto prop = type.prop("typename"_hs);
 
-      LOG_INFO("{}", prop.value().cast <std::string> ());
+      LOG_INFO("component '{}'", prop.value().cast <std::string> ());
     });
-    LOG_INFO("");
   });
 
 //  return;
 
-  LOG_INFO("[comp, entities] registry storage");
+  LOG_INFO("each component");
 
-  for ( auto [componentType, entities] : registry.storage() )
+  cqde::each_component( registry,
+  [&registry] ( const entt::entity entity,
+                const ComponentType componentType )
   {
-    LOG_INFO("each entity");
-    for ( auto entity : entities )
-      {
-        auto type = entt::resolve(componentType);
+    const auto component = entt::resolve(componentType);
 
-        entt::meta_any any;
-        if ( auto getFunc = type.func("Get"_hs) )
-          any = getFunc.invoke(any, entt::forward_as_meta(registry), entity);
+    entt::meta_any any;
+    if ( auto getFunc = component.func("get"_hs) )
+      any = getFunc.invoke(any, entt::forward_as_meta(registry), entity);
 
-        if ( auto serialize = type.func("serialize"_hs) )
-          LOG_INFO("{}", serialize.invoke(any).cast <Json::Value> ().toStyledString());
-      }
-  }
+    if ( auto serialize = component.func("serialize"_hs) )
+      LOG_INFO("{}", serialize.invoke(any).cast <Json::Value> ().toStyledString());
+  });
 
   LOG_INFO("comp names before: {} {}", comp1.name, comp2.name);
 
-  auto prop = entt::resolve("MyComponent"_hs).prop("typeName"_hs);
+  auto prop = entt::resolve("MyComponent"_hs).prop("typename"_hs);
   Json::Value components;
   components[prop.value().cast <std::string> ()]["name"] = "serializedName";
 

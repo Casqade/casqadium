@@ -7,6 +7,8 @@
 namespace cqde
 {
 
+typedef entt::id_type ComponentType;
+typedef entt::id_type EntityType;
 typedef identifier CallbackId;
 typedef identifier EntityId;
 typedef identifier InputAxisId;
