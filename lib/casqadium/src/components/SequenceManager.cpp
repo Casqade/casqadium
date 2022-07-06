@@ -8,8 +8,8 @@
 namespace cqde::compos
 {
 
-void
-SequenceManager::serialize( Json::Value& json ) const
+Json::Value
+SequenceManager::serialize() const
 {}
 
 void
@@ -19,17 +19,6 @@ SequenceManager::deserialize(
   const Json::Value& content ) const
 {
   auto& comp = registry.emplace <SequenceManager> (entity);
-}
-
-void
-SequenceManager::Register()
-{
-  using namespace entt::literals;
-
-  auto factory = entt::meta <SequenceManager> ();
-  factory.type("SequenceManager"_hs);
-  factory.func <&SequenceManager::serialize> ("serialize"_hs);
-  factory.func <&SequenceManager::deserialize> ("deserialize"_hs);
 }
 
 } // namespace cqde::compos

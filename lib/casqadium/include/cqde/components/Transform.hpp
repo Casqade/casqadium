@@ -36,13 +36,12 @@ struct Transform
   glm::vec3 up() const;
 
 
-  void serialize( Json::Value& ) const;
+  Json::Value serialize() const;
 
-  void deserialize( entt::registry&,
-                    entt::entity,
-                    const Json::Value& ) const;
-
-  static void Register();
+  static void deserialize(
+    entt::registry&,
+    entt::entity,
+    const Json::Value& );
 };
 
 } // namespace compos

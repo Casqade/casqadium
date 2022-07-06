@@ -5,10 +5,8 @@
 
 #include <entt/fwd.hpp>
 
-#include <glm/vec3.hpp>
+#include <glm/fwd.hpp>
 #include <glm/vec4.hpp>
-#include <glm/mat4x4.hpp>
-#include <glm/trigonometric.hpp>
 
 #include <json/forwards.h>
 
@@ -51,8 +49,8 @@ struct Camera
   };
 
   glm::vec4 viewport {};
-  std::pair <float, float> zRange = {0.1f, 1000.0f};
-  float fov = glm::radians(45.0f);
+  std::pair <float, float> zRange {0.1f, 1000.0f};
+  float fov {1.0f}; // = 57 degrees
 
   Projection    projectionType = Projection::Perspective;
   RenderMode    renderMode = RenderMode::Solid;
@@ -73,13 +71,12 @@ struct Camera
                         const Transform&  cTransform ) const;
 
 
-  void serialize( Json::Value& ) const;
+  Json::Value serialize() const;
 
-  void deserialize( entt::registry&,
-                    entt::entity,
-                    const Json::Value& ) const;
-
-  static void Register();
+  static void deserialize(
+    entt::registry&,
+    entt::entity,
+    const Json::Value& );
 };
 
 } // namespace cqde::compos

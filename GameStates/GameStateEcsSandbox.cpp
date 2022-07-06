@@ -40,83 +40,6 @@
 #include <json/value.h>
 
 
-static void
-initSwControls( cqde::types::InputManager& inputManager )
-{
-  using namespace cqde::types;
-
-  using cqde::InputAxisId;
-  using cqde::InputHwId;
-
-  inputManager.assignBindings("TranslateX",
-  {
-    std::make_shared <InputBindingRelative> ( InputHwId("-Key_A"), +1.0f ),
-    std::make_shared <InputBindingRelative> ( InputHwId("+Key_A"), -1.0f ),
-    std::make_shared <InputBindingRelative> ( InputHwId("+Key_D"), +1.0f ),
-    std::make_shared <InputBindingRelative> ( InputHwId("-Key_D"), -1.0f ),
-  });
-
-  inputManager.assignBindings("TranslateY",
-  {
-    std::make_shared <InputBindingRelative> ( InputHwId("-Key_Shift"), +1.0f ),
-    std::make_shared <InputBindingRelative> ( InputHwId("+Key_Shift"), -1.0f ),
-    std::make_shared <InputBindingRelative> ( InputHwId("+Key_Space"), +1.0f ),
-    std::make_shared <InputBindingRelative> ( InputHwId("-Key_Space"), -1.0f ),
-  });
-
-  inputManager.assignBindings("TranslateZ",
-  {
-    std::make_shared <InputBindingRelative> ( InputHwId("-Key_S"), +1.0f ),
-    std::make_shared <InputBindingRelative> ( InputHwId("+Key_S"), -1.0f ),
-    std::make_shared <InputBindingRelative> ( InputHwId("+Key_W"), +1.0f ),
-    std::make_shared <InputBindingRelative> ( InputHwId("-Key_W"), -1.0f ),
-  });
-
-  inputManager.assignBindings("Yaw",
-  {
-    std::make_shared <InputBindingRelative> ( InputHwId("+MouseMove_X"), -0.5f ),
-    std::make_shared <InputBindingRelative> ( InputHwId("-MouseMove_X"), +0.5f ),
-  });
-
-  inputManager.assignBindings("Pitch",
-  {
-    std::make_shared <InputBindingRelative> ( InputHwId("+MouseMove_Y"), -0.5f ),
-    std::make_shared <InputBindingRelative> ( InputHwId("-MouseMove_Y"), +0.5f ),
-  });
-
-  inputManager.assignBindings("CursorPosX",
-  {
-    std::make_shared <InputBindingAbsolute> ( InputHwId("+MousePos_X"), +1.0f ),
-    std::make_shared <InputBindingAbsolute> ( InputHwId("-MousePos_X"), +1.0f ),
-  });
-
-  inputManager.assignBindings("CursorPosY",
-  {
-    std::make_shared <InputBindingAbsolute> ( InputHwId("+MousePos_Y"), +1.0f ),
-    std::make_shared <InputBindingAbsolute> ( InputHwId("-MousePos_Y"), +1.0f ),
-  });
-
-  inputManager.assignBindings("CameraLookOn",
-  {
-    std::make_shared <InputBindingRelative> ( InputHwId("+Key_Alt"), +1.0f ),
-  });
-
-  inputManager.assignBindings("CameraLookOff",
-  {
-    std::make_shared <InputBindingRelative> ( InputHwId("-Key_Alt"), +1.0f ),
-  });
-
-  inputManager.assignBindings("CameraLookToggle",
-  {
-    std::make_shared <InputBindingRelative> ( InputHwId("-Key_C"), +1.0f ),
-  });
-
-  inputManager.assignBindings("EngineShutdown",
-  {
-    std::make_shared <InputBindingRelative> ( InputHwId("-Key_Enter"), +1.0f ),
-  });
-}
-
 struct MyComponent
 {
   std::string name;
@@ -330,69 +253,6 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
   auto textTexture = std::make_shared <olc::Renderable> (fonts.get("munro")->RenderStringToRenderable(U"T", olc::WHITE));
   textures.insert("text_texture", textTexture);
 
-  auto eQuad = mRegistry.create();
-  auto eCamera = mRegistry.create();
-
-  mRegistry.emplace <Transform> (eQuad) = Transform({0.0f, 0.0f, -10.0f});
-  mRegistry.emplace <SceneNode> (eQuad) = SceneNode();
-  mRegistry.emplace <GeometryBuffer> (eQuad) = GeometryBuffer(defaultQuadVerts);
-  auto& textureBuffer = mRegistry.emplace <TextureBuffer> (eQuad) = TextureBuffer();
-
-  auto& cCamera = mRegistry.emplace <Camera> (eCamera) = Camera();
-  mRegistry.emplace <Transform> (eCamera) = Transform();
-  mRegistry.emplace <SceneNode> (eCamera) = SceneNode();
-
-  cCamera.viewport = { 0.0f, 0.0f, mPGE->GetWindowSize().x, mPGE->GetWindowSize().y};
-
-  textureBuffer.textures.push_back("map_diffuse");
-  textureBuffer.textures.push_back("text_texture2");
-
-  ControlAxis iAxisTranslateX{};
-  iAxisTranslateX.constraint = {-1.0f, 1.0f};
-  iAxisTranslateX.value = 0.0f;
-
-  ControlAxis iAxisTranslateY{};
-  iAxisTranslateY.constraint = {-1.0f, 1.0f};
-  iAxisTranslateY.value = 0.0f;
-
-  ControlAxis iAxisTranslateZ{};
-  iAxisTranslateZ.constraint = {-1.0f, 1.0f};
-  iAxisTranslateZ.value = 0.0f;
-
-  ControlAxis iAxisCameraLookOn{};
-  iAxisCameraLookOn.constraint = {0.0f, 1.0f};
-  iAxisCameraLookOn.value = 0.0f;
-  iAxisCameraLookOn.callbacks.insert(cqde::InputCallbackId("CameraLookOn"));
-
-  ControlAxis iAxisCameraLookOff{};
-  iAxisCameraLookOff.constraint = {0.0f, 1.0f};
-  iAxisCameraLookOff.value = 0.0f;
-  iAxisCameraLookOff.callbacks.insert(cqde::InputCallbackId("CameraLookOff"));
-
-  ControlAxis iAxisCameraLookToggle{};
-  iAxisCameraLookToggle.constraint = {0.0f, 1.0f};
-  iAxisCameraLookToggle.value = 0.0f;
-  iAxisCameraLookToggle.callbacks.insert(cqde::InputCallbackId("CameraLookToggle"));
-
-  ControlAxis iAxisExitListener{};
-  iAxisExitListener.constraint = {0.0f, 1.0f};
-  iAxisExitListener.value = 0.0f;
-  iAxisExitListener.callbacks.insert(cqde::InputCallbackId("QuitGame"));
-
-  ControlAxis iAxisCursorListener{};
-  iAxisCursorListener.constraint = {0, mPGE->GetWindowSize().x};
-  iAxisCursorListener.value = mPGE->GetMouseX();
-
-  auto& cInputController = mRegistry.emplace <InputController> (eCamera);
-  cInputController.inputs[cqde::InputAxisId("TranslateX")] = iAxisTranslateX;
-  cInputController.inputs[cqde::InputAxisId("TranslateY")] = iAxisTranslateY;
-  cInputController.inputs[cqde::InputAxisId("TranslateZ")] = iAxisTranslateZ;
-  cInputController.inputs[cqde::InputAxisId("CameraLookOn")] = iAxisCameraLookOn;
-  cInputController.inputs[cqde::InputAxisId("CameraLookOff")] = iAxisCameraLookOff;
-  cInputController.inputs[cqde::InputAxisId("CameraLookToggle")] = iAxisCameraLookToggle;
-  cInputController.inputs[cqde::InputAxisId("EngineShutdown")] = iAxisExitListener;
-  cInputController.inputs[cqde::InputAxisId("CursorPosX")] = iAxisCursorListener;
-
   auto& inputCallbacks = mRegistry.ctx().at <InputCallbackStorage> ();
 
   static float valPitch{};
@@ -430,19 +290,16 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
     cController.inputs.erase("Yaw");
   };
 
-  inputCallbacks.Register( cqde::InputCallbackId("CameraLookToggle"),
+  const auto cameraLookToggle =
   [this, cursor, cameraLookOn, cameraLookOff] ( const entt::entity e, InputController& cController )
   {
     if ( cController.inputs.count("Pitch") > 0 || cController.inputs.count("Yaw") > 0 )
       cameraLookOff(e, cController);
     else
       cameraLookOn(e, cController);
-  });
+  };
 
-  inputCallbacks.Register( cqde::InputCallbackId("CameraLookOn"), cameraLookOn);
-  inputCallbacks.Register( cqde::InputCallbackId("CameraLookOff"), cameraLookOff);
-
-  inputCallbacks.Register( cqde::InputCallbackId("CameraYawClamp"),
+  const auto cameraYawClamp =
   [] ( const entt::entity, InputController& cController )
   {
     if ( cController.inputs.count("Yaw") == 0 )
@@ -451,13 +308,19 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
     float& yaw = cController.inputs["Yaw"].value;
     yaw = yaw > 180.0f ? yaw - 360.0f : yaw;
     yaw = yaw < -180.0f ? yaw + 360.0f : yaw;
-  });
+  };
 
-  inputCallbacks.Register( cqde::InputCallbackId("QuitGame"),
+  const auto quitGame =
   [this] ( const entt::entity, InputController& )
   {
     mRunning = false;
-  });
+  };
+
+  inputCallbacks.Register(cqde::InputCallbackId("CameraLookOn"), cameraLookOn);
+  inputCallbacks.Register(cqde::InputCallbackId("CameraLookOff"), cameraLookOff);
+  inputCallbacks.Register(cqde::InputCallbackId("CameraLookToggle"), cameraLookToggle);
+  inputCallbacks.Register(cqde::InputCallbackId("CameraYawClamp"), cameraYawClamp);
+  inputCallbacks.Register(cqde::InputCallbackId("QuitGame"), quitGame);
 }
 
 void

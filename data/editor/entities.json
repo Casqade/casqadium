@@ -1,0 +1,101 @@
+{
+  "eQuad":
+  {
+    "Transform":
+    {
+      "translation": [0.0, 0.0, -10.0],
+      "orientation": [0.0, 0.0, 0.0, 0.0],
+      "scale": [1.0, 1.0, 1.0],
+      "scaleWorld": [1.0, 1.0, 1.0],
+    },
+    "SceneNode":
+    {
+      "parent": "null",
+      "children": [],
+    },
+    "GeometryBuffer":
+    {
+      "buffer": "quadDefault",
+    },
+    "TextureBuffer":
+    {
+      "textures": ["map_diffuse", "text_texture2"],
+    },
+  },
+  "eCamera":
+  {
+    "Camera":
+    {
+      "viewport": [0.0, 0.0, 800.0, 600.0],
+      "z-range": [0.1, 1000.0],
+      "fov": 45.0,
+      "projection": "perspective",
+    },
+    "Transform":
+    {
+      "translation": [0.0, 0.0, 0.0],
+      "orientation": [0.0, 0.0, 0.0, 0.0],
+      "scale": [1.0, 1.0, 1.0],
+      "scaleWorld": [1.0, 1.0, 1.0],
+    },
+    "SceneNode":
+    {
+      "parent": "null",
+      "children": [],
+    },
+    "InputController":
+    {
+      "inputs":
+      {
+        "TranslateX":
+        {
+          "callbacks": [],
+          "constraint": [-1.0, 1.0],
+          "value": 0.0,
+        },
+        "TranslateY":
+        {
+          "callbacks": [],
+          "constraint": [-1.0, 1.0],
+          "value": 0.0,
+        },
+        "TranslateZ":
+        {
+          "callbacks": [],
+          "constraint": [-1.0, 1.0],
+          "value": 0.0,
+        },
+        "CameraLookOn":
+        {
+          "callbacks": ["CameraLookOn"],
+          "constraint": [0.0, 1.0],
+          "value": 0.0,
+        },
+        "CameraLookOff":
+        {
+          "callbacks": ["CameraLookOff"],
+          "constraint": [0.0, 1.0],
+          "value": 0.0,
+        },
+        "CameraLookToggle":
+        {
+          "callbacks": ["CameraLookToggle"],
+          "constraint": [0.0, 1.0],
+          "value": 0.0,
+        },
+        "EngineShutdown":
+        {
+          "callbacks": ["QuitGame"],
+          "constraint": [0.0, 1.0],
+          "value": 0.0,
+        },
+        "CursorPosX":
+        {
+          "callbacks": [],
+          "constraint": [0.0, 800.0],
+          "value": 0.0,
+        },
+      }
+    },
+  },
+}

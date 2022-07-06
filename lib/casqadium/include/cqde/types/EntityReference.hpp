@@ -11,10 +11,10 @@ namespace cqde::types
 
 struct EntityReference
 {
-  EntityId id;
+  EntityId id {null_id};
 
 
-  EntityReference();
+  EntityReference() = default;
   EntityReference( const compos::Tag& );
 
   entt::entity get( entt::registry& ) const;

@@ -42,6 +42,9 @@ target_sources(${TARGET} PRIVATE
   src/types/input/InputCallbackStorage.cpp
   include/${CASQADIUM_SHORT}/types/input/InputCallbackStorage.hpp
 
+  src/types/EntityManager.cpp
+  include/${CASQADIUM_SHORT}/types/EntityManager.hpp
+
   src/types/EntityReference.cpp
   include/${CASQADIUM_SHORT}/types/EntityReference.hpp
 
@@ -92,6 +95,9 @@ target_sources(${TARGET} PRIVATE
   src/types/assets/TextureAssetManager.cpp
   include/${CASQADIUM_SHORT}/types/assets/TextureAssetManager.hpp
 
+
+  src/components/EntityMetaInfo.cpp
+  include/${CASQADIUM_SHORT}/components/EntityMetaInfo.hpp
 
   src/components/Camera.cpp
   include/${CASQADIUM_SHORT}/components/Camera.hpp

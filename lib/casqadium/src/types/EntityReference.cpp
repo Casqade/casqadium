@@ -8,10 +8,6 @@
 namespace cqde::types
 {
 
-EntityReference::EntityReference()
-  : id("null")
-{}
-
 EntityReference::EntityReference( const compos::Tag& tag )
   : id(tag.id)
 {}

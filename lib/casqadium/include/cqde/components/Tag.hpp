@@ -17,13 +17,11 @@ struct Tag
 
   void invalidate( entt::registry& );
 
-  void serialize( Json::Value& ) const;
+  Json::Value serialize() const;
 
   void deserialize( entt::registry&,
                     entt::entity,
                     const Json::Value& ) const;
-
-  static void Register();
 };
 
 } // namespace cqde::compos

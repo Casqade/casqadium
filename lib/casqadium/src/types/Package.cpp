@@ -13,6 +13,8 @@
 #include <cqde/types/input/InputBinding.hpp>
 #include <cqde/types/input/InputManager.hpp>
 
+#include <cqde/types/EntityManager.hpp>
+
 #include <json/value.h>
 
 
@@ -109,6 +111,10 @@ Package::load( entt::registry& registry )
 
   auto& input = registry.ctx().at <InputManager> ();
   input.parseInputConfigFile(packageRootPath / "input.json");
+
+  auto& entityManager = registry.ctx().at <EntityManager> ();
+  entityManager.loadRegistry( packageRootPath / "entities.json",
+                              mTitle, registry );
 }
 
 std::set <PackageId>

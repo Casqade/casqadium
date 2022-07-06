@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cqde/alias.hpp>
+
 #include <entt/fwd.hpp>
 
 #include <glm/vec3.hpp>
@@ -25,18 +27,18 @@ constexpr std::array <glm::vec3, 4> defaultQuadVerts =
 struct GeometryBuffer
 {
   std::vector <glm::vec3> vertexes;
+  GeometryId buffer;
 
   GeometryBuffer( const std::vector <glm::vec3>& );
   GeometryBuffer( const std::array <glm::vec3, 4>& = defaultQuadVerts );
 
 
-  void serialize( Json::Value& ) const;
+  Json::Value serialize() const;
 
-  void deserialize( entt::registry&,
-                    entt::entity,
-                    const Json::Value& ) const;
-
-  static void Register();
+  static void deserialize(
+    entt::registry&,
+    entt::entity,
+    const Json::Value& );
 };
 
 } // namespace cqde::compos

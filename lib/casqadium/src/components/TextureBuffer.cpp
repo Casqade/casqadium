@@ -1,5 +1,8 @@
 #include <cqde/components/TextureBuffer.hpp>
 
+#include <cqde/common.hpp>
+#include <cqde/json_helpers.hpp>
+
 #include <entt/entt.hpp>
 
 #include <json/value.h>
@@ -8,29 +11,51 @@
 namespace cqde::compos
 {
 
-void
-TextureBuffer::serialize( Json::Value& json ) const
-{}
+const static Json::Value textureBufferJsonReference =
+[]
+{
+  using ValueType = Json::ValueType;
+  using namespace std::string_literals;
+
+  Json::Value root = ValueType::objectValue;
+  root.setComment("// JSON root must be an object"s,
+                  Json::CommentPlacement::commentBefore);
+
+  root["textures"] = ValueType::arrayValue;
+  root["textures"].setComment("// 'textures' must be a JSON array"s,
+                              Json::CommentPlacement::commentBefore);
+
+  root["textures"].append(ValueType::stringValue);
+  root["textures"].begin()->setComment("// 'textures' element must be a JSON string"s,
+                                        Json::CommentPlacement::commentBefore);
+
+  return root;
+}();
+
+Json::Value
+TextureBuffer::serialize() const
+{
+  Json::Value json {};
+
+  for ( const auto& texture : textures )
+    json["textures"].append(texture.str());
+
+  return json;
+}
 
 void
 TextureBuffer::deserialize(
   entt::registry& registry,
   entt::entity entity,
-  const Json::Value& content ) const
+  const Json::Value& json )
 {
-  auto& comp = registry.emplace <TextureBuffer> (entity);
-}
+  jsonValidateObject(json, textureBufferJsonReference);
 
-void
-TextureBuffer::Register()
-{
-  using namespace entt::literals;
+  auto& comp = registry.emplace_or_replace <TextureBuffer> (entity);
 
-  auto factory = entt::meta <TextureBuffer> ();
-  factory.type("TextureBuffer"_hs);
-  factory.data <&TextureBuffer::textures> ("TextureBuffer"_hs);
-  factory.func <&TextureBuffer::serialize> ("serialize"_hs);
-  factory.func <&TextureBuffer::deserialize> ("deserialize"_hs);
+  for ( const auto& texture : json["textures"] )
+    comp.textures.push_back(texture.asString());
+
 }
 
 } // namespace cqde::compos

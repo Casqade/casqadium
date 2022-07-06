@@ -1,6 +1,9 @@
 #include <cqde/components/SceneNode.hpp>
 #include <cqde/components/Tag.hpp>
 
+#include <cqde/common.hpp>
+#include <cqde/json_helpers.hpp>
+
 #include <entt/entt.hpp>
 
 #include <json/value.h>
@@ -9,34 +12,58 @@
 namespace cqde::compos
 {
 
-SceneNode::SceneNode()
-  : parent()
-  , children()
-{}
+const static Json::Value SceneNodeJsonReference =
+[]
+{
+  using ValueType = Json::ValueType;
+  using namespace std::string_literals;
 
-void
-SceneNode::serialize( Json::Value& json ) const
-{}
+  Json::Value root = ValueType::objectValue;
+  root.setComment("// JSON root must be an object"s,
+                   Json::CommentPlacement::commentBefore);
+
+  root["parent"] = ValueType::stringValue;
+  root["parent"].setComment("// 'parent' must be a JSON string"s,
+                            Json::CommentPlacement::commentBefore);
+
+  root["children"] = ValueType::arrayValue;
+  root["children"].setComment("// 'children' must be a JSON array"s,
+                              Json::CommentPlacement::commentBefore);
+
+  root["children"].append(ValueType::stringValue);
+  root["children"].begin()->setComment("// 'children' element must be a JSON string"s,
+                                        Json::CommentPlacement::commentBefore);
+
+  return root;
+}();
+
+Json::Value
+SceneNode::serialize() const
+{
+  Json::Value json {};
+
+  json["parent"] = parent.id.str();
+
+  for ( const auto& child : children )
+    json["children"].append(child.id.str());
+
+  return json;
+}
 
 void
 SceneNode::deserialize(
   entt::registry& registry,
   entt::entity entity,
-  const Json::Value& content ) const
+  const Json::Value& json )
 {
+  jsonValidateObject(json, SceneNodeJsonReference);
+
   auto& comp = registry.emplace <SceneNode> (entity);
-}
 
-void
-SceneNode::Register()
-{
-  using namespace entt::literals;
+  comp.parent = Tag{json["parent"].asString()};
 
-  auto factory = entt::meta <SceneNode> ();
-  factory.type("SceneNode"_hs);
-  factory.data <&SceneNode::parent> ("parent"_hs);
-  factory.func <&SceneNode::serialize> ("serialize"_hs);
-  factory.func <&SceneNode::deserialize> ("deserialize"_hs);
+  for ( const auto child : json["children"] )
+    comp.children.insert({Tag{child.asString()}});
 }
 
 void

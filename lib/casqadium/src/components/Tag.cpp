@@ -19,10 +19,10 @@ Tag::invalidate( entt::registry& registry )
     registry.ctx().at <types::EntityTagManager> ().tags.erase(id);
 }
 
-void
-Tag::serialize( Json::Value& json ) const
+Json::Value
+Tag::serialize() const
 {
-  json["id"] = id.str();
+  return {};
 }
 
 void
@@ -37,18 +37,6 @@ Tag::deserialize(
 
   if ( registry.ctx().at <types::EntityTagManager> ().tags.emplace(comp.id, entity).second == false )
     throw "duplicate id encountered";
-}
-
-void
-Tag::Register()
-{
-  using namespace entt::literals;
-
-  auto factory = entt::meta <Tag> ();
-  factory.type("Tag"_hs);
-  factory.data <&Tag::id> ("id"_hs);
-  factory.func <&Tag::serialize> ("serialize"_hs);
-  factory.func <&Tag::deserialize> ("deserialize"_hs);
 }
 
 } // namespace cqde::compos

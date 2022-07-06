@@ -1,6 +1,12 @@
 #include <cqde/components/Transform.hpp>
 #include <cqde/components/SceneNode.hpp>
 
+#include <cqde/common.hpp>
+#include <cqde/json_helpers.hpp>
+
+#include <cqde/conversion/json_glm_vec3.hpp>
+#include <cqde/conversion/json_glm_quat.hpp>
+
 #include <entt/entt.hpp>
 
 #include <glm/mat4x4.hpp>
@@ -45,36 +51,46 @@ Transform::up() const
   return glm::rotate( orientation, {0.0f, 1.0f, 0.0f} );
 }
 
-void
-Transform::serialize( Json::Value& json ) const
-{}
+const static Json::Value transformJsonReference =
+[]
+{
+  using ValueType = Json::ValueType;
+  using namespace std::string_literals;
+
+  Json::Value root = ValueType::objectValue;
+  root.setComment("// JSON root must be an object"s,
+                  Json::CommentPlacement::commentBefore);
+
+  return root;
+}();
+
+Json::Value
+Transform::serialize() const
+{
+  Json::Value json {};
+
+  json["translation"] << translation;
+  json["orientation"] << orientation;
+  json["scale"] << scale;
+  json["scaleWorld"] << scaleWorld;
+
+  return json;
+}
 
 void
 Transform::deserialize(
   entt::registry& registry,
   entt::entity entity,
-  const Json::Value& content ) const
+  const Json::Value& json )
 {
+  jsonValidateObject(json, transformJsonReference);
+
   auto& comp = registry.emplace <Transform> (entity);
-}
 
-void
-Transform::Register()
-{
-  using namespace entt::literals;
-
-  auto factory = entt::meta <Transform> ();
-  factory.type("Transform"_hs);
-  factory.data <&Transform::translation> ("translation"_hs);
-  factory.data <&Transform::orientation> ("orientation"_hs);
-  factory.data <&Transform::scale> ("scale"_hs);
-  factory.data <&Transform::scaleWorld> ("scaleWorld"_hs);
-  factory.func <&Transform::modelLocal> ("modelLocal"_hs);
-  factory.func <&Transform::front> ("front"_hs);
-  factory.func <&Transform::right> ("right"_hs);
-  factory.func <&Transform::up> ("up"_hs);
-  factory.func <&Transform::serialize> ("serialize"_hs);
-  factory.func <&Transform::deserialize> ("deserialize"_hs);
+  comp.translation << json["translation"];
+  comp.orientation << json["orientation"];
+  comp.scale << json["scale"];
+  comp.scaleWorld << json["scaleWorld"];
 }
 
 } // namespace cqde::compos

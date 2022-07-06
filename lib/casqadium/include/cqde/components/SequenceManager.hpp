@@ -20,13 +20,11 @@ struct SequenceManager
   std::set <std::shared_ptr <types::SequenceStep>>::iterator currentStep;
 
 
-  void serialize( Json::Value& ) const;
+  Json::Value serialize() const;
 
   void deserialize( entt::registry&,
                     entt::entity,
                     const Json::Value& ) const;
-
-  static void Register();
 };
 
 } // namespace cqde::compos

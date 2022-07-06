@@ -12,20 +12,19 @@ namespace cqde::compos
 
 struct SceneNode
 {
-  types::EntityReference parent;
-  std::set <types::EntityReference> children;
+  types::EntityReference parent {};
+  std::set <types::EntityReference> children {};
 
 
-  SceneNode();
+  SceneNode() = default;
 
 
-  void serialize( Json::Value& ) const;
+  Json::Value serialize() const;
 
-  void deserialize( entt::registry&,
-                    entt::entity,
-                    const Json::Value& ) const;
-
-  static void Register();
+  static void deserialize(
+    entt::registry&,
+    entt::entity,
+    const Json::Value& );
 };
 
 } // namespace cqde::compos

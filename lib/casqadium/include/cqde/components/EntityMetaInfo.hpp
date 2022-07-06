@@ -1,24 +1,16 @@
 #pragma once
 
-#include <cqde/alias.hpp>
-
 #include <entt/fwd.hpp>
 
 #include <json/forwards.h>
-
-#include <vector>
 
 
 namespace cqde::compos
 {
 
-struct TextureBuffer
+struct EntityMetaInfo
 {
-  std::vector <cqde::TextureId> textures {};
-
-
-  TextureBuffer() = default;
-
+  entt::id_type packageId;
 
   Json::Value serialize() const;
 
