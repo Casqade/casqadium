@@ -1,5 +1,8 @@
 #include <cqde/types/ConfigManager.hpp>
+
 #include <cqde/common.hpp>
+#include <cqde/file_helpers.hpp>
+#include <cqde/json_helpers.hpp>
 
 #include <json/value.h>
 #include <json/reader.h>

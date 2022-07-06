@@ -11,6 +11,13 @@ set(CASQADIUM_SHORT cqde)
 
 target_sources(${TARGET} PRIVATE
   include/${CASQADIUM_SHORT}/alias.hpp
+  include/${CASQADIUM_SHORT}/fwd.hpp
+
+  src/file_helpers.cpp
+  include/${CASQADIUM_SHORT}/file_helpers.hpp
+
+  src/json_helpers.cpp
+  include/${CASQADIUM_SHORT}/json_helpers.hpp
 
   src/common.cpp
   include/${CASQADIUM_SHORT}/common.hpp

@@ -1,6 +1,10 @@
 #include <cqde/types/input/InputManager.hpp>
 
 #include <cqde/common.hpp>
+
+#include <cqde/file_helpers.hpp>
+#include <cqde/json_helpers.hpp>
+
 #include <cqde/util/logger.hpp>
 
 #include <cqde/components/InputController.hpp>
@@ -8,7 +12,6 @@
 #include <cqde/types/input/InputCallbackStorage.hpp>
 #include <cqde/types/input/InputBindingAbsolute.hpp>
 #include <cqde/types/input/InputBindingRelative.hpp>
-
 
 #include <olcPGE/olcMouseInputId.hpp>
 

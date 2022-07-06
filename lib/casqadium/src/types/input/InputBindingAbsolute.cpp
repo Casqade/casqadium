@@ -2,6 +2,7 @@
 #include <cqde/types/input/ControlAxis.hpp>
 
 #include <cqde/common.hpp>
+#include <cqde/json_helpers.hpp>
 
 #include <entt/entity/registry.hpp>
 

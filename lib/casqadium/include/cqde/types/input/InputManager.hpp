@@ -7,6 +7,7 @@
 #include <entt/fwd.hpp>
 
 #include <filesystem>
+#include <map>
 
 
 namespace cqde::types

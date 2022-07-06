@@ -3,8 +3,6 @@
 #include <cqde/fwd.hpp>
 #include <cqde/identifier.hpp>
 
-#include <olcPGE/olcPixelGameEngine.hpp>
-
 
 namespace cqde
 {

@@ -4,6 +4,8 @@
 
 #include <cqde/common.hpp>
 
+#include <cqde/json_helpers.hpp>
+
 #include <json/value.h>
 
 

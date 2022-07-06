@@ -2,6 +2,8 @@
 
 #include <olcPGE/olcPGEX_TTF.hpp>
 
+#include <cqde/json_helpers.hpp>
+
 #include <cqde/util/logger.hpp>
 
 #include <json/value.h>
