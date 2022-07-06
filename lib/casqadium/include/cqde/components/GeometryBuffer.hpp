@@ -26,11 +26,14 @@ constexpr std::array <glm::vec3, 4> defaultQuadVerts =
 
 struct GeometryBuffer
 {
-  std::vector <glm::vec3> vertexes;
-  GeometryId buffer;
+  std::vector <glm::vec3> vertexes {defaultQuadVerts.begin(),
+                                    defaultQuadVerts.end()};
+  GeometryId buffer {};
 
+
+  GeometryBuffer() = default;
   GeometryBuffer( const std::vector <glm::vec3>& );
-  GeometryBuffer( const std::array <glm::vec3, 4>& = defaultQuadVerts );
+  GeometryBuffer( const std::array <glm::vec3, 4>& );
 
 
   Json::Value serialize() const;

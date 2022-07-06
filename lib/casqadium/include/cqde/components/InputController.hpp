@@ -16,7 +16,10 @@ namespace cqde::compos
 
 struct InputController
 {
-  std::map <InputAxisId, types::ControlAxis> inputs;
+  std::map <InputAxisId, types::ControlAxis> inputs {};
+
+
+  InputController() = default;
 
 
   Json::Value serialize() const;

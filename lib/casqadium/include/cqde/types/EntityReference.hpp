@@ -11,7 +11,7 @@ namespace cqde::types
 
 struct EntityReference
 {
-  EntityId id {null_id};
+  EntityId id {};
 
 
   EntityReference() = default;

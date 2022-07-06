@@ -3,6 +3,8 @@
 #include <cqde/alias.hpp>
 #include <cqde/common.hpp>
 
+#include <entt/entity/entity.hpp>
+
 #include <json/forwards.h>
 
 #include <map>
@@ -14,10 +16,10 @@ namespace cqde::types
 
 class EntityManager
 {
-  std::map <EntityId, entt::entity> tags;
+  std::map <EntityId, entt::entity> tags {{null_id, entt::null}};
 
 public:
-  EntityManager();
+  EntityManager() = default;
 
   void loadRegistry(  const std::filesystem::path&,
                       const std::string& packageTitle,

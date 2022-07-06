@@ -15,9 +15,11 @@ namespace cqde::compos
 
 struct SequenceManager
 {
-  std::set <std::shared_ptr <types::SequenceStep>> steps;
+  std::set <std::shared_ptr <types::SequenceStep>> steps {};
+  std::set <std::shared_ptr <types::SequenceStep>>::iterator currentStep {};
 
-  std::set <std::shared_ptr <types::SequenceStep>>::iterator currentStep;
+
+  SequenceManager() = default;
 
 
   Json::Value serialize() const;

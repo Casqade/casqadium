@@ -12,10 +12,13 @@ namespace cqde::compos
 
 struct Tag
 {
-  EntityId id;
+  EntityId id {};
 
+
+  Tag() = default;
 
   void invalidate( entt::registry& );
+
 
   Json::Value serialize() const;
 

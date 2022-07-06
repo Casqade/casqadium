@@ -43,10 +43,6 @@ const static Json::Value registryReference =
   return registry;
 }();
 
-EntityManager::EntityManager()
-  : tags({{cqde::null_id, entt::null}})
-{}
-
 void
 EntityManager::loadRegistry(
   const std::filesystem::path& registryPath,

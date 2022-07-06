@@ -10,7 +10,11 @@ namespace cqde::compos
 
 struct EntityMetaInfo
 {
-  entt::id_type packageId;
+  entt::id_type packageId {};
+
+
+  EntityMetaInfo() = default;
+
 
   Json::Value serialize() const;
 
