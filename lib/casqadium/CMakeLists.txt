@@ -25,6 +25,14 @@ target_sources(${TARGET} PRIVATE
   src/identifier.cpp
   include/${CASQADIUM_SHORT}/identifier.hpp
 
+  src/conversion/json_glm_vec.cpp
+  include/${CASQADIUM_SHORT}/conversion/json_glm_vec.hpp
+  include/${CASQADIUM_SHORT}/conversion/json_glm_vec1.hpp
+  include/${CASQADIUM_SHORT}/conversion/json_glm_vec2.hpp
+  include/${CASQADIUM_SHORT}/conversion/json_glm_vec3.hpp
+  include/${CASQADIUM_SHORT}/conversion/json_glm_vec4.hpp
+  include/${CASQADIUM_SHORT}/conversion/json_glm_quat.hpp
+
   src/types/CallbackStorage.cpp
   include/${CASQADIUM_SHORT}/types/CallbackStorage.hpp
 
