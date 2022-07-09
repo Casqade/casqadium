@@ -226,6 +226,8 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
                          entt::type_hash <Tag>::value(),
                          entt::type_hash <EntityMetaInfo>::value()
                        });
+
+    inputManager.save("input.json");
   };
 
   inputCallbacks.Register(cqde::InputCallbackId("CameraLookOn"), cameraLookOn);

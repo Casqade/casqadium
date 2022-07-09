@@ -144,6 +144,24 @@ InputManager::load( const std::filesystem::path& path )
   }
 }
 
+void
+InputManager::save( const std::filesystem::path& path ) const
+{
+  Json::Value inputConfig {};
+
+  LOG_DEBUG("Serializing input config");
+
+  for ( const auto& [binding, axisId] : mBindings )
+    inputConfig[axisId.str()][binding->inputId.str()] = binding->toJson();
+
+  LOG_TRACE("Writing input config to '{}'",
+            path.string());
+
+  std::fstream out = fileOpen(path, std::ios::out | std::ios::trunc);
+
+  jsonWriter().newStreamWriter()->write(inputConfig, &out);
+}
+
 void InputManager::assignBinding(
   const InputAxisId axisId,
   const std::shared_ptr <InputBinding> binding )

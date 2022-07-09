@@ -24,6 +24,7 @@ public:
   InputManager();
 
   void load( const std::filesystem::path& inputConfigPath );
+  void save( const std::filesystem::path& inputConfigPath ) const;
 
   void assignBinding( const InputAxisId,
                       const std::shared_ptr <cqde::types::InputBinding> );
