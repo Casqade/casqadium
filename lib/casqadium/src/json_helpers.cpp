@@ -147,7 +147,8 @@ jsonValidateObject(
     if ( value[key].type() != reference[key].type() )
     {
 //      treat negative integers as invalid type when reference is uint
-      if ( ( reference[key].isUInt() || reference[key].isUInt64() ) &&
+      if (  value.isMember(key) == true &&
+            ( reference[key].isUInt() || reference[key].isUInt64() ) &&
             value[key].isConvertibleTo(reference[key].type()) == true )
         continue;
 
