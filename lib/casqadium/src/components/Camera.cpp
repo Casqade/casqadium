@@ -123,7 +123,7 @@ Camera::deserialize(
 
   auto& comp = registry.emplace <Camera> (entity);
 
-  comp.fov = json["fov"].asFloat();
+  comp.fov = glm::radians(json["fov"].asFloat());
   comp.viewport << json["viewport"];
   comp.zRange.first = json["z-range"][0].asFloat();
   comp.zRange.second = json["z-range"][1].asFloat();
