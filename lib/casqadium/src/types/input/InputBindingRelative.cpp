@@ -57,7 +57,11 @@ InputBindingRelative::handleInput(
 Json::Value
 InputBindingRelative::toJson() const
 {
-  return InputBinding::toJson();
+  Json::Value json = InputBinding::toJson();
+
+  json["absolute"] = false;
+
+  return json;
 }
 
 } // namespace cqde::types

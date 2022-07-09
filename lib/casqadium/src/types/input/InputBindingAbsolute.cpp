@@ -76,6 +76,7 @@ InputBindingAbsolute::toJson() const
 {
   Json::Value json = InputBinding::toJson();
 
+  json["absolute"] = true;
   json["curve"] = curve;
   json["deadzone"] = deadzone;
 
