@@ -23,7 +23,7 @@ class InputManager
 public:
   InputManager();
 
-  void parseInputConfigFile( const std::filesystem::path& configPath );
+  void load( const std::filesystem::path& inputConfigPath );
 
   void assignBinding( const InputAxisId,
                       const std::shared_ptr <cqde::types::InputBinding> );

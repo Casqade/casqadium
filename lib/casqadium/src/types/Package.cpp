@@ -110,7 +110,7 @@ Package::load( entt::registry& registry )
   text.parseAssetDbFile(packageRootPath / "text.json");
 
   auto& input = registry.ctx().at <InputManager> ();
-  input.parseInputConfigFile(packageRootPath / "input.json");
+  input.load(packageRootPath / "input.json");
 
   auto& entityManager = registry.ctx().at <EntityManager> ();
   entityManager.load( packageRootPath / "entities.json",

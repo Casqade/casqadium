@@ -18,6 +18,7 @@
 #include <entt/entity/registry.hpp>
 
 #include <json/value.h>
+#include <json/writer.h>
 
 
 namespace cqde::types
@@ -82,16 +83,16 @@ InputManager::InputManager()
 }
 
 void
-InputManager::parseInputConfigFile( const std::filesystem::path& configPath )
+InputManager::load( const std::filesystem::path& path )
 {
   Json::Value inputConfig {};
 
   LOG_TRACE("Parsing input config '{}'",
-            configPath.string());
+            path.string());
 
   try
   {
-    inputConfig = fileParse(configPath);
+    inputConfig = fileParse(path);
   }
   catch ( const std::exception& e )
   {
@@ -100,7 +101,7 @@ InputManager::parseInputConfigFile( const std::filesystem::path& configPath )
   }
 
   LOG_TRACE("Validating input config '{}'",
-            configPath.string());
+            path.string());
 
   try
   {
@@ -110,18 +111,18 @@ InputManager::parseInputConfigFile( const std::filesystem::path& configPath )
   {
     throw std::runtime_error(
       format("Failed to validate input config '{}': {}",
-              configPath.string(), e.what()));
+              path.string(), e.what()));
   }
 
   for ( const auto& axisId : inputConfig.getMemberNames() )
   {
     LOG_DEBUG("Binding inputs to axis '{}' ('{}')",
-              axisId, configPath.string());
+              axisId, path.string());
 
     for ( const auto& bindingHwId : inputConfig[axisId].getMemberNames() )
     {
       LOG_TRACE("Binding input '{}' to axis '{}' ('{}')",
-                bindingHwId, axisId, configPath.string());
+                bindingHwId, axisId, path.string());
 
       try
       {
@@ -137,7 +138,7 @@ InputManager::parseInputConfigFile( const std::filesystem::path& configPath )
         throw std::runtime_error(
           format("Failed to bind '{}' to axis '{}' ('{}'): {}",
                   bindingHwId, axisId,
-                  configPath.string(), e.what()));
+                  path.string(), e.what()));
       }
     }
   }
