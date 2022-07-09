@@ -113,8 +113,8 @@ Package::load( entt::registry& registry )
   input.parseInputConfigFile(packageRootPath / "input.json");
 
   auto& entityManager = registry.ctx().at <EntityManager> ();
-  entityManager.loadRegistry( packageRootPath / "entities.json",
-                              mTitle, registry );
+  entityManager.load( packageRootPath / "entities.json",
+                      mTitle, registry );
 }
 
 std::set <PackageId>

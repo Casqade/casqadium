@@ -31,27 +31,19 @@ void each_componentPool(
 template <typename Component>
 Component&
 component_get(
-  entt::registry& registry,
-  entt::entity entity )
+  entt::registry&     registry,
+  const entt::entity  entity )
 {
   return registry.template get <Component> (entity);
 }
 
 template <typename Component>
-decltype(auto)
-component_register(
-  const std::string& name )
+const Component&
+component_get_const(
+  const entt::registry& registry,
+  const entt::entity    entity )
 {
-  using namespace entt::literals;
-
-  auto factory = entt::meta <Component> ();
-  factory.type(entt::hashed_string(name.c_str()));
-  factory.prop("typename"_hs, name);
-  factory.template func <&component_get <Component>, entt::as_ref_t> ("get"_hs);
-  factory.template func <&Component::serialize> ("serialize"_hs);
-  factory.template func <&Component::deserialize> ("deserialize"_hs);
-
-  return factory;
+  return registry.template get <Component> (entity);
 }
 
 } // namespace cqde

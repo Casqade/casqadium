@@ -36,17 +36,11 @@ engineInit( entt::registry& registry )
   using namespace cqde::compos;
   using namespace cqde::types;
 
-  component_register <Tag> ("Tag");
-  component_register <SceneNode> ("SceneNode");
-  component_register <InputController> ("InputController");
-  component_register <Transform> ("Transform");
-  component_register <GeometryBuffer> ("GeometryBuffer");
-  component_register <TextureBuffer> ("TextureBuffer");
-  component_register <Camera> ("Camera");
+//  entt::meta_ctx::bind(registry.ctx().emplace <entt::meta_ctx> ());
 
   registry.ctx().emplace <PackageManager> ();
 
-  registry.ctx().emplace <EntityManager> ();
+  auto& entityManager = registry.ctx().emplace <EntityManager> ();
   registry.ctx().emplace <EntityTagManager> ();
   registry.ctx().emplace <InputCallbackStorage> ();
 
@@ -57,6 +51,13 @@ engineInit( entt::registry& registry )
   registry.ctx().emplace <FontAssetManager> (tp);
   registry.ctx().emplace <TextureAssetManager> (tp);
   registry.ctx().emplace <TextStringAssetManager> (tp);
+
+  entityManager.registerComponent <SceneNode> ("SceneNode");
+  entityManager.registerComponent <InputController> ("InputController");
+  entityManager.registerComponent <Transform> ("Transform");
+  entityManager.registerComponent <GeometryBuffer> ("GeometryBuffer");
+  entityManager.registerComponent <TextureBuffer> ("TextureBuffer");
+  entityManager.registerComponent <Camera> ("Camera");
 }
 
 } // namespace cqde

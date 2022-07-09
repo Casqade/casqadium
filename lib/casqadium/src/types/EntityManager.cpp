@@ -15,6 +15,9 @@
 #include <entt/meta/resolve.hpp>
 
 #include <json/value.h>
+#include <json/writer.h>
+
+#include <fstream>
 
 
 namespace cqde::types
@@ -44,9 +47,9 @@ const static Json::Value registryReference =
 }();
 
 void
-EntityManager::loadRegistry(
+EntityManager::load(
   const std::filesystem::path& registryPath,
-  const std::string& packageTitle,
+  const PackageId& packageId,
   entt::registry& registry )
 {
   Json::Value registryJson {};
@@ -80,21 +83,20 @@ EntityManager::loadRegistry(
 
   for ( const auto& entityId : registryJson.getMemberNames() )
   {
-    entt::entity entity {};
     if ( tags.count(entityId) == 0 )
-    {
       LOG_DEBUG("Importing entity '{}' ('{}')",
                 entityId, registryPath.string());
-
-      entity = registry.create();
-      registry.emplace <Tag> (entity).id = entityId;
-      tags[entityId] = entity;
-    }
     else
+    {
       LOG_DEBUG("Patching entity '{}' ('{}')",
                 entityId, registryPath.string());
 
-    entity = tags[entityId];
+      registry.destroy(tags[entityId]);
+    }
+
+    const entt::entity entity = registry.create();
+    registry.emplace <Tag> (entity).id = entityId;
+    tags[entityId] = entity;
 
     const auto& entityJson = registryJson[entityId];
 
@@ -105,12 +107,13 @@ EntityManager::loadRegistry(
 
       try
       {
-        auto component = entt::resolve(identifier(componentName).hash());
+        entt::meta_type component {};
+        if ( mComponentTypes.count(componentName) != 0 )
+          component = entt::resolve(mComponentTypes[componentName]);
 
         if ( !component )
           throw std::runtime_error(
-            format("Unknown component",
-                    componentName));
+            "Unknown component");
 
         const auto& componentJson = entityJson[componentName];
 
@@ -121,31 +124,42 @@ EntityManager::loadRegistry(
       catch ( const std::exception& e )
       {
         throw std::runtime_error(
-          format("Failed to import component '{}' for entity '{}' ('{}'): {}",
-                 componentName, entityId, registryPath.string(), e.what()));
+          format("Failed to import component '{}' (entity '{}'): {}",
+                 componentName, entityId, e.what()));
       }
     }
 
+    if ( packageId.str().empty() == true )
+      return;
+
     auto& metaInfo = registry.emplace_or_replace <EntityMetaInfo> (entity);
-    metaInfo.packageId = identifier(packageTitle).hash();
+    metaInfo.packageId = packageId.hash();
   }
 }
 
 void
-EntityManager::saveRegistry(
+EntityManager::save(
   const std::filesystem::path& registryPath,
   const PackageId& packageId,
-  entt::registry& registry )
+  const entt::registry& registry,
+  const std::set <entt::id_type>& excludedComponents ) const
 {
   using namespace cqde::compos;
   using namespace entt::literals;
 
   Json::Value registryJson {};
 
+  if ( packageId.str().empty() == true )
+    LOG_TRACE("Serializing global entity registry");
+  else
+    LOG_TRACE("Serializing package '{}' entity registry",
+              packageId.str());
+
   for ( const auto [eTag, cTag, cMetaInfo]
           : registry.view <Tag, EntityMetaInfo> ().each() )
   {
-    if ( cMetaInfo.packageId != packageId.hash() )
+    if (  packageId.str().empty() == false &&
+          cMetaInfo.packageId != packageId.hash() )
       continue;
 
     const entt::entity entity = eTag;
@@ -153,23 +167,80 @@ EntityManager::saveRegistry(
 
     registryJson[entityId] = Json::objectValue;
 
-    each_component(eTag, registry,
-    [&] ( const ComponentType componentType )
+    try
     {
-      if ( componentType == entt::type_hash <Tag>::value() ||
-           componentType == entt::type_hash <EntityMetaInfo>::value() )
-        return;
+      LOG_DEBUG("Serializing entity '{}'",
+                entityId);
 
-      auto component = entt::resolve(componentType);
-      const std::string componentName = component_name(componentType);
+      each_component(entity, registry,
+      [&] ( const ComponentType componentType )
+      {
+        if ( excludedComponents.count(componentType) != 0 )
+          return;
 
-      entt::meta_any any = component.func("get"_hs);
-      any = any.invoke({}, entt::forward_as_meta(registry), entity);
+        auto component = entt::resolve(componentType);
+        if ( !component )
+          throw std::runtime_error(
+            format("Unknown component (id_type {})",
+                   componentType));
 
-      if ( any = component.func("serialize"_hs).invoke(any); any )
-        registryJson[entityId][componentName] = any.cast <Json::Value> ();
-    });
+        const std::string componentName = component_name(componentType);
+
+        LOG_TRACE("Serializing component '{}' (entity '{}')",
+                  componentName, entityId);
+
+        auto componentGet = component.func("get_const"_hs);
+        auto componentInstance = componentGet.invoke({}, entt::forward_as_meta(registry), entity);
+        auto serializedComponent = component.func("serialize"_hs).invoke(componentInstance);
+
+        if ( serializedComponent )
+        {
+          registryJson[entityId][componentName] = serializedComponent.cast <Json::Value> ();
+          return;
+        }
+
+        throw std::runtime_error(
+          format("Component '{}' is not reflected properly",
+                 componentName));
+      });
+    }
+    catch ( const std::exception& e )
+    {
+      throw std::runtime_error(
+        format("Failed to serialize entity '{}': {}",
+               entityId, e.what()));
+    }
   };
+
+  if ( packageId.str().empty() == true )
+    LOG_TRACE("Writing global entity registry to '{}'",
+              registryPath.string());
+  else
+    LOG_TRACE("Writing package '{}' entity registry to '{}'",
+              packageId.str(), registryPath.string());
+
+  std::fstream out = fileOpen(registryPath, std::ios::out);
+
+  jsonWriter().newStreamWriter()->write(registryJson, &out);
+}
+
+std::string
+EntityManager::componentName( const ComponentType type ) const
+{
+  for ( const auto& [name, component] : mComponentTypes )
+    if ( component == type )
+      return name;
+
+  return {};
+}
+
+ComponentType
+EntityManager::componentType( const std::string& name ) const
+{
+  if ( mComponentTypes.count(name) != 0 )
+    return mComponentTypes.at(name);
+
+  return {};
 }
 
 entt::entity

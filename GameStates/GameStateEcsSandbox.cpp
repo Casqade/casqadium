@@ -10,7 +10,7 @@
 #include <cqde/common.hpp>
 #include <cqde/ecs_helpers.hpp>
 
-#include <cqde/types/EntityTagManager.hpp>
+#include <cqde/types/EntityManager.hpp>
 #include <cqde/types/PackageManager.hpp>
 
 #include <cqde/types/assets/FontAssetManager.hpp>
@@ -28,6 +28,7 @@
 #include <cqde/components/Camera.hpp>
 #include <cqde/components/SceneNode.hpp>
 #include <cqde/components/Transform.hpp>
+#include <cqde/components/EntityMetaInfo.hpp>
 #include <cqde/components/GeometryBuffer.hpp>
 #include <cqde/components/InputController.hpp>
 #include <cqde/components/TextureBuffer.hpp>
@@ -39,107 +40,6 @@
 
 #include <json/value.h>
 
-
-struct MyComponent
-{
-  std::string name;
-
-
-  Json::Value serialize() const
-  {
-    LOG_INFO("serializing {}", name);
-
-    Json::Value component;
-    component["name"] = name;
-
-    return component;
-  }
-
-  static void deserialize( entt::registry& registry, entt::entity entity, const Json::Value& component )
-  {
-    auto& comp = registry.emplace_or_replace <MyComponent> (entity);
-    comp.name = component.get("name", "defName").asString();
-
-    LOG_INFO("deserialized {}", comp.name);
-  }
-};
-
-static void
-testSerialization()
-{
-  using namespace entt::literals;
-  using namespace std::literals;
-  using cqde::ComponentType;
-  using cqde::EntityType;
-
-  entt::registry registry {};
-
-  entt::meta<MyComponent>().type("MyComponent"_hs)
-    .prop("typename"_hs, "MyComponent"s)
-    .func<&MyComponent::serialize>("serialize"_hs)
-    .func<&MyComponent::deserialize>("deserialize"_hs)
-    .func<&cqde::component_get <MyComponent>>("get"_hs);
-
-  auto entity1 = registry.create();
-  auto entity2 = registry.create();
-  auto& comp1 = registry.emplace <MyComponent> (entity1);
-  auto& comp2 = registry.emplace <MyComponent> (entity2);
-  comp1.name = "test1";
-  comp2.name = "test2";
-
-
-  LOG_INFO("each entity");
-  registry.each(
-  [&registry] ( const entt::entity entity )
-  {
-    LOG_INFO("entity {}", EntityType(entity));
-
-
-    cqde::each_component( entity, registry,
-    [&registry, entity] ( const ComponentType componentType )
-    {
-      auto type = entt::resolve(componentType);
-      auto prop = type.prop("typename"_hs);
-
-      LOG_INFO("component '{}'", prop.value().cast <std::string> ());
-    });
-  });
-
-//  return;
-
-  LOG_INFO("each component");
-
-  cqde::each_component( registry,
-  [&registry] ( const entt::entity entity,
-                const ComponentType componentType )
-  {
-    const auto component = entt::resolve(componentType);
-
-    entt::meta_any any;
-    if ( auto getFunc = component.func("get"_hs) )
-      any = getFunc.invoke(any, entt::forward_as_meta(registry), entity);
-
-    if ( auto serialize = component.func("serialize"_hs) )
-      LOG_INFO("{}", serialize.invoke(any).cast <Json::Value> ().toStyledString());
-  });
-
-  LOG_INFO("comp names before: {} {}", comp1.name, comp2.name);
-
-  auto prop = entt::resolve("MyComponent"_hs).prop("typename"_hs);
-  Json::Value components;
-  components[prop.value().cast <std::string> ()]["name"] = "serializedName";
-
-  auto type = entt::resolve(entt::hashed_string(std::string(components.getMemberNames().front()).c_str()));
-
-  entt::meta_any any;
-  if ( auto getFunc = type.func("Get"_hs) )
-    any = getFunc.invoke(any, entt::forward_as_meta(registry), entity1);
-
-  if ( auto deserialize = type.func("deserialize"_hs) )
-    deserialize.invoke(any, entt::forward_as_meta(registry), entity1, entt::forward_as_meta(components["MyComponent"]));
-
-  LOG_INFO("comp names after: {} {}", comp1.name, comp2.name);
-}
 
 std::shared_ptr <olc::Renderable>
 textureFromText(
@@ -199,6 +99,8 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
   using namespace cqde::types;
 
   cqde::engineInit(mRegistry);
+
+//  entt::meta_ctx::bind(mRegistry.ctx().at <entt::meta_ctx> ());
 
 //  testSerialization();
 //  return;
@@ -314,6 +216,16 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
   [this] ( const entt::entity, InputController& )
   {
     mRunning = false;
+
+    auto& entityManager = mRegistry.ctx().at <EntityManager> ();
+    auto& inputManager = mRegistry.ctx().at <InputManager> ();
+
+    entityManager.save("entities.json", "editor"_id,
+                       mRegistry,
+                       {
+                         entt::type_hash <Tag>::value(),
+                         entt::type_hash <EntityMetaInfo>::value()
+                       });
   };
 
   inputCallbacks.Register(cqde::InputCallbackId("CameraLookOn"), cameraLookOn);
