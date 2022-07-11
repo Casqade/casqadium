@@ -27,7 +27,7 @@ struct VertexBuffer
 
   bool operator > ( const VertexBuffer& other ) const;
 
-  WindingOrder windingOrderUpdate( const bool yAxisUp = false );
+  void windingOrderUpdate( const bool yAxisUp = false );
 };
 
 } // namespace cqde::types

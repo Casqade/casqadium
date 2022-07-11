@@ -10,7 +10,7 @@ VertexBuffer::operator > ( const VertexBuffer& other ) const
   return depth > other.depth;
 }
 
-VertexBuffer::WindingOrder
+void
 VertexBuffer::windingOrderUpdate(
   const bool yAxisUp )
 {
@@ -22,7 +22,7 @@ VertexBuffer::windingOrderUpdate(
     area += (vertices[iNext].x - vertices[i].x)
           * (vertices[iNext].y + vertices[i].y);
 
-  return WindingOrder(yAxisUp ? area > 0.0f : area < 0.0f);
+  windingOrder = WindingOrder(yAxisUp ? area > 0.0f : area < 0.0f);
 }
 
 } // namespace cqde::types
