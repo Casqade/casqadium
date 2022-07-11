@@ -2,6 +2,8 @@
 
 #include <cqde/common.hpp>
 
+#include <spdlog/fmt/bundled/format.h>
+
 #include <json/value.h>
 #include <json/reader.h>
 #include <json/writer.h>
@@ -81,6 +83,8 @@ jsonValidateArray(
   const Json::Value& array,
   const Json::Value& reference )
 {
+  using fmt::format;
+
   if ( array.type() != reference.type() )
   {
     const std::string comment = reference.getComment(Json::CommentPlacement::commentBefore);
@@ -114,6 +118,8 @@ jsonValidateObject(
   const Json::Value& value,
   const Json::Value& reference )
 {
+  using fmt::format;
+
   if ( value.type() != reference.type() )
   {
     const std::string comment = reference.getComment(Json::CommentPlacement::commentBefore);

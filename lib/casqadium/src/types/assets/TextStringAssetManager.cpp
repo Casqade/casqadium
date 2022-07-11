@@ -4,6 +4,8 @@
 
 #include <cqde/util/logger.hpp>
 
+#include <spdlog/fmt/bundled/format.h>
+
 #include <json/value.h>
 #include <json/reader.h>
 
@@ -73,6 +75,8 @@ void
 AssetManager <std::string>::load(
   const std::set <AssetId>& ids )
 {
+  using fmt::format;
+
   mThreadPool.push(
   [this, ids] ( const int32_t threadId )
   {
@@ -136,8 +140,9 @@ AssetManager <std::string>::load(
           stringDb = fileParse(path);
 
           if ( stringDb.isObject() == false )
-            throw std::runtime_error(format("JSON root in '{}' must be an object",
-                                            path.string()));
+            throw std::runtime_error(
+              format( "JSON root in '{}' must be an object",
+                      path.string()));
         }
         catch ( const std::exception& e )
         {

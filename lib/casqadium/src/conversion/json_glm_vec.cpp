@@ -4,7 +4,7 @@
 #include <cqde/conversion/json_glm_vec4.hpp>
 #include <cqde/conversion/json_glm_quat.hpp>
 
-#include <cqde/common.hpp>
+#include <spdlog/fmt/bundled/format.h>
 
 
 namespace cqde
@@ -30,6 +30,8 @@ operator << (
   Vec& vec,
   const Json::Value& json )
 {
+  using fmt::format;
+
   if ( json.isArray() == false )
     throw std::runtime_error("json must be a JSON array");
 

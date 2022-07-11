@@ -1,12 +1,13 @@
 #include <cqde/components/Camera.hpp>
 #include <cqde/components/Transform.hpp>
 
-#include <cqde/common.hpp>
 #include <cqde/json_helpers.hpp>
 
 #include <cqde/conversion/json_glm_vec4.hpp>
 
 #include <entt/entt.hpp>
+
+#include <spdlog/fmt/bundled/format.h>
 
 #include <json/value.h>
 
@@ -106,6 +107,8 @@ Camera::deserialize(
   entt::entity entity,
   const Json::Value& json )
 {
+  using fmt::format;
+
   jsonValidateObject(json, cameraJsonReference);
 
   const auto projection = json["projection"].asString();

@@ -1,7 +1,7 @@
 #include <cqde/file_helpers.hpp>
 #include <cqde/json_helpers.hpp>
 
-#include <cqde/common.hpp>
+#include <spdlog/fmt/bundled/format.h>
 
 #include <json/value.h>
 
@@ -45,6 +45,8 @@ fileOpen(
   const std::filesystem::path& path,
   const std::ios::openmode flags )
 {
+  using fmt::format;
+
   std::filesystem::file_status fileStatus {};
   std::filesystem::path targetPath = path;
 
@@ -57,19 +59,22 @@ fileOpen(
   }
   catch ( const std::filesystem::filesystem_error& e )
   {
-    throw std::runtime_error(format("Failed to open '{}': {}",
-                                    path.string(), e.code().message()));
+    throw std::runtime_error(
+      format("Failed to open '{}': {}",
+              path.string(), e.code().message()));
   }
 
   if ( (flags & std::ios::in) == std::ios::in &&
        fileStatus.type() == std::filesystem::file_type::not_found )
-    throw std::runtime_error(format("Failed to open '{}': {}",
-                                    path.string(), std::strerror(ENOENT)));
+    throw std::runtime_error(
+      format("Failed to open '{}': {}",
+              path.string(), std::strerror(ENOENT)));
 
   if ( fileStatus.type() != std::filesystem::file_type::not_found &&
        fileStatus.type() != std::filesystem::file_type::regular )
-    throw std::runtime_error(format("Failed to open '{}': Is not a regular file",
-                                    path.string()));
+    throw std::runtime_error(
+      format("Failed to open '{}': Is not a regular file",
+              path.string()));
 
   std::fstream file {};
   file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
@@ -80,9 +85,10 @@ fileOpen(
   }
   catch ( const std::system_error& e )
   {
-    throw std::runtime_error(format("Failed to open '{}' (mode={}): {}",
-                                    path.string(), openmodeToString(flags),
-                                    std::strerror(errno)));
+    throw std::runtime_error(
+      format("Failed to open '{}' (mode={}): {}",
+              path.string(), openmodeToString(flags),
+              std::strerror(errno)));
   }
 
   return file;
@@ -91,6 +97,8 @@ fileOpen(
 Json::Value
 fileParse( const std::filesystem::path& path )
 {
+  using fmt::format;
+
   std::fstream file = fileOpen( path, std::ios::in );
 
   try
@@ -99,8 +107,9 @@ fileParse( const std::filesystem::path& path )
   }
   catch ( const std::exception& e )
   {
-    throw std::runtime_error(format("Failed to parse JSON '{}': {}",
-                                    path.string(), e.what()));
+    throw std::runtime_error(
+      format("Failed to parse JSON '{}': {}",
+              path.string(), e.what()));
   }
 }
 

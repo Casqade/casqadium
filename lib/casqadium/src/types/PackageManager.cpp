@@ -1,10 +1,11 @@
 #include <cqde/types/PackageManager.hpp>
 
-#include <cqde/common.hpp>
 #include <cqde/file_helpers.hpp>
 #include <cqde/json_helpers.hpp>
 
 #include <cqde/util/logger.hpp>
+
+#include <spdlog/fmt/bundled/format.h>
 
 #include <json/value.h>
 
@@ -40,9 +41,12 @@ const static Json::Value rootReference =
 void
 PackageManager::parseRoot()
 {
+  using fmt::format;
+
   Json::Value packages {};
 
-  LOG_TRACE("Parsing packages root '{}'", mPackagesRoot.string());
+  LOG_TRACE("Parsing packages root '{}'",
+            mPackagesRoot.string());
 
   try
   {
@@ -50,11 +54,13 @@ PackageManager::parseRoot()
   }
   catch ( const std::exception& e )
   {
-    throw std::runtime_error(format("Failed to parse packages root ({})",
-                                    e.what()));
+    throw std::runtime_error(
+      format("Failed to parse packages root ({})",
+              e.what()));
   }
 
-  LOG_TRACE("Validating packages root '{}'", mPackagesRoot.string());
+  LOG_TRACE("Validating packages root '{}'",
+            mPackagesRoot.string());
 
   try
   {
@@ -65,16 +71,18 @@ PackageManager::parseRoot()
     for ( const auto& packageId : packages["load_order"] )
     {
       if ( existingPackages.count(packageId.asString()) > 0 )
-        throw std::runtime_error(format("load_order contains more than one instance of '{}'",
-                                        packageId.asString()));
+        throw std::runtime_error(
+          format("load_order contains more than one instance of '{}'",
+                  packageId.asString()));
 
       existingPackages.emplace(packageId.asString());
     }
   }
   catch ( const std::exception& e )
   {
-    throw std::runtime_error(format("Failed to validate packages root '{}': {}",
-                                    mPackagesRoot.string(), e.what()));
+    throw std::runtime_error(
+      format("Failed to validate packages root '{}': {}",
+              mPackagesRoot.string(), e.what()));
   }
 
   mEntryPoint = packages["entry_point"].asString();
@@ -88,10 +96,13 @@ PackageManager::load(
   const std::filesystem::path& packagesRoot,
   entt::registry& registry )
 {
+  using fmt::format;
+
   mPackages.clear();
   mPackagesRoot = packagesRoot;
 
-  LOG_TRACE("Loading packages from '{}'", mPackagesRoot.string());
+  LOG_TRACE("Loading packages from '{}'",
+            mPackagesRoot.string());
 
   try
   {
@@ -106,8 +117,9 @@ PackageManager::load(
 
       for ( const auto& dependency : package.dependencies() )
         if ( loadedPackages.count(dependency) == 0 )
-          throw std::runtime_error(format("Dependency '{}' must be loaded before package '{}'",
-                                          dependency.str(), packageId.str()));
+          throw std::runtime_error(
+            format("Dependency '{}' must be loaded before package '{}'",
+                    dependency.str(), packageId.str()));
 
       package.load(registry);
       loadedPackages.emplace(packageId);
@@ -116,8 +128,9 @@ PackageManager::load(
   catch ( const std::exception& e )
   {
     mPackages.clear();
-    throw std::runtime_error(format("Failed to load packages ({})",
-                                    e.what()));
+    throw std::runtime_error(
+      format("Failed to load packages ({})",
+              e.what()));
   }
 }
 

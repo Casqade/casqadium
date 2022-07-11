@@ -6,6 +6,8 @@
 
 #include <entt/entt.hpp>
 
+#include <spdlog/fmt/bundled/format.h>
+
 #include <json/value.h>
 
 
@@ -47,10 +49,13 @@ const static Json::Value controlAxisJsonReference =
 
 ControlAxis::ControlAxis( const Json::Value& json )
 {
+  using fmt::format;
+
   jsonValidateObject(json, controlAxisJsonReference);
 
   if ( json["constraint"].size() != 2 )
-    throw std::runtime_error(format("'constraint' array size must be 2 elements"));
+    throw std::runtime_error(
+      format("'constraint' array size must be 2 elements"));
 
   value = json["value"].asFloat();
 

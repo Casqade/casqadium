@@ -14,6 +14,8 @@
 #include <entt/meta/factory.hpp>
 #include <entt/meta/resolve.hpp>
 
+#include <spdlog/fmt/bundled/format.h>
+
 #include <json/value.h>
 #include <json/writer.h>
 
@@ -52,6 +54,8 @@ EntityManager::load(
   const PackageId& packageId,
   entt::registry& registry )
 {
+  using fmt::format;
+
   Json::Value registryJson {};
 
   LOG_TRACE("Parsing entity registry '{}'", registryPath.string());
@@ -144,8 +148,11 @@ EntityManager::save(
   const entt::registry& registry,
   const std::set <entt::id_type>& excludedComponents ) const
 {
-  using namespace cqde::compos;
   using namespace entt::literals;
+
+  using fmt::format;
+  using cqde::compos::Tag;
+  using cqde::compos::EntityMetaInfo;
 
   Json::Value registryJson {};
 
@@ -219,9 +226,8 @@ EntityManager::save(
     LOG_TRACE("Writing package '{}' entity registry to '{}'",
               packageId.str(), registryPath.string());
 
-  std::fstream out = fileOpen(registryPath, std::ios::out);
-
-  jsonWriter().newStreamWriter()->write(registryJson, &out);
+  auto fileStream = fileOpen(registryPath, std::ios::out);
+  fileStream << Json::writeString(jsonWriter(), registryJson);
 }
 
 std::string

@@ -1,11 +1,11 @@
 #include <AnotherDayAtHospital.hpp>
 
+#include <spdlog/fmt/bundled/format.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/sinks/basic_file_sink.h>
 
 #include <cqde/types/ConfigManager.hpp>
 #include <cqde/util/logger.hpp>
-#include <cqde/common.hpp>
 
 #include <iostream>
 
@@ -38,10 +38,11 @@ main( int , char*[] )
     }
     catch ( const std::exception& e )
     {
-      using namespace cqde;
-      std::cerr << format("Error: Can't create file sink for logger ({}). "
-                          "Log output to file will be turned off\n",
-                          e.what());
+      using fmt::format;
+      std::cerr <<
+        format( "Error: Can't create file sink for logger ({}). "
+                "Log output to file will be turned off\n",
+                e.what());
     }
   }
 

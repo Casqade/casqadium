@@ -4,6 +4,8 @@
 #include <cqde/file_helpers.hpp>
 #include <cqde/json_helpers.hpp>
 
+#include <spdlog/fmt/bundled/format.h>
+
 #include <json/value.h>
 #include <json/reader.h>
 #include <json/writer.h>
@@ -159,7 +161,11 @@ ConfigManager::read( const std::filesystem::path& path ) const
   catch ( const std::exception& e )
   {
     configIn = configDefault;
-    std::cerr << format("Error: Can't read configuration file ({})\n", e.what());
+
+    using fmt::format;
+    std::cerr <<
+      format("Error: Can't read configuration file ({})\n",
+             e.what());
   }
 
   if ( configIn["log"]["pattern"].isString() )
@@ -212,12 +218,15 @@ ConfigManager::write( const std::filesystem::path& path )
 {
   try
   {
-    auto configOut = fileOpen( path, std::ios::out | std::ios::trunc );
-    configOut << Json::writeString(jsonWriter(), config());
+    auto fileStream = fileOpen( path, std::ios::out | std::ios::trunc );
+    fileStream << Json::writeString(jsonWriter(), config());
   }
   catch ( const std::exception& e )
   {
-    std::cerr << format("Error: Can't write configuration file ({})\n", e.what());
+    using fmt::format;
+    std::cerr <<
+      format("Error: Can't write configuration file ({})\n",
+             e.what());
   }
 }
 

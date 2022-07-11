@@ -38,6 +38,8 @@
 
 #include <olcPGE/olcMouseInputId.hpp>
 
+#include <spdlog/fmt/bundled/format.h>
+
 #include <json/value.h>
 
 

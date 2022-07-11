@@ -17,6 +17,8 @@
 
 #include <entt/entity/registry.hpp>
 
+#include <spdlog/fmt/bundled/format.h>
+
 #include <json/value.h>
 #include <json/writer.h>
 
@@ -50,58 +52,63 @@ const static Json::Value inputConfigReference =
 
 InputManager::InputManager()
 {
+  using olc::Key;
   using olc::MouseInputId;
+  using cqde::InputHwId;
 
   mHwControlMap =
   {
-    {olc::Key::NONE, cqde::InputHwId("Key_Unknown")},
-    {olc::Key::A, cqde::InputHwId("Key_A")},
-    {olc::Key::D, cqde::InputHwId("Key_D")},
-    {olc::Key::S, cqde::InputHwId("Key_S")},
-    {olc::Key::W, cqde::InputHwId("Key_W")},
-    {olc::Key::C, cqde::InputHwId("Key_C")},
-    {olc::Key::MENU, cqde::InputHwId("Key_Alt")},
-    {olc::Key::SHIFT, cqde::InputHwId("Key_Shift")},
-    {olc::Key::SPACE, cqde::InputHwId("Key_Space")},
-    {olc::Key::ENTER, cqde::InputHwId("Key_Enter")},
+    {Key::NONE, "Key_Unknown"_id},
+    {Key::A, "Key_A"_id},
+    {Key::D, "Key_D"_id},
+    {Key::S, "Key_S"_id},
+    {Key::W, "Key_W"_id},
+    {Key::C, "Key_C"_id},
+    {Key::MENU, "Key_Alt"_id},
+    {Key::SHIFT, "Key_Shift"_id},
+    {Key::SPACE, "Key_Space"_id},
+    {Key::ENTER, "Key_Enter"_id},
 
-    {InputHwCode(MouseInputId::ButtonLeft), cqde::InputHwId("MouseButton_Left")},
-    {InputHwCode(MouseInputId::ButtonRight), cqde::InputHwId("MouseButton_Right")},
-    {InputHwCode(MouseInputId::ButtonMiddle), cqde::InputHwId("MouseButton_Middle")},
-    {InputHwCode(MouseInputId::ButtonX1), cqde::InputHwId("MouseButton_X1")},
-    {InputHwCode(MouseInputId::ButtonX2), cqde::InputHwId("MouseButton_X2")},
+    {InputHwCode(MouseInputId::ButtonLeft), "MouseButton_Left"_id},
+    {InputHwCode(MouseInputId::ButtonRight), "MouseButton_Right"_id},
+    {InputHwCode(MouseInputId::ButtonMiddle), "MouseButton_Middle"_id},
+    {InputHwCode(MouseInputId::ButtonX1), "MouseButton_X1"_id},
+    {InputHwCode(MouseInputId::ButtonX2), "MouseButton_X2"_id},
 
-    {InputHwCode(MouseInputId::Wheel), cqde::InputHwId("MouseWheel_Y")},
+    {InputHwCode(MouseInputId::Wheel), "MouseWheel_Y"_id},
 
-    {InputHwCode(MouseInputId::MoveX), cqde::InputHwId("MouseMove_X")},
-    {InputHwCode(MouseInputId::MoveY), cqde::InputHwId("MouseMove_Y")},
-    {InputHwCode(MouseInputId::PosX), cqde::InputHwId("MousePos_X")},
-    {InputHwCode(MouseInputId::PosY), cqde::InputHwId("MousePos_Y")},
+    {InputHwCode(MouseInputId::MoveX), "MouseMove_X"_id},
+    {InputHwCode(MouseInputId::MoveY), "MouseMove_Y"_id},
+    {InputHwCode(MouseInputId::PosX), "MousePos_X"_id},
+    {InputHwCode(MouseInputId::PosY), "MousePos_Y"_id},
 
-    {InputHwCode(MouseInputId::ENUM_END) + 1, cqde::InputHwId("Undefined")},
+    {InputHwCode(MouseInputId::ENUM_END) + 1, "Undefined"_id},
   };
 }
 
 void
-InputManager::load( const std::filesystem::path& path )
+InputManager::load( const path& configPath )
 {
+  using fmt::format;
+
   Json::Value inputConfig {};
 
   LOG_TRACE("Parsing input config '{}'",
-            path.string());
+            configPath.string());
 
   try
   {
-    inputConfig = fileParse(path);
+    inputConfig = fileParse(configPath);
   }
   catch ( const std::exception& e )
   {
-    throw std::runtime_error(format("Failed to parse input config ({})",
-                                    e.what()));
+    throw std::runtime_error(
+      format("Failed to parse input config ({})",
+              e.what()));
   }
 
   LOG_TRACE("Validating input config '{}'",
-            path.string());
+            configPath.string());
 
   try
   {
@@ -111,18 +118,18 @@ InputManager::load( const std::filesystem::path& path )
   {
     throw std::runtime_error(
       format("Failed to validate input config '{}': {}",
-              path.string(), e.what()));
+              configPath.string(), e.what()));
   }
 
   for ( const auto& axisId : inputConfig.getMemberNames() )
   {
     LOG_DEBUG("Binding inputs to axis '{}' ('{}')",
-              axisId, path.string());
+              axisId, configPath.string());
 
     for ( const auto& bindingHwId : inputConfig[axisId].getMemberNames() )
     {
       LOG_TRACE("Binding input '{}' to axis '{}' ('{}')",
-                bindingHwId, axisId, path.string());
+                bindingHwId, axisId, configPath.string());
 
       try
       {
@@ -138,14 +145,14 @@ InputManager::load( const std::filesystem::path& path )
         throw std::runtime_error(
           format("Failed to bind '{}' to axis '{}' ('{}'): {}",
                   bindingHwId, axisId,
-                  path.string(), e.what()));
+                  configPath.string(), e.what()));
       }
     }
   }
 }
 
 void
-InputManager::save( const std::filesystem::path& path ) const
+InputManager::save( const path& configPath ) const
 {
   Json::Value inputConfig {};
 
@@ -155,11 +162,10 @@ InputManager::save( const std::filesystem::path& path ) const
     inputConfig[axisId.str()][binding->inputId.str()] = binding->toJson();
 
   LOG_TRACE("Writing input config to '{}'",
-            path.string());
+            configPath.string());
 
-  std::fstream out = fileOpen(path, std::ios::out | std::ios::trunc);
-
-  jsonWriter().newStreamWriter()->write(inputConfig, &out);
+  auto fileStream = fileOpen(configPath, std::ios::out | std::ios::trunc);
+  fileStream << Json::writeString(jsonWriter(), inputConfig);
 }
 
 void InputManager::assignBinding(
@@ -171,8 +177,7 @@ void InputManager::assignBinding(
 
 void InputManager::assignBindings(
   const InputAxisId axisId,
-  const std::set <std::shared_ptr <InputBinding>,
-                  InputBindingComparator>& bindings )
+  const InputBindings& bindings )
 {
   for ( auto& binding : bindings )
     mBindings.insert({ binding, axisId });
@@ -185,6 +190,8 @@ InputManager::handleAxisInput(
   const float direction,
   entt::registry& registry )
 {
+  using compos::InputController;
+
   const std::string inputDir  = direction > 0.0f
                               ? "+"
                               : "-";
@@ -201,7 +208,7 @@ InputManager::handleAxisInput(
   {
     auto& [binding, axisId] = *iter;
 
-    for ( auto&& [entity, cController] : registry.view <compos::InputController> ().each() )
+    for ( auto&& [entity, cController] : registry.view <InputController> ().each() )
       if ( const auto& iter = cController.inputs.find(axisId);
            iter != cController.inputs.end() )
       {

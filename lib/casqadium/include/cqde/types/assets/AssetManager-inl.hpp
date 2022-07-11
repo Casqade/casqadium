@@ -7,6 +7,8 @@
 
 #include <cqde/util/logger.hpp>
 
+#include <spdlog/fmt/bundled/format.h>
+
 #include <json/value.h>
 #include <json/reader.h>
 
@@ -66,6 +68,8 @@ void
 AssetManager <Asset>::parseAssetDbFile(
   const std::filesystem::path& dbPath )
 {
+  using fmt::format;
+
   Json::Value assetDb {};
 
   LOG_TRACE("Parsing asset DB '{}'", dbPath.string());

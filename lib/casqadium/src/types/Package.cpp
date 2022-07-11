@@ -15,6 +15,8 @@
 
 #include <cqde/types/EntityManager.hpp>
 
+#include <spdlog/fmt/bundled/format.h>
+
 #include <json/value.h>
 
 
@@ -57,6 +59,8 @@ const static Json::Value manifestReference =
 void
 Package::parseManifest( const std::filesystem::path& manifestPath )
 {
+  using fmt::format;
+
   CQDE_ASSERT_DEBUG(manifestPath.empty() == false, {});
 
   mManifestPath = manifestPath;
@@ -69,8 +73,9 @@ Package::parseManifest( const std::filesystem::path& manifestPath )
   }
   catch ( const std::exception& e )
   {
-    throw std::runtime_error(format("Failed to parse package manifest ({})",
-                                    e.what()));
+    throw std::runtime_error(
+      format("Failed to parse package manifest ({})",
+              e.what()));
   }
 
   try
@@ -79,8 +84,9 @@ Package::parseManifest( const std::filesystem::path& manifestPath )
   }
   catch ( const std::exception& e )
   {
-    throw std::runtime_error(format("Failed to validate package manifest '{}': {}",
-                                    mManifestPath.string(), e.what()));
+    throw std::runtime_error(
+      format("Failed to validate package manifest '{}': {}",
+              mManifestPath.string(), e.what()));
   }
 
   mTitle = manifest["title"].asString();
