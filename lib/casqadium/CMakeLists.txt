@@ -66,6 +66,8 @@ target_sources(${TARGET} PRIVATE
   src/types/input/InputBindingRelative.cpp
   include/${CASQADIUM_SHORT}/types/input/InputBindingRelative.hpp
 
+  include/${CASQADIUM_SHORT}/types/input/InputEvent.hpp
+
   include/${CASQADIUM_SHORT}/types/SequenceStep.hpp
 
   src/types/VertexBuffer.cpp

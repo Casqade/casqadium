@@ -192,15 +192,24 @@ InputManager::handleAxisInput(
 {
   using compos::InputController;
 
+  InputEvent event {};
+
   const std::string inputDir  = direction > 0.0f
                               ? "+"
                               : "-";
 
+  InputHwId inputId = inputDir + mHwControlMap[inputHwCode].str();
+
+  event.inputId = inputId;
+  event.amount = amount;
+
+  mInputHistory.push_back(event);
+  while ( mInputHistory.size() > mInputHistoryLength )
+    mInputHistory.pop_front();
+
   auto& inputCallbacks = registry.ctx().at <InputCallbackStorage> ();
 
-  InputHwId inputId = mHwControlMap[inputHwCode];
-
-  const auto [axesBegin, axesEnd] = mBindings.equal_range( inputDir + inputId.str() );
+  const auto [axesBegin, axesEnd] = mBindings.equal_range(inputId);
 
   for ( auto iter = axesBegin;
         iter != axesEnd;
@@ -220,6 +229,38 @@ InputManager::handleAxisInput(
           inputCallbacks.Execute(callbackId, entity, cController);
       }
   }
+}
+
+std::set <InputHwId>
+InputManager::toHwId(
+  const InputAxisId& axisId ) const
+{
+  std::set <InputHwId> bindings {};
+
+  for ( auto& [binding, axis] : mBindings )
+    if ( axis == axisId )
+      bindings.insert(binding->inputId);
+
+  return bindings;
+}
+
+void
+InputManager::setInputHistoryLength(
+const size_t length )
+{
+  mInputHistoryLength = length;
+}
+
+size_t
+InputManager::inputHistoryLength() const
+{
+  return mInputHistoryLength;
+}
+
+const std::list <InputEvent>&
+InputManager::inputHistory() const
+{
+  return mInputHistory;
 }
 
 } // namespace cqde::types

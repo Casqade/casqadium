@@ -343,9 +343,34 @@ GameStateEcsSandbox::update(  const uint32_t ticks,
 void
 GameStateEcsSandbox::render()
 {
+  using fmt::format;
+
   cqde::systems::CullingSystem(mRegistry);
   cqde::systems::RenderSystem(mRegistry);
 
+  auto now = TimeUtils::Now();
+
+  auto& inputMgr = mRegistry.ctx().at <cqde::types::InputManager> ();
+
+  uint8_t eventsToDisplay = 40;
+  float textY = 0.0f;
+  float textH = 8.0f;
+
+  for ( auto iter = inputMgr.inputHistory().rbegin();
+        iter != inputMgr.inputHistory().rend();
+        ++iter )
+  {
+    if ( eventsToDisplay == 0 )
+      break;
+
+    --eventsToDisplay;
+
+    auto& event = *iter;
+    mPGE->DrawStringDecal({0.0f, textY += textH},
+                          format("{}: {} -{:.2f}",
+                                  event.inputId.str(), event.amount, double(now - event.tp)));
+  }
+
   auto& strings = mRegistry.ctx().at <cqde::types::TextStringAssetManager> ();
-  mPGE->DrawStringDecal({0.0f, 0.0f}, *strings.try_get("multi_liner"_id));
+  mPGE->DrawStringDecal({0.0f, textY += textH}, *strings.try_get("multi_liner"_id));
 }

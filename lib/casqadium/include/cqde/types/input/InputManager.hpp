@@ -3,10 +3,12 @@
 #include <cqde/alias.hpp>
 
 #include <cqde/types/input/InputBinding.hpp>
+#include <cqde/types/input/InputEvent.hpp>
 
 #include <entt/fwd.hpp>
 
 #include <filesystem>
+#include <list>
 #include <map>
 
 
@@ -26,6 +28,9 @@ class InputManager
   std::multimap < std::shared_ptr <InputBinding>, InputAxisId,
                   InputBindingComparator> mBindings {};
 
+  size_t mInputHistoryLength {100u};
+  std::list <InputEvent> mInputHistory {};
+
 public:
   InputManager();
 
@@ -42,6 +47,13 @@ public:
                         const float amount,
                         const float direction,
                         entt::registry& );
+
+  std::set <InputHwId> toHwId( const InputAxisId& ) const;
+
+  void setInputHistoryLength( const size_t );
+  size_t inputHistoryLength() const;
+
+  const std::list <InputEvent>& inputHistory() const;
 };
 
 } // namespace cqde::types
