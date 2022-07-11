@@ -16,30 +16,26 @@ template <>
 Json::Value
 AssetManager <olc::Renderable>::AssetJsonDbEntryReference()
 {
-  return
-  []
-  {
-    using ValueType = Json::ValueType;
-    using namespace std::string_literals;
+  using ValueType = Json::ValueType;
+  using namespace std::string_literals;
 
-    Json::Value reference = ValueType::objectValue;
-    reference.setComment("// texture DB entry must be a JSON object"s,
-                         Json::CommentPlacement::commentBefore);
+  Json::Value reference = ValueType::objectValue;
+  reference.setComment("// texture DB entry must be a JSON object"s,
+                       Json::CommentPlacement::commentBefore);
 
-    reference["filter"] = ValueType::booleanValue;
-    reference["filter"].setComment("// texture filter mode must be a JSON boolean"s,
-                                    Json::CommentPlacement::commentBefore);
-
-    reference["clamp"] = ValueType::booleanValue;
-    reference["clamp"].setComment("// texture clamp mode must be a JSON boolean"s,
+  reference["filter"] = ValueType::booleanValue;
+  reference["filter"].setComment("// texture filter mode must be a JSON boolean"s,
                                   Json::CommentPlacement::commentBefore);
 
-    reference["path"] = ValueType::stringValue;
-    reference["path"].setComment("// texture path must be a JSON string"s,
-                                  Json::CommentPlacement::commentBefore);
+  reference["clamp"] = ValueType::booleanValue;
+  reference["clamp"].setComment("// texture clamp mode must be a JSON boolean"s,
+                                Json::CommentPlacement::commentBefore);
 
-    return reference;
-  }();
+  reference["path"] = ValueType::stringValue;
+  reference["path"].setComment("// texture path must be a JSON string"s,
+                                Json::CommentPlacement::commentBefore);
+
+  return reference;
 }
 
 template <>
@@ -94,6 +90,8 @@ AssetManager <olc::Renderable>::unloadImpl(
 {
   if ( handle != nullptr && handle->Decal() != nullptr )
     LOG_TRACE("Freeing texture (id {})", handle->Decal()->id);
+  else
+    LOG_TRACE("Freeing unbinded texture");
 
   handle.reset();
 }
@@ -116,8 +114,6 @@ AssetManager <olc::Renderable>::try_get(
 
       if ( texture->Decal() != nullptr )
         return texture;
-
-      const AssetPath path = mAssets.at(id).path;
 
       const bool filter = mAssetsProperties.at(id)["filter"].asBool();
       const bool clamp = mAssetsProperties.at(id)["clamp"].asBool();

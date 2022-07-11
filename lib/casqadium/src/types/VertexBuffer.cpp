@@ -11,10 +11,9 @@ VertexBuffer::operator > ( const VertexBuffer& other ) const
 }
 
 VertexBuffer::WindingOrder
-GetWindingOrder(  const VertexBuffer& vertexBuffer,
-                  const bool yAxisUp )
+VertexBuffer::windingOrderUpdate(
+  const bool yAxisUp )
 {
-  auto vertices = vertexBuffer.vertices;
   float area = {};
 
   for ( size_t i = 0, iNext = 1;
@@ -23,7 +22,7 @@ GetWindingOrder(  const VertexBuffer& vertexBuffer,
     area += (vertices[iNext].x - vertices[i].x)
           * (vertices[iNext].y + vertices[i].y);
 
-  return cqde::types::VertexBuffer::WindingOrder(yAxisUp ? area > 0.0f : area < 0.0f);
+  return WindingOrder(yAxisUp ? area > 0.0f : area < 0.0f);
 }
 
 } // namespace cqde::types

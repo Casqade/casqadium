@@ -4,7 +4,9 @@
 #include <cqde/components/GeometryBuffer.hpp>
 #include <cqde/components/Transform.hpp>
 #include <cqde/components/SceneNode.hpp>
+
 #include <cqde/types/VertexBuffer.hpp>
+#include <cqde/types/assets/GeometryAssetManager.hpp>
 
 #include <entt/entt.hpp>
 
@@ -12,19 +14,24 @@
 namespace cqde::systems
 {
 
-cqde::types::VertexBuffer
+static cqde::types::VertexBuffer
 vertexShader(
-  const cqde::compos::GeometryBuffer& cGeometryBuffer,
+  const std::vector <glm::vec3>& vertices,
   const glm::mat4& modelViewMatrix,
   const glm::mat4& projectionMatrix,
   const glm::vec4& viewport )
 {
+  using cqde::types::VertexBuffer;
+
+  if ( vertices.size() == 0 )
+    return {{}, -1.0f, {}};
+
   bool offScreen = true;
 
-  cqde::types::VertexBuffer vertexBuffer{};
-  vertexBuffer.vertices.reserve(cGeometryBuffer.vertexes.size());
+  VertexBuffer vb{};
+  vb.vertices.reserve(vertices.size());
 
-  for ( const glm::vec3& srcVert : cGeometryBuffer.vertexes )
+  for ( const glm::vec3& srcVert : vertices )
   {
     const glm::vec3 vert =
       glm::project( srcVert,
@@ -32,9 +39,9 @@ vertexShader(
                     projectionMatrix,
                     viewport );
 
-    vertexBuffer.vertices.push_back({ vert.x, // converting y axis to top-left origin
-                                      viewport.y * 2 + viewport.w - vert.y });
-    vertexBuffer.depth += vert.z;
+    vb.vertices.push_back({ vert.x, // converting y axis to top-left origin
+                            viewport.y * 2 + viewport.w - vert.y });
+    vb.depth += vert.z;
 
     if ( vert.z < 0.0f || vert.z > 1.0f )
       return {{}, -1.0f, {}};
@@ -47,17 +54,20 @@ vertexShader(
 //  if ( offScreen )
 //    return {{}, -1.0f};
 
-  vertexBuffer.windingOrder = cqde::types::GetWindingOrder(vertexBuffer);
+  vb.windingOrderUpdate();
 
-  vertexBuffer.depth /= vertexBuffer.vertices.size();
+  vb.depth /= vb.vertices.size();
 
-  return vertexBuffer;
+  return vb;
 }
 
 
 void CullingSystem( entt::registry& registry )
 {
   using namespace cqde::compos;
+  using cqde::types::GeometryAssetManager;
+
+  auto& geometry = registry.ctx().at <GeometryAssetManager> ();
 
   for ( const auto&& [eCamera, cCamera, cCameraNode, cCameraTransform]
           : registry.view <Camera, SceneNode, Transform> ().each() )
@@ -71,18 +81,22 @@ void CullingSystem( entt::registry& registry )
     for ( const auto&& [eDrawable, cGeometryBuffer, cNode, cTransform]
             : registry.view <GeometryBuffer, SceneNode, Transform>().each() )
     {
+      const auto gBuffer = geometry.try_get(cGeometryBuffer.buffer);
+      if ( gBuffer == nullptr )
+        continue;
+
       const glm::mat4 modelView = camView *
                                   cqde::GetWorldMatrix(registry, cTransform, cNode);
 
-      auto buffer = vertexShader( cGeometryBuffer,
+      auto vBuffer = vertexShader( *gBuffer,
                                   modelView,
                                   camProjection,
                                   camViewport );
 
-      if ( buffer.depth < 0.0f )
+      if ( vBuffer.depth < 0.0f )
         continue;
 
-      cCamera.zBuffer.emplace( buffer, eDrawable );
+      cCamera.zBuffer.emplace( vBuffer, eDrawable );
     }
   }
 }

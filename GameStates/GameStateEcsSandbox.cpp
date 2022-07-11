@@ -46,7 +46,7 @@
 #include <json/value.h>
 
 
-std::shared_ptr <olc::Renderable>
+static std::shared_ptr <olc::Renderable>
 textureFromText(
   const std::string& text,
   const olc::Pixel& color,
@@ -73,7 +73,7 @@ textureFromText(
   return texture;
 }
 
-std::shared_ptr <olc::Renderable>
+static std::shared_ptr <olc::Renderable>
 texturePlaceholder()
 {
   auto texture = std::make_shared <olc::Renderable> ();

@@ -17,22 +17,18 @@ template <>
 Json::Value
 AssetManager <std::string>::AssetJsonDbEntryReference()
 {
-  return
-  []
-  {
-    using ValueType = Json::ValueType;
-    using namespace std::string_literals;
+  using ValueType = Json::ValueType;
+  using namespace std::string_literals;
 
-    Json::Value reference = ValueType::arrayValue;
-    reference.setComment("// text string value must be either a string or a JSON array"s,
-                         Json::CommentPlacement::commentBefore);
+  Json::Value reference = ValueType::arrayValue;
+  reference.setComment("// text string value must be either a string or a JSON array"s,
+                       Json::CommentPlacement::commentBefore);
 
-    reference.append(ValueType::stringValue);
-    reference.begin()->setComment("// text string array element must be a JSON string"s,
-                                  Json::CommentPlacement::commentBefore);
+  reference.append(ValueType::stringValue);
+  reference.begin()->setComment("// text string array element must be a JSON string"s,
+                                Json::CommentPlacement::commentBefore);
 
-    return reference;
-  }();
+  return reference;
 }
 
 template <>

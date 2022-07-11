@@ -134,36 +134,28 @@ AssetManager <Asset>::load(
 
       mAssetsMutex.unlock();
 
-      try
+      AssetHandle resource = loadImpl(id, assetPath);
+
+      std::lock_guard guard(mAssetsMutex);
+
+      if ( status(id) <= AssetStatus::Unloaded )
       {
-        AssetHandle resource = loadImpl(id, assetPath);
-
-        std::lock_guard guard(mAssetsMutex);
-
-        if ( status(id) <= AssetStatus::Unloaded )
-        {
-          unloadImpl(resource);
-          continue;
-        }
-
-        auto& assetEntry = mAssets.at(id);
-
-        if ( resource != nullptr )
-        {
-          assetEntry.status = AssetStatus::Loaded;
-          assetEntry.handle = std::move(resource);
-
-          continue;
-        }
-
-        assetEntry.status = AssetStatus::Error;
-        assetEntry.handle = nullptr;
+        unloadImpl(resource);
+        continue;
       }
-      catch ( const std::exception& e )
+
+      auto& assetEntry = mAssets.at(id);
+
+      if ( resource != nullptr )
       {
-        LOG_ERROR("Failed to load asset '{}' ('{}'): {}",
-                  id.str(), assetPath.string(), std::string(e.what()));
+        assetEntry.status = AssetStatus::Loaded;
+        assetEntry.handle = std::move(resource);
+
+        continue;
       }
+
+      assetEntry.status = AssetStatus::Error;
+      assetEntry.handle = nullptr;
     }
   });
 }

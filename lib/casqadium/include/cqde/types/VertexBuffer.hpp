@@ -22,11 +22,12 @@ struct VertexBuffer
   } windingOrder;
 
 
-  bool operator > ( const VertexBuffer& other ) const;
-};
+  VertexBuffer() = default;
 
-VertexBuffer::WindingOrder
-GetWindingOrder(  const VertexBuffer& vertices,
-                  const bool yAxisUp = false );
+
+  bool operator > ( const VertexBuffer& other ) const;
+
+  WindingOrder windingOrderUpdate( const bool yAxisUp = false );
+};
 
 } // namespace cqde::types

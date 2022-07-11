@@ -15,7 +15,7 @@
     },
     "GeometryBuffer":
     {
-      "buffer": "quadDefault",
+      "buffer": "quad",
     },
     "TextureBuffer":
     {

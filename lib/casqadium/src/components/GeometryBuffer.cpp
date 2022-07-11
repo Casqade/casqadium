@@ -28,15 +28,6 @@ const static Json::Value geometryBufferJsonReference =
   return root;
 }();
 
-GeometryBuffer::GeometryBuffer( const std::vector <glm::vec3>& _vertexes )
-  : vertexes(_vertexes)
-{}
-
-GeometryBuffer::GeometryBuffer( const std::array <glm::vec3, 4>& _vertexes )
-{
-  vertexes = std::vector <glm::vec3> ( _vertexes.begin(), _vertexes.end() );
-}
-
 Json::Value
 GeometryBuffer::serialize() const
 {
