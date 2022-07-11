@@ -13,7 +13,9 @@ namespace cqde::types
 
 class ConfigManager
 {
+  using path = std::filesystem::path;
   using level = spdlog::level::level_enum;
+  using level_enum = spdlog::level::level_enum;
 
 //  [%Y-%m-%d %T.%e] [%^%l%$] [%s:%#] [thread %t] %v
   std::string mLogPattern {"[%T.%e] [%^%l%$] [%s:%#] [thread %t] %v"};
@@ -32,21 +34,20 @@ class ConfigManager
 
 public:
   ConfigManager() = default;
-  ConfigManager( const std::filesystem::path& );
+  ConfigManager( const path& configPath );
 
-  virtual void write( const std::filesystem::path& );
+  virtual void write( const path& );
   virtual void setConfig( const Json::Value& config );
 
-  virtual Json::Value read( const std::filesystem::path& ) const;
-
+  virtual Json::Value read( const path& ) const;
 
   virtual Json::Value config() const;
 
   std::string logPattern() const;
 
-  spdlog::level::level_enum logLevelCmd() const;
-  spdlog::level::level_enum logLevelFile() const;
-  spdlog::level::level_enum logFlushLevel() const;
+  level_enum logLevelCmd() const;
+  level_enum logLevelFile() const;
+  level_enum logFlushLevel() const;
 
   uint32_t windowWidth() const;
   uint32_t windowHeight() const;

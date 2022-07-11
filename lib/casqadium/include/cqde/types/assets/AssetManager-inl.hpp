@@ -35,7 +35,7 @@ template <typename Asset>
 void
 AssetManager <Asset>::parseAssetDb(
   const Json::Value& assetDb,
-  const std::filesystem::path& dbPath )
+  const path& dbPath )
 {
   std::lock_guard guard(mAssetsMutex);
 
@@ -54,7 +54,7 @@ AssetManager <Asset>::parseAssetDb(
       LOG_ERROR("Failed to validate JSON entry for asset '{}' ('{}'): {}",
                 id, dbPath.string(), e.what());
 
-      mAssets[id].path = std::filesystem::path{};
+      mAssets[id].path = path{};
       mAssets[id].handle = {};
       mAssets[id].status = AssetStatus::Error;
 
@@ -66,7 +66,7 @@ AssetManager <Asset>::parseAssetDb(
 template <typename Asset>
 void
 AssetManager <Asset>::parseAssetDbFile(
-  const std::filesystem::path& dbPath )
+  const path& dbPath )
 {
   using fmt::format;
 
@@ -79,13 +79,15 @@ AssetManager <Asset>::parseAssetDbFile(
     assetDb = fileParse(dbPath);
 
     if ( assetDb.isObject() == false )
-      throw std::runtime_error(format("JSON root in '{}' must be an object",
-                                      dbPath.string()));
+      throw std::runtime_error(
+        format("JSON root in '{}' must be an object",
+                dbPath.string()));
   }
   catch ( const std::exception& e )
   {
-    throw std::runtime_error(format("Failed to parse asset DB ({})",
-                                    e.what()));
+    throw std::runtime_error(
+      format("Failed to parse asset DB ({})",
+              e.what()));
   }
 
   parseAssetDb(assetDb, dbPath);

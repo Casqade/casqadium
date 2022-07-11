@@ -13,7 +13,9 @@ namespace cqde::types
 
 class Package
 {
-  std::filesystem::path mManifestPath {};
+  using path = std::filesystem::path;
+
+  path mManifestPath {};
 
   entt::registry mRegistry {};
 
@@ -29,10 +31,12 @@ public:
   Package( Package&& ) = default;
   Package( const Package& ) = delete;
 
-  void parseManifest( const std::filesystem::path& manifestPath );
+  void parseManifest( const path& manifestPath );
   void load( entt::registry& );
 
   std::set <PackageId> dependencies() const;
+
+  path manifestPath() const;
 };
 
 } // namespace cqde::types

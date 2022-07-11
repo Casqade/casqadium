@@ -20,17 +20,19 @@ namespace cqde::types
 
 class EntityManager
 {
+  using path = std::filesystem::path;
+
   std::map <EntityId, entt::entity> tags {{null_id, entt::null}};
   std::map <std::string, ComponentType> mComponentTypes {};
 
 public:
   EntityManager() = default;
 
-  void load(  const std::filesystem::path& registryPath,
+  void load(  const path& registryPath,
               const PackageId&,
               entt::registry& );
 
-  void save( const std::filesystem::path& registryPath,
+  void save( const path& registryPath,
              const PackageId&,
              const entt::registry&,
              const std::set <entt::id_type>& excludedComponents ) const;

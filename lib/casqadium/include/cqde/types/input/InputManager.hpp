@@ -18,6 +18,7 @@ namespace cqde::types
 class InputManager
 {
   using path = std::filesystem::path;
+
   using InputBinding = cqde::types::InputBinding;
   using InputBindingComparator = cqde::types::InputBindingComparator;
   using InputBindings = std::set <std::shared_ptr <InputBinding>,

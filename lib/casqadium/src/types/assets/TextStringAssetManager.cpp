@@ -39,7 +39,7 @@ template <>
 void
 AssetManager <std::string>::parseAssetDb(
   const Json::Value& stringDb,
-  const std::filesystem::path& dbPath )
+  const path& dbPath )
 {
   std::lock_guard guard(mAssetsMutex);
 
@@ -61,7 +61,7 @@ AssetManager <std::string>::parseAssetDb(
       LOG_ERROR("Failed to validate JSON entry for text string '{}' ('{}'): {}",
                 id, dbPath.string(), e.what());
 
-      mAssets[id].path = std::filesystem::path{};
+      mAssets[id].path = path{};
       mAssets[id].handle = {};
       mAssets[id].status = AssetStatus::Error;
 

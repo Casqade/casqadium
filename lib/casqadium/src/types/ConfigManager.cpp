@@ -100,11 +100,11 @@ const static Json::Value configReference =
 }();
 
 ConfigManager::ConfigManager(
-  const std::filesystem::path& path )
+  const path& configPath )
   : ConfigManager()
 {
-  setConfig(read(path));
-  write(path);
+  setConfig(read(configPath));
+  write(configPath);
 }
 
 Json::Value
@@ -130,7 +130,8 @@ ConfigManager::config() const
 }
 
 void
-ConfigManager::setConfig( const Json::Value& config )
+ConfigManager::setConfig(
+  const Json::Value& config )
 {
   mLogPattern = config["log"]["pattern"].asString();
 
@@ -147,7 +148,8 @@ ConfigManager::setConfig( const Json::Value& config )
 }
 
 Json::Value
-ConfigManager::read( const std::filesystem::path& path ) const
+ConfigManager::read(
+  const path& path ) const
 {
   Json::Value result {};
   Json::Value configIn {};
@@ -214,7 +216,8 @@ ConfigManager::read( const std::filesystem::path& path ) const
 }
 
 void
-ConfigManager::write( const std::filesystem::path& path )
+ConfigManager::write(
+  const path& path )
 {
   try
   {

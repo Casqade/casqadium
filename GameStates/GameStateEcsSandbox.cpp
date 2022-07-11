@@ -99,6 +99,7 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
   using namespace entt::literals;
   using namespace cqde::compos;
   using namespace cqde::types;
+  using cqde::InputCallbackId;
 
   cqde::engineInit(mRegistry);
 
@@ -175,7 +176,7 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
     ControlAxis iAxisYaw{};
     iAxisYaw.constraint = {-3600.0f, 3600.0f};
     iAxisYaw.value = valYaw;
-    iAxisYaw.callbacks.insert(cqde::InputCallbackId("CameraYawClamp"));
+    iAxisYaw.callbacks.insert("CameraYawClamp"_id);
 
     cController.inputs["Pitch"] = iAxisPitch;
     cController.inputs["Yaw"] = iAxisYaw;
@@ -232,18 +233,18 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
     inputManager.save("input.json");
   };
 
-  inputCallbacks.Register(cqde::InputCallbackId("CameraLookOn"), cameraLookOn);
-  inputCallbacks.Register(cqde::InputCallbackId("CameraLookOff"), cameraLookOff);
-  inputCallbacks.Register(cqde::InputCallbackId("CameraLookToggle"), cameraLookToggle);
-  inputCallbacks.Register(cqde::InputCallbackId("CameraYawClamp"), cameraYawClamp);
-  inputCallbacks.Register(cqde::InputCallbackId("QuitGame"), quitGame);
+  inputCallbacks.Register("CameraLookOn"_id, cameraLookOn);
+  inputCallbacks.Register("CameraLookOff"_id, cameraLookOff);
+  inputCallbacks.Register("CameraLookToggle"_id, cameraLookToggle);
+  inputCallbacks.Register("CameraYawClamp"_id, cameraYawClamp);
+  inputCallbacks.Register("QuitGame"_id, quitGame);
 }
 
 void
 GameStateEcsSandbox::keyEvent( const olc::Event event )
 {
-  using namespace cqde::types;
   using cqde::InputHwCode;
+  using cqde::types::InputManager;
 
   auto& inputManager = mRegistry.ctx().at <InputManager> ();
 
@@ -259,9 +260,9 @@ GameStateEcsSandbox::keyEvent( const olc::Event event )
 void
 GameStateEcsSandbox::mouseMoveEvent( const olc::Event::MouseMoveEvent event )
 {
-  using namespace cqde::types;
   using olc::MouseInputId;
   using cqde::InputHwCode;
+  using cqde::types::InputManager;
 
   auto& inputManager = mRegistry.ctx().at <InputManager> ();
 
@@ -289,9 +290,9 @@ GameStateEcsSandbox::mouseMoveEvent( const olc::Event::MouseMoveEvent event )
 void
 GameStateEcsSandbox::mouseButtonEvent( const olc::Event event )
 {
-  using namespace cqde::types;
   using olc::MouseInputId;
   using cqde::InputHwCode;
+  using cqde::types::InputManager;
 
   auto& inputManager = mRegistry.ctx().at <InputManager> ();
 
@@ -317,22 +318,27 @@ GameStateEcsSandbox::update(  const uint32_t ticks,
   const float cameraVelocity = 10.0f;
 
 // Camera control system
-  for ( auto&& [eCamera, cCamera, cController, cTransform] : mRegistry.view <Camera, InputController, Transform>().each() )
+  for ( auto&& [eCamera,
+                cCamera,
+                cController,
+                cTransform] : mRegistry.view <Camera,
+                                              InputController,
+                                              Transform>().each() )
   {
-    const float translationX = cController.inputs[InputAxisId("TranslateX")].value * cameraVelocity * dt;
+    const float translationX = cController.inputs["TranslateX"_id].value * cameraVelocity * dt;
     cTransform.translation += cTransform.right() * translationX;
 
-    const float translationY = cController.inputs[InputAxisId("TranslateY")].value * cameraVelocity * dt;
+    const float translationY = cController.inputs["TranslateY"_id].value * cameraVelocity * dt;
     cTransform.translation += cTransform.up() * translationY;
 
-    const float translationZ = cController.inputs[InputAxisId("TranslateZ")].value * cameraVelocity * dt;
+    const float translationZ = cController.inputs["TranslateZ"_id].value * cameraVelocity * dt;
     cTransform.translation += cTransform.front() * translationZ;
 
     if ( cController.inputs.count("Pitch") == 0 || cController.inputs.count("Yaw") == 0 )
       continue;
 
-    const float pitch = glm::radians( cController.inputs[InputAxisId("Pitch")].value );
-    const float yaw = glm::radians( cController.inputs[InputAxisId("Yaw")].value );
+    const float pitch = glm::radians( cController.inputs["Pitch"_id].value );
+    const float yaw = glm::radians( cController.inputs["Yaw"_id].value );
 
     cTransform.orientation = glm::quat( {pitch, yaw, 0.0f} );
   }
@@ -344,13 +350,17 @@ void
 GameStateEcsSandbox::render()
 {
   using fmt::format;
+  using cqde::systems::CullingSystem;
+  using cqde::systems::RenderSystem;
+  using cqde::types::InputManager;
+  using cqde::types::TextStringAssetManager;
 
-  cqde::systems::CullingSystem(mRegistry);
-  cqde::systems::RenderSystem(mRegistry);
+  CullingSystem(mRegistry);
+  RenderSystem(mRegistry);
 
   auto now = TimeUtils::Now();
 
-  auto& inputMgr = mRegistry.ctx().at <cqde::types::InputManager> ();
+  auto& inputMgr = mRegistry.ctx().at <InputManager> ();
 
   uint8_t eventsToDisplay = 40;
   float textY = 0.0f;
@@ -371,6 +381,6 @@ GameStateEcsSandbox::render()
                                   event.inputId.str(), event.amount, double(now - event.tp)));
   }
 
-  auto& strings = mRegistry.ctx().at <cqde::types::TextStringAssetManager> ();
+  auto& strings = mRegistry.ctx().at <TextStringAssetManager> ();
   mPGE->DrawStringDecal({0.0f, textY += textH}, *strings.try_get("multi_liner"_id));
 }

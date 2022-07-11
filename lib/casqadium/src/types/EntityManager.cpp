@@ -50,7 +50,7 @@ const static Json::Value registryReference =
 
 void
 EntityManager::load(
-  const std::filesystem::path& registryPath,
+  const path& registryPath,
   const PackageId& packageId,
   entt::registry& registry )
 {
@@ -66,8 +66,9 @@ EntityManager::load(
   }
   catch ( const std::exception& e )
   {
-    throw std::runtime_error(format("Failed to parse entity registry ({})",
-                                    e.what()));
+    throw std::runtime_error(
+      format("Failed to parse entity registry ({})",
+              e.what()));
   }
 
   LOG_TRACE("Validating entity registry '{}'", registryPath.string());
@@ -78,8 +79,9 @@ EntityManager::load(
   }
   catch ( const std::exception& e )
   {
-    throw std::runtime_error(format("Failed to validate entity registry '{}': {}",
-                                    registryPath.string(), e.what()));
+    throw std::runtime_error(
+      format("Failed to validate entity registry '{}': {}",
+              registryPath.string(), e.what()));
   }
 
   using namespace cqde::compos;
@@ -143,7 +145,7 @@ EntityManager::load(
 
 void
 EntityManager::save(
-  const std::filesystem::path& registryPath,
+  const path& registryPath,
   const PackageId& packageId,
   const entt::registry& registry,
   const std::set <entt::id_type>& excludedComponents ) const
@@ -231,7 +233,8 @@ EntityManager::save(
 }
 
 std::string
-EntityManager::componentName( const ComponentType type ) const
+EntityManager::componentName(
+  const ComponentType type ) const
 {
   for ( const auto& [name, component] : mComponentTypes )
     if ( component == type )
@@ -241,7 +244,8 @@ EntityManager::componentName( const ComponentType type ) const
 }
 
 ComponentType
-EntityManager::componentType( const std::string& name ) const
+EntityManager::componentType(
+  const std::string& name ) const
 {
   if ( mComponentTypes.count(name) != 0 )
     return mComponentTypes.at(name);
@@ -250,7 +254,8 @@ EntityManager::componentType( const std::string& name ) const
 }
 
 entt::entity
-EntityManager::get( const EntityId& id ) const
+EntityManager::get(
+  const EntityId& id ) const
 {
   try
   {
@@ -263,7 +268,8 @@ EntityManager::get( const EntityId& id ) const
 }
 
 EntityId
-EntityManager::createId( EntityId hint ) const
+EntityManager::createId(
+  EntityId hint ) const
 {
   size_t idInc {};
 

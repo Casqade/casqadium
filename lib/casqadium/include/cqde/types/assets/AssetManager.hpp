@@ -29,6 +29,8 @@ enum class AssetStatus
 template <typename Asset>
 class AssetManager
 {
+  using path = std::filesystem::path;
+
   using AssetId = cqde::identifier;
   using AssetPath = std::filesystem::path;
   using AssetHandle = std::shared_ptr <Asset>;
@@ -54,9 +56,9 @@ public:
 
   static Json::Value AssetJsonDbEntryReference();
 
-  void parseAssetDbFile(const std::filesystem::path& path );
+  void parseAssetDbFile(const path& );
   void parseAssetDb(const Json::Value& db,
-                    const std::filesystem::path& dbPath );
+                    const path& dbPath );
 
   void load( const std::set <AssetId>& );
   void unload( const AssetId& );

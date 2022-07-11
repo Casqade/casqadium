@@ -57,7 +57,7 @@ const static Json::Value manifestReference =
 }();
 
 void
-Package::parseManifest( const std::filesystem::path& manifestPath )
+Package::parseManifest( const path& manifestPath )
 {
   using fmt::format;
 
@@ -127,6 +127,12 @@ std::set <PackageId>
 Package::dependencies() const
 {
   return mDependencies;
+}
+
+Package::path
+Package::manifestPath() const
+{
+  return mManifestPath;
 }
 
 } // namespace cqde::types

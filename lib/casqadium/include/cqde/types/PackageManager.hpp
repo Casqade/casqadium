@@ -10,7 +10,9 @@ namespace cqde::types
 
 class PackageManager
 {
-  std::filesystem::path mPackagesRoot {};
+  using path = std::filesystem::path;
+
+  path mPackagesRoot {};
 
   std::unordered_map <PackageId, Package,
                       identifier_hash> mPackages {};
@@ -24,9 +26,9 @@ public:
   PackageManager( PackageManager&& ) = default;
   PackageManager( const PackageManager& ) = delete;
 
-  void load( const std::filesystem::path& packagesRoot, entt::registry& );
+  void load( const path& packagesRoot, entt::registry& );
 
-  std::filesystem::path rootPath() const;
+  path rootPath() const;
 };
 
 } // namespace cqde::types

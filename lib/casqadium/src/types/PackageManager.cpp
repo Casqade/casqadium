@@ -93,7 +93,7 @@ PackageManager::parseRoot()
 
 void
 PackageManager::load(
-  const std::filesystem::path& packagesRoot,
+  const path& packagesRoot,
   entt::registry& registry )
 {
   using fmt::format;
@@ -134,7 +134,7 @@ PackageManager::load(
   }
 }
 
-std::filesystem::path
+PackageManager::path
 PackageManager::rootPath() const
 {
   return mPackagesRoot;
