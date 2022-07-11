@@ -14,6 +14,7 @@
 #include <cqde/types/PackageManager.hpp>
 
 #include <cqde/types/assets/FontAssetManager.hpp>
+#include <cqde/types/assets/GeometryAssetManager.hpp>
 #include <cqde/types/assets/TextureAssetManager.hpp>
 #include <cqde/types/assets/TextStringAssetManager.hpp>
 
@@ -39,6 +40,8 @@
 #include <olcPGE/olcMouseInputId.hpp>
 
 #include <spdlog/fmt/bundled/format.h>
+
+#include <glm/vec3.hpp>
 
 #include <json/value.h>
 
@@ -90,6 +93,19 @@ texturePlaceholder()
   return texture;
 }
 
+static std::shared_ptr <std::vector <glm::vec3>>
+geometryPlaceholder()
+{
+  return std::make_shared <std::vector <glm::vec3>> (
+  std::vector <glm::vec3>
+  {
+    {-0.5f, 0.5f, 0.0f},
+    {-0.5f, -0.5f, 0.0f},
+    {0.5f, -0.5f, 0.0f},
+    {0.5f, 0.5f, 0.0f}
+  });
+}
+
 GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateController )
   : GameState(stateController)
   , mState(StateLocal::Idle)
@@ -109,13 +125,16 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
 //  return;
 
   auto& fonts = mRegistry.ctx().at <FontAssetManager> ();
+  auto& geometry = mRegistry.ctx().at <GeometryAssetManager> ();
   auto& textures = mRegistry.ctx().at <TextureAssetManager> ();
   auto& strings = mRegistry.ctx().at <TextStringAssetManager> ();
 
-  auto textureNull = texturePlaceholder();
   auto textureError = textureFromText("ERROR", olc::RED, true, mPGE);
 
-  textures.insert("null", textureNull);
+  geometry.insert("null", geometryPlaceholder());
+  geometry.insert("error", geometryPlaceholder());
+
+  textures.insert("null", texturePlaceholder());
   textures.insert("error", textureError);
 
   auto& packageManager = mRegistry.ctx().at <PackageManager> ();
@@ -133,6 +152,7 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
   try
   {
     fonts.load({"munro"});
+    geometry.load({"quad"});
     textures.load({"map_diffuse"});
     textures.load({"map_height"});
     strings.load({"one_liner", "multi_liner"});

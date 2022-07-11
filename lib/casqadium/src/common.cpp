@@ -14,6 +14,7 @@
 #include <cqde/types/PackageManager.hpp>
 
 #include <cqde/types/assets/FontAssetManager.hpp>
+#include <cqde/types/assets/GeometryAssetManager.hpp>
 #include <cqde/types/assets/TextureAssetManager.hpp>
 #include <cqde/types/assets/TextStringAssetManager.hpp>
 
@@ -49,6 +50,7 @@ engineInit( entt::registry& registry )
   auto& tp = registry.ctx().emplace <ctpl::thread_pool> (std::thread::hardware_concurrency() | 1);
 
   registry.ctx().emplace <FontAssetManager> (tp);
+  registry.ctx().emplace <GeometryAssetManager> (tp);
   registry.ctx().emplace <TextureAssetManager> (tp);
   registry.ctx().emplace <TextStringAssetManager> (tp);
 

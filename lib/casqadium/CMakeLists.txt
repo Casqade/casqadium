@@ -88,8 +88,8 @@ target_sources(${TARGET} PRIVATE
   src/types/assets/FontAssetManager.cpp
   include/${CASQADIUM_SHORT}/types/assets/FontAssetManager.hpp
 
-#  src/types/assets/GeometryAssetManager.cpp
-#  include/${CASQADIUM_SHORT}/types/assets/GeometryAssetManager.hpp
+ src/types/assets/GeometryAssetManager.cpp
+ include/${CASQADIUM_SHORT}/types/assets/GeometryAssetManager.hpp
 
   src/types/assets/TextStringAssetManager.cpp
   include/${CASQADIUM_SHORT}/types/assets/TextStringAssetManager.hpp

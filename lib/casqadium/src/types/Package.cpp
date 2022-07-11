@@ -7,6 +7,7 @@
 #include <cqde/util/logger.hpp>
 
 #include <cqde/types/assets/FontAssetManager.hpp>
+#include <cqde/types/assets/GeometryAssetManager.hpp>
 #include <cqde/types/assets/TextureAssetManager.hpp>
 #include <cqde/types/assets/TextStringAssetManager.hpp>
 
@@ -108,6 +109,9 @@ Package::load( entt::registry& registry )
 
   auto& fonts = registry.ctx().at <FontAssetManager> ();
   fonts.parseAssetDbFile(packageRootPath / "fonts.json");
+
+  auto& geometry = registry.ctx().at <GeometryAssetManager> ();
+  geometry.parseAssetDbFile(packageRootPath / "geometry.json");
 
   auto& textures = registry.ctx().at <TextureAssetManager> ();
   textures.parseAssetDbFile(packageRootPath / "textures.json");
