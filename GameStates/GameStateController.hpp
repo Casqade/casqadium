@@ -30,6 +30,8 @@ public:
   void handleEvent( const olc::Event );
 
   bool update( const uint32_t ticks,
-               const TimeUtils::Duration );
-  void render();
+               const TimeUtils::Duration& interval );
+
+  void render( const uint32_t frames,
+               const TimeUtils::Duration& interval );
 };

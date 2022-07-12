@@ -343,7 +343,7 @@ GameStateEcsSandbox::mouseButtonEvent( const olc::Event event )
 
 bool
 GameStateEcsSandbox::update(  const uint32_t ticks,
-                              const TimeUtils::Duration elapsed )
+                              const TimeUtils::Duration& interval )
 {
   using namespace cqde::compos;
   using cqde::InputAxisId;
@@ -381,7 +381,9 @@ GameStateEcsSandbox::update(  const uint32_t ticks,
 }
 
 void
-GameStateEcsSandbox::render()
+GameStateEcsSandbox::render(
+  const uint32_t frames,
+  const TimeUtils::Duration& interval )
 {
   using fmt::format;
   using cqde::systems::CullingSystem;

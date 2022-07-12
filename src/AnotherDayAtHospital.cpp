@@ -103,11 +103,14 @@ AnotherDayAtHospital::OnUserUpdate( float )
 
   if ( frames != 0 )
   {
-    SetDrawTarget(1); // Dead ImGui compatibility
-    mGameStateController.render();
+    SetDrawTarget(1); // Dear ImGui compatibility
+    mGameStateController.render(frames, mFrameInterval);
   }
 
-  TimeUtils::SleepUntil( mFramePrevious + mFrameInterval );
+  const auto tickTimeToSleep = mTickPrevious + mTickInterval;
+  const auto frameTimeToSleep = mFramePrevious + mFrameInterval;
+
+  TimeUtils::SleepUntil( std::min(tickTimeToSleep, frameTimeToSleep) );
 
   return true;
 }

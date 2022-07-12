@@ -10,15 +10,9 @@
 class GameStateEcsSandbox
   : public GameState
 {
-  enum class StateLocal
-  {
-    Idle,
+  entt::registry mRegistry {};
 
-  } mState;
-
-  entt::registry mRegistry;
-
-  bool mRunning;
+  bool mRunning {true};
 
   void keyEvent( const olc::Event ) override;
   void mouseMoveEvent( const olc::Event::MouseMoveEvent ) override;
@@ -28,6 +22,7 @@ public:
   GameStateEcsSandbox( GameStateController* const );
 
   bool update( const uint32_t ticks,
-               const TimeUtils::Duration ) override;
-  void render() override;
+               const TimeUtils::Duration& interval ) override;
+  void render( const uint32_t frames,
+               const TimeUtils::Duration& interval ) override;
 };

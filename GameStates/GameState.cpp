@@ -23,7 +23,8 @@ std::string getTypeName( const Type* type)
   return typeName;
 }
 
-GameState::GameState( GameStateController* const stateController )
+GameState::GameState(
+  GameStateController* const stateController )
   : mGameStateController(stateController)
   , mPGE(olc::renderer->ptrPGE)
 {}
@@ -33,25 +34,22 @@ GameState::~GameState()
   LOG_TRACE("Destroying state {}", getTypeName ( this ));
 }
 
-void
-GameState::enter()
-{
-  LOG_TRACE("{}", __FUNCTION__);
-}
-
-void
-GameState::render()
-{
-  LOG_TRACE("{}", __FUNCTION__);
-}
-
 bool
-GameState::update( const uint32_t ticks,
-                   const TimeUtils::Duration )
+GameState::update(
+  const uint32_t ticks,
+  const TimeUtils::Duration& )
 {
   LOG_TRACE("{}", __FUNCTION__);
 
   return true;
+}
+
+void
+GameState::render(
+  const uint32_t frames,
+  const TimeUtils::Duration& )
+{
+  LOG_TRACE("{}", __FUNCTION__);
 }
 
 void

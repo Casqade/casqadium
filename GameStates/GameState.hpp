@@ -13,12 +13,6 @@ class GameStateController;
 
 class GameState
 {
-  enum class StateLocal
-  {
-    Null,
-
-  } mState;
-
 protected:
   GameStateController* const mGameStateController;
   olc::PixelGameEngine* const mPGE;
@@ -31,12 +25,11 @@ public:
   GameState( GameStateController* const );
   virtual ~GameState();
 
-  virtual void enter();
-
   virtual bool update( const uint32_t ticks,
-                       const TimeUtils::Duration );
+                       const TimeUtils::Duration& interval );
 
-  virtual void render();
+  virtual void render( const uint32_t frames,
+                       const TimeUtils::Duration& interval );
 
   virtual void handleEvent( const olc::Event );
 };

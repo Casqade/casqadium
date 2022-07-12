@@ -49,15 +49,17 @@ GameStateController::handleEvent( const olc::Event event )
 bool
 GameStateController::update(
   const uint32_t ticks,
-  const TimeUtils::Duration dt )
+  const TimeUtils::Duration& interval )
 {
-  return mCurrentState->update( ticks, dt );
+  return mCurrentState->update( ticks, interval );
 }
 
 void
-GameStateController::render()
+GameStateController::render(
+  const uint32_t frames,
+  const TimeUtils::Duration& interval )
 {
-  mCurrentState->render();
+  mCurrentState->render(frames, interval);
 }
 
 //template
