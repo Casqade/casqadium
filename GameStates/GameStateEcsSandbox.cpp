@@ -146,6 +146,8 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
   catch ( const std::exception& e )
   {
     LOG_ERROR("{}", e.what());
+
+    mRunning = false;
     return;
   }
 
@@ -160,6 +162,8 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
   catch ( const std::exception& e )
   {
     LOG_ERROR("{}", e.what());
+
+    mRunning = false;
     return;
   }
 
