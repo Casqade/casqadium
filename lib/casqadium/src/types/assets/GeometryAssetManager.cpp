@@ -17,7 +17,7 @@
 namespace cqde::types
 {
 
-typedef std::vector <glm::vec3> vertexBuffer;
+using vertexBuffer = std::vector <glm::vec3>;
 
 template <>
 Json::Value

@@ -21,7 +21,7 @@ void
 each_component(
   const entt::entity entity,
   const entt::registry& registry,
-  const std::function <void(ComponentType)>& func )
+  const std::function <void(const ComponentType)>& func )
 {
   for ( const auto [componentType, entities] : registry.storage() )
     if ( const auto iter = entities.find(entity); iter != entities.end() )
@@ -31,8 +31,8 @@ each_component(
 void
 each_component(
   const entt::registry& registry,
-  const std::function <void(entt::entity,
-                            ComponentType)>& func )
+  const std::function <void(const entt::entity,
+                            const ComponentType)>& func )
 {
   for ( auto [componentType, entities] : registry.storage() )
     for ( auto entity : entities )

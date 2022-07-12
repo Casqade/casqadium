@@ -21,7 +21,7 @@ namespace cqde::systems
 {
 
 void
-RenderSystem( entt::registry& registry )
+RenderSystem( const entt::registry& registry )
 {
   using namespace cqde::compos;
   using namespace cqde::types;

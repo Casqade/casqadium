@@ -11,6 +11,6 @@ namespace cqde::types
 extern template class
 AssetManager <std::string>;
 
-typedef AssetManager <std::string> TextStringAssetManager;
+using TextStringAssetManager = AssetManager <std::string>;
 
 } // namespace cqde::types

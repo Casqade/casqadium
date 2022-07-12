@@ -11,6 +11,6 @@ namespace cqde::types
 extern template class
 AssetManager <olc::Font>;
 
-typedef AssetManager <olc::Font> FontAssetManager;
+using FontAssetManager = AssetManager <olc::Font>;
 
 } // namespace cqde::types

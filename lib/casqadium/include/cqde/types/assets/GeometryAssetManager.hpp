@@ -13,6 +13,6 @@ namespace cqde::types
 extern template class
 AssetManager <std::vector <glm::vec3>>;
 
-typedef AssetManager <std::vector <glm::vec3>> GeometryAssetManager;
+using GeometryAssetManager = AssetManager <std::vector <glm::vec3>>;
 
 } // namespace cqde::types

@@ -7,19 +7,20 @@
 namespace cqde
 {
 
-typedef entt::id_type ComponentType;
-typedef entt::id_type EntityType;
-typedef identifier CallbackId;
-typedef identifier EntityId;
-typedef identifier GeometryId;
-typedef identifier InputAxisId;
-typedef identifier InputCallbackId;
-typedef identifier InputHwId;
-typedef identifier PackageId;
-typedef identifier StringId;
-typedef identifier TextureId;
+using ComponentType = entt::id_type;
+using EntityType = entt::id_type;
 
-typedef int32_t InputHwCode;
+using CallbackId = identifier;
+using EntityId = identifier;
+using GeometryId = identifier;
+using InputAxisId = identifier;
+using InputCallbackId = identifier;
+using InputHwId = identifier;
+using PackageId = identifier;
+using StringId = identifier;
+using TextureId = identifier;
+
+using InputHwCode = int32_t;
 
 
 } // namespace cqde

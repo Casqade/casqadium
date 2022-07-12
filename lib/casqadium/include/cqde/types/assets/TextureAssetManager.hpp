@@ -11,6 +11,6 @@ namespace cqde::types
 extern template class
 AssetManager <olc::Renderable>;
 
-typedef AssetManager <olc::Renderable> TextureAssetManager;
+using TextureAssetManager = AssetManager <olc::Renderable>;
 
 } // namespace cqde::types
