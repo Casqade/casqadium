@@ -14,6 +14,9 @@
 #include <cqde/types/EntityTagManager.hpp>
 #include <cqde/types/PackageManager.hpp>
 
+#include <cqde/types/TickCurrent.hpp>
+#include <cqde/types/FrameCurrent.hpp>
+
 #include <cqde/types/assets/FontAssetManager.hpp>
 #include <cqde/types/assets/GeometryAssetManager.hpp>
 #include <cqde/types/assets/TextureAssetManager.hpp>
@@ -38,6 +41,9 @@ engineInit( entt::registry& registry )
   using namespace cqde::types;
 
 //  entt::meta_ctx::bind(registry.ctx().emplace <entt::meta_ctx> ());
+
+  registry.ctx().emplace <TickCurrent> ();
+  registry.ctx().emplace <FrameCurrent> ();
 
   registry.ctx().emplace <PackageManager> ();
 
