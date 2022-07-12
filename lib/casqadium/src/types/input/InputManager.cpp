@@ -227,7 +227,7 @@ InputManager::handleAxisInput(
         binding->handleInput(axis, amount);
 
         for ( const auto& callbackId : axis.callbacks )
-          callbackMgr.Execute(callbackId, registry,
+          callbackMgr.execute(callbackId, registry,
                               {entity, &cController});
       }
   }

@@ -19,15 +19,16 @@ public:
                                             const std::vector <std::any>&)>;
 
 private:
-  std::map <cqde::CallbackId, CallbackFunc> mCallbacks {};
+  std::map <CallbackId, CallbackFunc> mCallbacks {};
 
 public:
   CallbackManager() = default;
 
-  void Execute( const cqde::CallbackId&, entt::registry&,
+  void execute( const CallbackId&, entt::registry&,
                 const std::vector <std::any>& args ) const;
 
-  void Register( const cqde::CallbackId&, const CallbackFunc& );
+  void Register( const CallbackId&,
+                 const CallbackFunc& );
 
 
 };

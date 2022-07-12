@@ -106,11 +106,9 @@ geometryPlaceholder()
   });
 }
 
-GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateController )
+GameStateEcsSandbox::GameStateEcsSandbox(
+  GameStateController* const stateController )
   : GameState(stateController)
-  , mState(StateLocal::Idle)
-  , mRegistry()
-  , mRunning(true)
 {
   using namespace entt::literals;
   using namespace cqde::compos;
