@@ -22,6 +22,8 @@ private:
   std::map <SystemId, SystemFunc> mSystemsEnabled {};
   std::map <SystemId, SystemFunc> mRenderSystemsEnabled {};
 
+  std::set <SystemId> mSystemsToDisable {};
+
 public:
   SystemManager() = default;
 
@@ -33,12 +35,10 @@ public:
   void disable( const SystemId& );
 
   void execute( entt::registry&,
-                const bool rendering ) const;
+                const bool rendering );
 
   std::set <SystemId> systems() const;
   std::set <SystemId> systemsEnabled( const bool rendering ) const;
-
-
 };
 
 } // namespace cqde::types

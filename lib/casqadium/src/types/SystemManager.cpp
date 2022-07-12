@@ -1,5 +1,7 @@
 #include <cqde/types/SystemManager.hpp>
 
+#include <cqde/util/logger.hpp>
+
 
 namespace cqde::types
 {
@@ -7,8 +9,18 @@ namespace cqde::types
 void
 SystemManager::execute(
   entt::registry& registry,
-  const bool rendering ) const
+  const bool rendering )
 {
+  if ( mSystemsToDisable.empty() == false )
+  {
+    for ( const auto& systemId : mSystemsToDisable )
+    {
+      mSystemsEnabled.erase(systemId);
+      mRenderSystemsEnabled.erase(systemId);
+    }
+    mSystemsToDisable.clear();
+  }
+
   auto& systemsPool = rendering == true
                     ? mRenderSystemsEnabled
                     : mSystemsEnabled;
@@ -22,6 +34,14 @@ SystemManager::enable(
   const SystemId& systemId,
   const bool rendering )
 {
+  LOG_DEBUG("Enabling system '{}'",
+            systemId.str());
+
+  if ( mSystemsPool.count(systemId) == 0 )
+    throw std::runtime_error(
+      fmt::format("Can't enable unknown system '{}'",
+                  systemId.str()));
+
   auto& systemsPool = rendering == true
                     ? mRenderSystemsEnabled
                     : mSystemsEnabled;
@@ -33,8 +53,10 @@ void
 SystemManager::disable(
   const SystemId& systemId )
 {
-  mSystemsEnabled.erase(systemId);
-  mRenderSystemsEnabled.erase(systemId);
+  LOG_DEBUG("Disabling system '{}'",
+            systemId.str());
+
+  mSystemsToDisable.insert(systemId);
 }
 
 void
@@ -42,6 +64,9 @@ SystemManager::Register(
   const SystemId&   systemId,
   const SystemFunc& system )
 {
+  LOG_INFO("Registering system '{}'",
+            systemId.str());
+
   mSystemsPool[systemId] = system;
 }
 
@@ -67,7 +92,8 @@ SystemManager::systemsEnabled(
   std::set <SystemId> result {};
 
   for ( const auto& [systemId, system] : systemsPool )
-    result.insert(systemId);
+    if ( mSystemsToDisable.count(systemId) == 0 )
+      result.insert(systemId);
 
   return result;
 }
