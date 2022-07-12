@@ -10,6 +10,7 @@
 #include <cqde/common.hpp>
 #include <cqde/ecs_helpers.hpp>
 
+#include <cqde/types/CallbackManager.hpp>
 #include <cqde/types/EntityManager.hpp>
 #include <cqde/types/PackageManager.hpp>
 
@@ -22,7 +23,6 @@
 #include <cqde/types/input/InputBinding.hpp>
 #include <cqde/types/input/InputBindingAbsolute.hpp>
 #include <cqde/types/input/InputBindingRelative.hpp>
-#include <cqde/types/input/InputCallbackStorage.hpp>
 
 #include <cqde/util/logger.hpp>
 
@@ -178,14 +178,17 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
   auto textTexture = std::make_shared <olc::Renderable> (fonts.get("munro")->RenderStringToRenderable(U"T", olc::WHITE));
   textures.insert("text_texture", textTexture);
 
-  auto& inputCallbacks = mRegistry.ctx().at <InputCallbackStorage> ();
+  auto& callbackMgr = mRegistry.ctx().at <CallbackManager> ();
 
   static float valPitch{};
   static float valYaw{};
 
   const auto cameraLookOn =
-  [this, cursor] ( const entt::entity, InputController& cController )
+  [this, cursor] (  entt::registry& registry,
+                    const std::vector <std::any>& args )
   {
+    auto cController = std::any_cast <InputController*> (args.at(1));
+
     mPGE->SetMouseCursor(olc::Mouse::Cursor{});
     mPGE->SetKeepMouseCentered(true);
 
@@ -198,53 +201,64 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
     iAxisYaw.value = valYaw;
     iAxisYaw.callbacks.insert("CameraYawClamp"_id);
 
-    cController.inputs["Pitch"] = iAxisPitch;
-    cController.inputs["Yaw"] = iAxisYaw;
+    cController->inputs["Pitch"] = iAxisPitch;
+    cController->inputs["Yaw"] = iAxisYaw;
   };
 
   const auto cameraLookOff =
-  [this, cursor] ( const entt::entity, InputController& cController )
+  [this, cursor] (  entt::registry& registry,
+                    const std::vector <std::any>& args )
   {
+    auto cController = std::any_cast <InputController*> (args.at(1));
+
     mPGE->SetMouseCursor(cursor);
     mPGE->SetKeepMouseCentered(false);
 
-    valPitch = cController.inputs["Pitch"].value;
-    valYaw = cController.inputs["Yaw"].value;
+    valPitch = cController->inputs["Pitch"].value;
+    valYaw = cController->inputs["Yaw"].value;
 
-    cController.inputs.erase("Pitch");
-    cController.inputs.erase("Yaw");
+    cController->inputs.erase("Pitch");
+    cController->inputs.erase("Yaw");
   };
 
   const auto cameraLookToggle =
-  [this, cursor, cameraLookOn, cameraLookOff] ( const entt::entity e, InputController& cController )
+  [cursor, cameraLookOn, cameraLookOff] ( entt::registry& registry,
+                                          const std::vector <std::any>& args )
   {
-    if ( cController.inputs.count("Pitch") > 0 || cController.inputs.count("Yaw") > 0 )
-      cameraLookOff(e, cController);
+    auto entity = std::any_cast <entt::entity> (args.at(0));
+    auto cController = std::any_cast <InputController*> (args.at(1));
+
+    if ( cController->inputs.count("Pitch") > 0 || cController->inputs.count("Yaw") > 0 )
+      cameraLookOff( registry, {entity, cController} );
     else
-      cameraLookOn(e, cController);
+      cameraLookOn( registry, {entity, cController} );
   };
 
   const auto cameraYawClamp =
-  [] ( const entt::entity, InputController& cController )
+  [] (  entt::registry& registry,
+        const std::vector <std::any>& args )
   {
-    if ( cController.inputs.count("Yaw") == 0 )
+    auto cController = std::any_cast <InputController*> (args.at(1));
+
+    if ( cController->inputs.count("Yaw") == 0 )
       return;
 
-    float& yaw = cController.inputs["Yaw"].value;
+    float& yaw = cController->inputs["Yaw"].value;
     yaw = yaw > 180.0f ? yaw - 360.0f : yaw;
     yaw = yaw < -180.0f ? yaw + 360.0f : yaw;
   };
 
   const auto quitGame =
-  [this] ( const entt::entity, InputController& )
+  [this] (  entt::registry& registry,
+            const std::vector <std::any>& args )
   {
     mRunning = false;
 
-    auto& entityManager = mRegistry.ctx().at <EntityManager> ();
-    auto& inputManager = mRegistry.ctx().at <InputManager> ();
+    auto& entityManager = registry.ctx().at <EntityManager> ();
+    auto& inputManager = registry.ctx().at <InputManager> ();
 
     entityManager.save("entities.json", "editor"_id,
-                       mRegistry,
+                       registry,
                        {
                          entt::type_hash <Tag>::value(),
                          entt::type_hash <EntityMetaInfo>::value()
@@ -253,11 +267,11 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
     inputManager.save("input.json");
   };
 
-  inputCallbacks.Register("CameraLookOn"_id, cameraLookOn);
-  inputCallbacks.Register("CameraLookOff"_id, cameraLookOff);
-  inputCallbacks.Register("CameraLookToggle"_id, cameraLookToggle);
-  inputCallbacks.Register("CameraYawClamp"_id, cameraYawClamp);
-  inputCallbacks.Register("QuitGame"_id, quitGame);
+  callbackMgr.Register("CameraLookOn"_id, cameraLookOn);
+  callbackMgr.Register("CameraLookOff"_id, cameraLookOff);
+  callbackMgr.Register("CameraLookToggle"_id, cameraLookToggle);
+  callbackMgr.Register("CameraYawClamp"_id, cameraYawClamp);
+  callbackMgr.Register("QuitGame"_id, quitGame);
 }
 
 void
@@ -377,30 +391,4 @@ GameStateEcsSandbox::render()
 
   CullingSystem(mRegistry);
   RenderSystem(mRegistry);
-
-  auto now = TimeUtils::Now();
-
-  auto& inputMgr = mRegistry.ctx().at <InputManager> ();
-
-  uint8_t eventsToDisplay = 40;
-  float textY = 0.0f;
-  float textH = 8.0f;
-
-  for ( auto iter = inputMgr.inputHistory().rbegin();
-        iter != inputMgr.inputHistory().rend();
-        ++iter )
-  {
-    if ( eventsToDisplay == 0 )
-      break;
-
-    --eventsToDisplay;
-
-    auto& event = *iter;
-    mPGE->DrawStringDecal({0.0f, textY += textH},
-                          format("{}: {} -{:.2f}",
-                                  event.inputId.str(), event.amount, double(now - event.tp)));
-  }
-
-  auto& strings = mRegistry.ctx().at <TextStringAssetManager> ();
-  mPGE->DrawStringDecal({0.0f, textY += textH}, *strings.try_get("multi_liner"_id));
 }

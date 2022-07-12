@@ -9,7 +9,8 @@
 
 #include <cqde/components/InputController.hpp>
 
-#include <cqde/types/input/InputCallbackStorage.hpp>
+#include <cqde/types/CallbackManager.hpp>
+
 #include <cqde/types/input/InputBindingAbsolute.hpp>
 #include <cqde/types/input/InputBindingRelative.hpp>
 
@@ -207,7 +208,7 @@ InputManager::handleAxisInput(
   while ( mInputHistory.size() > mInputHistoryLength )
     mInputHistory.pop_front();
 
-  auto& inputCallbacks = registry.ctx().at <InputCallbackStorage> ();
+  auto& callbackMgr = registry.ctx().at <CallbackManager> ();
 
   const auto [axesBegin, axesEnd] = mBindings.equal_range(inputId);
 
@@ -226,7 +227,8 @@ InputManager::handleAxisInput(
         binding->handleInput(axis, amount);
 
         for ( const auto& callbackId : axis.callbacks )
-          inputCallbacks.Execute(callbackId, entity, cController);
+          callbackMgr.Execute(callbackId, registry,
+                              {entity, &cController});
       }
   }
 }

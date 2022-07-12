@@ -36,11 +36,8 @@ target_sources(${TARGET} PRIVATE
   include/${CASQADIUM_SHORT}/conversion/json_glm_vec4.hpp
   include/${CASQADIUM_SHORT}/conversion/json_glm_quat.hpp
 
-  src/types/CallbackStorage.cpp
-  include/${CASQADIUM_SHORT}/types/CallbackStorage.hpp
-
-  src/types/input/InputCallbackStorage.cpp
-  include/${CASQADIUM_SHORT}/types/input/InputCallbackStorage.hpp
+  src/types/CallbackManager.cpp
+  include/${CASQADIUM_SHORT}/types/CallbackManager.hpp
 
   src/types/EntityManager.cpp
   include/${CASQADIUM_SHORT}/types/EntityManager.hpp

@@ -10,6 +10,7 @@
 #include <cqde/components/GeometryBuffer.hpp>
 #include <cqde/components/TextureBuffer.hpp>
 
+#include <cqde/types/CallbackManager.hpp>
 #include <cqde/types/EntityTagManager.hpp>
 #include <cqde/types/PackageManager.hpp>
 
@@ -18,7 +19,6 @@
 #include <cqde/types/assets/TextureAssetManager.hpp>
 #include <cqde/types/assets/TextStringAssetManager.hpp>
 
-#include <cqde/types/input/InputCallbackStorage.hpp>
 #include <cqde/types/input/InputManager.hpp>
 
 #include <cqde/types/EntityManager.hpp>
@@ -43,7 +43,7 @@ engineInit( entt::registry& registry )
 
   auto& entityManager = registry.ctx().emplace <EntityManager> ();
   registry.ctx().emplace <EntityTagManager> ();
-  registry.ctx().emplace <InputCallbackStorage> ();
+  registry.ctx().emplace <CallbackManager> ();
 
   registry.ctx().emplace <InputManager> ();
 
