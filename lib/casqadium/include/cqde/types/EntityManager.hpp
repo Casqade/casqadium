@@ -11,6 +11,7 @@
 #include <json/forwards.h>
 
 #include <filesystem>
+#include <list>
 #include <map>
 #include <set>
 
@@ -24,6 +25,10 @@ class EntityManager
 
   std::map <EntityId, entt::entity> tags {{null_id, entt::null}};
   std::map <std::string, ComponentType> mComponentTypes {};
+
+  std::set <entt::entity> mEntitesToRemove {};
+  std::map <entt::entity,
+            std::set <ComponentType>> mComponentsToRemove {};
 
 public:
   EntityManager() = default;
@@ -42,6 +47,11 @@ public:
 
   std::string   componentName( const ComponentType ) const;
   ComponentType componentType( const std::string& name ) const;
+
+  void removeLater( const entt::entity );
+  void removeLater( const entt::entity, const ComponentType );
+
+  void delayedRemove( entt::registry& registry );
 
   entt::entity get( const EntityId& ) const;
   EntityId createId( EntityId hint = {"e_"} ) const;

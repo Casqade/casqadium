@@ -253,6 +253,43 @@ EntityManager::componentType(
   return {};
 }
 
+void
+EntityManager::removeLater(
+  const entt::entity entity )
+{
+  mEntitesToRemove.insert(entity);
+}
+
+void
+EntityManager::removeLater(
+  const entt::entity  entity,
+  const ComponentType component )
+{
+  mComponentsToRemove[entity].insert(component);
+}
+
+void
+EntityManager::delayedRemove(
+  entt::registry& registry )
+{
+  for ( const auto entity : mEntitesToRemove )
+  {
+    mComponentsToRemove.erase(entity);
+
+    if ( registry.valid(entity) == true )
+      registry.destroy(entity);
+  }
+
+  for ( const auto& [entity, componentList] : mComponentsToRemove )
+    if ( registry.valid(entity) == true )
+      for ( const auto component : componentList )
+        if ( componentList.count(component) != 0 )
+          registry.storage(component)->second.remove(entity);
+
+  mEntitesToRemove.clear();
+  mComponentsToRemove.clear();
+}
+
 entt::entity
 EntityManager::get(
   const EntityId& id ) const
