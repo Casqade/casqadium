@@ -223,7 +223,7 @@ FetchContent_Declare(soloud
   GIT_SHALLOW    TRUE
   SOURCE_SUBDIR  contrib
 )
-FetchContent_MakeAvailable(soloud)
+# FetchContent_MakeAvailable(soloud)
 
 
 if(${BUILD_SHARED_LIBS})
@@ -240,7 +240,7 @@ target_link_libraries(${TARGET} PUBLIC
   EnTT::EnTT
   olcPGE::olcPGE
   spdlog::spdlog
- soloud
+#  soloud
 )
 
 if(${BUILD_SHARED_LIBS})
