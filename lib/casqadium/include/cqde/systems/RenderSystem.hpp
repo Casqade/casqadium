@@ -2,28 +2,11 @@
 
 #include <entt/fwd.hpp>
 
-#include <glm/fwd.hpp>
 
-
-namespace cqde
-{
-
-namespace compos
-{
-struct GeometryBuffer;
-}
-
-namespace types
-{
-struct VertexBuffer;
-}
-
-namespace systems
+namespace cqde::systems
 {
 
 void
-RenderSystem( entt::registry& );
+RenderSystem( const entt::registry& );
 
-} // namespace systems
-
-} // namespace cqde
+} // namespace cqde::system
