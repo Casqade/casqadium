@@ -14,7 +14,6 @@ using CallbackId = identifier;
 using EntityId = identifier;
 using GeometryId = identifier;
 using InputAxisId = identifier;
-using InputCallbackId = identifier;
 using InputHwId = identifier;
 using PackageId = identifier;
 using StringId = identifier;

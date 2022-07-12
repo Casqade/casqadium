@@ -15,7 +15,7 @@ struct ControlAxis
   float value {};
   std::pair <float, float> constraint {};
 
-  std::set <InputCallbackId> callbacks {};
+  std::set <CallbackId> callbacks {};
 
 
   ControlAxis() = default;

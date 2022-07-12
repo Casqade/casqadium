@@ -115,7 +115,6 @@ GameStateEcsSandbox::GameStateEcsSandbox( GameStateController* const stateContro
   using namespace entt::literals;
   using namespace cqde::compos;
   using namespace cqde::types;
-  using cqde::InputCallbackId;
 
   cqde::engineInit(mRegistry);
 
