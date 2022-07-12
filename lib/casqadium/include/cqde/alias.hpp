@@ -11,6 +11,7 @@ using ComponentType = entt::id_type;
 using EntityType = entt::id_type;
 
 using CallbackId = identifier;
+using SystemId = identifier;
 using EntityId = identifier;
 using GeometryId = identifier;
 using InputAxisId = identifier;

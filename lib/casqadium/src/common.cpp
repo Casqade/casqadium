@@ -13,6 +13,7 @@
 #include <cqde/types/CallbackManager.hpp>
 #include <cqde/types/EntityTagManager.hpp>
 #include <cqde/types/PackageManager.hpp>
+#include <cqde/types/SystemManager.hpp>
 
 #include <cqde/types/TickCurrent.hpp>
 #include <cqde/types/FrameCurrent.hpp>
@@ -50,6 +51,7 @@ engineInit( entt::registry& registry )
   auto& entityManager = registry.ctx().emplace <EntityManager> ();
   registry.ctx().emplace <EntityTagManager> ();
   registry.ctx().emplace <CallbackManager> ();
+  registry.ctx().emplace <SystemManager> ();
 
   registry.ctx().emplace <InputManager> ();
 

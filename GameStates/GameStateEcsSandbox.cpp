@@ -13,6 +13,10 @@
 #include <cqde/types/CallbackManager.hpp>
 #include <cqde/types/EntityManager.hpp>
 #include <cqde/types/PackageManager.hpp>
+#include <cqde/types/SystemManager.hpp>
+
+#include <cqde/types/TickCurrent.hpp>
+#include <cqde/types/FrameCurrent.hpp>
 
 #include <cqde/types/assets/FontAssetManager.hpp>
 #include <cqde/types/assets/GeometryAssetManager.hpp>
@@ -179,8 +183,6 @@ GameStateEcsSandbox::GameStateEcsSandbox(
   auto textTexture = std::make_shared <olc::Renderable> (fonts.get("munro")->RenderStringToRenderable(U"T", olc::WHITE));
   textures.insert("text_texture", textTexture);
 
-  auto& callbackMgr = mRegistry.ctx().at <CallbackManager> ();
-
   static float valPitch{};
   static float valYaw{};
 
@@ -268,11 +270,65 @@ GameStateEcsSandbox::GameStateEcsSandbox(
     inputManager.save("input.json");
   };
 
+  const auto CameraControlSystem =
+  [] ( entt::registry& registry )
+  {
+    using namespace entt::literals;
+    using TimeUtils::Duration;
+
+    const auto& tick = registry.ctx().at <TickCurrent> ();
+
+    const auto ticks = tick.ticksElapsed;
+    const auto elapsed = tick.tickInterval;
+
+    const double dt = ticks * static_cast <double> (elapsed);
+    const float cameraVelocity = 10.0f;
+
+    for ( auto&& [eCamera,
+                  cCamera,
+                  cController,
+                  cTransform] : registry.view < Camera,
+                                                InputController,
+                                                Transform>().each() )
+    {
+      const float translationX = cController.inputs["TranslateX"_id].value * cameraVelocity * dt;
+      cTransform.translation += cTransform.right() * translationX;
+
+      const float translationY = cController.inputs["TranslateY"_id].value * cameraVelocity * dt;
+      cTransform.translation += cTransform.up() * translationY;
+
+      const float translationZ = cController.inputs["TranslateZ"_id].value * cameraVelocity * dt;
+      cTransform.translation += cTransform.front() * translationZ;
+
+      if ( cController.inputs.count("Pitch") == 0 || cController.inputs.count("Yaw") == 0 )
+        continue;
+
+      const float pitch = glm::radians( cController.inputs["Pitch"_id].value );
+      const float yaw = glm::radians( cController.inputs["Yaw"_id].value );
+
+      cTransform.orientation = glm::quat( {pitch, yaw, 0.0f} );
+    }
+  };
+
+  auto& callbackMgr = mRegistry.ctx().at <CallbackManager> ();
+
   callbackMgr.Register("CameraLookOn"_id, cameraLookOn);
   callbackMgr.Register("CameraLookOff"_id, cameraLookOff);
   callbackMgr.Register("CameraLookToggle"_id, cameraLookToggle);
   callbackMgr.Register("CameraYawClamp"_id, cameraYawClamp);
   callbackMgr.Register("QuitGame"_id, quitGame);
+
+  auto& systemMgr = mRegistry.ctx().at <SystemManager> ();
+
+  using namespace cqde::systems;
+
+  systemMgr.Register("CameraControlSystem"_id, CameraControlSystem);
+  systemMgr.Register("CullingSystem"_id, CullingSystem);
+  systemMgr.Register("RenderSystem"_id, RenderSystem);
+
+  systemMgr.enable("CameraControlSystem"_id, false);
+  systemMgr.enable("CullingSystem"_id, true);
+  systemMgr.enable("RenderSystem"_id, true);
 }
 
 void
@@ -346,37 +402,20 @@ bool
 GameStateEcsSandbox::update(  const uint32_t ticks,
                               const TimeUtils::Duration& interval )
 {
-  using namespace cqde::compos;
-  using cqde::InputAxisId;
+  using cqde::types::SystemManager;
+  using cqde::types::TickCurrent;
 
-  const double dt = static_cast <double> (elapsed);
+  const double dt = static_cast <double> (interval);
   const float cameraVelocity = 10.0f;
 
-// Camera control system
-  for ( auto&& [eCamera,
-                cCamera,
-                cController,
-                cTransform] : mRegistry.view <Camera,
-                                              InputController,
-                                              Transform>().each() )
-  {
-    const float translationX = cController.inputs["TranslateX"_id].value * cameraVelocity * dt;
-    cTransform.translation += cTransform.right() * translationX;
+  auto& tick = mRegistry.ctx().at <TickCurrent> ();
 
-    const float translationY = cController.inputs["TranslateY"_id].value * cameraVelocity * dt;
-    cTransform.translation += cTransform.up() * translationY;
+  tick.ticksElapsed = ticks;
+  tick.tickInterval = interval;
 
-    const float translationZ = cController.inputs["TranslateZ"_id].value * cameraVelocity * dt;
-    cTransform.translation += cTransform.front() * translationZ;
+  mRegistry.ctx().at <SystemManager> ().execute(mRegistry, false);
 
-    if ( cController.inputs.count("Pitch") == 0 || cController.inputs.count("Yaw") == 0 )
-      continue;
-
-    const float pitch = glm::radians( cController.inputs["Pitch"_id].value );
-    const float yaw = glm::radians( cController.inputs["Yaw"_id].value );
-
-    cTransform.orientation = glm::quat( {pitch, yaw, 0.0f} );
-  }
+  tick.lastTickTimepoint = TimeUtils::Now();
 
   return mRunning;
 }
@@ -386,12 +425,15 @@ GameStateEcsSandbox::render(
   const uint32_t frames,
   const TimeUtils::Duration& interval )
 {
-  using fmt::format;
-  using cqde::systems::CullingSystem;
-  using cqde::systems::RenderSystem;
-  using cqde::types::InputManager;
-  using cqde::types::TextStringAssetManager;
+  using cqde::types::SystemManager;
+  using cqde::types::FrameCurrent;
 
-  CullingSystem(mRegistry);
-  RenderSystem(mRegistry);
+  auto& frame = mRegistry.ctx().at <FrameCurrent> ();
+
+  frame.framesElapsed = frames;
+  frame.frameInterval = interval;
+
+  mRegistry.ctx().at <SystemManager> ().execute(mRegistry, true);
+
+  frame.lastFrameTimepoint = TimeUtils::Now();
 }

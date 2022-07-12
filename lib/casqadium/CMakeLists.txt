@@ -48,6 +48,9 @@ target_sources(${TARGET} PRIVATE
   src/types/EntityTagManager.cpp
   include/${CASQADIUM_SHORT}/types/EntityTagManager.hpp
 
+  src/types/SystemManager.cpp
+  include/${CASQADIUM_SHORT}/types/SystemManager.hpp
+
   src/types/input/InputManager.cpp
   include/${CASQADIUM_SHORT}/types/input/InputManager.hpp
 
