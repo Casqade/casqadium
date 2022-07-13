@@ -30,6 +30,7 @@
 
 #include <cqde/util/logger.hpp>
 
+#include <cqde/components/Tag.hpp>
 #include <cqde/components/Camera.hpp>
 #include <cqde/components/SceneNode.hpp>
 #include <cqde/components/Transform.hpp>
@@ -42,6 +43,7 @@
 #include <cqde/systems/CullingSystem.hpp>
 
 #include <olcPGE/olcMouseInputId.hpp>
+#include <olcPGE/olcPGEX_ImGui.hpp>
 
 #include <spdlog/fmt/bundled/format.h>
 
@@ -190,6 +192,9 @@ GameStateEcsSandbox::GameStateEcsSandbox(
   [this, cursor] (  entt::registry& registry,
                     const std::vector <std::any>& args )
   {
+    if ( ImGui::GetIO().WantCaptureMouse == true )
+      return;
+
     auto cController = std::any_cast <InputController*> (args.at(1));
 
     mPGE->SetMouseCursor(olc::Mouse::Cursor{});
@@ -311,6 +316,67 @@ GameStateEcsSandbox::GameStateEcsSandbox(
     }
   };
 
+  const auto EditorSystem =
+  [this, cursor] ( entt::registry& registry )
+  {
+    using cqde::ComponentType;
+    using cqde::component_name;
+    using cqde::each_component;
+
+    if ( ImGui::GetIO().WantCaptureMouse == true )
+    {
+      olc::platform->SetMouseCursorHidden(false);
+      mPGE->SetKeepMouseCentered(false);
+    }
+
+    ImGui::Begin("Entities");
+    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2, 2));
+
+    if ( ImGui::BeginTable("split", 2, ImGuiTableFlags_BordersOuter | ImGuiTableFlags_Resizable) )
+    {
+      registry.each(
+      [&registry] ( const auto entity )
+      {
+        ImGui::PushID((int) entity);
+        ImGui::TableNextRow();
+        ImGui::TableNextColumn();
+        ImGui::AlignTextToFramePadding();
+        const bool entityOpened = ImGui::TreeNode(registry.get <Tag> (entity).id.str().c_str());
+        ImGui::TableNextColumn();
+        ImGui::Text("entity");
+
+        if ( entityOpened )
+        {
+          each_component(entity, registry,
+          [&registry] ( const ComponentType componentType )
+          {
+            ImGui::PushID((int) componentType);
+//            auto component = entt::resolve(componentType);
+//            component.func();
+
+            ImGui::TableNextRow();
+            ImGui::TableNextColumn();
+            ImGui::AlignTextToFramePadding();
+            ImGuiTreeNodeFlags flags  = ImGuiTreeNodeFlags_Leaf
+                                      | ImGuiTreeNodeFlags_NoTreePushOnOpen
+                                      | ImGuiTreeNodeFlags_Bullet;
+            ImGui::TreeNodeEx(component_name(componentType).c_str(), flags);
+            ImGui::TableNextColumn();
+            ImGui::Text("component");
+
+            ImGui::PopID();
+          });
+          ImGui::TreePop();
+        }
+        ImGui::PopID();
+      });
+      ImGui::EndTable();
+    }
+
+    ImGui::PopStyleVar();
+    ImGui::End();
+  };
+
   auto& callbackMgr = mRegistry.ctx().at <CallbackManager> ();
 
   callbackMgr.Register("CameraLookOn"_id, cameraLookOn);
@@ -332,10 +398,14 @@ GameStateEcsSandbox::GameStateEcsSandbox(
   systemMgr.Register("RenderSystem"_id,
                      RenderSystem,
                      System::Phase::Render);
+  systemMgr.Register("EditorSystem"_id,
+                     EditorSystem,
+                     System::Phase::Render);
 
   systemMgr.activate("CameraControlSystem"_id);
   systemMgr.activate("CullingSystem"_id);
   systemMgr.activate("RenderSystem"_id);
+  systemMgr.activate("EditorSystem"_id);
 }
 
 void

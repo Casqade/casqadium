@@ -9,6 +9,7 @@
 #include <cqde/components/Transform.hpp>
 #include <cqde/components/GeometryBuffer.hpp>
 #include <cqde/components/TextureBuffer.hpp>
+#include <cqde/components/EntityMetaInfo.hpp>
 
 #include <cqde/types/CallbackManager.hpp>
 #include <cqde/types/EntityTagManager.hpp>
@@ -68,6 +69,8 @@ engineInit( entt::registry& registry )
   entityManager.registerComponent <GeometryBuffer> ("GeometryBuffer");
   entityManager.registerComponent <TextureBuffer> ("TextureBuffer");
   entityManager.registerComponent <Camera> ("Camera");
+  entityManager.registerComponent <Tag> ("Tag");
+  entityManager.registerComponent <EntityMetaInfo> ("EntityMetaInfo");
 }
 
 } // namespace cqde

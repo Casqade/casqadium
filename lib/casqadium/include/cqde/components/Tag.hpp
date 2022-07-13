@@ -22,9 +22,10 @@ struct Tag
 
   Json::Value serialize() const;
 
-  void deserialize( entt::registry&,
-                    entt::entity,
-                    const Json::Value& ) const;
+  static void deserialize(
+    entt::registry&,
+    entt::entity,
+    const Json::Value& );
 };
 
 } // namespace cqde::compos

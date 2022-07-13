@@ -22,21 +22,14 @@ Tag::invalidate( entt::registry& registry )
 Json::Value
 Tag::serialize() const
 {
-  return {};
+  return Json::ValueType::objectValue;
 }
 
 void
 Tag::deserialize(
-  entt::registry& registry,
-  entt::entity entity,
-  const Json::Value& content ) const
-{
-  auto& comp = registry.emplace <Tag> (entity);
-
-  comp.id = EntityId{content.get("id", null_id.str()).asCString()};
-
-  if ( registry.ctx().at <types::EntityTagManager> ().tags.emplace(comp.id, entity).second == false )
-    throw "duplicate id encountered";
-}
+  entt::registry&,
+  entt::entity,
+  const Json::Value& )
+{}
 
 } // namespace cqde::compos
