@@ -283,8 +283,8 @@ EntityManager::delayedRemove(
   for ( const auto& [entity, componentList] : mComponentsToRemove )
     if ( registry.valid(entity) == true )
       for ( const auto component : componentList )
-        if ( componentList.count(component) != 0 )
-          registry.storage(component)->second.remove(entity);
+        if ( const auto iter = registry.storage(component); iter < registry.storage().end() )
+          iter->second.remove(entity);
 
   mEntitesToRemove.clear();
   mComponentsToRemove.clear();
