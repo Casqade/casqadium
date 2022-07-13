@@ -260,11 +260,12 @@ GameStateEcsSandbox::GameStateEcsSandbox(
     auto& entityManager = registry.ctx().at <EntityManager> ();
     auto& inputManager = registry.ctx().at <InputManager> ();
 
+    using entt::type_hash;
     entityManager.save("entities.json", "editor"_id,
                        registry,
                        {
-                         entt::type_hash <Tag>::value(),
-                         entt::type_hash <EntityMetaInfo>::value()
+                         type_hash <Tag> (),
+                         type_hash <EntityMetaInfo> ()
                        });
 
     inputManager.save("input.json");

@@ -58,9 +58,12 @@ public:
 };
 
 template <typename Component>
-void EntityManager::registerComponent( const std::string& name )
+void
+EntityManager::registerComponent(
+  const std::string& name )
 {
   using namespace entt::literals;
+  using entt::type_hash;
 
   auto factory = entt::meta <Component> ();
   factory.type();
@@ -70,7 +73,7 @@ void EntityManager::registerComponent( const std::string& name )
   factory.template func <&Component::serialize> ("serialize"_hs);
   factory.template func <&Component::deserialize> ("deserialize"_hs);
 
-  mComponentTypes[name] = entt::type_hash <Component>::value();
+  mComponentTypes[name] = type_hash <Component> ();
 }
 
 } // namespace cqde::types
