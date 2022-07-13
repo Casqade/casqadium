@@ -9,91 +9,77 @@ namespace cqde::types
 void
 SystemManager::execute(
   entt::registry& registry,
-  const bool rendering )
+  const Phase phase )
 {
-  if ( mSystemsToDisable.empty() == false )
-  {
-    for ( const auto& systemId : mSystemsToDisable )
-    {
-      mSystemsEnabled.erase(systemId);
-      mRenderSystemsEnabled.erase(systemId);
-    }
-    mSystemsToDisable.clear();
-  }
-
-  auto& systemsPool = rendering == true
-                    ? mRenderSystemsEnabled
-                    : mSystemsEnabled;
-
-  for ( const auto& [systemId, system] : systemsPool )
-    system(registry);
+  for ( const auto& [systemId, system] : mSystems )
+    if ( system.active == true &&
+         system.phase == phase )
+      system.callback(registry);
 }
 
 void
-SystemManager::enable(
-  const SystemId& systemId,
-  const bool rendering )
-{
-  LOG_DEBUG("Enabling system '{}'",
-            systemId.str());
-
-  if ( mSystemsPool.count(systemId) == 0 )
-    throw std::runtime_error(
-      fmt::format("Can't enable unknown system '{}'",
-                  systemId.str()));
-
-  auto& systemsPool = rendering == true
-                    ? mRenderSystemsEnabled
-                    : mSystemsEnabled;
-
-  systemsPool[systemId] = mSystemsPool[systemId];
-}
-
-void
-SystemManager::disable(
+SystemManager::activate(
   const SystemId& systemId )
 {
-  LOG_DEBUG("Disabling system '{}'",
+  LOG_DEBUG("Activating system '{}'",
             systemId.str());
 
-  mSystemsToDisable.insert(systemId);
+  if ( mSystems.count(systemId) == 0 )
+    throw std::runtime_error(
+      fmt::format("Failed to activate unknown system '{}'",
+                  systemId.str()));
+
+  mSystems[systemId].active = true;
+}
+
+void
+SystemManager::deactivate(
+  const SystemId& systemId )
+{
+  LOG_DEBUG("Deactivating system '{}'",
+            systemId.str());
+
+  if ( mSystems.count(systemId) == 0 )
+    throw std::runtime_error(
+      fmt::format("Failed to deactivate unknown system '{}'",
+                  systemId.str()));
+
+  mSystems[systemId].active = false;
 }
 
 void
 SystemManager::Register(
-  const SystemId&   systemId,
-  const SystemFunc& system )
+  const SystemId& systemId,
+  const Callback& callback,
+  const Phase     phase )
 {
   LOG_INFO("Registering system '{}'",
             systemId.str());
 
-  mSystemsPool[systemId] = system;
+  mSystems[systemId] = System {callback, phase, false};
 }
 
-std::set <SystemId>
+std::vector <SystemId>
 SystemManager::systems() const
 {
-  std::set <SystemId> result {};
+  std::vector <SystemId> result {};
 
-  for ( const auto& [systemId, system] : mSystemsPool )
-    result.insert(systemId);
+  for ( const auto& [systemId, system] : mSystems )
+    result.push_back(systemId);
 
   return result;
 }
 
-std::set <SystemId>
-SystemManager::systemsEnabled(
-  const bool rendering ) const
+std::vector <SystemId>
+SystemManager::systemsActive(
+  const Phase phase ) const
 {
-  const auto& systemsPool = rendering == true
-                          ? mRenderSystemsEnabled
-                          : mSystemsEnabled;
+  std::vector <SystemId> result {};
 
-  std::set <SystemId> result {};
-
-  for ( const auto& [systemId, system] : systemsPool )
-    if ( mSystemsToDisable.count(systemId) == 0 )
-      result.insert(systemId);
+  for ( const auto& [systemId, system] : mSystems )
+    if ( system.active == true &&
+         system.phase == phase )
+      result.push_back(systemId);
 
   return result;
 }

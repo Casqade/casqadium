@@ -322,13 +322,19 @@ GameStateEcsSandbox::GameStateEcsSandbox(
 
   using namespace cqde::systems;
 
-  systemMgr.Register("CameraControlSystem"_id, CameraControlSystem);
-  systemMgr.Register("CullingSystem"_id, CullingSystem);
-  systemMgr.Register("RenderSystem"_id, RenderSystem);
+  systemMgr.Register("CameraControlSystem"_id,
+                     CameraControlSystem,
+                     System::Phase::Update);
+  systemMgr.Register("CullingSystem"_id,
+                     CullingSystem,
+                     System::Phase::Render);
+  systemMgr.Register("RenderSystem"_id,
+                     RenderSystem,
+                     System::Phase::Render);
 
-  systemMgr.enable("CameraControlSystem"_id, false);
-  systemMgr.enable("CullingSystem"_id, true);
-  systemMgr.enable("RenderSystem"_id, true);
+  systemMgr.activate("CameraControlSystem"_id);
+  systemMgr.activate("CullingSystem"_id);
+  systemMgr.activate("RenderSystem"_id);
 }
 
 void
@@ -404,6 +410,7 @@ GameStateEcsSandbox::update(  const uint32_t ticks,
 {
   using cqde::types::SystemManager;
   using cqde::types::TickCurrent;
+  using cqde::types::System;
 
   const double dt = static_cast <double> (interval);
   const float cameraVelocity = 10.0f;
@@ -413,7 +420,8 @@ GameStateEcsSandbox::update(  const uint32_t ticks,
   tick.ticksElapsed = ticks;
   tick.tickInterval = interval;
 
-  mRegistry.ctx().at <SystemManager> ().execute(mRegistry, false);
+  mRegistry.ctx().at <SystemManager> ().execute(mRegistry,
+                                                System::Phase::Update);
 
   tick.lastTickTimepoint = TimeUtils::Now();
 
@@ -427,13 +435,15 @@ GameStateEcsSandbox::render(
 {
   using cqde::types::SystemManager;
   using cqde::types::FrameCurrent;
+  using cqde::types::System;
 
   auto& frame = mRegistry.ctx().at <FrameCurrent> ();
 
   frame.framesElapsed = frames;
   frame.frameInterval = interval;
 
-  mRegistry.ctx().at <SystemManager> ().execute(mRegistry, true);
+  mRegistry.ctx().at <SystemManager> ().execute(mRegistry,
+                                                System::Phase::Render);
 
   frame.lastFrameTimepoint = TimeUtils::Now();
 }

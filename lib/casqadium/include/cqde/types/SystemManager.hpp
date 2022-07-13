@@ -2,11 +2,12 @@
 
 #include <cqde/alias.hpp>
 
+#include <cqde/types/System.hpp>
+
 #include <entt/fwd.hpp>
 
-#include <set>
-#include <map>
-#include <functional>
+#include <vector>
+#include <unordered_map>
 
 
 namespace cqde::types
@@ -14,31 +15,27 @@ namespace cqde::types
 
 class SystemManager
 {
-public:
-  using SystemFunc = std::function <void(entt::registry&)>;
+  using Phase = System::Phase;
+  using Callback = System::Callback;
 
-private:
-  std::map <SystemId, SystemFunc> mSystemsPool {};
-  std::map <SystemId, SystemFunc> mSystemsEnabled {};
-  std::map <SystemId, SystemFunc> mRenderSystemsEnabled {};
-
-  std::set <SystemId> mSystemsToDisable {};
+  std::unordered_map <SystemId, System,
+                      identifier_hash> mSystems {};
 
 public:
   SystemManager() = default;
 
   void Register( const SystemId&,
-                 const SystemFunc& );
+                 const Callback&,
+                 const Phase );
 
-  void enable( const SystemId&,
-               const bool rendering );
-  void disable( const SystemId& );
+  void activate( const SystemId& );
+  void deactivate( const SystemId& );
 
   void execute( entt::registry&,
-                const bool rendering );
+                const Phase );
 
-  std::set <SystemId> systems() const;
-  std::set <SystemId> systemsEnabled( const bool rendering ) const;
+  std::vector <SystemId> systems() const;
+  std::vector <SystemId> systemsActive( const Phase ) const;
 };
 
 } // namespace cqde::types
