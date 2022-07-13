@@ -5,9 +5,9 @@
 #define GLEW_STATIC
 #include <GL/glew.h>
 #undef GLEW_STATIC
-#include "imgui/backends/imgui_impl_opengl3.h"
+#include "backends/imgui_impl_opengl3.h"
 #else
-#include "imgui/backends/imgui_impl_opengl2.h"
+#include "backends/imgui_impl_opengl2.h"
 #endif
 
 namespace olc

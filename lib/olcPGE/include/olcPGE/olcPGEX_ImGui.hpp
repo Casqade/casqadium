@@ -188,7 +188,7 @@ int main() {
 #define OLC_PGEX_IMGUI_IMPL_PGE_H
 
 #include <olcPGE/olcPixelGameEngine.hpp>
-#include "imgui/imgui.h"
+#include "imgui.h"
 
 #include <vector>
 

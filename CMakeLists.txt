@@ -57,6 +57,7 @@ include(GNUInstallDirs)
 find_package(Threads REQUIRED)
 target_link_libraries(${TARGET} PRIVATE Threads::Threads)
 
+set(BUILD_BACKEND_OPENGL_2 ON CACHE BOOL "" FORCE)
 add_subdirectory(lib)
 
 target_link_libraries(${TARGET} PRIVATE

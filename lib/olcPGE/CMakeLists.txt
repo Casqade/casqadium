@@ -18,15 +18,6 @@ target_sources(${TARGET} PRIVATE
   include/${TARGET}/olcPGEX_TTF.hpp
   src/olcPGEX_TTF.cpp
 
-  imgui/imgui.h
-  imgui/imgui.cpp
-  imgui/imgui_demo.cpp
-  imgui/imgui_draw.cpp
-  imgui/imgui_tables.cpp
-  imgui/imgui_widgets.cpp
-  imgui/backends/imgui_impl_opengl2.h
-  imgui/backends/imgui_impl_opengl2.cpp
-
   ImGuizmo/ImGuizmo.h
   ImGuizmo/ImGuizmo.cpp
 
@@ -40,13 +31,6 @@ target_sources(${TARGET} PRIVATE
 
   include/${TARGET}/olcMouseInputId.hpp
 )
-
-if(${TARGET}_USE_OPENGL33)
-  target_sources(${TARGET} PRIVATE
-    imgui/backends/imgui_impl_opengl3.h
-    imgui/backends/imgui_impl_opengl3.cpp
-  )
-endif()
 
 set_target_properties(${TARGET} PROPERTIES
   CXX_STANDARD_REQUIRED ON
@@ -75,6 +59,8 @@ target_link_libraries(${TARGET} PUBLIC freetype)
 
 find_package(Threads REQUIRED)
 target_link_libraries(${TARGET} PRIVATE Threads::Threads)
+
+target_link_libraries(${TARGET} PUBLIC imgui imgui_backend_opengl2)
 
 
 if(WIN32)
