@@ -7,7 +7,8 @@ namespace cqde
 {
 
 std::string
-component_name( const ComponentType component )
+component_name(
+  const ComponentType component )
 {
   using namespace entt::literals;
 

@@ -3,8 +3,6 @@
 #include <cqde/alias.hpp>
 
 #include <entt/entity/registry.hpp>
-#include <entt/meta/factory.hpp>
-#include <entt/meta/resolve.hpp>
 
 
 namespace cqde
