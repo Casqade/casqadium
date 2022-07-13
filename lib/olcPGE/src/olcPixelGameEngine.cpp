@@ -732,7 +732,7 @@ bool PixelGameEngine::GetKeepMouseCentered() const
 
 void PixelGameEngine::SetKeepMouseCentered(const bool centered)
 {
-  if ( IsFocused() == true )
+  if ( IsFocused() == true && centered == true )
     platform->CenterMouseCursor();
 
   bKeepMouseCentered = centered;
