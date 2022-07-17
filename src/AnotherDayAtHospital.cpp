@@ -43,8 +43,6 @@ AnotherDayAtHospital::update(
 bool
 AnotherDayAtHospital::OnUserCreate()
 {
-//  SetCursor(NULL);
-
   if ( olc::Font::init() == false )
   {
     LOG_ERROR("Failed to initialize olc::Font");

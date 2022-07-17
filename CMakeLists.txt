@@ -3,8 +3,6 @@ cmake_minimum_required(VERSION 3.8 FATAL_ERROR)
 set(TARGET AnotherDayAtHospital)
 project(${TARGET} VERSION 1.0 LANGUAGES CXX)
 
-set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
-
 # For developing only
 set(CMAKE_INSTALL_PREFIX ${CMAKE_BINARY_DIR})
 
