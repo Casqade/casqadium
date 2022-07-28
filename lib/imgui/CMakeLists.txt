@@ -7,19 +7,27 @@ set(SOURCE_FILES
   imgui_draw.cpp
   imgui_demo.cpp
   imgui_tables.cpp
-  imgui_widgets.cpp)
+  imgui_widgets.cpp
+  misc/cpp/imgui_stdlib.cpp)
 
 option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 
-option(IMGUI_DISABLE "Disable " OFF)
 option(IMGUI_DISABLE_OBSOLETE_FUNCTIONS "Disable obsolete functions" OFF)
 option(IMGUI_DISABLE_DEMO_WINDOWS "Disable ShowDemoWindow()/ShowStyleEditor()" OFF)
 option(IMGUI_DISABLE_DEBUG_TOOLS "Disable metrics/debugger and other debug tools" OFF)
+
+option(IMGUI_BUILD_FREETYPE_FONT_BUILDER "Build Dear ImGui with freetype font builder" OFF)
 
 option(IMGUI_BUILD_BACKEND_DX_11 "Build backend directX 11" OFF)
 option(IMGUI_BUILD_BACKEND_GLFW "Build backend GLFW" OFF)
 option(IMGUI_BUILD_BACKEND_OPENGL_2 "Build backend OPENGL 2" OFF)
 option(IMGUI_BUILD_BACKEND_OPENGL_3 "Build backend OPENGL 3" OFF)
+
+if (${IMGUI_BUILD_FREETYPE_FONT_BUILDER})
+  set(SOURCE_FILES ${SOURCE_FILES}
+    misc/freetype/imgui_freetype.cpp
+  )
+endif()
 
 add_library(imgui ${SOURCE_FILES})
 
@@ -34,7 +42,15 @@ endif()
 target_include_directories(imgui PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/backends>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/misc/cpp>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/misc/single_file>
 )
+
+if (${IMGUI_BUILD_FREETYPE_FONT_BUILDER})
+  target_include_directories(imgui PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/misc/freetype>
+  )
+endif()
 
 # if (${BUILD_SHARED_LIBS})
   # if (WIN32)
