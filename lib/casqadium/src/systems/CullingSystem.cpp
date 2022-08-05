@@ -26,37 +26,72 @@ vertexShader(
   if ( vertices.size() == 0 )
     return {{}, -1.0f, {}};
 
-  bool offScreen = true;
+  struct
+  {
+    float left, right {};
+    float top, bottom {};
+
+  } bb {};
+
+  bool bb_initialzed {};
 
   VertexBuffer vb{};
   vb.vertices.reserve(vertices.size());
 
   for ( const glm::vec3& srcVert : vertices )
   {
-    const glm::vec3 vert =
+    const glm::vec3 vertex =
       glm::project( srcVert,
                     modelViewMatrix,
                     projectionMatrix,
                     viewport );
 
-    vb.vertices.push_back({ vert.x, // converting y axis to top-left origin
-                            viewport.y * 2 + viewport.w - vert.y });
-    vb.depth += vert.z;
-
-    if ( vert.z < 0.0f || vert.z > 1.0f )
+    if ( vertex.z < 0.0f || vertex.z > 1.0f )
       return {{}, -1.0f, {}};
 
-    if (    (vert.x >= viewport.x && vert.y >= viewport.y)
-         && (vert.x <= viewport.x + viewport.z && vert.y <= viewport.y + viewport.w) )
-      offScreen = false;
+    vb.vertices.push_back({ vertex.x, // converting y axis to top-left origin
+                            viewport.y * 2 + viewport.w - vertex.y });
+    vb.depth += vertex.z;
+
+    const auto& vb_vertex = vb.vertices.back();
+
+    if ( bb_initialzed == false )
+    {
+      bb_initialzed = true;
+      bb =
+      {
+        vb_vertex.x, vb_vertex.x,
+        vb_vertex.y, vb_vertex.y,
+      };
+    }
+
+    if ( vb_vertex.x < bb.left )
+      bb.left = vb_vertex.x;
+
+    else if ( vb_vertex.x > bb.right )
+      bb.right = vb_vertex.x;
+
+    if ( vb_vertex.y < bb.top )
+      bb.top = vb_vertex.y;
+
+    else if ( vb_vertex.y > bb.bottom )
+      bb.bottom = vb_vertex.y;
   }
 
-//  if ( offScreen )
-//    return {{}, -1.0f};
+  const bool onScreen
+  {
+    bb.left < viewport.x + viewport.z &&
+    bb.right > viewport.x &&
+    bb.top < viewport.y + viewport.w &&
+    bb.bottom > viewport.y
+  };
 
-  vb.windingOrderUpdate();
+  if ( onScreen == false )
+    return {{}, -1.0f};
 
   vb.depth /= vb.vertices.size();
+
+  vb.windingOrderUpdate();
 
   return vb;
 }
@@ -65,7 +100,7 @@ vertexShader(
 void CullingSystem( entt::registry& registry )
 {
   using namespace cqde::compos;
-  using cqde::types::GeometryAssetManager;
+  using types::GeometryAssetManager;
 
   auto& geometry = registry.ctx().at <GeometryAssetManager> ();
 
@@ -76,7 +111,7 @@ void CullingSystem( entt::registry& registry )
 
     const glm::mat4 camView = cCamera.viewMatrix(registry, cCameraNode, cCameraTransform);
     const glm::mat4 camProjection = cCamera.projMatrix();
-    const glm::vec4 camViewport = cCamera.viewport;
+    glm::vec4 camViewport = cCamera.viewportScaled();
 
     for ( const auto&& [eDrawable, cGeometryBuffer, cNode, cTransform]
             : registry.view <GeometryBuffer, SceneNode, Transform>().each() )
@@ -85,8 +120,7 @@ void CullingSystem( entt::registry& registry )
       if ( gBuffer == nullptr )
         continue;
 
-      const glm::mat4 modelView = camView *
-                                  cqde::GetWorldMatrix(registry, cTransform, cNode);
+      const glm::mat4 modelView = camView * GetWorldMatrix(registry, cTransform, cNode);
 
       auto vBuffer = vertexShader( *gBuffer,
                                   modelView,

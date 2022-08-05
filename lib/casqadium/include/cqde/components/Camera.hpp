@@ -48,7 +48,7 @@ struct Camera
     Diffuse,
   };
 
-  glm::vec4 viewport {};
+  glm::vec4 viewport {0.0, 0.0, 1.0, 1.0};
   std::pair <float, float> zRange {0.1f, 1000.0f};
   float fov {1.0f}; // = 57 degrees
 
@@ -64,6 +64,8 @@ struct Camera
   Camera() = default;
   Camera( const glm::vec4& viewport,
           const Projection projection = Projection::Perspective );
+
+  glm::vec4 viewportScaled() const;
 
   glm::mat4 projMatrix() const;
   glm::mat4 viewMatrix( entt::registry&   registry,
