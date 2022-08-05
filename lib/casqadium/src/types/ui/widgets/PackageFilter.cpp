@@ -1,4 +1,4 @@
-#include <cqde/types/ui/PackageFilter.hpp>
+#include <cqde/types/ui/widgets/PackageFilter.hpp>
 
 #include <cqde/types/PackageManager.hpp>
 

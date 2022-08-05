@@ -1,4 +1,4 @@
-#include <cqde/types/ui/RegistryFilter.hpp>
+#include <cqde/types/ui/widgets/RegistryFilter.hpp>
 
 #include <cqde/ecs_helpers.hpp>
 

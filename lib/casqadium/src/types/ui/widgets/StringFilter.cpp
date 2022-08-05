@@ -1,4 +1,4 @@
-#include <cqde/types/ui/StringFilter.hpp>
+#include <cqde/types/ui/widgets/StringFilter.hpp>
 
 #include <imgui.h>
 #include <imgui_stdlib.h>

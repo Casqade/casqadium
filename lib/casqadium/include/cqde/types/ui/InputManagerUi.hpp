@@ -2,7 +2,7 @@
 
 #include <cqde/alias.hpp>
 
-#include <cqde/types/ui/PackageFilter.hpp>
+#include <cqde/types/ui/widgets/PackageFilter.hpp>
 
 #include <entt/fwd.hpp>
 

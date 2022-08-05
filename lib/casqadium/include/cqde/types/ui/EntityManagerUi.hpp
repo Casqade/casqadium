@@ -2,7 +2,7 @@
 
 #include <cqde/alias.hpp>
 
-#include <cqde/types/ui/RegistryFilter.hpp>
+#include <cqde/types/ui/widgets/RegistryFilter.hpp>
 
 #include <entt/fwd.hpp>
 

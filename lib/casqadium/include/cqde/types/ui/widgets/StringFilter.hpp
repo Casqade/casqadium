@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cqde/types/ui/ToggleButton.hpp>
+#include <cqde/types/ui/widgets/ToggleButton.hpp>
 
 
 namespace cqde::ui

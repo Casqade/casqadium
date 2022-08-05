@@ -70,18 +70,6 @@ target_sources(${TARGET} PRIVATE
 
   include/${CASQADIUM_SHORT}/types/input/InputEvent.hpp
 
-  src/types/ui/ToggleButton.cpp
-  include/${CASQADIUM_SHORT}/types/ui/ToggleButton.hpp
-
-  src/types/ui/StringFilter.cpp
-  include/${CASQADIUM_SHORT}/types/ui/StringFilter.hpp
-
-  src/types/ui/PackageFilter.cpp
-  include/${CASQADIUM_SHORT}/types/ui/PackageFilter.hpp
-
-  src/types/ui/RegistryFilter.cpp
-  include/${CASQADIUM_SHORT}/types/ui/RegistryFilter.hpp
-
   src/types/ui/EntityManagerUi.cpp
   include/${CASQADIUM_SHORT}/types/ui/EntityManagerUi.hpp
 
@@ -90,6 +78,18 @@ target_sources(${TARGET} PRIVATE
 
   src/types/ui/SystemManagerUi.cpp
   include/${CASQADIUM_SHORT}/types/ui/SystemManagerUi.hpp
+
+  src/types/ui/widgets/ToggleButton.cpp
+  include/${CASQADIUM_SHORT}/types/ui/widgets/ToggleButton.hpp
+
+  src/types/ui/widgets/StringFilter.cpp
+  include/${CASQADIUM_SHORT}/types/ui/widgets/StringFilter.hpp
+
+  src/types/ui/widgets/PackageFilter.cpp
+  include/${CASQADIUM_SHORT}/types/ui/widgets/PackageFilter.hpp
+
+  src/types/ui/widgets/RegistryFilter.cpp
+  include/${CASQADIUM_SHORT}/types/ui/widgets/RegistryFilter.hpp
 
   include/${CASQADIUM_SHORT}/types/SequenceStep.hpp
   include/${CASQADIUM_SHORT}/types/System.hpp

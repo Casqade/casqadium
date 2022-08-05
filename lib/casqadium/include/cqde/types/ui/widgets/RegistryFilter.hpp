@@ -1,8 +1,8 @@
 #pragma once
 
-#include <cqde/types/ui/PackageFilter.hpp>
-#include <cqde/types/ui/StringFilter.hpp>
-#include <cqde/types/ui/PackageFilter.hpp>
+#include <cqde/types/ui/widgets/PackageFilter.hpp>
+#include <cqde/types/ui/widgets/StringFilter.hpp>
+#include <cqde/types/ui/widgets/PackageFilter.hpp>
 
 
 namespace cqde::ui
