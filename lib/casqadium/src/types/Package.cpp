@@ -19,6 +19,7 @@
 #include <spdlog/fmt/bundled/format.h>
 
 #include <json/value.h>
+#include <json/writer.h>
 
 
 namespace cqde::types
@@ -57,8 +58,14 @@ const static Json::Value manifestReference =
   return manifest;
 }();
 
+Package::Package(
+  const PackageId& id )
+  : mId{id}
+{}
+
 void
-Package::parseManifest( const path& manifestPath )
+Package::parseManifest(
+  const path& manifestPath )
 {
   using fmt::format;
 
@@ -94,39 +101,123 @@ Package::parseManifest( const path& manifestPath )
   mDescription = manifest["description"].asString();
   mVersion = manifest["version"].asString();
 
+  if ( mTitle == null_id.str() )
+    throw std::runtime_error(
+      format("Packages with title 'null' are forbidden"));
+
   for ( const auto& dependency : manifest["dependencies"])
     mDependencies.emplace(dependency.asString());
 }
 
 void
-Package::load( entt::registry& registry )
+Package::load(
+  entt::registry& registry )
 {
   LOG_DEBUG("Loading package '{}'", mManifestPath.string());
 
   parseManifest(mManifestPath);
 
-  const auto packageRootPath = mManifestPath.parent_path();
-
   auto& fonts = registry.ctx().at <FontAssetManager> ();
-  fonts.parseAssetDbFile(packageRootPath / "fonts.json");
+  fonts.parseAssetDbFile(contentPath(ContentType::Fonts));
 
   auto& geometry = registry.ctx().at <GeometryAssetManager> ();
-  geometry.parseAssetDbFile(packageRootPath / "geometry.json");
+  geometry.parseAssetDbFile(contentPath(ContentType::Geometry));
 
   auto& textures = registry.ctx().at <TextureAssetManager> ();
-  textures.parseAssetDbFile(packageRootPath / "textures.json");
+  textures.parseAssetDbFile(contentPath(ContentType::Textures));
 
   auto& text = registry.ctx().at <TextStringAssetManager> ();
-  text.parseAssetDbFile(packageRootPath / "text.json");
+  text.parseAssetDbFile(contentPath(ContentType::Text));
 
   auto& input = registry.ctx().at <InputManager> ();
-  input.load(packageRootPath / "input.json");
+  input.load(contentPath(ContentType::Input));
 
   auto& entityManager = registry.ctx().at <EntityManager> ();
-  entityManager.load( packageRootPath / "entities.json",
+  entityManager.load( contentPath(ContentType::Entities),
                       mTitle, registry );
 }
 
+bool
+Package::save(
+  const ContentType type,
+  const Json::Value& data ) const
+{
+  const auto path = contentPath(type);
+
+  std::string contentTypeName {};
+
+  switch (type)
+  {
+    case ContentType::Manifest:
+      contentTypeName = "manifest";
+      break;
+
+    case ContentType::Entities:
+      contentTypeName = "entity registry";
+      break;
+
+    case ContentType::Input:
+      contentTypeName = "input config";
+      break;
+
+    case ContentType::Fonts:
+      contentTypeName = "font database";
+      break;
+
+    case ContentType::Geometry:
+      contentTypeName = "geometry database";
+      break;
+
+    case ContentType::Textures:
+      contentTypeName = "texture database";
+      break;
+
+    case ContentType::Text:
+      contentTypeName = "text database";
+      break;
+  }
+
+  LOG_TRACE("Writing package '{}' {} to '{}'",
+            mId.str(), contentTypeName, path.string());
+
+  try
+  {
+    auto fileStream = fileOpen(path, std::ios::out | std::ios::trunc);
+    fileStream << Json::writeString(jsonWriter(), data);
+  }
+  catch ( const std::exception& e )
+  {
+    LOG_ERROR("Failed to write package '{}' {} to '{}': {}",
+              mId.str(), contentTypeName, path.string(), e.what());
+    return false;
+  }
+
+  return true;
+}
+
+PackageId
+Package::id() const
+{
+  return mId;
+}
+
+std::string
+Package::title() const
+{
+  return mTitle;
+}
+
+std::string
+Package::description() const
+{
+  return mDescription;
+}
+
+std::string
+Package::version() const
+{
+  return mVersion;
+}
 std::set <PackageId>
 Package::dependencies() const
 {
@@ -134,9 +225,34 @@ Package::dependencies() const
 }
 
 Package::path
-Package::manifestPath() const
+Package::contentPath(
+  const ContentType type ) const
 {
-  return mManifestPath;
+  const auto packageRootPath = mManifestPath.parent_path();
+
+  switch (type)
+  {
+    case ContentType::Manifest:
+      return mManifestPath;
+
+    case ContentType::Entities:
+      return packageRootPath / "entities.json";
+
+    case ContentType::Input:
+      return packageRootPath / "input.json";
+
+    case ContentType::Fonts:
+      return packageRootPath / "fonts.json";
+
+    case ContentType::Geometry:
+      return packageRootPath / "geometry.json";
+
+    case ContentType::Textures:
+      return packageRootPath / "textures.json";
+
+    case ContentType::Text:
+      return packageRootPath / "text.json";
+  }
 }
 
 } // namespace cqde::types

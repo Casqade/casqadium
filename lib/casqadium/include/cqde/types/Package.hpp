@@ -4,6 +4,8 @@
 
 #include <entt/entity/registry.hpp>
 
+#include <json/value.h>
+
 #include <filesystem>
 #include <set>
 
@@ -25,18 +27,38 @@ class Package
   std::string mDescription {};
   std::string mVersion {};
 
+  PackageId mId {};
 
 public:
-  Package() = default;
+  Package( const PackageId& );
   Package( Package&& ) = default;
   Package( const Package& ) = delete;
+
+  enum class ContentType
+  {
+    Manifest,
+    Entities,
+    Input,
+    Fonts,
+    Geometry,
+    Textures,
+    Text,
+  };
 
   void parseManifest( const path& manifestPath );
   void load( entt::registry& );
 
+  bool save( const ContentType,
+             const Json::Value& ) const;
+
+  PackageId   id() const;
+  std::string title() const;
+  std::string description() const;
+  std::string version() const;
+
   std::set <PackageId> dependencies() const;
 
-  path manifestPath() const;
+  path contentPath( const ContentType ) const;
 };
 
 } // namespace cqde::types

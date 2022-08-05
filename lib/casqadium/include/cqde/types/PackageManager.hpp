@@ -2,7 +2,7 @@
 
 #include <cqde/types/Package.hpp>
 
-#include <unordered_map>
+#include <vector>
 
 
 namespace cqde::types
@@ -14,8 +14,7 @@ class PackageManager
 
   path mPackagesRoot {};
 
-  std::unordered_map <PackageId, Package,
-                      identifier_hash> mPackages {};
+  std::vector <Package> mPackages {};
 
   PackageId mEntryPoint {};
 
@@ -28,6 +27,9 @@ public:
 
   void load( const path& packagesRoot, entt::registry& );
 
+  const Package* package( const PackageId& ) const;
+
+  std::vector <PackageId> packages() const;
   path rootPath() const;
 };
 

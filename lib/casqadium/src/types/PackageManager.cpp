@@ -62,20 +62,18 @@ PackageManager::parseRoot()
   LOG_TRACE("Validating packages root '{}'",
             mPackagesRoot.string());
 
+  std::set <PackageId> uniquePackages {};
+
   try
   {
     jsonValidateObject(packages, rootReference);
 
-    std::set <PackageId> existingPackages {};
-
     for ( const auto& packageId : packages["load_order"] )
     {
-      if ( existingPackages.count(packageId.asString()) > 0 )
+      if ( uniquePackages.insert(packageId.asString()).second == false )
         throw std::runtime_error(
           format("load_order contains more than one instance of '{}'",
                   packageId.asString()));
-
-      existingPackages.emplace(packageId.asString());
     }
   }
   catch ( const std::exception& e )
@@ -87,8 +85,10 @@ PackageManager::parseRoot()
 
   mEntryPoint = packages["entry_point"].asString();
 
+  mPackages.reserve(uniquePackages.size());
+
   for ( const auto& packageId : packages["load_order"] )
-    mPackages.emplace(packageId.asString(), Package{});
+    mPackages.push_back( {packageId.asString()} );
 }
 
 void
@@ -110,9 +110,11 @@ PackageManager::load(
 
     std::set <PackageId> loadedPackages {};
 
-    for ( auto& [packageId, package] : mPackages )
+    for ( auto& package : mPackages )
     {
+      const auto packageId = package.id();
       const auto packageManifest = mPackagesRoot.parent_path() / packageId.str() / "manifest.json";
+
       package.parseManifest(packageManifest);
 
       for ( const auto& dependency : package.dependencies() )
@@ -132,6 +134,29 @@ PackageManager::load(
       format("Failed to load packages ({})",
               e.what()));
   }
+}
+
+const Package*
+PackageManager::package(
+  const PackageId& id ) const
+{
+  for ( const auto& package : mPackages )
+    if ( package.id() == id )
+      return &package;
+
+  return nullptr;
+}
+
+std::vector <PackageId>
+PackageManager::packages() const
+{
+  std::vector <PackageId> result {};
+  result.reserve(mPackages.size());
+
+  for ( const auto& package : mPackages )
+    result.push_back(package.id());
+
+  return result;
 }
 
 PackageManager::path
