@@ -82,6 +82,9 @@ target_sources(${TARGET} PRIVATE
   src/types/ui/RegistryFilter.cpp
   include/${CASQADIUM_SHORT}/types/ui/RegistryFilter.hpp
 
+  src/types/ui/EntityManagerUi.cpp
+  include/${CASQADIUM_SHORT}/types/ui/EntityManagerUi.hpp
+
   src/types/ui/InputManagerUi.cpp
   include/${CASQADIUM_SHORT}/types/ui/InputManagerUi.hpp
 

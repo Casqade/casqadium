@@ -28,6 +28,7 @@
 #include <cqde/types/input/InputBindingAbsolute.hpp>
 #include <cqde/types/input/InputBindingRelative.hpp>
 
+#include <cqde/types/ui/EntityManagerUi.hpp>
 #include <cqde/types/ui/InputManagerUi.hpp>
 #include <cqde/types/ui/SystemManagerUi.hpp>
 
@@ -317,6 +318,7 @@ GameStateEcsSandbox::GameStateEcsSandbox(
   const auto EditorSystem =
   [this, cursor] ( entt::registry& registry )
   {
+    using cqde::ui::EntityManagerUi;
     using cqde::ui::InputManagerUi;
     using cqde::ui::SystemManagerUi;
 
@@ -326,6 +328,7 @@ GameStateEcsSandbox::GameStateEcsSandbox(
       mPGE->SetKeepMouseCentered(false);
     }
 
+    registry.ctx().at <EntityManagerUi> ().ui_show(registry);
     registry.ctx().at <InputManagerUi> ().ui_show(registry);
     registry.ctx().at <SystemManagerUi> ().ui_show(registry);
   };

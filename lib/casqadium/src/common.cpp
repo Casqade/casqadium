@@ -11,12 +11,14 @@
 #include <cqde/components/TextureBuffer.hpp>
 #include <cqde/components/EntityMetaInfo.hpp>
 
-#include <cqde/types/CallbackManager.hpp>
 #include <cqde/types/EntityTagManager.hpp>
-#include <cqde/types/PackageManager.hpp>
 
+#include <cqde/types/CallbackManager.hpp>
+#include <cqde/types/EntityManager.hpp>
+#include <cqde/types/input/InputManager.hpp>
+#include <cqde/types/PackageManager.hpp>
 #include <cqde/types/SystemManager.hpp>
-#include <cqde/types/ui/SystemManagerUi.hpp>
+
 
 #include <cqde/types/TickCurrent.hpp>
 #include <cqde/types/FrameCurrent.hpp>
@@ -26,10 +28,9 @@
 #include <cqde/types/assets/TextureAssetManager.hpp>
 #include <cqde/types/assets/TextStringAssetManager.hpp>
 
-#include <cqde/types/input/InputManager.hpp>
+#include <cqde/types/ui/EntityManagerUi.hpp>
 #include <cqde/types/ui/InputManagerUi.hpp>
-
-#include <cqde/types/EntityManager.hpp>
+#include <cqde/types/ui/SystemManagerUi.hpp>
 
 #include <entt/entity/registry.hpp>
 
@@ -59,6 +60,7 @@ engineInit( entt::registry& registry )
   auto& inputManager = registry.ctx().emplace <InputManager> ();
   auto& systemManager = registry.ctx().emplace <SystemManager> ();
 
+  registry.ctx().emplace <EntityManagerUi> (&entityManager);
   registry.ctx().emplace <InputManagerUi> (&inputManager);
   registry.ctx().emplace <SystemManagerUi> (&systemManager);
 

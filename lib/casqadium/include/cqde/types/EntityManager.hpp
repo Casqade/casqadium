@@ -15,11 +15,18 @@
 #include <set>
 
 
+namespace cqde::ui
+{
+class EntityManagerUi;
+}
+
 namespace cqde::types
 {
 
 class EntityManager
 {
+  friend class ui::EntityManagerUi;
+
   using path = std::filesystem::path;
 
   std::map <EntityId, entt::entity> tags {{null_id, entt::null}};
