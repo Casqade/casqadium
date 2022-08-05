@@ -79,6 +79,9 @@ target_sources(${TARGET} PRIVATE
   src/types/ui/InputManagerUi.cpp
   include/${CASQADIUM_SHORT}/types/ui/InputManagerUi.hpp
 
+  src/types/ui/PackageManagerUi.cpp
+  include/${CASQADIUM_SHORT}/types/ui/PackageManagerUi.hpp
+
   src/types/ui/SystemManagerUi.cpp
   include/${CASQADIUM_SHORT}/types/ui/SystemManagerUi.hpp
 

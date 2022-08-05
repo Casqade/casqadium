@@ -31,6 +31,7 @@
 #include <cqde/types/ui/CallbackManagerUi.hpp>
 #include <cqde/types/ui/EntityManagerUi.hpp>
 #include <cqde/types/ui/InputManagerUi.hpp>
+#include <cqde/types/ui/PackageManagerUi.hpp>
 #include <cqde/types/ui/SystemManagerUi.hpp>
 
 #include <entt/entity/registry.hpp>
@@ -53,17 +54,17 @@ engineInit( entt::registry& registry )
   registry.ctx().emplace <TickCurrent> ();
   registry.ctx().emplace <FrameCurrent> ();
 
-  registry.ctx().emplace <PackageManager> ();
-
   auto& callbackManager = registry.ctx().emplace <CallbackManager> ();
   auto& entityManager = registry.ctx().emplace <EntityManager> ();
   registry.ctx().emplace <EntityTagManager> ();
   auto& inputManager = registry.ctx().emplace <InputManager> ();
+  auto& packageManager = registry.ctx().emplace <PackageManager> ();
   auto& systemManager = registry.ctx().emplace <SystemManager> ();
 
   registry.ctx().emplace <CallbackManagerUi> (&callbackManager);
   registry.ctx().emplace <EntityManagerUi> (&entityManager);
   registry.ctx().emplace <InputManagerUi> (&inputManager);
+  registry.ctx().emplace <PackageManagerUi> (&packageManager);
   registry.ctx().emplace <SystemManagerUi> (&systemManager);
 
   auto& tp = registry.ctx().emplace <ctpl::thread_pool> (std::thread::hardware_concurrency() | 1);
