@@ -70,6 +70,9 @@ target_sources(${TARGET} PRIVATE
 
   include/${CASQADIUM_SHORT}/types/input/InputEvent.hpp
 
+  src/types/ui/CallbackManagerUi.cpp
+  include/${CASQADIUM_SHORT}/types/ui/CallbackManagerUi.hpp
+
   src/types/ui/EntityManagerUi.cpp
   include/${CASQADIUM_SHORT}/types/ui/EntityManagerUi.hpp
 

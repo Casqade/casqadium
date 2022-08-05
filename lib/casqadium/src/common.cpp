@@ -28,6 +28,7 @@
 #include <cqde/types/assets/TextureAssetManager.hpp>
 #include <cqde/types/assets/TextStringAssetManager.hpp>
 
+#include <cqde/types/ui/CallbackManagerUi.hpp>
 #include <cqde/types/ui/EntityManagerUi.hpp>
 #include <cqde/types/ui/InputManagerUi.hpp>
 #include <cqde/types/ui/SystemManagerUi.hpp>
@@ -54,12 +55,13 @@ engineInit( entt::registry& registry )
 
   registry.ctx().emplace <PackageManager> ();
 
+  auto& callbackManager = registry.ctx().emplace <CallbackManager> ();
   auto& entityManager = registry.ctx().emplace <EntityManager> ();
   registry.ctx().emplace <EntityTagManager> ();
-  registry.ctx().emplace <CallbackManager> ();
   auto& inputManager = registry.ctx().emplace <InputManager> ();
   auto& systemManager = registry.ctx().emplace <SystemManager> ();
 
+  registry.ctx().emplace <CallbackManagerUi> (&callbackManager);
   registry.ctx().emplace <EntityManagerUi> (&entityManager);
   registry.ctx().emplace <InputManagerUi> (&inputManager);
   registry.ctx().emplace <SystemManagerUi> (&systemManager);
