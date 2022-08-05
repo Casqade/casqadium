@@ -251,6 +251,18 @@ EntityManager::componentType(
   return {};
 }
 
+std::vector <std::string>
+EntityManager::componentNames() const
+{
+  std::vector <std::string> names {};
+  names.reserve(mComponentTypes.size());
+
+  for ( const auto& [name, type] : mComponentTypes )
+    names.push_back(name);
+
+  return names;
+}
+
 void
 EntityManager::removeLater(
   const entt::entity entity )
