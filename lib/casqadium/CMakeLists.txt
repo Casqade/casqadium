@@ -77,6 +77,9 @@ target_sources(${TARGET} PRIVATE
   src/types/ui/PackageFilter.cpp
   include/${CASQADIUM_SHORT}/types/ui/PackageFilter.hpp
 
+  src/types/ui/RegistryFilter.cpp
+  include/${CASQADIUM_SHORT}/types/ui/RegistryFilter.hpp
+
   include/${CASQADIUM_SHORT}/types/SequenceStep.hpp
   include/${CASQADIUM_SHORT}/types/System.hpp
   include/${CASQADIUM_SHORT}/types/TickCurrent.hpp
