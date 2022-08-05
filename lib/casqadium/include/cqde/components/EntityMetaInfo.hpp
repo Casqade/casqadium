@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cqde/alias.hpp>
+
 #include <entt/fwd.hpp>
 
 #include <json/forwards.h>
@@ -10,7 +12,7 @@ namespace cqde::compos
 
 struct EntityMetaInfo
 {
-  entt::id_type packageId {};
+  PackageId packageId {};
 
 
   EntityMetaInfo() = default;
