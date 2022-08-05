@@ -19,12 +19,12 @@ StringFilter::search(
   if ( newQuery.empty() == false )
     mQuery = newQuery;
 
-  const bool result = ImGui::InputTextWithHint(("##" + mHint).c_str(), mHint.c_str(), &mQuery);
-
-  ImGui::SameLine();
   mCaseSensitivity = mCaseSensitivityButton.isDown();
 
-  return result;
+  ImGui::SameLine();
+
+  return ImGui::InputTextWithHint(("##" + mHint).c_str(),
+                                  mHint.c_str(), &mQuery);
 }
 
 bool
