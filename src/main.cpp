@@ -13,8 +13,8 @@
 int
 main( int , char*[] )
 {
-  const static std::string configFilename = "AnotherDayAtHospital.conf";
-  const static std::string logFilename = "AnotherDayAtHospital.log";
+  const std::string configFilename = "AnotherDayAtHospital.conf";
+  const std::string logFilename = "AnotherDayAtHospital.log";
 
   cqde::types::ConfigManager configManager (configFilename);
 
