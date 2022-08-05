@@ -234,6 +234,17 @@ InputManager::handleAxisInput(
   }
 }
 
+std::set <InputAxisId>
+InputManager::axes() const
+{
+  std::set <InputHwId> axes {};
+
+  for ( auto& [binding, axis] : mBindings )
+    axes.insert(axis);
+
+  return axes;
+}
+
 std::set <InputHwId>
 InputManager::bindings(
   const InputAxisId& axisId ) const
