@@ -49,7 +49,7 @@ public:
                         const float direction,
                         entt::registry& );
 
-  std::set <InputHwId> toHwId( const InputAxisId& ) const;
+  std::set <InputHwId> bindings( const InputAxisId& ) const;
 
   void setInputHistoryLength( const size_t );
   size_t inputHistoryLength() const;

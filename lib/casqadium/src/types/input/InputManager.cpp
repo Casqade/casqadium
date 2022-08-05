@@ -235,7 +235,7 @@ InputManager::handleAxisInput(
 }
 
 std::set <InputHwId>
-InputManager::toHwId(
+InputManager::bindings(
   const InputAxisId& axisId ) const
 {
   std::set <InputHwId> bindings {};
