@@ -13,7 +13,7 @@
 #include <entt/entity/registry.hpp>
 #include <entt/meta/resolve.hpp>
 
-#include <fmt/format.h>
+#include <spdlog/fmt/bundled/format.h>
 
 #include <imgui.h>
 #include <imgui_stdlib.h>
