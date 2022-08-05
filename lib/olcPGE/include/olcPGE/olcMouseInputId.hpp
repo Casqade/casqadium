@@ -23,7 +23,7 @@ enum class MouseInputId
 
   Wheel,
 
-  ENUM_END = Wheel,
+  ENUM_END,
 };
 
 } // namespace olc

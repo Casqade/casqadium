@@ -83,7 +83,7 @@ InputManager::InputManager()
     {InputHwCode(MouseInputId::PosX), "MousePos_X"_id},
     {InputHwCode(MouseInputId::PosY), "MousePos_Y"_id},
 
-    {InputHwCode(MouseInputId::ENUM_END) + 1, "Undefined"_id},
+    {InputHwCode(MouseInputId::ENUM_END), "Undefined"_id},
   };
 }
 
