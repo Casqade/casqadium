@@ -22,32 +22,35 @@ void
 each_component(
   const entt::entity entity,
   const entt::registry& registry,
-  const std::function <void(const ComponentType)>& func )
+  const std::function <bool(const ComponentType)>& func )
 {
   for ( const auto [componentType, entities] : registry.storage() )
     if ( const auto iter = entities.find(entity); iter != entities.end() )
-      func(componentType);
+      if ( func(componentType) == false )
+        return;
 }
 
 void
 each_component(
   const entt::registry& registry,
-  const std::function <void(const entt::entity,
+  const std::function <bool(const entt::entity,
                             const ComponentType)>& func )
 {
   for ( auto [componentType, entities] : registry.storage() )
     for ( auto entity : entities )
-      func(entity, componentType);
+      if ( func(entity, componentType) == false )
+        return;
 }
 
 void
 each_componentPool(
   const entt::registry& registry,
-  const std::function <void(const ComponentType,
+  const std::function <bool(const ComponentType,
                             const entt::registry::base_type&)>& func )
 {
   for ( auto [componentType, entities] : registry.storage() )
-    func(componentType, entities);
+    if ( func(componentType, entities) == false )
+      return;
 }
 
 } // namespace cqde

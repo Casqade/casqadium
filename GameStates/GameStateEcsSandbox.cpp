@@ -326,52 +326,6 @@ GameStateEcsSandbox::GameStateEcsSandbox(
       mPGE->SetKeepMouseCentered(false);
     }
 
-    ImGui::Begin("Entities");
-    ImGui::PushStyleVar(ImGuiStyleVar_FramePadding, ImVec2(2, 2));
-
-    if ( ImGui::BeginTable("split", 2, ImGuiTableFlags_BordersOuter | ImGuiTableFlags_Resizable) )
-    {
-      registry.each(
-      [&registry] ( const auto entity )
-      {
-        ImGui::PushID((int) entity);
-        ImGui::TableNextRow();
-        ImGui::TableNextColumn();
-        ImGui::AlignTextToFramePadding();
-        const bool entityOpened = ImGui::TreeNode(registry.get <Tag> (entity).id.str().c_str());
-        ImGui::TableNextColumn();
-        ImGui::Text("entity");
-
-        if ( entityOpened )
-        {
-          each_component(entity, registry,
-          [&registry] ( const ComponentType componentType )
-          {
-            ImGui::PushID((int) componentType);
-//            auto component = entt::resolve(componentType);
-//            component.func();
-
-            ImGui::TableNextRow();
-            ImGui::TableNextColumn();
-            ImGui::AlignTextToFramePadding();
-            ImGuiTreeNodeFlags flags  = ImGuiTreeNodeFlags_Leaf
-                                      | ImGuiTreeNodeFlags_NoTreePushOnOpen
-                                      | ImGuiTreeNodeFlags_Bullet;
-            ImGui::TreeNodeEx(component_name(componentType).c_str(), flags);
-            ImGui::TableNextColumn();
-            ImGui::Text("component");
-
-            ImGui::PopID();
-          });
-          ImGui::TreePop();
-        }
-        ImGui::PopID();
-      });
-      ImGui::EndTable();
-    }
-
-    ImGui::PopStyleVar();
-    ImGui::End();
   };
 
   auto& callbackMgr = mRegistry.ctx().at <CallbackManager> ();

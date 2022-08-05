@@ -13,16 +13,16 @@ std::string component_name( const ComponentType );
 void each_component(
   const entt::entity,
   const entt::registry&,
-  const std::function <void(const ComponentType)>& );
+  const std::function <bool(const ComponentType)>& );
 
 void each_component(
   const entt::registry&,
-  const std::function <void(const entt::entity,
+  const std::function <bool(const entt::entity,
                             const ComponentType)>& );
 
 void each_componentPool(
   const entt::registry&,
-  const std::function <void(const ComponentType,
+  const std::function <bool(const ComponentType,
                             const entt::registry::base_type&)>& );
 
 

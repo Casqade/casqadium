@@ -183,7 +183,7 @@ EntityManager::save(
       [&] ( const ComponentType componentType )
       {
         if ( excludedComponents.count(componentType) != 0 )
-          return;
+          return true;
 
         auto component = entt::resolve(componentType);
         if ( !component )
@@ -203,7 +203,7 @@ EntityManager::save(
         if ( serializedComponent )
         {
           registryJson[entityId][componentName] = serializedComponent.cast <Json::Value> ();
-          return;
+          return true;
         }
 
         throw std::runtime_error(
