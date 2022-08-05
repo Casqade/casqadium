@@ -24,6 +24,8 @@ struct InputBinding
   virtual void handleInput( cqde::types::ControlAxis&,
                             const float amount ) const;
 
+  virtual void ui_show( Json::Value& );
+
   virtual Json::Value toJson() const;
 
   static std::shared_ptr <InputBinding> FromJson( const InputHwId&, const Json::Value& );

@@ -58,9 +58,11 @@ target_sources(${TARGET} PRIVATE
   include/${CASQADIUM_SHORT}/types/input/ControlAxis.hpp
 
   src/types/input/InputBinding.cpp
+  src/types/input/InputBinding_ui_impl.cpp
   include/${CASQADIUM_SHORT}/types/input/InputBinding.hpp
 
   src/types/input/InputBindingAbsolute.cpp
+  src/types/input/InputBindingAbsolute_ui_impl.cpp
   include/${CASQADIUM_SHORT}/types/input/InputBindingAbsolute.hpp
 
   src/types/input/InputBindingRelative.cpp
@@ -79,6 +81,9 @@ target_sources(${TARGET} PRIVATE
 
   src/types/ui/RegistryFilter.cpp
   include/${CASQADIUM_SHORT}/types/ui/RegistryFilter.hpp
+
+  src/types/ui/InputManagerUi.cpp
+  include/${CASQADIUM_SHORT}/types/ui/InputManagerUi.hpp
 
   src/types/ui/SystemManagerUi.cpp
   include/${CASQADIUM_SHORT}/types/ui/SystemManagerUi.hpp

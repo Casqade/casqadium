@@ -18,6 +18,8 @@ struct InputBindingAbsolute : public InputBinding
   void handleInput( cqde::types::ControlAxis&,
                     const float amount ) const override;
 
+  void ui_show( Json::Value& ) override;
+
   Json::Value toJson() const override;
 };
 

@@ -1,164 +1,163 @@
 {
-  "TranslateX":
+  "CameraLookOff" : 
   {
-    "-Key_A":
+    "-Key_Alt" : 
     {
-      "absolute": false,
-      "sensitivity": 1.0,
-    },
-    "+Key_A":
-    {
-      "absolute": false,
-      "sensitivity": -1.0,
-    },
-    "+Key_D":
-    {
-      "absolute": false,
-      "sensitivity": 1.0,
-    },
-    "-Key_D":
-    {
-      "absolute": false,
-      "sensitivity": -1.0,
-    },
+      "absolute" : false,
+      "sensitivity" : 1.0
+    }
   },
-  "TranslateY":
+  "CameraLookOn" : 
   {
-    "-Key_Shift":
+    "+Key_Alt" : 
     {
-      "absolute": false,
-      "sensitivity": 1.0,
-    },
-    "+Key_Shift":
-    {
-      "absolute": false,
-      "sensitivity": -1.0,
-    },
-    "+Key_Space":
-    {
-      "absolute": false,
-      "sensitivity": 1.0,
-    },
-    "-Key_Space":
-    {
-      "absolute": false,
-      "sensitivity": -1.0,
-    },
+      "absolute" : false,
+      "sensitivity" : 1.0
+    }
   },
-  "TranslateZ":
+  "CameraLookToggle" : 
   {
-    "-Key_S":
+    "-Key_C" : 
     {
-      "absolute": false,
-      "sensitivity": 1.0,
-    },
-    "+Key_S":
-    {
-      "absolute": false,
-      "sensitivity": -1.0,
-    },
-    "+Key_W":
-    {
-      "absolute": false,
-      "sensitivity": 1.0,
-    },
-    "-Key_W":
-    {
-      "absolute": false,
-      "sensitivity": -1.0,
-    },
+      "absolute" : false,
+      "sensitivity" : 1.0
+    }
   },
-  "Yaw":
+  "CursorPosX" : 
   {
-    "+MouseMove_X":
+    "+MousePos_X" : 
     {
-      "absolute": false,
-      "sensitivity": -0.5,
-    },
-    "-MouseMove_X":
-    {
-      "absolute": false,
-      "sensitivity": 0.5,
-    },
-  },
-  "Pitch":
-  {
-    "+MouseMove_Y":
-    {
-      "absolute": false,
-      "sensitivity": -0.5,
-    },
-    "-MouseMove_Y":
-    {
-      "absolute": false,
-      "sensitivity": 0.5,
-    },
-  },
-  "CursorPosX":
-  {
-    "+MousePos_X":
-    {
-      "absolute": true,
-      "sensitivity": 1.0,
+      "absolute" : true,
       "curve" : 0.0,
       "deadzone" : 0.0,
+      "sensitivity" : 1.0
     },
-    "-MousePos_X":
+    "-MousePos_X" : 
     {
-      "absolute": true,
-      "sensitivity": 1.0,
+      "absolute" : true,
       "curve" : 0.0,
       "deadzone" : 0.0,
-    },
+      "sensitivity" : 1.0
+    }
   },
-  "CursorPosY":
+  "CursorPosY" : 
   {
-    "+MousePos_Y":
+    "+MousePos_Y" : 
     {
-      "absolute": true,
-      "sensitivity": 1.0,
+      "absolute" : true,
       "curve" : 0.0,
       "deadzone" : 0.0,
+      "sensitivity" : 1.0
     },
-    "-MousePos_Y":
+    "-MousePos_Y" : 
     {
-      "absolute": true,
-      "sensitivity": 1.0,
+      "absolute" : true,
       "curve" : 0.0,
       "deadzone" : 0.0,
-    },
+      "sensitivity" : 1.0
+    }
   },
-  "CameraLookOn":
+  "EngineShutdown" : 
   {
-    "+Key_Alt":
+    "-Key_Q" : 
     {
-      "absolute": false,
-      "sensitivity": 1.0,
-    },
+      "absolute" : false,
+      "sensitivity" : 1.0
+    }
   },
-  "CameraLookOff":
+  "Pitch" : 
   {
-    "-Key_Alt":
+    "+MouseMove_Y" : 
     {
-      "absolute": false,
-      "sensitivity": 1.0,
+      "absolute" : false,
+      "sensitivity" : -0.5
     },
+    "-MouseMove_Y" : 
+    {
+      "absolute" : false,
+      "sensitivity" : 0.5
+    }
   },
-  "CameraLookToggle":
+  "TranslateX" : 
   {
-    "-Key_C":
+    "+Key_A" : 
     {
-      "absolute": false,
-      "sensitivity": 1.0,
+      "absolute" : false,
+      "sensitivity" : -1.0
     },
+    "+Key_D" : 
+    {
+      "absolute" : false,
+      "sensitivity" : 1.0
+    },
+    "-Key_A" : 
+    {
+      "absolute" : false,
+      "sensitivity" : 1.0
+    },
+    "-Key_D" : 
+    {
+      "absolute" : false,
+      "sensitivity" : -1.0
+    }
   },
-  "EngineShutdown":
+  "TranslateY" : 
   {
-    "-Key_Enter":
+    "+Key_Shift" : 
     {
-      "absolute": false,
-      "sensitivity": 1.0,
+      "absolute" : false,
+      "sensitivity" : -1.0
     },
+    "+Key_Space" : 
+    {
+      "absolute" : false,
+      "sensitivity" : 1.0
+    },
+    "-Key_Shift" : 
+    {
+      "absolute" : false,
+      "sensitivity" : 1.0
+    },
+    "-Key_Space" : 
+    {
+      "absolute" : false,
+      "sensitivity" : -1.0
+    }
   },
+  "TranslateZ" : 
+  {
+    "+Key_S" : 
+    {
+      "absolute" : false,
+      "sensitivity" : -1.0
+    },
+    "+Key_W" : 
+    {
+      "absolute" : false,
+      "sensitivity" : 1.0
+    },
+    "-Key_S" : 
+    {
+      "absolute" : false,
+      "sensitivity" : 1.0
+    },
+    "-Key_W" : 
+    {
+      "absolute" : false,
+      "sensitivity" : -1.0
+    }
+  },
+  "Yaw" : 
+  {
+    "+MouseMove_X" : 
+    {
+      "absolute" : false,
+      "sensitivity" : -0.5
+    },
+    "-MouseMove_X" : 
+    {
+      "absolute" : false,
+      "sensitivity" : 0.5
+    }
+  }
 }
-

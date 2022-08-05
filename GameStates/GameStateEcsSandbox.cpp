@@ -28,6 +28,7 @@
 #include <cqde/types/input/InputBindingAbsolute.hpp>
 #include <cqde/types/input/InputBindingRelative.hpp>
 
+#include <cqde/types/ui/InputManagerUi.hpp>
 #include <cqde/types/ui/SystemManagerUi.hpp>
 
 #include <cqde/util/logger.hpp>
@@ -271,8 +272,6 @@ GameStateEcsSandbox::GameStateEcsSandbox(
                          type_hash <Tag> (),
                          type_hash <EntityMetaInfo> ()
                        });
-
-    inputManager.save("input.json");
   };
 
   const auto CameraControlSystem =
@@ -318,6 +317,7 @@ GameStateEcsSandbox::GameStateEcsSandbox(
   const auto EditorSystem =
   [this, cursor] ( entt::registry& registry )
   {
+    using cqde::ui::InputManagerUi;
     using cqde::ui::SystemManagerUi;
 
     if ( ImGui::GetIO().WantCaptureMouse == true )
@@ -326,6 +326,7 @@ GameStateEcsSandbox::GameStateEcsSandbox(
       mPGE->SetKeepMouseCentered(false);
     }
 
+    registry.ctx().at <InputManagerUi> ().ui_show(registry);
     registry.ctx().at <SystemManagerUi> ().ui_show(registry);
   };
 
@@ -363,6 +364,13 @@ GameStateEcsSandbox::GameStateEcsSandbox(
 void
 GameStateEcsSandbox::keyEvent( const olc::Event event )
 {
+  if ( ImGui::GetIO().WantCaptureKeyboard == true ||
+       ImGui::GetIO().WantTextInput == true )
+  {
+    LOG_INFO("+key {}", event.key.code);
+    return;
+  }
+
   using cqde::InputHwCode;
   using cqde::types::InputManager;
 

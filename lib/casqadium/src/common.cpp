@@ -27,6 +27,7 @@
 #include <cqde/types/assets/TextStringAssetManager.hpp>
 
 #include <cqde/types/input/InputManager.hpp>
+#include <cqde/types/ui/InputManagerUi.hpp>
 
 #include <cqde/types/EntityManager.hpp>
 
@@ -55,9 +56,10 @@ engineInit( entt::registry& registry )
   auto& entityManager = registry.ctx().emplace <EntityManager> ();
   registry.ctx().emplace <EntityTagManager> ();
   registry.ctx().emplace <CallbackManager> ();
+  auto& inputManager = registry.ctx().emplace <InputManager> ();
   auto& systemManager = registry.ctx().emplace <SystemManager> ();
 
-  registry.ctx().emplace <InputManager> ();
+  registry.ctx().emplace <InputManagerUi> (&inputManager);
   registry.ctx().emplace <SystemManagerUi> (&systemManager);
 
   auto& tp = registry.ctx().emplace <ctpl::thread_pool> (std::thread::hardware_concurrency() | 1);

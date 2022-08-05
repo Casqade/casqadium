@@ -12,11 +12,18 @@
 #include <map>
 
 
+namespace cqde::ui
+{
+class InputManagerUi;
+}
+
 namespace cqde::types
 {
 
 class InputManager
 {
+  friend class ui::InputManagerUi;
+
   using path = std::filesystem::path;
 
   using InputBindings = std::set <std::shared_ptr <InputBinding>,
