@@ -8,7 +8,7 @@
 #include <entt/fwd.hpp>
 
 #include <filesystem>
-#include <list>
+#include <deque>
 #include <map>
 
 
@@ -30,7 +30,7 @@ class InputManager
                   InputBindingComparator> mBindings {};
 
   size_t mInputHistoryLength {100u};
-  std::list <InputEvent> mInputHistory {};
+  std::deque <InputEvent> mInputHistory {};
 
 public:
   InputManager();
@@ -54,7 +54,8 @@ public:
   void setInputHistoryLength( const size_t );
   size_t inputHistoryLength() const;
 
-  const std::list <InputEvent>& inputHistory() const;
+  const std::deque <InputEvent>& inputHistory() const;
+
 };
 
 } // namespace cqde::types

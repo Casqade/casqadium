@@ -260,7 +260,7 @@ InputManager::inputHistoryLength() const
   return mInputHistoryLength;
 }
 
-const std::list <InputEvent>&
+const std::deque <InputEvent>&
 InputManager::inputHistory() const
 {
   return mInputHistory;
