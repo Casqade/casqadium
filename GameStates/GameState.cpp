@@ -71,6 +71,10 @@ GameState::handleEvent( const olc::Event event )
       mouseButtonEvent( event );
       break;
 
+    case EventType::WindowResized:
+      windowResizeEvent(event.windowResize);
+      break;
+
     default:
       break;
   }
@@ -90,6 +94,12 @@ GameState::mouseMoveEvent( const olc::Event::MouseMoveEvent )
 
 void
 GameState::mouseButtonEvent( const olc::Event )
+{
+  LOG_TRACE("{}", __FUNCTION__);
+}
+
+void
+GameState::windowResizeEvent( const olc::Event::WindowResizeEvent )
 {
   LOG_TRACE("{}", __FUNCTION__);
 }
