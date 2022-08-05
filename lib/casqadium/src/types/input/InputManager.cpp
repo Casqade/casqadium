@@ -18,8 +18,6 @@
 
 #include <entt/entity/registry.hpp>
 
-#include <spdlog/fmt/bundled/format.h>
-
 #include <json/value.h>
 #include <json/writer.h>
 

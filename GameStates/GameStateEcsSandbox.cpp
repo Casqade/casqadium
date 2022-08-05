@@ -49,7 +49,6 @@
 #include <olcPGE/olcMouseInputId.hpp>
 #include <olcPGE/olcPGEX_ImGui.hpp>
 
-#include <spdlog/fmt/bundled/format.h>
 
 #include <glm/vec3.hpp>
 

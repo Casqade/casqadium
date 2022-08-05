@@ -5,8 +5,6 @@
 
 #include <cqde/util/logger.hpp>
 
-#include <spdlog/fmt/bundled/format.h>
-
 #include <json/value.h>
 
 

@@ -4,8 +4,6 @@
 
 #include <cqde/util/logger.hpp>
 
-#include <spdlog/fmt/bundled/format.h>
-
 #include <cqde/conversion/json_glm_vec3.hpp>
 
 #include <glm/vec3.hpp>

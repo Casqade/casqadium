@@ -16,8 +16,6 @@
 
 #include <cqde/types/EntityManager.hpp>
 
-#include <spdlog/fmt/bundled/format.h>
-
 #include <json/value.h>
 #include <json/writer.h>
 
