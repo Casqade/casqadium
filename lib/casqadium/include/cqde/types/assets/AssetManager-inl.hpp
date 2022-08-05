@@ -210,7 +210,9 @@ AssetManager <Asset>::assetIdList() const
 {
   std::lock_guard guard(mAssetsMutex);
 
-  std::vector <AssetId> list { mAssets.size() };
+  std::vector <AssetId> list {};
+  list.reserve(mAssets.size());
+
   for ( const auto& [id, entry] : mAssets )
     list.push_back(id);
 
