@@ -5,6 +5,7 @@
 #include <cqde/components/Tag.hpp>
 #include <cqde/components/EntityMetaInfo.hpp>
 
+#include <cqde/common.hpp>
 #include <cqde/ecs_helpers.hpp>
 #include <cqde/file_helpers.hpp>
 #include <cqde/json_helpers.hpp>

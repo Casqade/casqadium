@@ -1,6 +1,8 @@
 #include <cqde/types/ui/SystemManagerUi.hpp>
 #include <cqde/types/SystemManager.hpp>
 
+#include <cqde/common.hpp>
+
 #include <imgui.h>
 
 
@@ -16,6 +18,8 @@ void
 SystemManagerUi::ui_show(
   entt::registry& )
 {
+  CQDE_ASSERT_DEBUG(mSystemMgr != nullptr, return);
+
   if ( ImGui::Begin("Systems") == false )
   {
     ImGui::End(); // Systems

@@ -8,6 +8,7 @@
 #include <cqde/components/Tag.hpp>
 #include <cqde/components/EntityMetaInfo.hpp>
 
+#include <cqde/common.hpp>
 #include <cqde/ecs_helpers.hpp>
 
 #include <entt/entity/registry.hpp>
@@ -35,6 +36,8 @@ EntityManagerUi::ui_show(
 {
   using compos::Tag;
   using compos::EntityMetaInfo;
+
+  CQDE_ASSERT_DEBUG(mEntityMgr != nullptr, return);
 
   if ( ImGui::Begin("Registry view", nullptr,
                     ImGuiWindowFlags_HorizontalScrollbar ) == false )
