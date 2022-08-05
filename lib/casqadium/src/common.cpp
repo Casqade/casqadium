@@ -14,7 +14,9 @@
 #include <cqde/types/CallbackManager.hpp>
 #include <cqde/types/EntityTagManager.hpp>
 #include <cqde/types/PackageManager.hpp>
+
 #include <cqde/types/SystemManager.hpp>
+#include <cqde/types/ui/SystemManagerUi.hpp>
 
 #include <cqde/types/TickCurrent.hpp>
 #include <cqde/types/FrameCurrent.hpp>
@@ -41,6 +43,7 @@ engineInit( entt::registry& registry )
 {
   using namespace compos;
   using namespace types;
+  using namespace ui;
 
 //  entt::meta_ctx::bind(registry.ctx().emplace <entt::meta_ctx> ());
 
@@ -52,9 +55,10 @@ engineInit( entt::registry& registry )
   auto& entityManager = registry.ctx().emplace <EntityManager> ();
   registry.ctx().emplace <EntityTagManager> ();
   registry.ctx().emplace <CallbackManager> ();
-  registry.ctx().emplace <SystemManager> ();
+  auto& systemManager = registry.ctx().emplace <SystemManager> ();
 
   registry.ctx().emplace <InputManager> ();
+  registry.ctx().emplace <SystemManagerUi> (&systemManager);
 
   auto& tp = registry.ctx().emplace <ctpl::thread_pool> (std::thread::hardware_concurrency() | 1);
 

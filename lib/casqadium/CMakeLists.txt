@@ -80,6 +80,9 @@ target_sources(${TARGET} PRIVATE
   src/types/ui/RegistryFilter.cpp
   include/${CASQADIUM_SHORT}/types/ui/RegistryFilter.hpp
 
+  src/types/ui/SystemManagerUi.cpp
+  include/${CASQADIUM_SHORT}/types/ui/SystemManagerUi.hpp
+
   include/${CASQADIUM_SHORT}/types/SequenceStep.hpp
   include/${CASQADIUM_SHORT}/types/System.hpp
   include/${CASQADIUM_SHORT}/types/TickCurrent.hpp

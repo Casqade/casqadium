@@ -28,6 +28,8 @@
 #include <cqde/types/input/InputBindingAbsolute.hpp>
 #include <cqde/types/input/InputBindingRelative.hpp>
 
+#include <cqde/types/ui/SystemManagerUi.hpp>
+
 #include <cqde/util/logger.hpp>
 
 #include <cqde/components/Tag.hpp>
@@ -316,9 +318,7 @@ GameStateEcsSandbox::GameStateEcsSandbox(
   const auto EditorSystem =
   [this, cursor] ( entt::registry& registry )
   {
-    using cqde::ComponentType;
-    using cqde::component_name;
-    using cqde::each_component;
+    using cqde::ui::SystemManagerUi;
 
     if ( ImGui::GetIO().WantCaptureMouse == true )
     {
@@ -326,6 +326,7 @@ GameStateEcsSandbox::GameStateEcsSandbox(
       mPGE->SetKeepMouseCentered(false);
     }
 
+    registry.ctx().at <SystemManagerUi> ().ui_show(registry);
   };
 
   auto& callbackMgr = mRegistry.ctx().at <CallbackManager> ();

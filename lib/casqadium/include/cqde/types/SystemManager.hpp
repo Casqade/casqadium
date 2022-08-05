@@ -8,11 +8,18 @@
 #include <vector>
 
 
+namespace cqde::ui
+{
+class SystemManagerUi;
+}
+
 namespace cqde::types
 {
 
 class SystemManager
 {
+  friend class ui::SystemManagerUi;
+
   using Phase = System::Phase;
   using Callback = System::Callback;
 
