@@ -68,6 +68,9 @@ target_sources(${TARGET} PRIVATE
 
   include/${CASQADIUM_SHORT}/types/input/InputEvent.hpp
 
+  src/types/ui/ToggleButton.cpp
+  include/${CASQADIUM_SHORT}/types/ui/ToggleButton.hpp
+
   include/${CASQADIUM_SHORT}/types/SequenceStep.hpp
   include/${CASQADIUM_SHORT}/types/System.hpp
   include/${CASQADIUM_SHORT}/types/TickCurrent.hpp
