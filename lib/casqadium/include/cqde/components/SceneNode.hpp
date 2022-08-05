@@ -19,6 +19,9 @@ struct SceneNode
   SceneNode() = default;
 
 
+  void ui_edit_props( const entt::entity,
+                      const entt::registry& );
+
   Json::Value serialize() const;
 
   static void deserialize(

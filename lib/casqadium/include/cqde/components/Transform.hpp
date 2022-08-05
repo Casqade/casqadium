@@ -36,6 +36,9 @@ struct Transform
   glm::vec3 up() const;
 
 
+  void ui_edit_props( const entt::entity,
+                      const entt::registry& );
+
   Json::Value serialize() const;
 
   static void deserialize(

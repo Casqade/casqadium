@@ -80,6 +80,7 @@ EntityManager::registerComponent(
   factory.template func <&component_get_const <Component>, entt::as_cref_t> ("get_const"_hs);
   factory.template func <&Component::serialize> ("serialize"_hs);
   factory.template func <&Component::deserialize> ("deserialize"_hs);
+  factory.template func <&Component::ui_edit_props> ("ui_edit_props"_hs);
 
   mComponentTypes[name] = type_hash <Component> ();
 }
