@@ -1,9 +1,9 @@
 #include <cqde/types/input/InputBindingRelative.hpp>
 #include <cqde/types/input/ControlAxis.hpp>
 
-#include <entt/entity/registry.hpp>
-
 #include <json/value.h>
+
+#include <algorithm>
 
 
 namespace cqde::types

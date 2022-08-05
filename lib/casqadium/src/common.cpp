@@ -39,8 +39,8 @@ namespace cqde
 void
 engineInit( entt::registry& registry )
 {
-  using namespace cqde::compos;
-  using namespace cqde::types;
+  using namespace compos;
+  using namespace types;
 
 //  entt::meta_ctx::bind(registry.ctx().emplace <entt::meta_ctx> ());
 

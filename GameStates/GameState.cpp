@@ -55,19 +55,21 @@ GameState::render(
 void
 GameState::handleEvent( const olc::Event event )
 {
+  using EventType = olc::Event::EventType;
+
   switch (event.type)
   {
-    case olc::Event::EventType::KeyPressed:
-    case olc::Event::EventType::KeyReleased:
+    case EventType::KeyPressed:
+    case EventType::KeyReleased:
       keyEvent( event );
       break;
 
-    case olc::Event::EventType::MouseMoved:
+    case EventType::MouseMoved:
       mouseMoveEvent( event.mouseMove );
       break;
 
-    case olc::Event::EventType::MouseButtonPressed:
-    case olc::Event::EventType::MouseButtonReleased:
+    case EventType::MouseButtonPressed:
+    case EventType::MouseButtonReleased:
       mouseButtonEvent( event );
       break;
 

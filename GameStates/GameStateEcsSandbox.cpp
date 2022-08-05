@@ -124,9 +124,6 @@ GameStateEcsSandbox::GameStateEcsSandbox(
 
 //  entt::meta_ctx::bind(mRegistry.ctx().at <entt::meta_ctx> ());
 
-//  testSerialization();
-//  return;
-
   auto& fonts = mRegistry.ctx().at <FontAssetManager> ();
   auto& geometry = mRegistry.ctx().at <GeometryAssetManager> ();
   auto& textures = mRegistry.ctx().at <TextureAssetManager> ();

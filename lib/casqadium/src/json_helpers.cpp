@@ -171,7 +171,8 @@ jsonValidateObject(
 }
 
 Json::Value
-jsonParse( std::istream& stream )
+jsonParse(
+  std::istream& stream )
 {
   Json::Value result {};
   Json::String parseErrors {};

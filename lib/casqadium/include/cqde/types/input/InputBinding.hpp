@@ -12,7 +12,7 @@ namespace cqde::types
 
 struct InputBinding
 {
-  cqde::InputHwId inputId;
+  InputHwId inputId;
   float sensitivity;
 
 

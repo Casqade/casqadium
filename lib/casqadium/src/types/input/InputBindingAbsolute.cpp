@@ -1,12 +1,11 @@
 #include <cqde/types/input/InputBindingAbsolute.hpp>
 #include <cqde/types/input/ControlAxis.hpp>
 
-#include <cqde/common.hpp>
 #include <cqde/json_helpers.hpp>
 
-#include <entt/entity/registry.hpp>
-
 #include <json/value.h>
+
+#include <algorithm>
 
 
 namespace cqde::types

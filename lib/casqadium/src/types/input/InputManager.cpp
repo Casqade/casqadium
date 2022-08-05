@@ -88,7 +88,8 @@ InputManager::InputManager()
 }
 
 void
-InputManager::load( const path& configPath )
+InputManager::load(
+  const path& configPath )
 {
   using fmt::format;
 
@@ -248,7 +249,7 @@ InputManager::toHwId(
 
 void
 InputManager::setInputHistoryLength(
-const size_t length )
+  const size_t length )
 {
   mInputHistoryLength = length;
 }

@@ -5,7 +5,7 @@
 
 #include <cqde/conversion/json_glm_vec4.hpp>
 
-#include <entt/entt.hpp>
+#include <entt/entity/registry.hpp>
 
 #include <spdlog/fmt/bundled/format.h>
 

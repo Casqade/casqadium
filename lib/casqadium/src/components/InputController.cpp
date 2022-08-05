@@ -1,9 +1,8 @@
 #include <cqde/components/InputController.hpp>
 
-#include <cqde/common.hpp>
 #include <cqde/json_helpers.hpp>
 
-#include <entt/entt.hpp>
+#include <entt/entity/registry.hpp>
 
 #include <json/value.h>
 

@@ -12,7 +12,8 @@ namespace cqde
 {
 
 static std::string
-openmodeToString( const std::ios::openmode flags )
+openmodeToString(
+  const std::ios::openmode flags )
 {
   std::string result {};
 
@@ -95,7 +96,8 @@ fileOpen(
 }
 
 Json::Value
-fileParse( const std::filesystem::path& path )
+fileParse(
+  const std::filesystem::path& path )
 {
   using fmt::format;
 

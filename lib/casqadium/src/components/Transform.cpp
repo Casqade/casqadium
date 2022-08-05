@@ -1,15 +1,12 @@
 #include <cqde/components/Transform.hpp>
 #include <cqde/components/SceneNode.hpp>
 
-#include <cqde/common.hpp>
 #include <cqde/json_helpers.hpp>
 
 #include <cqde/conversion/json_glm_vec3.hpp>
 #include <cqde/conversion/json_glm_quat.hpp>
 
-#include <entt/entt.hpp>
-
-#include <glm/mat4x4.hpp>
+#include <entt/entity/registry.hpp>
 
 #include <json/value.h>
 

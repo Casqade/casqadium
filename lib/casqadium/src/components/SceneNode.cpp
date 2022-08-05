@@ -1,10 +1,9 @@
 #include <cqde/components/SceneNode.hpp>
 #include <cqde/components/Tag.hpp>
 
-#include <cqde/common.hpp>
 #include <cqde/json_helpers.hpp>
 
-#include <entt/entt.hpp>
+#include <entt/entity/registry.hpp>
 
 #include <json/value.h>
 
@@ -62,7 +61,7 @@ SceneNode::deserialize(
 
   comp.parent = Tag{json["parent"].asString()};
 
-  for ( const auto child : json["children"] )
+  for ( const auto& child : json["children"] )
     comp.children.insert({Tag{child.asString()}});
 }
 

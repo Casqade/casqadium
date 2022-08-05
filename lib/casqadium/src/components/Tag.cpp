@@ -1,8 +1,7 @@
 #include <cqde/components/Tag.hpp>
 #include <cqde/types/EntityTagManager.hpp>
 
-#include <entt/entt.hpp>
-#include <entt/core/hashed_string.hpp>
+#include <entt/entity/registry.hpp>
 
 #include <json/value.h>
 

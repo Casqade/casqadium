@@ -10,7 +10,9 @@ namespace cqde::compos
 
 Json::Value
 SequenceManager::serialize() const
-{}
+{
+  return Json::objectValue;
+}
 
 void
 SequenceManager::deserialize(

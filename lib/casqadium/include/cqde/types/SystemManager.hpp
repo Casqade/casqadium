@@ -1,7 +1,6 @@
 #pragma once
 
 #include <cqde/alias.hpp>
-
 #include <cqde/types/System.hpp>
 
 #include <entt/fwd.hpp>
