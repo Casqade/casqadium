@@ -123,15 +123,45 @@ InputManager::load(
               configPath.string(), e.what()));
   }
 
+  try
+  {
+    deserialize(inputConfig);
+  }
+  catch ( const std::exception& e )
+  {
+    throw std::runtime_error(
+      format("Failed to load input config '{}': {}",
+              configPath.string(), e.what()));
+  }
+}
+
+void
+InputManager::save(
+  const path& configPath ) const
+{
+  auto inputConfig = serialize();
+
+  LOG_TRACE("Writing input config to '{}'",
+            configPath.string());
+
+  auto fileStream = fileOpen(configPath, std::ios::out | std::ios::trunc);
+  fileStream << Json::writeString(jsonWriter(), inputConfig);
+}
+
+void
+InputManager::deserialize(
+  const Json::Value& inputConfig )
+{
+  LOG_DEBUG("Deserializing input config");
+
   for ( const auto& axisId : inputConfig.getMemberNames() )
   {
-    LOG_DEBUG("Binding inputs to axis '{}' ('{}')",
-              axisId, configPath.string());
+    LOG_DEBUG("Binding inputs to axis '{}'", axisId);
 
     for ( const auto& bindingHwId : inputConfig[axisId].getMemberNames() )
     {
-      LOG_TRACE("Binding input '{}' to axis '{}' ('{}')",
-                bindingHwId, axisId, configPath.string());
+      LOG_TRACE("Binding input '{}' to axis '{}'",
+                bindingHwId, axisId);
 
       try
       {
@@ -144,17 +174,17 @@ InputManager::load(
       }
       catch ( const std::exception& e )
       {
+        using fmt::format;
         throw std::runtime_error(
-          format("Failed to bind '{}' to axis '{}' ('{}'): {}",
-                  bindingHwId, axisId,
-                  configPath.string(), e.what()));
+          format("Failed to bind '{}' to axis '{}' - {}",
+                  bindingHwId, axisId, e.what()));
       }
     }
   }
 }
 
-void
-InputManager::save( const path& configPath ) const
+Json::Value
+InputManager::serialize() const
 {
   Json::Value inputConfig {};
 
@@ -163,11 +193,7 @@ InputManager::save( const path& configPath ) const
   for ( const auto& [binding, axisId] : mBindings )
     inputConfig[axisId.str()][binding->inputId.str()] = binding->toJson();
 
-  LOG_TRACE("Writing input config to '{}'",
-            configPath.string());
-
-  auto fileStream = fileOpen(configPath, std::ios::out | std::ios::trunc);
-  fileStream << Json::writeString(jsonWriter(), inputConfig);
+  return inputConfig;
 }
 
 void InputManager::assignBinding(
