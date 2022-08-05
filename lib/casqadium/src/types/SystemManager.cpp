@@ -6,12 +6,28 @@
 namespace cqde::types
 {
 
+SystemManager::SystemsIterator
+SystemManager::systemIter(
+  const SystemId& id )
+{
+  const auto predicate =
+  [&id] ( const System& system )
+  {
+    return system.id == id;
+  };
+
+  return std::find_if(
+    mSystems.begin(),
+    mSystems.end(),
+    predicate);
+}
+
 void
 SystemManager::execute(
   entt::registry& registry,
   const Phase phase )
 {
-  for ( const auto& [systemId, system] : mSystems )
+  for ( const auto& system : mSystems )
     if ( system.active == true &&
          system.phase == phase )
       system.callback(registry);
@@ -24,12 +40,16 @@ SystemManager::activate(
   LOG_DEBUG("Activating system '{}'",
             systemId.str());
 
-  if ( mSystems.count(systemId) == 0 )
-    throw std::runtime_error(
-      fmt::format("Failed to activate unknown system '{}'",
-                  systemId.str()));
+  if ( const auto system = systemIter(systemId);
+       system != mSystems.end() )
+  {
+    system->active = true;
+    return;
+  }
 
-  mSystems[systemId].active = true;
+  throw std::runtime_error(
+    fmt::format("Failed to activate unknown system '{}'",
+                systemId.str()));
 }
 
 void
@@ -39,12 +59,16 @@ SystemManager::deactivate(
   LOG_DEBUG("Deactivating system '{}'",
             systemId.str());
 
-  if ( mSystems.count(systemId) == 0 )
-    throw std::runtime_error(
-      fmt::format("Failed to deactivate unknown system '{}'",
-                  systemId.str()));
+  if ( const auto system = systemIter(systemId);
+       system != mSystems.end() )
+  {
+    system->active = false;
+    return;
+  }
 
-  mSystems[systemId].active = false;
+  throw std::runtime_error(
+    fmt::format("Failed to deactivate unknown system '{}'",
+                systemId.str()));
 }
 
 void
@@ -56,7 +80,9 @@ SystemManager::Register(
   LOG_INFO("Registering system '{}'",
             systemId.str());
 
-  mSystems[systemId] = System {callback, phase, false};
+  mSystems.insert(systemIter(systemId),
+                  {callback, systemId,
+                  phase, false} );
 }
 
 std::vector <SystemId>
@@ -64,8 +90,8 @@ SystemManager::systems() const
 {
   std::vector <SystemId> result {};
 
-  for ( const auto& [systemId, system] : mSystems )
-    result.push_back(systemId);
+  for ( const auto& system : mSystems )
+    result.push_back(system.id);
 
   return result;
 }
@@ -76,10 +102,10 @@ SystemManager::systemsActive(
 {
   std::vector <SystemId> result {};
 
-  for ( const auto& [systemId, system] : mSystems )
+  for ( const auto& system : mSystems )
     if ( system.active == true &&
          system.phase == phase )
-      result.push_back(systemId);
+      result.push_back(system.id);
 
   return result;
 }

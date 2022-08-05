@@ -6,7 +6,6 @@
 #include <entt/fwd.hpp>
 
 #include <vector>
-#include <unordered_map>
 
 
 namespace cqde::types
@@ -17,8 +16,12 @@ class SystemManager
   using Phase = System::Phase;
   using Callback = System::Callback;
 
-  std::unordered_map <SystemId, System,
-                      identifier_hash> mSystems {};
+  using SystemsPool = std::vector <System>;
+  using SystemsIterator = SystemsPool::iterator;
+
+  SystemsPool mSystems {};
+
+  SystemsIterator systemIter( const SystemId& );
 
 public:
   SystemManager() = default;
