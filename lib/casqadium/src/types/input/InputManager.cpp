@@ -65,6 +65,7 @@ InputManager::InputManager()
     {Key::S, "Key_S"_id},
     {Key::W, "Key_W"_id},
     {Key::C, "Key_C"_id},
+    {Key::Q, "Key_Q"_id},
     {Key::MENU, "Key_Alt"_id},
     {Key::SHIFT, "Key_Shift"_id},
     {Key::SPACE, "Key_Space"_id},
