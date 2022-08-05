@@ -3,5 +3,6 @@
   "load_order":
   [
     "editor",
+    "dummy",
   ]
 }
