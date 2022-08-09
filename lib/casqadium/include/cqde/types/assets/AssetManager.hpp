@@ -56,14 +56,15 @@ public:
 
   static Json::Value AssetJsonDbEntryReference();
 
-  void parseAssetDbFile(const path& );
-  void parseAssetDb(const Json::Value& db,
-                    const path& dbPath );
+  void parseAssetDbFile( const path& );
+  void parseAssetDb(  const Json::Value& db,
+                      const path& dbPath );
 
   void load( const std::set <AssetId>& );
   void unload( const AssetId& );
 
   void insert( const AssetId&, const AssetHandle );
+  void remove( const AssetId& );
 
   void parseJsonEntryImpl( const Json::Value&,
                            const AssetId& );

@@ -190,6 +190,20 @@ AssetManager <Asset>::insert(
 }
 
 template <typename Asset>
+void
+AssetManager <Asset>::remove(
+  const AssetId& id )
+{
+  std::lock_guard guard(mAssetsMutex);
+
+  if ( mAssets.count(id) == 0 )
+    return;
+
+  unload(id);
+  mAssets.erase(id);
+}
+
+template <typename Asset>
 AssetStatus
 AssetManager <Asset>::status(
   const AssetId& id ) const
