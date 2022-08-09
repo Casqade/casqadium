@@ -106,10 +106,6 @@ Package::parseManifest(
   mDescription = manifest["description"].asString();
   mVersion = manifest["version"].asString();
 
-  if ( mTitle == null_id.str() )
-    throw std::runtime_error(
-      format("Packages with title 'null' are forbidden"));
-
   for ( const auto& dependency : manifest["dependencies"])
     mDependencies.emplace(dependency.asString());
 }
@@ -233,30 +229,35 @@ Package::path
 Package::contentPath(
   const ContentType type ) const
 {
-  const auto packageRootPath = mManifestPath.parent_path();
+  return mManifestPath.parent_path() / ContentFileName(type);
+}
 
+std::string
+Package::ContentFileName(
+  const ContentType type )
+{
   switch (type)
   {
     case ContentType::Manifest:
-      return mManifestPath;
+      return "manifest.json";
 
     case ContentType::Entities:
-      return packageRootPath / "entities.json";
+      return "entities.json";
 
     case ContentType::Input:
-      return packageRootPath / "input.json";
+      return "input.json";
 
     case ContentType::Fonts:
-      return packageRootPath / "fonts.json";
+      return "fonts.json";
 
     case ContentType::Geometry:
-      return packageRootPath / "geometry.json";
+      return "geometry.json";
 
     case ContentType::Textures:
-      return packageRootPath / "textures.json";
+      return "textures.json";
 
     case ContentType::Text:
-      return packageRootPath / "text.json";
+      return "text.json";
   }
 }
 

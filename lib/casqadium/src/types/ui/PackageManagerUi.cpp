@@ -1,6 +1,8 @@
 #include <cqde/types/ui/PackageManagerUi.hpp>
 #include <cqde/types/PackageManager.hpp>
 
+#include <cqde/types/UndoRedoQueue-inl.hpp>
+
 #include <cqde/common.hpp>
 #include <cqde/util/logger.hpp>
 
@@ -8,13 +10,30 @@
 #include <cqde/json_helpers.hpp>
 
 #include <json/value.h>
+#include <json/writer.h>
 
 #include <imgui.h>
 #include <imgui_stdlib.h>
 
+#include <fstream>
+
+
+namespace cqde::types
+{
+template class
+UndoRedoQueue <Json::Value>;
+}
 
 namespace cqde::ui
 {
+
+bool PackageManagerUi::ConfigState::operator == (
+  const ConfigState& other ) const
+{
+  return
+      std::make_tuple(root, packages) ==
+      std::make_tuple(other.root, other.packages);
+}
 
 PackageManagerUi::PackageManagerUi(
   types::PackageManager* packageMgr )
@@ -25,18 +44,267 @@ void
 PackageManagerUi::ui_show(
   entt::registry& registry )
 {
+  using fmt::format;
+  using types::Package;
+  using types::PackageManager;
+  using ContentType = types::Package::ContentType;
+
   CQDE_ASSERT_DEBUG(mPackageMgr != nullptr, return);
 
-  if ( ImGui::Begin("Package management", nullptr,
-                    ImGuiWindowFlags_HorizontalScrollbar ) == false )
+  if ( ImGui::Begin("Package management", NULL,
+                    ImGuiWindowFlags_MenuBar) == false )
+    return ImGui::End(); // Package management
+
+  if ( ImGui::BeginTable( "Packages", 1, ImGuiTableFlags_ScrollY,
+                          {0.0f, ImGui::GetContentRegionAvail().y}) == false )
+    return ImGui::End(); // Package management
+
+  ImGui::TableNextColumn();
+
+  if ( mConfigState.root.empty() == true )
   {
-    ImGui::End(); // Package management
-    return;
+    mConfigState.root = fileParse(mPackageMgr->mPackagesRoot);
+    PackageManager::Validate(mConfigState.root);
+    mDraggedPackageIndex = -1u;
   }
 
+  auto& packages = mConfigState.root["load_order"];
+  std::string entryPoint = mConfigState.root["entry_point"].asString();
 
+  ImGui::Text("Entry point");
+
+  if ( ImGui::BeginCombo("##entryPoint", entryPoint.c_str(),
+                         ImGuiComboFlags_HeightLargest) )
+  {
+    for ( const auto& package : packages )
+    {
+      if ( ImGui::Selectable(package.asCString(),
+                             package.asString() == entryPoint ) )
+        entryPoint = package.asString();
+    }
+    mConfigState.root["entry_point"] = entryPoint;
+
+    ImGui::EndCombo();
+  }
+
+  ImGui::Separator();
+
+  bool packageNameInvalid = mPackageNewName.empty() == true;
+
+  if ( packageNameInvalid == false )
+    for ( auto& val : packages )
+      packageNameInvalid |= mPackageNewName == val.asString();
+
+  ImGui::BeginDisabled(packageNameInvalid);
+
+  if ( ImGui::Button("+##packageAdd") )
+  {
+    packages.append(mPackageNewName);
+    mConfigState.packages[mPackageNewName]["title"] = Json::stringValue;
+    mConfigState.packages[mPackageNewName]["version"] = Json::stringValue;
+    mConfigState.packages[mPackageNewName]["description"] = Json::stringValue;
+    mConfigState.packages[mPackageNewName]["dependencies"] = Json::arrayValue;
+  }
+
+  ImGui::EndDisabled();
+
+  ImGui::SameLine();
+  ImGui::InputTextWithHint("##newPackageId", "New package ID",
+                           &mPackageNewName,
+                           ImGuiInputTextFlags_AutoSelectAll);
+
+  ImGui::Separator();
+
+  for ( Json::ArrayIndex index = 0;
+        index < packages.size();
+        ++index )
+  {
+    ImGui::PushID(index);
+
+    if ( ImGui::SmallButton("-##packageDel") )
+      packages.removeIndex(index, nullptr);
+
+    if ( index == packages.size() )
+    {
+      ImGui::PopID();
+      break;
+    }
+
+    ImGui::SameLine();
+    ImGui::Selectable(format("{}###", packages[index].asString()).c_str(),
+                      mEditedPackageId == packages[index].asString() );
+
+    if ( ImGui::IsItemHovered() == true )
+      ImGui::SetTooltip("Drag to reorder");
+
+    if ( ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem) == true &&
+         ImGui::IsMouseDown(ImGuiMouseButton_Left) == true )
+    {
+      auto mouseClickPos = ImGui::GetIO().MouseClickedPos[ImGuiMouseButton_Left];
+
+      if (  mouseClickPos.x > ImGui::GetItemRectMin().x &&
+            mouseClickPos.x < ImGui::GetItemRectMax().x )
+      {
+        if ( mDraggedPackageIndex != index &&
+             mDraggedPackageIndex >= 0 &&
+             mDraggedPackageIndex < packages.size() )
+          packages[index].swap(packages[mDraggedPackageIndex]);
+
+        mDraggedPackageIndex = index;
+      }
+    }
+
+    if ( mDraggedPackageIndex != packages.size() &&
+         ImGui::IsMouseReleased(ImGuiMouseButton_Left) == true )
+      mDraggedPackageIndex = packages.size();
+
+    if ( ImGui::IsItemActivated() )
+    {
+      mPackageWindowOpened = true;
+
+      mEditedPackageId = packages[index].asString();
+
+      if ( mConfigState.packages.isMember(mEditedPackageId) == false )
+      {
+        auto configIter = mHistoryBuffer.current();
+        if ( mHistoryBuffer.isValid(configIter) == true )
+        {
+          auto manifestPath = mPackageMgr->mPackagesRoot.parent_path() /
+                              mEditedPackageId /
+                              Package::ContentFileName(ContentType::Manifest);
+          mConfigState.packages[mEditedPackageId] = fileParse(manifestPath);
+          Package::Validate(mConfigState.packages[mEditedPackageId]);
+
+          (*configIter).packages[mEditedPackageId] = mConfigState.packages[mEditedPackageId];
+        }
+      }
+    }
+
+    ImGui::PopID();
+  }
+
+  ImGui::EndTable(); // Packages
+
+  ui_show_menu_bar(registry);
 
   ImGui::End(); // Package management
+
+  ui_show_package_window(registry);
+
+  mHistoryBuffer.push(mConfigState);
+}
+
+void
+PackageManagerUi::ui_show_menu_bar(
+  entt::registry& registry )
+{
+  using fmt::format;
+  using types::Package;
+  using types::PackageManager;
+  using ContentType = types::Package::ContentType;
+
+  if ( ImGui::BeginMenuBar() == false )
+    return;
+
+  const auto& pkgMgr = registry.ctx().at <PackageManager> ();
+
+  if ( ImGui::MenuItem("Save") )
+  {
+    auto fileStream = fileOpen(pkgMgr.rootPath(), std::ios::out | std::ios::trunc);
+    fileStream << Json::writeString(jsonWriter(), mConfigState.root);
+    fileStream.close();
+
+    const auto& packages = mConfigState.root["load_order"];
+
+    for ( auto& package : packages )
+    {
+      const auto packageManifestPath =
+        pkgMgr.rootPath().parent_path() /
+        package.asString() /
+        Package::ContentFileName(ContentType::Manifest);
+
+      try
+      {
+        fileStream = fileOpen(packageManifestPath, std::ios::in);
+      }
+      catch (...)
+      {
+        fileStream = fileOpen(packageManifestPath, std::ios::out | std::ios::trunc);
+        fileStream << Json::writeString(jsonWriter(), mConfigState.packages[package.asString()]);
+      }
+    }
+  }
+
+  if ( ImGui::MenuItem("Load") )
+  {
+    mConfigState.root = fileParse(mPackageMgr->mPackagesRoot);
+    PackageManager::Validate(mConfigState.root);
+    mDraggedPackageIndex = -1u;
+
+    mConfigState.packages.clear();
+  }
+
+  ImGui::BeginDisabled(mHistoryBuffer.undoAvailable() == false);
+
+  if ( ImGui::MenuItem("Undo") )
+    mConfigState = mHistoryBuffer.undo();
+
+  ImGui::EndDisabled();
+
+  ImGui::BeginDisabled(mHistoryBuffer.redoAvailable() == false);
+
+  if ( ImGui::MenuItem("Redo") )
+    mConfigState = mHistoryBuffer.redo();
+
+  ImGui::EndDisabled();
+
+  ImGui::EndMenuBar();
+}
+
+void
+PackageManagerUi::ui_show_package_window(
+  entt::registry& registry )
+{
+  using types::Package;
+
+  if ( mEditedPackageId.empty() == true )
+    return;
+
+  if ( mPackageWindowOpened == false )
+    mEditedPackageId.clear();
+
+  if ( ImGui::Begin("PackageEdit", &mPackageWindowOpened) == false )
+    return ImGui::End(); // PackageEdit
+
+  Package {mEditedPackageId}.ui_show(mConfigState.packages[mEditedPackageId]);
+
+  if ( ImGui::CollapsingHeader("Dependencies", ImGuiTreeNodeFlags_DefaultOpen) )
+  {
+    std::set <std::string> enabledDeps {};
+    auto& dependencies = mConfigState.packages[mEditedPackageId]["dependencies"];
+
+    for ( const auto& dependency : dependencies )
+      enabledDeps.insert(dependency.asString());
+
+    for ( const auto& package : mConfigState.root["load_order"] )
+    {
+      bool enabled = enabledDeps.count(package.asString());
+
+      ImGui::Checkbox(package.asString().c_str(), &enabled);
+
+      if ( enabled == true )
+        enabledDeps.insert(package.asString());
+      else
+        enabledDeps.erase(package.asString());
+    }
+
+    dependencies.clear();
+
+    for ( const auto& dependency : enabledDeps )
+      dependencies.append(dependency);
+  }
+
+  ImGui::End(); // PackageEdit
 }
 
 } // namespace cqde::ui

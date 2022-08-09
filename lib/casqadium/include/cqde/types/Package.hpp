@@ -51,6 +51,8 @@ public:
   bool save( const ContentType,
              const Json::Value& ) const;
 
+  void ui_show( Json::Value& );
+
   PackageId   id() const;
   std::string title() const;
   std::string description() const;
@@ -59,6 +61,8 @@ public:
   std::set <PackageId> dependencies() const;
 
   path contentPath( const ContentType ) const;
+
+  static std::string ContentFileName( const ContentType );
 
   static void Validate( const Json::Value& packageManifest );
 };

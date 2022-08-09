@@ -134,7 +134,7 @@ EntityManager::load(
       }
     }
 
-    CQDE_ASSERT_DEBUG(packageId != null_id, return);
+//    CQDE_ASSERT_DEBUG(packageId != null_id, return);
 
     auto& metaInfo = registry.emplace_or_replace <EntityMetaInfo> (entity);
     metaInfo.packageId = packageId;
@@ -156,7 +156,7 @@ EntityManager::save(
 
   Json::Value registryJson {};
 
-  if ( packageId == null_id )
+  if ( packageId.str().empty() == true )
     LOG_TRACE("Serializing global entity registry");
   else
     LOG_TRACE("Serializing package '{}' entity registry",
@@ -165,7 +165,7 @@ EntityManager::save(
   for ( const auto [eTag, cTag, cMetaInfo]
           : registry.view <Tag, EntityMetaInfo> ().each() )
   {
-    if (  packageId != null_id &&
+    if (  packageId.str().empty() == false &&
           cMetaInfo.packageId != packageId )
       continue;
 
@@ -219,7 +219,7 @@ EntityManager::save(
     }
   };
 
-  if ( packageId == null_id )
+  if ( packageId.str().empty() == true )
     LOG_TRACE("Writing global entity registry to '{}'",
               registryPath.string());
   else

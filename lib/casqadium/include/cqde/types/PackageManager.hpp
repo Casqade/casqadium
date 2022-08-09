@@ -5,11 +5,18 @@
 #include <vector>
 
 
+namespace cqde::ui
+{
+class PackageManagerUi;
+}
+
 namespace cqde::types
 {
 
 class PackageManager
 {
+  friend class ui::PackageManagerUi;
+
   using path = std::filesystem::path;
 
   path mPackagesRoot {};

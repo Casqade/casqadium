@@ -109,6 +109,7 @@ target_sources(${TARGET} PRIVATE
   include/${CASQADIUM_SHORT}/types/VertexBuffer.hpp
 
   src/types/Package.cpp
+  src/types/Package_ui_impl.cpp
   include/${CASQADIUM_SHORT}/types/Package.hpp
 
   src/types/PackageManager.cpp
