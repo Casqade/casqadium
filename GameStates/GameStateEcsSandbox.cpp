@@ -28,6 +28,7 @@
 #include <cqde/types/input/InputBindingAbsolute.hpp>
 #include <cqde/types/input/InputBindingRelative.hpp>
 
+#include <cqde/types/ui/AssetManagerUi.hpp>
 #include <cqde/types/ui/CallbackManagerUi.hpp>
 #include <cqde/types/ui/EntityManagerUi.hpp>
 #include <cqde/types/ui/InputManagerUi.hpp>
@@ -330,6 +331,7 @@ GameStateEcsSandbox::GameStateEcsSandbox(
       mPGE->SetKeepMouseCentered(false);
     }
 
+    registry.ctx().at <AssetManagerUi> ().ui_show(registry);
     registry.ctx().at <CallbackManagerUi> ().ui_show(registry);
     registry.ctx().at <EntityManagerUi> ().ui_show(registry);
     registry.ctx().at <InputManagerUi> ().ui_show(registry);
