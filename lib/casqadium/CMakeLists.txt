@@ -97,10 +97,13 @@ target_sources(${TARGET} PRIVATE
   src/types/ui/widgets/RegistryFilter.cpp
   include/${CASQADIUM_SHORT}/types/ui/widgets/RegistryFilter.hpp
 
+  include/${CASQADIUM_SHORT}/types/FrameCurrent.hpp
   include/${CASQADIUM_SHORT}/types/SequenceStep.hpp
   include/${CASQADIUM_SHORT}/types/System.hpp
   include/${CASQADIUM_SHORT}/types/TickCurrent.hpp
-  include/${CASQADIUM_SHORT}/types/FrameCurrent.hpp
+
+  include/${CASQADIUM_SHORT}/types/UndoRedoQueue.hpp
+  include/${CASQADIUM_SHORT}/types/UndoRedoQueue-inl.hpp
 
   src/types/VertexBuffer.cpp
   include/${CASQADIUM_SHORT}/types/VertexBuffer.hpp

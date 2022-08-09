@@ -6,6 +6,7 @@
 #include <cqde/util/logger.hpp>
 
 #include <cqde/types/PackageManager.hpp>
+#include <cqde/types/UndoRedoQueue-inl.hpp>
 #include <cqde/types/input/InputBindingRelative.hpp>
 
 #include <olcPGE/olcMouseInputId.hpp>
@@ -16,13 +17,18 @@
 #include <imgui_stdlib.h>
 
 
+namespace cqde::types
+{
+template class
+UndoRedoQueue <std::map <PackageId, Json::Value>>;
+}
+
 namespace cqde::ui
 {
 
 InputManagerUi::InputManagerUi(
   types::InputManager* inputMgr )
   : mInputMgr{inputMgr}
-  , mHistoryBufferIter{mHistoryBuffer.end()}
 {}
 
 void
@@ -84,61 +90,13 @@ InputManagerUi::configSave(
 
   if ( package == nullptr )
   {
-    LOG_ERROR("Failed to write package '{}' input config: No such package in PackageManager",
+    LOG_ERROR("Failed to write package '{}' input config: "
+              "No such package in PackageManager",
               packageId.str());
     return;
   }
 
   package->save(ContentType::Input, mInputConfigs[packageId]);
-}
-
-void
-InputManagerUi::configHistoryPush()
-{
-  if ( mHistoryBufferIter + 1 < mHistoryBuffer.end() )
-    mHistoryBuffer.erase(mHistoryBufferIter + 1, mHistoryBuffer.end());
-
-  if ( mInputConfigs != *mHistoryBufferIter )
-    mHistoryBuffer.push_back(mInputConfigs);
-
-  if ( mHistoryBuffer.size() > mHistoryBufferSize )
-    mHistoryBuffer.pop_front();
-
-  mHistoryBufferIter = mHistoryBuffer.end() - 1;
-}
-
-void
-InputManagerUi::undo()
-{
-  if ( undoAvailable() == false )
-    return;
-
-  --mHistoryBufferIter;
-  mInputConfigs = *mHistoryBufferIter;
-}
-
-void
-InputManagerUi::redo()
-{
-  if ( redoAvailable() == false )
-    return;
-
-  ++mHistoryBufferIter;
-  mInputConfigs = *mHistoryBufferIter;
-}
-
-bool
-InputManagerUi::undoAvailable() const
-{
-  return
-    mHistoryBufferIter > mHistoryBuffer.begin() &&
-    mHistoryBufferIter != mHistoryBuffer.end();
-}
-
-bool
-InputManagerUi::redoAvailable() const
-{
-  return mHistoryBufferIter < mHistoryBuffer.end() - 1;
 }
 
 void
@@ -158,10 +116,7 @@ InputManagerUi::ui_show(
   CQDE_ASSERT_DEBUG(mInputMgr != nullptr, return);
 
   if ( ImGui::Begin("Input", NULL, ImGuiWindowFlags_MenuBar) == false )
-  {
-    ImGui::End(); // Input
-    return;
-  }
+    return ImGui::End(); // Input
 
   ImGui::AlignTextToFramePadding();
   ImGui::Text("Package:");
@@ -185,10 +140,7 @@ InputManagerUi::ui_show(
       auto package = pkgMgr.package(selectedPackage);
 
       if ( package == nullptr )
-      {
-        ImGui::End(); // Input
-        return;
-      }
+        return ImGui::End(); // Input
 
       const auto inputConfigPath = package->contentPath(ContentType::Input);
 
@@ -197,8 +149,9 @@ InputManagerUi::ui_show(
     else
       mInputConfigs[selectedPackage] = mInputMgr->serialize();
 
-    if ( mHistoryBufferIter < mHistoryBuffer.end() )
-      (*mHistoryBufferIter)[selectedPackage] = mInputConfigs[selectedPackage];
+    auto configIter = mHistoryBuffer.current();
+    if ( mHistoryBuffer.isValid(configIter) == true )
+      (*configIter)[selectedPackage] = mInputConfigs[selectedPackage];
   }
 
   auto& inputConfig = mInputConfigs.at(selectedPackage);
@@ -215,7 +168,7 @@ InputManagerUi::ui_show(
 
   ImGui::SameLine();
   ImGui::InputTextWithHint("##newAxisId", "New axis ID", &mNewAxisName,
-                   ImGuiInputTextFlags_AutoSelectAll);
+                           ImGuiInputTextFlags_AutoSelectAll);
 
   if ( newAxisInserted == true &&
        mNewAxisName.empty() == false &&
@@ -234,7 +187,9 @@ InputManagerUi::ui_show(
       if ( inputConfig.isMember(axisId) == false )
         continue; // handle axes removed during loop
 
-      const bool axisNodeOpened = ImGui::TreeNodeEx(axisId.c_str(), ImGuiTreeNodeFlags_OpenOnArrow);
+      const bool axisNodeOpened
+        = ImGui::TreeNodeEx(axisId.c_str(),
+                            ImGuiTreeNodeFlags_OpenOnArrow);
 
       ImGui::PushID(axisId.c_str());
 
@@ -386,11 +341,7 @@ InputManagerUi::ui_show(
 
   ui_show_binding_window();
 
-  if ( (undoAvailable() || redoAvailable()) &&
-       mInputConfigs == *mHistoryBufferIter )
-    return;
-
-  configHistoryPush();
+  mHistoryBuffer.push(mInputConfigs);
 }
 
 void
@@ -447,17 +398,17 @@ InputManagerUi::ui_show_menu_bar(
     ImGui::EndMenu(); // Load
   }
 
-  ImGui::BeginDisabled(undoAvailable() == false);
+  ImGui::BeginDisabled(mHistoryBuffer.undoAvailable() == false);
 
   if ( ImGui::MenuItem("Undo") )
-    undo();
+    mInputConfigs = mHistoryBuffer.undo();
 
   ImGui::EndDisabled();
 
-  ImGui::BeginDisabled(redoAvailable() == false);
+  ImGui::BeginDisabled(mHistoryBuffer.redoAvailable() == false);
 
   if ( ImGui::MenuItem("Redo") )
-    redo();
+    mInputConfigs = mHistoryBuffer.redo();
 
   ImGui::EndDisabled();
 
@@ -491,10 +442,7 @@ InputManagerUi::ui_show_binding_window()
   }
 
   if ( ImGui::Begin("InputBinding", &mBindingWindowOpened) == false )
-  {
-    ImGui::End(); // InputBinding
-    return;
-  }
+    return ImGui::End(); // InputBinding
 
   if ( ImGui::Button("Copy##bindingCopy") )
   {
@@ -510,10 +458,13 @@ InputManagerUi::ui_show_binding_window()
 
   ImGui::EndDisabled();
 
+  ImGui::Separator();
+
   if ( ImGui::CollapsingHeader("Binding ID", ImGuiTreeNodeFlags_DefaultOpen) )
   {
     ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-    if ( ImGui::BeginCombo("##bindingEditId", mSelectedBinding.str().c_str()) )
+    if ( ImGui::BeginCombo("##bindingEditId", mSelectedBinding.str().c_str(),
+                           ImGuiComboFlags_HeightLargest) )
     {
       for ( const auto& [inputHwCode, inputHwId] : mInputMgr->mHwControlMap )
       {
@@ -548,9 +499,12 @@ InputManagerUi::ui_show_binding_window()
 
         if ( mSelectedBinding != bindingPrev )
         {
-          inputConfig[mSelectedAxis.str()][mSelectedBinding.str()].swap(inputConfig[mSelectedAxis.str()][bindingPrev.str()]);
+          auto& selectedBinding = inputConfig[mSelectedAxis.str()][mSelectedBinding.str()];
+          auto& selectedBindingPrev = inputConfig[mSelectedAxis.str()][bindingPrev.str()];
 
-          if ( inputConfig[mSelectedAxis.str()][bindingPrev.str()].empty() == true )
+          selectedBinding.swap(selectedBindingPrev);
+
+          if ( selectedBindingPrev.empty() == true )
             inputConfig[mSelectedAxis.str()].removeMember(bindingPrev.str());
         }
       }
