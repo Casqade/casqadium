@@ -37,6 +37,13 @@ const static Json::Value rootReference =
 }();
 
 void
+PackageManager::Validate(
+  const Json::Value& packagesRoot )
+{
+  jsonValidateObject(packagesRoot, rootReference);
+}
+
+void
 PackageManager::parseRoot()
 {
   using fmt::format;
@@ -64,7 +71,7 @@ PackageManager::parseRoot()
 
   try
   {
-    jsonValidateObject(packages, rootReference);
+    Validate(packages);
 
     for ( const auto& packageId : packages["load_order"] )
     {

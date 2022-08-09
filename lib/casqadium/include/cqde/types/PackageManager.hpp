@@ -27,6 +27,8 @@ public:
 
   void load( const path& packagesRoot, entt::registry& );
 
+  static void Validate( const Json::Value& packagesRoot );
+
   const Package* package( const PackageId& ) const;
 
   std::vector <PackageId> packages() const;

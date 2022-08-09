@@ -56,6 +56,13 @@ const static Json::Value manifestReference =
   return manifest;
 }();
 
+void
+Package::Validate(
+  const Json::Value& packageManifest )
+{
+  jsonValidateObject(packageManifest, manifestReference);
+}
+
 Package::Package(
   const PackageId& id )
   : mId{id}
@@ -86,7 +93,7 @@ Package::parseManifest(
 
   try
   {
-    jsonValidateObject(manifest, manifestReference);
+    Validate(manifest);
   }
   catch ( const std::exception& e )
   {

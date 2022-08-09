@@ -113,7 +113,7 @@ InputManager::load(
 
   try
   {
-    jsonValidateObject(inputConfig, inputConfigReference);
+    Validate(inputConfig);
   }
   catch ( const std::exception& e )
   {
@@ -193,6 +193,13 @@ InputManager::serialize() const
     inputConfig[axisId.str()][binding->inputId.str()] = binding->toJson();
 
   return inputConfig;
+}
+
+void
+InputManager::Validate(
+  const Json::Value& inputConfig )
+{
+  jsonValidateObject(inputConfig, inputConfigReference);
 }
 
 void InputManager::assignBinding(

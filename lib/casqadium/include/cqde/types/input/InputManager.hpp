@@ -46,6 +46,8 @@ public:
   void deserialize( const Json::Value& );
   Json::Value serialize() const;
 
+  static void Validate( const Json::Value& );
+
   void assignBinding( const InputAxisId,
                       const std::shared_ptr <InputBinding> );
 

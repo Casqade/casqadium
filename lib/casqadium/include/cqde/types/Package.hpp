@@ -59,6 +59,8 @@ public:
   std::set <PackageId> dependencies() const;
 
   path contentPath( const ContentType ) const;
+
+  static void Validate( const Json::Value& packageManifest );
 };
 
 } // namespace cqde::types
