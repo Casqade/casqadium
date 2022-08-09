@@ -9,11 +9,18 @@
 #include <functional>
 
 
+namespace cqde::ui
+{
+class CallbackManagerUi;
+}
+
 namespace cqde::types
 {
 
 class CallbackManager
 {
+  friend class ui::CallbackManagerUi;
+
 public:
   using CallbackFunc = std::function <void( entt::registry&,
                                             const std::vector <std::any>&)>;
@@ -29,8 +36,6 @@ public:
 
   void Register( const CallbackId&,
                  const CallbackFunc& );
-
-
 };
 
 } // namespace cqde::types

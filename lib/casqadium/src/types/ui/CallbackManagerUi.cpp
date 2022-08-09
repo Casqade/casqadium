@@ -27,7 +27,8 @@ CallbackManagerUi::ui_show(
     return;
   }
 
-
+  for ( const auto& [callbackId, callback] : mCallbackMgr->mCallbacks )
+    ImGui::Text("%s", callbackId.str().c_str());
 
   ImGui::End(); // Callbacks
 }
