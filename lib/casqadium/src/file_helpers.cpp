@@ -80,6 +80,9 @@ fileOpen(
   std::fstream file {};
   file.exceptions(std::ifstream::failbit | std::ifstream::badbit);
 
+  if ( targetPath.parent_path().empty() == false )
+    std::filesystem::create_directories(targetPath.parent_path());
+
   try
   {
     file.open(targetPath, flags);
