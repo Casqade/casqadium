@@ -23,7 +23,8 @@ EntityMetaInfo::ui_edit_props(
   const auto& pkgMgr = registry.ctx().at <PackageManager> ();
   const auto packages = pkgMgr.packages();
 
-  if ( ImGui::BeginCombo("##packageId", packageId.str().c_str()) )
+  if ( ImGui::BeginCombo("##packageId", packageId.str().c_str(),
+                         ImGuiComboFlags_HeightLargest) )
   {
     for ( const auto& packageId : packages )
     {

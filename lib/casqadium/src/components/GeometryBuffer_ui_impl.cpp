@@ -22,7 +22,8 @@ GeometryBuffer::ui_edit_props(
 
   const auto assets = registry.ctx().at <GeometryAssetManager> ().assetIdList();
 
-  if ( ImGui::BeginCombo("##bufferId", buffer.str().c_str()) )
+  if ( ImGui::BeginCombo("##bufferId", buffer.str().c_str(),
+                         ImGuiComboFlags_HeightLargest) )
   {
     for ( const auto& asset : assets )
     {
