@@ -26,14 +26,12 @@ PackageFilter::select(
   {
     for ( const auto& package : packages )
     {
+      ImGui::PushID(package.hash().value());
+
       selected = (package == mPackageSelected);
 
-      ImGui::PushID(package.hash().value());
       if ( ImGui::Selectable(package.str().c_str(), &selected) )
         mPackageSelected = package;
-
-      if ( selected == true )
-        ImGui::SetItemDefaultFocus();
 
       ImGui::PopID();
     }
