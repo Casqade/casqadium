@@ -55,6 +55,9 @@ EntityManager::load(
 {
   using fmt::format;
 
+  if ( fileExists(registryPath) == false )
+    return;
+
   Json::Value registryJson {};
 
   LOG_TRACE("Parsing entity registry '{}'", registryPath.string());

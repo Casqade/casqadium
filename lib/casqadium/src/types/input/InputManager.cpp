@@ -92,6 +92,9 @@ InputManager::load(
 {
   using fmt::format;
 
+  if ( fileExists(configPath) == false )
+    return;
+
   Json::Value inputConfig {};
 
   LOG_TRACE("Parsing input config '{}'",

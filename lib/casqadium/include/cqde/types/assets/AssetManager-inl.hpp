@@ -95,6 +95,9 @@ AssetManager <Asset>::parseAssetDbFile(
 {
   using fmt::format;
 
+  if ( fileExists(dbPath) == false )
+    return;
+
   Json::Value assetDb {};
 
   LOG_TRACE("Parsing asset DB '{}'", dbPath.string());
