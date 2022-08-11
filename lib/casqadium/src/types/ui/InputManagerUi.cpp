@@ -380,6 +380,14 @@ InputManagerUi::ui_show_menu_bar(
       for ( const auto& [packageId, config] : mInputConfigs )
         configSave(packageId, registry);
 
+    if ( ImGui::MenuItem("Save & apply") )
+    {
+      for ( const auto& [packageId, config] : mInputConfigs )
+        configSave(packageId, registry);
+
+      configApply(registry);
+    }
+
     ImGui::EndMenu(); // Save
   }
 
