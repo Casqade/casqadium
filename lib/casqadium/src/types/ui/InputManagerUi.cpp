@@ -36,38 +36,21 @@ InputManagerUi::configApply(
   entt::registry& registry )
 {
   using types::PackageManager;
+  using ContentType = types::Package::ContentType;
 
   mInputConfigs.clear();
   mInputMgr->mBindings.clear();
 
-  auto& pkgMgr = registry.ctx().at <PackageManager> ();
+  const auto& pkgMgr = registry.ctx().at <PackageManager> ();
 
   for ( const auto& packageId : pkgMgr.packages() )
-    configLoad(packageId, registry);
-}
-
-void
-InputManagerUi::configLoad(
-  const PackageId& packageId,
-  entt::registry& registry )
-{
-  using types::PackageManager;
-  using ContentType = types::Package::ContentType;
-
-  if ( packageId.str().empty() == true )
-    return;
-
-  auto& pkgMgr = registry.ctx().at <PackageManager> ();
-
-  auto package = pkgMgr.package(packageId);
-
-  if ( package != nullptr )
   {
+    const auto package = pkgMgr.package(packageId);
+    CQDE_ASSERT_DEBUG(package != nullptr, continue);
+
     const auto inputConfigPath = package->contentPath(ContentType::Input);
 
-    const Json::Value packageInputConfig = fileParse(inputConfigPath);
-
-    mInputMgr->deserialize(packageInputConfig);
+    mInputMgr->deserialize( fileParse(inputConfigPath) );
   }
 }
 
@@ -79,14 +62,13 @@ InputManagerUi::configSave(
   using types::PackageManager;
   using ContentType = types::Package::ContentType;
 
-  if ( packageId.str().empty() == true )
-    return;
+  CQDE_ASSERT_DEBUG(packageId.str().empty() == false, return);
 
   LOG_TRACE("Writing package '{}' input config", packageId.str());
 
-  auto& pkgMgr = registry.ctx().at <PackageManager> ();
+  const auto& pkgMgr = registry.ctx().at <PackageManager> ();
 
-  auto package = pkgMgr.package(packageId);
+  const auto package = pkgMgr.package(packageId);
 
   if ( package == nullptr )
   {

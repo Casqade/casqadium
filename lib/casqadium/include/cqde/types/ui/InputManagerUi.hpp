@@ -55,7 +55,6 @@ public:
 
 private:
   void configApply( entt::registry& );
-  void configLoad( const PackageId&, entt::registry& );
   void configSave( const PackageId&, entt::registry& );
 
   void ui_show_menu_bar( entt::registry& );
