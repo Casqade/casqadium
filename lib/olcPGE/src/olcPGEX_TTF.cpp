@@ -385,6 +385,12 @@ Font::AddFallbackFont(std::string path)
     fallbacks.emplace_back(path, fontSize);
 }
 
+int
+Font::GetFontSize() const
+{
+  return fontSize;
+}
+
 std::string
 Font::GetErrorMessage() const
 {

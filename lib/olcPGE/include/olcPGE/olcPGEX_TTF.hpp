@@ -59,6 +59,7 @@ public:
 
   void AddFallbackFont(std::string path);
 
+  int GetFontSize() const;
   std::string GetErrorMessage() const;
 
   static olc::rcode OLCPGE_EXPORT init();
