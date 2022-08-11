@@ -28,7 +28,7 @@ class EntityManager
 
   using path = std::filesystem::path;
 
-  std::map <EntityId, entt::entity> tags {{null_id, entt::null}};
+  std::map <EntityId, entt::entity> mEntitiesTags {{null_id, entt::null}};
   std::map <std::string, ComponentType> mComponentTypes {};
 
   std::set <entt::entity> mEntitesToRemove {};
@@ -54,6 +54,8 @@ public:
   ComponentType componentType( const std::string& name ) const;
 
   std::vector <std::string> componentNames() const;
+
+  void clear();
 
   void removeLater( const entt::entity );
   void removeLater( const entt::entity, const ComponentType );

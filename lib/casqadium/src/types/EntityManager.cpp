@@ -91,7 +91,7 @@ EntityManager::load(
 
   for ( const auto& entityId : registryJson.getMemberNames() )
   {
-    if ( tags.count(entityId) == 0 )
+    if ( mEntitiesTags.count(entityId) == 0 )
       LOG_DEBUG("Importing entity '{}' ('{}')",
                 entityId, registryPath.string());
     else
@@ -99,12 +99,12 @@ EntityManager::load(
       LOG_DEBUG("Patching entity '{}' ('{}')",
                 entityId, registryPath.string());
 
-      registry.destroy(tags[entityId]);
+      registry.destroy(mEntitiesTags[entityId]);
     }
 
     const entt::entity entity = registry.create();
     registry.emplace <Tag> (entity).id = entityId;
-    tags[entityId] = entity;
+    mEntitiesTags[entityId] = entity;
 
     const auto& entityJson = registryJson[entityId];
 
@@ -267,6 +267,14 @@ EntityManager::componentNames() const
 }
 
 void
+EntityManager::clear()
+{
+  mEntitiesTags.clear();
+  mEntitesToRemove.clear();
+  mComponentsToRemove.clear();
+}
+
+void
 EntityManager::removeLater(
   const entt::entity entity )
 {
@@ -309,7 +317,7 @@ EntityManager::get(
 {
   try
   {
-    return tags.at(id);
+    return mEntitiesTags.at(id);
   }
   catch (...)
   {
@@ -323,7 +331,7 @@ EntityManager::createId(
 {
   size_t idInc {};
 
-  while ( tags.count(EntityId{(hint.str() + std::to_string(idInc)).c_str()}) > 0 )
+  while ( mEntitiesTags.count(EntityId{(hint.str() + std::to_string(idInc)).c_str()}) > 0 )
     ++idInc;
 
   return EntityId{(hint.str() + std::to_string(idInc)).c_str()};
