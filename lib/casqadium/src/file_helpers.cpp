@@ -41,6 +41,15 @@ openmodeToString(
   return result;
 }
 
+bool
+fileExists(
+  const std::filesystem::path& path )
+{
+  const auto fileStatus = std::filesystem::status(path);
+
+  return fileStatus.type() != std::filesystem::file_type::not_found;
+}
+
 std::fstream
 fileOpen(
   const std::filesystem::path& path,

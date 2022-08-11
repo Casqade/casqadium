@@ -9,6 +9,8 @@
 namespace cqde
 {
 
+bool fileExists( const std::filesystem::path& );
+
 std::fstream fileOpen(  const std::filesystem::path&,
                         const std::ios::openmode flags );
 
