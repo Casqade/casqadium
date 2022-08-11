@@ -18,9 +18,13 @@ bool
 StringFilter::search(
   const std::string& newQuery )
 {
+  ImGui::AlignTextToFramePadding();
+  ImGui::Text("Find:");
+
   if ( newQuery.empty() == false )
     mQuery = newQuery;
 
+  ImGui::SameLine();
   mCaseSensitivity = mCaseSensitivityButton.isDown();
 
   ImGui::SameLine();
