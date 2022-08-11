@@ -126,6 +126,9 @@ InputManagerUi::ui_show(
 
       const auto inputConfigPath = package->contentPath(ContentType::Input);
 
+      if ( fileExists(inputConfigPath) == false )
+        return ImGui::End(); // Input
+
       mInputConfigs[selectedPackage] = fileParse(inputConfigPath);
     }
     else
