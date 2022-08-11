@@ -86,4 +86,19 @@ engineInit( entt::registry& registry )
   entityManager.registerComponent <EntityMetaInfo> ("EntityMetaInfo");
 }
 
+std::vector <std::string>
+splitString( const std::string& string,
+       const char delimeter )
+{
+  std::vector <std::string> result {};
+
+  std::stringstream stream {string};
+  std::string token {};
+
+  while ( getline (stream, token, delimeter) )
+      result.push_back(token);
+
+  return result;
+}
+
 } // namespace cqde
