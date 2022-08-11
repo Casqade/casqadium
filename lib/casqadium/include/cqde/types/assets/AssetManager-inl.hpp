@@ -227,7 +227,9 @@ AssetManager <Asset>::remove(
     return;
 
   unload(id);
+
   mAssets.erase(id);
+  mAssetsProperties.erase(id);
 }
 
 template <typename Asset>
