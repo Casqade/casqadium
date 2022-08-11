@@ -258,6 +258,9 @@ Package::ContentFileName(
 
     case ContentType::Text:
       return "text.json";
+
+    default:
+      CQDE_ASSERT_DEBUG(false, return "unhandled enum value in Package::ContentFileName");
   }
 }
 
