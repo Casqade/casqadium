@@ -17,6 +17,33 @@ namespace cqde::types
 {
 
 template <typename Asset>
+std::string
+AssetManager <Asset>::StatusAsString(
+  const AssetStatus status )
+{
+  switch (status)
+  {
+    case AssetStatus::Undefined:
+      return "Undefined";
+
+    case AssetStatus::Unloaded:
+      return "Unloaded";
+
+    case AssetStatus::Loading:
+      return "Loading";
+
+    case AssetStatus::Loaded:
+      return "Loaded";
+
+    case AssetStatus::Error:
+      return "Error";
+
+    default:
+      CQDE_ASSERT_DEBUG(false, return "Undefined");
+  }
+}
+
+template <typename Asset>
 AssetManager <Asset>::AssetManager(
   ctpl::thread_pool& tp )
   : mThreadPool(tp)

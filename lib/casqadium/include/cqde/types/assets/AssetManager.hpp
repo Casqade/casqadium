@@ -55,6 +55,7 @@ public:
   ~AssetManager();
 
   static Json::Value AssetJsonDbEntryReference();
+  static std::string StatusAsString( const AssetStatus );
 
   void parseAssetDbFile( const path& );
   void parseAssetDb(  const Json::Value& db,
