@@ -231,6 +231,35 @@ AssetManager <Asset>::remove(
 }
 
 template <typename Asset>
+void
+AssetManager <Asset>::clear(
+  const bool keepMemoryResidents )
+{
+  std::lock_guard guard(mAssetsMutex);
+
+  for ( const auto& [id, entry] : mAssets )
+    if ( keepMemoryResidents == true &&
+         entry.path != "***memory***" )
+      unload(id);
+
+  std::vector <std::pair <AssetId, AssetEntry>> assetsInMemory {};
+
+  if ( keepMemoryResidents == true )
+    for ( const auto& [id, entry] : mAssets )
+      if ( entry.path == "***memory***" )
+        assetsInMemory.push_back({id, entry});
+
+  mAssets.clear();
+  mAssetsProperties.clear();
+
+  if ( keepMemoryResidents == false )
+    return;
+
+  for ( const auto& [id, entry] : assetsInMemory )
+    mAssets.insert({id, entry});
+}
+
+template <typename Asset>
 AssetStatus
 AssetManager <Asset>::status(
   const AssetId& id ) const

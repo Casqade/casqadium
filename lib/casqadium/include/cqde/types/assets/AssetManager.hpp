@@ -66,6 +66,7 @@ public:
 
   void insert( const AssetId&, const AssetHandle );
   void remove( const AssetId& );
+  void clear( const bool keepMemoryResidents = true );
 
   void parseJsonEntryImpl( const Json::Value&,
                            const AssetId& );
