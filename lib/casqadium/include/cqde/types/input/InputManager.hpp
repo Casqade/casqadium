@@ -46,6 +46,8 @@ public:
   void deserialize( const Json::Value& );
   Json::Value serialize() const;
 
+  void clear();
+
   static void Validate( const Json::Value& );
 
   void assignBinding( const InputAxisId,

@@ -199,6 +199,13 @@ InputManager::serialize() const
 }
 
 void
+InputManager::clear()
+{
+  mBindings.clear();
+  mInputHistory.clear();
+}
+
+void
 InputManager::Validate(
   const Json::Value& inputConfig )
 {
