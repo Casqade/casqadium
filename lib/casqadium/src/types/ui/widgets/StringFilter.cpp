@@ -1,5 +1,7 @@
 #include <cqde/types/ui/widgets/StringFilter.hpp>
 
+#include <cqde/common.hpp>
+
 #include <imgui.h>
 #include <imgui_stdlib.h>
 
@@ -35,11 +37,8 @@ StringFilter::query(
 
   if ( mCaseSensitivity == false )
   {
-    for ( auto& c : value )
-      c = std::tolower(c);
-
-    for ( auto& c : query )
-      c = std::tolower(c);
+    value = toLowerCase(value);
+    query = toLowerCase(query);
   }
 
   return value.find(query) != std::string::npos;

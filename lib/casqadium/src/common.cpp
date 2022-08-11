@@ -86,6 +86,18 @@ engineInit( entt::registry& registry )
   entityManager.registerComponent <EntityMetaInfo> ("EntityMetaInfo");
 }
 
+std::string
+toLowerCase(
+  const std::string& str )
+{
+  std::string result = str;
+
+  for ( auto& c : result )
+    c = std::tolower(c);
+
+  return result;
+}
+
 std::vector <std::string>
 splitString( const std::string& string,
        const char delimeter )
