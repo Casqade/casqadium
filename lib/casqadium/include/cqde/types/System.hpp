@@ -19,7 +19,7 @@ struct System
 
   enum class Phase
   {
-    Update,
+    Logic,
     Render,
 
   } phase {};

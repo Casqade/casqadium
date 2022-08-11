@@ -353,15 +353,16 @@ GameStateEcsSandbox::GameStateEcsSandbox(
 
   systemMgr.Register("CameraControlSystem"_id,
                      CameraControlSystem,
-                     System::Phase::Update);
+                     System::Phase::Logic);
+  systemMgr.Register("EditorSystem"_id,
+                     EditorSystem,
+                     System::Phase::Logic);
+
   systemMgr.Register("CullingSystem"_id,
                      CullingSystem,
                      System::Phase::Render);
   systemMgr.Register("RenderSystem"_id,
                      RenderSystem,
-                     System::Phase::Render);
-  systemMgr.Register("EditorSystem"_id,
-                     EditorSystem,
                      System::Phase::Render);
 
   systemMgr.activate("CameraControlSystem"_id);
@@ -461,7 +462,7 @@ GameStateEcsSandbox::update(  const uint32_t ticks,
   tick.tickInterval = interval;
 
   mRegistry.ctx().at <SystemManager> ().execute(mRegistry,
-                                                System::Phase::Update);
+                                                System::Phase::Logic);
 
   tick.lastTickTimepoint = TimeUtils::Now();
 

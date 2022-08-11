@@ -30,7 +30,7 @@ SystemManagerUi::ui_show(
 
   if ( ImGui::CollapsingHeader("Logic", ImGuiTreeNodeFlags_DefaultOpen) )
     for ( auto& system : mSystemMgr->mSystems )
-      if ( system.phase == Phase::Update )
+      if ( system.phase == Phase::Logic )
         ImGui::Checkbox(system.id.str().c_str(), &system.active);
 
   if ( ImGui::CollapsingHeader("Render", ImGuiTreeNodeFlags_DefaultOpen) )
