@@ -3,6 +3,7 @@
 #include <cqde/alias.hpp>
 
 #include <cqde/types/ui/widgets/PackageFilter.hpp>
+#include <cqde/types/ui/widgets/StringFilter.hpp>
 #include <cqde/types/UndoRedoQueue.hpp>
 
 #include <entt/fwd.hpp>
@@ -29,6 +30,7 @@ class InputManagerUi
   using UndoRedoQueue = types::UndoRedoQueue <InputConfigs>;
 
   ui::PackageFilter mPackageFilter {};
+  ui::StringFilter mAxisFilter {"Axis ID"};
 
   InputConfigs mInputConfigs {};
 

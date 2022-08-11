@@ -39,7 +39,7 @@ InputManagerUi::configApply(
   using ContentType = types::Package::ContentType;
 
   mInputConfigs.clear();
-  mInputMgr->mBindings.clear();
+  mInputMgr->clear();
 
   const auto& pkgMgr = registry.ctx().at <PackageManager> ();
 
@@ -100,18 +100,24 @@ InputManagerUi::ui_show(
   if ( ImGui::Begin("Input", NULL, ImGuiWindowFlags_MenuBar) == false )
     return ImGui::End(); // Input
 
-  ImGui::AlignTextToFramePadding();
-  ImGui::Text("Package:");
+  if ( ImGui::CollapsingHeader("Filter", ImGuiTreeNodeFlags_DefaultOpen) )
+  {
+    ImGui::AlignTextToFramePadding();
+    ImGui::Text("Package:");
 
-  ImGui::SameLine();
-  mPackageFilter.select(registry);
+    ImGui::SameLine();
+    mPackageFilter.select(registry);
 
-  if ( ImGui::IsItemHovered() )
-    ImGui::SetTooltip("Input config merged from all packages");
+    if ( mPackageFilter.package().str().empty() == true &&
+         ImGui::IsItemHovered() )
+      ImGui::SetTooltip("Input config merged from all packages");
 
-  const auto selectedPackage = mPackageFilter.package();
+    mAxisFilter.search();
+  }
 
   ImGui::Separator();
+
+  const auto selectedPackage = mPackageFilter.package();
 
   if ( mInputConfigs.count(selectedPackage) == 0 )
   {
@@ -171,6 +177,9 @@ InputManagerUi::ui_show(
     {
       if ( inputConfig.isMember(axisId) == false )
         continue; // handle axes removed during loop
+
+      if ( mAxisFilter.query(axisId) == false )
+        continue;
 
       const bool axisNodeOpened
         = ImGui::TreeNodeEx(axisId.c_str(),
