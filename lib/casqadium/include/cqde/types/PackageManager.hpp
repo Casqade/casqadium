@@ -33,6 +33,7 @@ public:
   PackageManager( const PackageManager& ) = delete;
 
   void load( const path& packagesRoot, entt::registry& );
+  void unload();
 
   static void Validate( const Json::Value& packagesRoot );
 

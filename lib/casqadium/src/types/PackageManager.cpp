@@ -141,6 +141,12 @@ PackageManager::load(
   }
 }
 
+void
+PackageManager::unload()
+{
+  mPackages.clear();
+}
+
 const Package*
 PackageManager::package(
   const PackageId& id ) const
