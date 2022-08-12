@@ -331,11 +331,11 @@ GameStateEcsSandbox::GameStateEcsSandbox(
       mPGE->SetKeepMouseCentered(false);
     }
 
+    registry.ctx().at <PackageManagerUi> ().ui_show(registry);
     registry.ctx().at <AssetManagerUi> ().ui_show(registry);
     registry.ctx().at <CallbackManagerUi> ().ui_show(registry);
     registry.ctx().at <EntityManagerUi> ().ui_show(registry);
     registry.ctx().at <InputManagerUi> ().ui_show(registry);
-    registry.ctx().at <PackageManagerUi> ().ui_show(registry);
     registry.ctx().at <SystemManagerUi> ().ui_show(registry);
   };
 
