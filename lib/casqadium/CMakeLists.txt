@@ -45,9 +45,6 @@ target_sources(${TARGET} PRIVATE
   src/types/EntityReference.cpp
   include/${CASQADIUM_SHORT}/types/EntityReference.hpp
 
-  src/types/EntityTagManager.cpp
-  include/${CASQADIUM_SHORT}/types/EntityTagManager.hpp
-
   src/types/SystemManager.cpp
   include/${CASQADIUM_SHORT}/types/SystemManager.hpp
 
