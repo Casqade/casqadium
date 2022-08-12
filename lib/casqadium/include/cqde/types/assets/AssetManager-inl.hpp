@@ -12,6 +12,8 @@
 
 #include <thirdparty/ctpl/ctpl_stl.h>
 
+#include <imgui.h>
+
 
 namespace cqde::types
 {
@@ -40,6 +42,33 @@ AssetManager <Asset>::StatusAsString(
 
     default:
       CQDE_ASSERT_DEBUG(false, return "Undefined");
+  }
+}
+
+template <typename Asset>
+uint32_t
+AssetManager <Asset>::StatusAsColor(
+  const AssetStatus status )
+{
+  switch (status)
+  {
+    case AssetStatus::Undefined:
+      return ImGui::ColorConvertFloat4ToU32({1.0f, 1.0f, 0.0f, 1.0f});
+
+    case AssetStatus::Unloaded:
+      return ImGui::ColorConvertFloat4ToU32({1.0f, 1.0f, 1.0f, 1.0f});
+
+    case AssetStatus::Loading:
+      return ImGui::ColorConvertFloat4ToU32({0.0f, 1.0f, 1.0f, 1.0f});
+
+    case AssetStatus::Loaded:
+      return ImGui::ColorConvertFloat4ToU32({0.0f, 1.0f, 0.0f, 1.0f});
+
+    case AssetStatus::Error:
+      return ImGui::ColorConvertFloat4ToU32({1.0f, 0.0f, 0.0f, 1.0f});
+
+    default:
+      CQDE_ASSERT_DEBUG(false, return ImGui::ColorConvertFloat4ToU32({1.0f, 1.0f, 1.0f, 1.0f}););
   }
 }
 

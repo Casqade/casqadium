@@ -56,6 +56,7 @@ public:
 
   static Json::Value AssetJsonDbEntryReference();
   static std::string StatusAsString( const AssetStatus );
+  static uint32_t StatusAsColor( const AssetStatus );
   const std::string MemoryResidentPath {"***memory***"};
 
   void parseAssetDbFile( const path& );
