@@ -64,6 +64,7 @@ public:
 
   entt::entity get( const EntityId& ) const;
   EntityId idGenerate( const EntityId& hint = {"e_"} ) const;
+  void idInvalidate( const EntityId& );
 };
 
 template <typename Component>

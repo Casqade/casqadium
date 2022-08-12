@@ -349,4 +349,12 @@ EntityManager::idGenerate(
   return stringJoin(tokens, "_");
 }
 
+void
+EntityManager::idInvalidate(
+  const EntityId& id )
+{
+  if ( id != null_id )
+    mEntitiesTags.erase(id);
+}
+
 } // namespace cqde::types

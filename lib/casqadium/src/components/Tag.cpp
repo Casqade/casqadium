@@ -12,6 +12,7 @@ namespace cqde::compos
 void
 Tag::invalidate( entt::registry& registry )
 {
+  registry.ctx().at <types::EntityManager> ().idInvalidate(id);
 }
 
 Json::Value
