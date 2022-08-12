@@ -153,7 +153,7 @@ AssetManager <Asset>::load(
       const AssetPath assetPath = mAssets.at(id).path;
 
       CQDE_ASSERT_DEBUG(assetPath.string().empty() == false, continue);
-      CQDE_ASSERT_DEBUG(assetPath.string() != "***memory***", continue);
+      CQDE_ASSERT_DEBUG(assetPath.string() != MemoryResidentPath, continue);
 
       mAssets.at(id).status = AssetStatus::Loading;
 
@@ -214,7 +214,7 @@ AssetManager <Asset>::insert(
 {
   std::lock_guard guard(mAssetsMutex);
 
-  mAssets[id].path = "***memory***";
+  mAssets[id].path = MemoryResidentPath;
   mAssets[id].handle = res;
   mAssets[id].status = AssetStatus::Loaded;
 }
@@ -244,14 +244,14 @@ AssetManager <Asset>::clear(
 
   for ( const auto& [id, entry] : mAssets )
     if ( keepMemoryResidents == true &&
-         entry.path != "***memory***" )
+         entry.path != MemoryResidentPath )
       unload(id);
 
   std::vector <std::pair <AssetId, AssetEntry>> assetsInMemory {};
 
   if ( keepMemoryResidents == true )
     for ( const auto& [id, entry] : mAssets )
-      if ( entry.path == "***memory***" )
+      if ( entry.path == MemoryResidentPath )
         assetsInMemory.push_back({id, entry});
 
   mAssets.clear();

@@ -107,7 +107,7 @@ AssetManager <vertexBuffer>::load(
       const AssetPath assetPath = mAssets.at(id).path;
 
       CQDE_ASSERT_DEBUG(assetPath.empty() == false, continue);
-      CQDE_ASSERT_DEBUG(assetPath.string() != "***memory***", continue);
+      CQDE_ASSERT_DEBUG(assetPath.string() != MemoryResidentPath, continue);
 
       mAssets.at(id).status = AssetStatus::Loading;
 
