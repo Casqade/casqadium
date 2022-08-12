@@ -326,15 +326,27 @@ EntityManager::get(
 }
 
 EntityId
-EntityManager::createId(
-  EntityId hint ) const
+EntityManager::idGenerate(
+  const EntityId& hint ) const
 {
-  size_t idInc {};
+  uint32_t id {};
+  std::string newId {hint.str()};
 
-  while ( mEntitiesTags.count(EntityId{(hint.str() + std::to_string(idInc)).c_str()}) > 0 )
-    ++idInc;
+  auto tokens = stringSplit(hint.str(), '_');
 
-  return EntityId{(hint.str() + std::to_string(idInc)).c_str()};
+  try
+  {
+    id = std::stoi(tokens.back());
+  }
+  catch( const std::exception& e )
+  {
+    tokens.push_back(std::to_string(id));
+  }
+
+  while ( mEntitiesTags.count(stringJoin(tokens, "_") ) > 0 )
+    tokens.back() = std::to_string(++id);
+
+  return stringJoin(tokens, "_");
 }
 
 } // namespace cqde::types

@@ -11,8 +11,6 @@
 #include <cqde/components/TextureBuffer.hpp>
 #include <cqde/components/EntityMetaInfo.hpp>
 
-#include <cqde/types/EntityTagManager.hpp>
-
 #include <cqde/types/CallbackManager.hpp>
 #include <cqde/types/EntityManager.hpp>
 #include <cqde/types/input/InputManager.hpp>
@@ -57,7 +55,6 @@ engineInit( entt::registry& registry )
 
   auto& callbackManager = registry.ctx().emplace <CallbackManager> ();
   auto& entityManager = registry.ctx().emplace <EntityManager> ();
-  registry.ctx().emplace <EntityTagManager> ();
   auto& inputManager = registry.ctx().emplace <InputManager> ();
   auto& packageManager = registry.ctx().emplace <PackageManager> ();
   auto& systemManager = registry.ctx().emplace <SystemManager> ();

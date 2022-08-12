@@ -1,5 +1,5 @@
 #include <cqde/types/EntityReference.hpp>
-#include <cqde/types/EntityTagManager.hpp>
+#include <cqde/types/EntityManager.hpp>
 #include <cqde/components/Tag.hpp>
 
 #include <entt/entt.hpp>
@@ -15,7 +15,7 @@ EntityReference::EntityReference( const compos::Tag& tag )
 entt::entity
 EntityReference::get( entt::registry& registry ) const
 {
-  return registry.ctx().at <EntityTagManager> ().get(id);
+  return registry.ctx().at <EntityManager> ().get(id);
 }
 
 bool

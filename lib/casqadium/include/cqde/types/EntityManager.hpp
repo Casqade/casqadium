@@ -63,7 +63,7 @@ public:
   void delayedRemove( entt::registry& );
 
   entt::entity get( const EntityId& ) const;
-  EntityId createId( EntityId hint = {"e_"} ) const;
+  EntityId idGenerate( const EntityId& hint = {"e_"} ) const;
 };
 
 template <typename Component>
