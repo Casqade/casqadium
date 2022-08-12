@@ -99,8 +99,9 @@ toLowerCase(
 }
 
 std::vector <std::string>
-splitString( const std::string& string,
-       const char delimeter )
+stringSplit(
+  const std::string& string,
+  const char delimeter )
 {
   std::vector <std::string> result {};
 

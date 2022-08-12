@@ -15,7 +15,7 @@ void engineInit( entt::registry& registry );
 
 std::string toLowerCase( const std::string& );
 
-std::vector <std::string> splitString(  const std::string&,
+std::vector <std::string> stringSplit(  const std::string&,
                                         const char delimeter );
 
 } // namespace cqde
