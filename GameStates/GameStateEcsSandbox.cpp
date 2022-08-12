@@ -319,6 +319,7 @@ GameStateEcsSandbox::GameStateEcsSandbox(
   const auto EditorSystem =
   [this, cursor] ( entt::registry& registry )
   {
+    using cqde::ui::AssetManagerUi;
     using cqde::ui::CallbackManagerUi;
     using cqde::ui::EntityManagerUi;
     using cqde::ui::InputManagerUi;
