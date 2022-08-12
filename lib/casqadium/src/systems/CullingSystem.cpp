@@ -116,7 +116,7 @@ void CullingSystem( entt::registry& registry )
     for ( const auto&& [eDrawable, cGeometryBuffer, cNode, cTransform]
             : registry.view <GeometryBuffer, SceneNode, Transform>().each() )
     {
-      const auto gBuffer = geometry.try_get(cGeometryBuffer.buffer);
+      const auto gBuffer = geometry.get(cGeometryBuffer.buffer);
       if ( gBuffer == nullptr )
         continue;
 

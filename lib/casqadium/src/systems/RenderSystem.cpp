@@ -21,7 +21,7 @@ namespace cqde::systems
 {
 
 void
-RenderSystem( const entt::registry& registry )
+RenderSystem( entt::registry& registry )
 {
   using namespace cqde::compos;
   using namespace cqde::types;
@@ -42,10 +42,10 @@ RenderSystem( const entt::registry& registry )
                (textureBuffer->textures.size() > 1 &&
                 buffer.windingOrder == VertexBuffer::WindingOrder::ClockWise) )
           {
-            const auto&     textures  = registry.ctx().at <TextureAssetManager> ();
+            auto&     textures  = registry.ctx().at <TextureAssetManager> ();
             const TextureId textureId = textureBuffer->textures.at((int) buffer.windingOrder);
 
-            const auto  texture = textures.try_get(textureId);
+            const auto  texture = textures.get(textureId);
             olc::Decal* decal = texture ?
                                 texture->Decal() : nullptr;
 

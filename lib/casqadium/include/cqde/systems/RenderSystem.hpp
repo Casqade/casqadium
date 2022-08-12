@@ -7,6 +7,6 @@ namespace cqde::systems
 {
 
 void
-RenderSystem( const entt::registry& );
+RenderSystem( entt::registry& );
 
 } // namespace cqde::system
