@@ -136,7 +136,8 @@ EntityManagerUi::ui_show(
   }
 
   if ( mSelectedEntity == entt::null ||
-       mSelectedComponent == entt::null )
+       mSelectedComponent == entt::null ||
+       registry.valid(mSelectedEntity) == false )
   {
     ImGui::Text("No component selected");
 
