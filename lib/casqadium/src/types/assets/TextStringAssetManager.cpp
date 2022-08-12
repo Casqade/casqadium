@@ -31,6 +31,24 @@ AssetManager <std::string>::AssetJsonDbEntryReference()
 
 template <>
 void
+AssetManager <std::string>::Validate(
+  const Json::Value& json )
+{
+//  using ValueType = Json::ValueType;
+//  using namespace std::string_literals;
+
+//  Json::Value reference = ValueType::objectValue;
+//  reference.setComment("// text string DB must be a JSON object"s,
+//                       Json::CommentPlacement::commentBefore);
+
+//  Json::Value& asset = reference["cqde_json_anykey"];
+//  asset = AssetJsonDbEntryReference();
+
+//  jsonValidateObject(json, reference);
+}
+
+template <>
+void
 AssetManager <std::string>::parseAssetDb(
   const Json::Value& stringDb,
   const path& dbPath )

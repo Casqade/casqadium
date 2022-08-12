@@ -36,6 +36,24 @@ AssetManager <olc::Font>::AssetJsonDbEntryReference()
 
 template <>
 void
+AssetManager <olc::Font>::Validate(
+  const Json::Value& json )
+{
+  using ValueType = Json::ValueType;
+  using namespace std::string_literals;
+
+  Json::Value reference = ValueType::objectValue;
+  reference.setComment("// font DB must be a JSON object"s,
+                       Json::CommentPlacement::commentBefore);
+
+  Json::Value& asset = reference["cqde_json_anykey"];
+  asset = AssetJsonDbEntryReference();
+
+  jsonValidateObject(json, reference);
+}
+
+template <>
+void
 AssetManager <olc::Font>::parseJsonEntryImpl(
   const Json::Value& entry,
   const AssetId& id )

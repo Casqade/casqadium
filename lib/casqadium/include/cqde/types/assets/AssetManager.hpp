@@ -55,6 +55,7 @@ public:
   ~AssetManager();
 
   static Json::Value AssetJsonDbEntryReference();
+  static void Validate( const Json::Value& );
   static std::string StatusAsString( const AssetStatus );
   static uint32_t StatusAsColor( const AssetStatus );
   const std::string MemoryResidentPath {"***memory***"};
