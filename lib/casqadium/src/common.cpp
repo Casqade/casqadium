@@ -109,7 +109,24 @@ stringSplit(
   std::string token {};
 
   while ( getline (stream, token, delimeter) )
-      result.push_back(token);
+    result.push_back(token);
+
+  return result;
+}
+
+std::string stringJoin(
+  const std::vector <std::string>& strings,
+  const std::string& delimeter )
+{
+  std::string result {};
+
+  for ( auto iter = strings.begin();
+        iter != strings.end();
+        ++iter )
+    if ( iter == strings.end() - 1 )
+      result += *iter;
+    else
+      result += *iter + delimeter;
 
   return result;
 }

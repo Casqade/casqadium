@@ -18,4 +18,7 @@ std::string toLowerCase( const std::string& );
 std::vector <std::string> stringSplit(  const std::string&,
                                         const char delimeter );
 
+std::string stringJoin( const std::vector <std::string>&,
+                        const std::string& delimeter = {} );
+
 } // namespace cqde
