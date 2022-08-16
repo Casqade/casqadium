@@ -1,7 +1,15 @@
 #include <cqde/types/ui/PackageManagerUi.hpp>
+
 #include <cqde/types/PackageManager.hpp>
+#include <cqde/types/EntityManager.hpp>
 
 #include <cqde/types/UndoRedoQueue-inl.hpp>
+#include <cqde/types/input/InputManager.hpp>
+
+#include <cqde/types/assets/FontAssetManager.hpp>
+#include <cqde/types/assets/GeometryAssetManager.hpp>
+#include <cqde/types/assets/TextStringAssetManager.hpp>
+#include <cqde/types/assets/TextureAssetManager.hpp>
 
 #include <cqde/common.hpp>
 #include <cqde/util/logger.hpp>
@@ -201,16 +209,22 @@ PackageManagerUi::ui_show_menu_bar(
   using fmt::format;
   using types::Package;
   using types::PackageManager;
+  using types::InputManager;
+  using types::EntityManager;
   using ContentType = types::Package::ContentType;
+
+  using types::FontAssetManager;
+  using types::GeometryAssetManager;
+  using types::TextStringAssetManager;
+  using types::TextureAssetManager;
+
 
   if ( ImGui::BeginMenuBar() == false )
     return;
 
-  const auto& pkgMgr = registry.ctx().at <PackageManager> ();
-
   if ( ImGui::MenuItem("Save") )
   {
-    auto fileStream = fileOpen(pkgMgr.rootPath(), std::ios::out | std::ios::trunc);
+    auto fileStream = fileOpen(mPackageMgr->rootPath(), std::ios::out | std::ios::trunc);
     fileStream << Json::writeString(jsonWriter(), mConfigState.root);
     fileStream.close();
 
@@ -219,7 +233,7 @@ PackageManagerUi::ui_show_menu_bar(
     for ( auto& package : packages )
     {
       const auto packageManifestPath =
-        pkgMgr.rootPath().parent_path() /
+        mPackageMgr->rootPath().parent_path() /
         package.asString() /
         Package::ContentFileName(ContentType::Manifest);
 
@@ -235,13 +249,47 @@ PackageManagerUi::ui_show_menu_bar(
     }
   }
 
-  if ( ImGui::MenuItem("Load") )
+  if ( ImGui::BeginMenu("Load") )
   {
-    mConfigState.root = fileParse(mPackageMgr->mPackagesRoot);
-    PackageManager::Validate(mConfigState.root);
-    mDraggedPackageIndex = -1u;
+    if ( ImGui::MenuItem("Load all") )
+    {
+      mConfigState.root = fileParse(mPackageMgr->mPackagesRoot);
+      PackageManager::Validate(mConfigState.root);
+      mDraggedPackageIndex = -1u;
 
-    mConfigState.packages.clear();
+      mConfigState.packages.clear();
+    }
+
+    if ( ImGui::MenuItem("Load & apply") )
+    {
+      mPackageMgr->mPackages.clear();
+
+      registry.ctx().at <EntityManager> ().clear();
+      registry.ctx().at <InputManager> ().clear();
+      registry.clear();
+
+      registry.ctx().at <FontAssetManager> ().clear();
+      registry.ctx().at <GeometryAssetManager> ().clear();
+      registry.ctx().at <TextStringAssetManager> ().clear();
+      registry.ctx().at <TextureAssetManager> ().clear();
+
+      try
+      {
+        mPackageMgr->load(mPackageMgr->rootPath(), registry);
+      }
+      catch ( const std::exception& e )
+      {
+        LOG_ERROR("{}", e.what());
+      }
+
+      mConfigState.root = fileParse(mPackageMgr->mPackagesRoot);
+      PackageManager::Validate(mConfigState.root);
+      mDraggedPackageIndex = -1u;
+
+      mConfigState.packages.clear();
+    }
+
+    ImGui::EndMenu();
   }
 
   ImGui::BeginDisabled(mHistoryBuffer.undoAvailable() == false);
