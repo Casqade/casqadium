@@ -1,10 +1,10 @@
 {
-  "one_liner": "oneline",
-  "multi_liner":
+  "multi_liner" : 
   [
     "multiline1",
     "multiline2",
     "multiline3",
     "multiline4"
-  ]
+  ],
+  "one_liner" : "oneline"
 }

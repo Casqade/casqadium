@@ -77,6 +77,9 @@ public:
                         const AssetPath& ) const;
   void unloadImpl( AssetHandle& ) const;
 
+  void ui_show_preview( const AssetId& );
+  void ui_show( Json::Value& ) const;
+
   AssetStatus status( const AssetId& ) const;
   std::vector <AssetId> assetIdList() const;
 

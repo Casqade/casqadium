@@ -1,14 +1,14 @@
 {
-  "map_diffuse":
+  "map_diffuse" : 
   {
-    "clamp": true,
-    "filter": false,
-    "path": "textures/map-diffuse.png"
+    "clamp" : true,
+    "filter" : false,
+    "path" : "textures/map-diffuse.png"
   },
-  "map_height":
+  "map_height" : 
   {
-    "clamp": true,
-    "filter": false,
-    "path": "textures/map-height.png"
+    "clamp" : true,
+    "filter" : false,
+    "path" : "textures/map-height.png"
   }
 }

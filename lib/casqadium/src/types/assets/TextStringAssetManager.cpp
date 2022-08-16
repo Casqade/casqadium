@@ -1,11 +1,15 @@
 #include <cqde/types/assets/AssetManager-inl.hpp>
 
+#include <cqde/common.hpp>
 #include <cqde/json_helpers.hpp>
 
 #include <cqde/util/logger.hpp>
 
 #include <json/value.h>
 #include <json/reader.h>
+
+#include <imgui.h>
+#include <imgui_stdlib.h>
 
 
 namespace cqde::types
@@ -245,6 +249,83 @@ AssetManager <std::string>::try_get(
 
     default:
       return mAssets.at(id).handle;
+  }
+}
+
+template <>
+void
+AssetManager <std::string>::ui_show_preview(
+  const AssetId& stringId )
+{
+  using fmt::format;
+
+  const auto assetStatus = status(stringId);
+
+  if ( ImGui::CollapsingHeader("Status", ImGuiTreeNodeFlags_DefaultOpen) )
+    ImGui::TextColored(ImGui::ColorConvertU32ToFloat4(StatusAsColor(assetStatus)),
+                       "%s", StatusAsString(assetStatus).c_str());
+
+  if ( assetStatus == AssetStatus::Undefined )
+    return;
+
+  if ( mAssets.at(stringId).path != MemoryResidentPath &&
+       ImGui::Button("Reload") )
+  {
+    unload(stringId);
+    load({stringId});
+  }
+
+  if ( ImGui::CollapsingHeader("Path", ImGuiTreeNodeFlags_DefaultOpen) )
+    ImGui::Text("%s", mAssets.at(stringId).path.string().c_str());
+
+  if ( ImGui::CollapsingHeader("Preview", ImGuiTreeNodeFlags_DefaultOpen) == false )
+    return;
+
+  const auto handle = try_get(stringId);
+
+  if ( handle == nullptr )
+    return;
+
+  ImGui::Text("%s", handle->c_str());
+}
+
+template <>
+void
+AssetManager <std::string>::ui_show(
+  Json::Value& entry ) const
+{
+  using fmt::format;
+
+  if ( entry.isString() != true )
+    jsonValidateArray(entry, AssetJsonDbEntryReference());
+
+  std::string lines {};
+
+  if ( entry.isArray() == false )
+    lines.append(entry.asString());
+  else
+  {
+    for ( const auto& line : entry )
+      lines.append(line.asString() + '\n');
+
+    if ( lines.empty() == false )
+      lines.pop_back();
+  }
+
+  if ( ImGui::InputTextMultiline("##multiline", &lines) )
+  {
+    if ( entry.isArray() == true )
+      entry.clear();
+    else
+      entry = Json::arrayValue;
+
+    const auto linesSeparated = stringSplit(lines, '\n');
+
+    for ( const auto& line : linesSeparated )
+      entry.append(line);
+
+    if ( linesSeparated.size() == 1 )
+      entry = lines.front();
   }
 }
 

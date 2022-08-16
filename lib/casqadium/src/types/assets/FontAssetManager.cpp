@@ -8,6 +8,9 @@
 
 #include <json/value.h>
 
+#include <imgui.h>
+#include <imgui_stdlib.h>
+
 
 namespace cqde::types
 {
@@ -23,7 +26,7 @@ AssetManager <olc::Font>::AssetJsonDbEntryReference()
   reference.setComment("// font DB entry must be a JSON object"s,
                        Json::CommentPlacement::commentBefore);
 
-  reference["size"] = ValueType::uintValue;
+  reference["size"] = 1u;
   reference["size"].setComment("// font size must be a JSON unsigned integer"s,
                                 Json::CommentPlacement::commentBefore);
 
@@ -109,10 +112,101 @@ AssetManager <olc::Font>::try_get(
       return mAssets.at(id).handle;
 
     default:
-      CQDE_ASSERT_DEBUG(false, break);
+      break;
   }
 
   return {};
+}
+
+template <>
+void
+AssetManager <olc::Font>::ui_show_preview(
+  const AssetId& fontId )
+{
+  using fmt::format;
+
+  const auto assetStatus = status(fontId);
+
+  if ( ImGui::CollapsingHeader("Status", ImGuiTreeNodeFlags_DefaultOpen) )
+    ImGui::TextColored(ImGui::ColorConvertU32ToFloat4(StatusAsColor(assetStatus)),
+                       "%s", StatusAsString(assetStatus).c_str());
+
+  if ( assetStatus == AssetStatus::Undefined )
+    return;
+
+  if ( mAssets.at(fontId).path != MemoryResidentPath &&
+       ImGui::Button("Reload") )
+  {
+    unload(fontId);
+    load({fontId});
+  }
+
+  if ( ImGui::CollapsingHeader("Path", ImGuiTreeNodeFlags_DefaultOpen) )
+    ImGui::Text("%s", mAssets.at(fontId).path.string().c_str());
+
+  const auto handle = try_get(fontId);
+
+  if ( handle == nullptr )
+    return;
+
+  if ( ImGui::CollapsingHeader("Size", ImGuiTreeNodeFlags_DefaultOpen) )
+    ImGui::Text("%s", format("{}", handle->GetFontSize()).c_str());
+
+  if ( ImGui::CollapsingHeader("Preview", ImGuiTreeNodeFlags_DefaultOpen) == false )
+    return;
+
+  const auto textSampleLine1 = U"The quick brown fox";
+  const auto textSampleLine2 = U"jumps over the lazy dog";
+
+  static std::unique_ptr <olc::Decal> decalLine1 {nullptr};
+  static std::unique_ptr <olc::Decal> decalLine2 {nullptr};
+
+  decalLine1.reset(handle->RenderStringToDecal(textSampleLine1, olc::WHITE));
+
+  if ( decalLine1 == nullptr ||
+       decalLine1->id < 0 )
+    return;
+
+  float spriteRatio = 1.0f * decalLine1->sprite->width / decalLine1->sprite->height;
+
+  float height = ImGui::GetContentRegionAvail().y / 2.0f;
+  float width = height * spriteRatio;
+
+  ImGui::Image(ImTextureID(decalLine1->id), {width, height});
+
+  decalLine2.reset(handle->RenderStringToDecal(textSampleLine2, olc::WHITE));
+
+  if ( decalLine2 == nullptr ||
+       decalLine2->id < 0 )
+    return;
+
+  spriteRatio = 1.0f * decalLine2->sprite->width / decalLine2->sprite->height;
+
+  height = ImGui::GetContentRegionAvail().y;
+  width = height * spriteRatio;
+
+  ImGui::Image(ImTextureID(decalLine2->id), {width, height});
+}
+
+template <>
+void
+AssetManager <olc::Font>::ui_show(
+  Json::Value& entry ) const
+{
+  if ( ImGui::CollapsingHeader("Size", ImGuiTreeNodeFlags_DefaultOpen) )
+  {
+    int32_t size = entry["size"].asUInt();
+    if ( ImGui::DragInt("##fontSize", &size,
+                        1.0f, 1, 500, "%d", ImGuiSliderFlags_AlwaysClamp) )
+      entry["size"] = size;
+  }
+
+  if ( ImGui::CollapsingHeader("Path", ImGuiTreeNodeFlags_DefaultOpen) )
+  {
+    std::string path = entry["path"].asString();
+    if ( ImGui::InputText("##fontPath", &path) )
+      entry["path"] = path;
+  }
 }
 
 template class

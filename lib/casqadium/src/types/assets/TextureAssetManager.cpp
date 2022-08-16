@@ -8,6 +8,9 @@
 
 #include <json/value.h>
 
+#include <imgui.h>
+#include <imgui_stdlib.h>
+
 
 namespace cqde::types
 {
@@ -149,6 +152,91 @@ AssetManager <olc::Renderable>::try_get(
 
     default:
       return mAssets.at(cqde::null_id).handle;
+  }
+}
+
+template <>
+void
+AssetManager <olc::Renderable>::ui_show_preview(
+  const AssetId& textureId )
+{
+  using fmt::format;
+
+  const auto assetStatus = status(textureId);
+
+  if ( ImGui::CollapsingHeader("Status", ImGuiTreeNodeFlags_DefaultOpen) )
+    ImGui::TextColored(ImGui::ColorConvertU32ToFloat4(StatusAsColor(assetStatus)),
+                       "%s", StatusAsString(assetStatus).c_str());
+
+  if ( assetStatus == AssetStatus::Undefined )
+    return;
+
+  if ( mAssets.at(textureId).path != MemoryResidentPath &&
+       ImGui::Button("Reload") )
+  {
+    unload(textureId);
+    load({textureId});
+  }
+
+  if ( ImGui::CollapsingHeader("Path", ImGuiTreeNodeFlags_DefaultOpen) )
+    ImGui::Text("%s", mAssets.at(textureId).path.string().c_str());
+
+  const auto handle = try_get(textureId);
+
+  if ( handle == nullptr ||
+       handle->Decal() == nullptr )
+    return;
+
+  if ( ImGui::CollapsingHeader("Size", ImGuiTreeNodeFlags_DefaultOpen) )
+    ImGui::Text("%s", format("{}x{}", handle->Sprite()->width,
+                                      handle->Sprite()->height).c_str());
+
+  if ( ImGui::CollapsingHeader("Preview", ImGuiTreeNodeFlags_DefaultOpen) == false )
+    return;
+
+  const int32_t decalId = handle->Decal()->id;
+
+  if ( decalId < 0 )
+    return;
+
+  float width = ImGui::GetContentRegionAvail().x;
+  float height = ImGui::GetContentRegionAvail().y;
+
+  const float spriteRatio = 1.0f * handle->Sprite()->width
+                          / handle->Sprite()->height;
+
+  const float screenRatio = width / height;
+
+  width = std::min(width, width / screenRatio * spriteRatio);
+  height = std::min(height, height * screenRatio / spriteRatio);
+
+  ImGui::Image(ImTextureID(decalId), {width, height});
+}
+
+template <>
+void
+AssetManager <olc::Renderable>::ui_show(
+  Json::Value& entry ) const
+{
+  if ( ImGui::CollapsingHeader("Clamp", ImGuiTreeNodeFlags_DefaultOpen) )
+  {
+    bool clamp = entry["clamp"].asBool();
+    if ( ImGui::Checkbox("##textureClamp", &clamp) )
+      entry["clamp"] = clamp;
+  }
+
+  if ( ImGui::CollapsingHeader("Filter", ImGuiTreeNodeFlags_DefaultOpen) )
+  {
+    bool filter = entry["filter"].asBool();
+    if ( ImGui::Checkbox("##textureFilter", &filter) )
+      entry["filter"] = filter;
+  }
+
+  if ( ImGui::CollapsingHeader("Path", ImGuiTreeNodeFlags_DefaultOpen) )
+  {
+    std::string path = entry["path"].asString();
+    if ( ImGui::InputText("##texturePath", &path) )
+      entry["path"] = path;
   }
 }
 

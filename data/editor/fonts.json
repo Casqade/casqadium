@@ -1,7 +1,7 @@
 {
-  "munro":
+  "munro" : 
   {
-    "path": "fonts/munro.ttf",
-    "size": 20
+    "path" : "fonts/munro.ttf",
+    "size" : 20
   }
 }

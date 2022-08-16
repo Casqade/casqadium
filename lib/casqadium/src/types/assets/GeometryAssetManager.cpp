@@ -11,6 +11,8 @@
 #include <json/value.h>
 #include <json/reader.h>
 
+#include <imgui.h>
+
 
 namespace cqde::types
 {
@@ -230,6 +232,61 @@ AssetManager <vertexBuffer>::unloadImpl(
 {
   LOG_TRACE("Freeing geometry");
   handle.reset();
+}
+
+template <>
+void
+AssetManager <vertexBuffer>::ui_show_preview(
+  const AssetId& geometryId )
+{
+//  auto drawList = ImGui::GetWindowDrawList();
+
+//  drawList->AddPolyline();
+}
+
+template <>
+void
+AssetManager <vertexBuffer>::ui_show(
+  Json::Value& entry ) const
+{
+  using fmt::format;
+
+  size_t vertexCount {};
+  for ( auto& vertex : entry )
+  {
+    ImGui::PushID(++vertexCount);
+
+    ImGui::Text("X");
+    ImGui::SameLine();
+    float vertexX = vertex[0].asFloat();
+    if ( ImGui::DragFloat("##vertexX", &vertexX, 0.01f) )
+      vertex[0] = vertexX;
+
+    ImGui::Text("Y");
+    ImGui::SameLine();
+    float vertexY = vertex[1].asFloat();
+    if ( ImGui::DragFloat("##vertexY", &vertexY, 0.01f) )
+      vertex[1] = vertexY;
+
+    ImGui::Text("Z");
+    ImGui::SameLine();
+    float vertexZ = vertex[2].asFloat();
+    if ( ImGui::DragFloat("##vertexZ", &vertexZ, 0.01f) )
+      vertex[2] = vertexZ;
+
+    ImGui::Separator();
+    ImGui::PopID();
+  }
+
+  if ( ImGui::SmallButton("+##vertexAdd") )
+  {
+    Json::Value vertex {};
+    vertex.append(Json::realValue);
+    vertex.append(Json::realValue);
+    vertex.append(Json::realValue);
+
+    entry.append(vertex);
+  }
 }
 
 template class
