@@ -8,18 +8,31 @@
 namespace cqde::types
 {
 
-EntityReference::EntityReference( const compos::Tag& tag )
-  : id(tag.id)
+EntityReference::EntityReference(
+  const EntityId& id )
+  : id{id}
+{}
+
+EntityReference::EntityReference(
+  const compos::Tag& tag )
+  : id{tag.id}
 {}
 
 entt::entity
-EntityReference::get( entt::registry& registry ) const
+EntityReference::get(
+  const entt::registry& registry ) const
 {
-  return registry.ctx().at <EntityManager> ().get(id);
+  const auto entity = registry.ctx().at <EntityManager> ().get(id);
+
+  if ( registry.valid(entity) == true )
+    return entity;
+
+  return entt::null;
 }
 
 bool
-EntityReference::operator < ( const EntityReference& other ) const
+EntityReference::operator < (
+  const EntityReference& other ) const
 {
   return id.hash().value() < other.id.hash().value();
 }

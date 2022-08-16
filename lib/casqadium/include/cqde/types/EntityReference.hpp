@@ -15,9 +15,10 @@ struct EntityReference
 
 
   EntityReference() = default;
+  EntityReference( const EntityId& );
   EntityReference( const compos::Tag& );
 
-  entt::entity get( entt::registry& ) const;
+  entt::entity get( const entt::registry& ) const;
 
   bool operator < ( const EntityReference& ) const;
 };
