@@ -88,6 +88,8 @@ Font::LoadFromFile(const std::string& path, const int _fontSize)
         return olc::rcode::FAIL;
     }
 
+    fontSize = _fontSize;
+
     return olc::rcode::OK;
 }
 
