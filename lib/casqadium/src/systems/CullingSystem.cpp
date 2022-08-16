@@ -14,7 +14,7 @@
 namespace cqde::systems
 {
 
-static cqde::types::VertexBuffer
+types::VertexBuffer
 vertexShader(
   const std::vector <glm::vec3>& vertices,
   const glm::mat4& modelViewMatrix,
@@ -97,7 +97,8 @@ vertexShader(
 }
 
 
-void CullingSystem( entt::registry& registry )
+void CullingSystem(
+  entt::registry& registry )
 {
   using namespace cqde::compos;
   using types::GeometryAssetManager;
@@ -111,12 +112,13 @@ void CullingSystem( entt::registry& registry )
 
     const glm::mat4 camView = cCamera.viewMatrix(registry, cCameraNode, cCameraTransform);
     const glm::mat4 camProjection = cCamera.projMatrix();
-    glm::vec4 camViewport = cCamera.viewportScaled();
+    const glm::vec4 camViewport = cCamera.viewportScaled();
 
     for ( const auto&& [eDrawable, cGeometryBuffer, cNode, cTransform]
             : registry.view <GeometryBuffer, SceneNode, Transform>().each() )
     {
       const auto gBuffer = geometry.get(cGeometryBuffer.buffer);
+
       if ( gBuffer == nullptr )
         continue;
 
