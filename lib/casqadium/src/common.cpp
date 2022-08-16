@@ -32,6 +32,7 @@
 #include <cqde/types/ui/InputManagerUi.hpp>
 #include <cqde/types/ui/PackageManagerUi.hpp>
 #include <cqde/types/ui/SystemManagerUi.hpp>
+#include <cqde/types/ui/ViewportManagerUi.hpp>
 
 #include <entt/entity/registry.hpp>
 
@@ -65,6 +66,7 @@ engineInit( entt::registry& registry )
   registry.ctx().emplace <InputManagerUi> (&inputManager);
   registry.ctx().emplace <PackageManagerUi> (&packageManager);
   registry.ctx().emplace <SystemManagerUi> (&systemManager);
+  registry.ctx().emplace <ViewportManagerUi> ();
 
   auto& tp = registry.ctx().emplace <ctpl::thread_pool> (std::thread::hardware_concurrency() | 1);
 

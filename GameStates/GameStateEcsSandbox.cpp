@@ -34,6 +34,7 @@
 #include <cqde/types/ui/InputManagerUi.hpp>
 #include <cqde/types/ui/PackageManagerUi.hpp>
 #include <cqde/types/ui/SystemManagerUi.hpp>
+#include <cqde/types/ui/ViewportManagerUi.hpp>
 
 #include <cqde/util/logger.hpp>
 
@@ -325,6 +326,7 @@ GameStateEcsSandbox::GameStateEcsSandbox(
     using cqde::ui::InputManagerUi;
     using cqde::ui::PackageManagerUi;
     using cqde::ui::SystemManagerUi;
+    using cqde::ui::ViewportManagerUi;
 
     if ( ImGui::GetIO().WantCaptureMouse == true )
     {
@@ -338,6 +340,7 @@ GameStateEcsSandbox::GameStateEcsSandbox(
     registry.ctx().at <EntityManagerUi> ().ui_show(registry);
     registry.ctx().at <InputManagerUi> ().ui_show(registry);
     registry.ctx().at <SystemManagerUi> ().ui_show(registry);
+    registry.ctx().at <ViewportManagerUi> ().ui_show(registry);
   };
 
   auto& callbackMgr = mRegistry.ctx().at <CallbackManager> ();
