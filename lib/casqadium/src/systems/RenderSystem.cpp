@@ -42,7 +42,7 @@ RenderSystem( entt::registry& registry )
                (textureBuffer->textures.size() > 1 &&
                 buffer.windingOrder == VertexBuffer::WindingOrder::ClockWise) )
           {
-            auto&     textures  = registry.ctx().at <TextureAssetManager> ();
+            auto& textures  = registry.ctx().at <TextureAssetManager> ();
             const TextureId textureId = textureBuffer->textures.at((int) buffer.windingOrder);
 
             const auto  texture = textures.get(textureId);
