@@ -27,7 +27,8 @@ Transform::modelLocal() const
   return
     glm::translate(glm::mat4(1.0f), translation) *
     glm::toMat4(orientation) *
-    glm::scale(glm::mat4(1.0f), scale);
+    glm::scale(glm::mat4(1.0f), scale) *
+    glm::scale(glm::mat4(1.0f), scaleWorld);
 }
 
 glm::vec3
