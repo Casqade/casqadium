@@ -141,19 +141,18 @@ ViewportManagerUi::ui_show_viewport_windows(
       cCamera.zBuffer.emplace( vBuffer, eDrawable );
     }
 
-    camViewport.x += 1.0f;
-    camViewport.y += 1.0f;
-
     ImGui::Text("%s", format("Z-buffer depth: {}", cCamera.zBuffer.size()).c_str());
 
-    olc::renderer->ptrPGE->DrawLineDecal({camViewport.x, camViewport.y},
-                                         {camViewport.x + camViewport.z, camViewport.y});
-    olc::renderer->ptrPGE->DrawLineDecal({camViewport.x + camViewport.z, camViewport.y},
-                                         {camViewport.x + camViewport.z, camViewport.y + camViewport.w});
-    olc::renderer->ptrPGE->DrawLineDecal({camViewport.x + camViewport.z, camViewport.y + camViewport.w},
-                                         {camViewport.x, camViewport.y + camViewport.w});
-    olc::renderer->ptrPGE->DrawLineDecal({camViewport.x, camViewport.y + camViewport.w},
-                                         {camViewport.x, camViewport.y});
+    const uint32_t colorWindow = ImGui::GetColorU32(ImGuiCol_Border, 0.75f);
+    const uint32_t colorViewport = ImGui::GetColorU32(ImGuiCol_FrameBg);
+
+    olc::renderer->ptrPGE->DrawRectDecal({windowPos.x, windowPos.y},
+                                         {windowSize.x, windowSize.y},
+                                         colorWindow);
+
+    olc::renderer->ptrPGE->DrawRectDecal({camViewport.x, camViewport.y},
+                                         {camViewport.z, camViewport.w},
+                                         colorViewport);
 
     ImGui::End();
   }
