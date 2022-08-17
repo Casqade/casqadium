@@ -88,47 +88,26 @@ GameStateEcsSandbox::GameStateEcsSandbox(
     return;
   }
 
-  try
-  {
-    fonts.load({"munro"});
-    geometry.load({"quad"});
-    textures.load({"map_diffuse"});
-    textures.load({"map_height"});
-    strings.load({"one_liner", "multi_liner"});
-  }
-  catch ( const std::exception& e )
-  {
-    LOG_ERROR("{}", e.what());
-
-    mRunning = false;
-    return;
-  }
+  fonts.load({"munro"});
 
   while (fonts.status("munro") != AssetStatus::Loaded)
-    ;
+    if ( fonts.status("munro") == AssetStatus::Error )
+    {
+      mRunning = false;
+      return;
+    }
 
-  while (textures.status("map_height") != AssetStatus::Loaded)
-    ;
-
-  olc::Mouse::Cursor cursor {};
-  cursor.bitmap = textures.get("map_height");
-  cursor.hotspot = {cursor.bitmap->Sprite()->width / 2, cursor.bitmap->Sprite()->height / 2};
-
-  mPGE->SetMouseCursor(cursor);
-
-  auto textTexture = std::make_shared <olc::Renderable> (fonts.get("munro")->RenderStringToRenderable(U"T", olc::WHITE));
+  auto textRenderable = fonts.get("munro")->RenderStringToRenderable(U"T", olc::WHITE, false);
+  auto textTexture = std::make_shared <olc::Renderable> (std::move(textRenderable));
   textures.insert("text_texture", textTexture);
 
   static float valPitch{};
   static float valYaw{};
 
   const auto cameraLookOn =
-  [this, cursor] (  entt::registry& registry,
-                    const std::vector <std::any>& args )
+  [this] (  entt::registry& registry,
+            const std::vector <std::any>& args )
   {
-    if ( ImGui::GetIO().WantCaptureMouse == true )
-      return;
-
     auto cController = std::any_cast <InputController*> (args.at(1));
 
     mPGE->SetMouseCursor(olc::Mouse::Cursor{});
@@ -148,12 +127,12 @@ GameStateEcsSandbox::GameStateEcsSandbox(
   };
 
   const auto cameraLookOff =
-  [this, cursor] (  entt::registry& registry,
-                    const std::vector <std::any>& args )
+  [this] (  entt::registry& registry,
+            const std::vector <std::any>& args )
   {
     auto cController = std::any_cast <InputController*> (args.at(1));
 
-    mPGE->SetMouseCursor(cursor);
+    mPGE->ResetMouseCursor();
     mPGE->SetKeepMouseCentered(false);
 
     valPitch = cController->inputs["Pitch"].value;
@@ -164,7 +143,7 @@ GameStateEcsSandbox::GameStateEcsSandbox(
   };
 
   const auto cameraLookToggle =
-  [cursor, cameraLookOn, cameraLookOff] ( entt::registry& registry,
+  [cameraLookOn, cameraLookOff] ( entt::registry& registry,
                                           const std::vector <std::any>& args )
   {
     auto entity = std::any_cast <entt::entity> (args.at(0));
@@ -258,12 +237,6 @@ GameStateEcsSandbox::GameStateEcsSandbox(
     using cqde::ui::PackageManagerUi;
     using cqde::ui::SystemManagerUi;
     using cqde::ui::ViewportManagerUi;
-
-    if ( ImGui::GetIO().WantCaptureMouse == true )
-    {
-      olc::platform->SetMouseCursorHidden(false);
-      mPGE->SetKeepMouseCentered(false);
-    }
 
     registry.ctx().at <PackageManagerUi> ().ui_show(registry);
     registry.ctx().at <AssetManagerUi> ().ui_show(registry);

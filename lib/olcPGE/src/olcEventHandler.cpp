@@ -1,4 +1,5 @@
 #include <olcPGE/olcEventHandler.hpp>
+
 #include <olcPGE/olcPGEX_ImGui.hpp>
 
 
@@ -92,8 +93,7 @@ EventHandler::update()
     event.mouseMove.dx = mousePos.x - mousePosPrev.x;
     event.mouseMove.dy = mousePos.y - mousePosPrev.y;
 
-    if ( ImGui::GetIO().WantCaptureMouse == false )
-      mEvents.push_back(event);
+    mEvents.push_back(event);
 
     mousePosPrev = mousePos;
   }
@@ -119,8 +119,7 @@ EventHandler::update()
     event.mouseButton.x = mousePos.x;
     event.mouseButton.y = mousePos.y;
 
-    if ( ImGui::GetIO().WantCaptureMouse == false )
-      mEvents.push_back(event);
+    mEvents.push_back(event);
   }
 
   const int32_t mouseWheel = mPGE->GetMouseWheel();
@@ -136,8 +135,7 @@ EventHandler::update()
     event.mouseWheelScroll.x = mousePos.x;
     event.mouseWheelScroll.y = mousePos.y;
 
-    if ( ImGui::GetIO().WantCaptureMouse == false )
-      mEvents.push_back(event);
+    mEvents.push_back(event);
 
     mouseWheelPrev = mouseWheel;
   }
