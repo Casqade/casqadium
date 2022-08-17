@@ -3339,6 +3339,8 @@ namespace olc
 
     virtual olc::rcode CreateWindowPane(const olc::vi2d& vWindowPos, olc::vi2d& vWindowSize, bool bFullScreen) override
     {
+      SetProcessDPIAware(); // Dear ImGui compatibility
+
       WNDCLASS wc;
       wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
       wc.hCursor = LoadCursor(NULL, IDC_ARROW);
