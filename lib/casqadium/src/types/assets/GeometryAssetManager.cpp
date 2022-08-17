@@ -63,6 +63,22 @@ AssetManager <vertexBuffer>::Validate(
 
 template <>
 void
+AssetManager <vertexBuffer>::initPlaceholders()
+{
+  const auto geometry = std::make_shared <vertexBuffer> (
+  vertexBuffer
+  {
+    {-0.5f, 0.5f, 0.0f},
+    {-0.5f, -0.5f, 0.0f},
+    {0.5f, -0.5f, 0.0f},
+    {0.5f, 0.5f, 0.0f}
+  });
+
+  insert(null_id, geometry);
+}
+
+template <>
+void
 AssetManager <vertexBuffer>::parseAssetDb(
   const Json::Value& geometryDb,
   const path& dbPath )

@@ -57,6 +57,21 @@ AssetManager <olc::Font>::Validate(
 
 template <>
 void
+AssetManager <olc::Font>::initPlaceholders()
+{
+  auto font = std::make_shared <olc::Font> ();
+
+  if ( font->LoadFontDefault(16) != olc::rcode::OK )
+  {
+    LOG_ERROR("Failed to create default font: {}", font->GetErrorMessage());
+    CQDE_ASSERT_DEBUG(false, font.reset());
+  }
+
+  insert(null_id, font);
+}
+
+template <>
+void
 AssetManager <olc::Font>::parseJsonEntryImpl(
   const Json::Value& entry,
   const AssetId& id )
@@ -105,17 +120,12 @@ AssetManager <olc::Font>::try_get(
 
   switch (status(id))
   {
-//    case AssetStatus::Loading:
-//      break;
-
     case AssetStatus::Loaded:
       return mAssets.at(id).handle;
 
     default:
-      break;
+      return mAssets.at(cqde::null_id).handle;
   }
-
-  return {};
 }
 
 template <>
@@ -161,7 +171,7 @@ AssetManager <olc::Font>::ui_show_preview(
   static std::unique_ptr <olc::Decal> decalLine1 {nullptr};
   static std::unique_ptr <olc::Decal> decalLine2 {nullptr};
 
-  decalLine1.reset(handle->RenderStringToDecal(textSampleLine1, olc::WHITE));
+  decalLine1.reset(handle->RenderStringToDecal(textSampleLine1, olc::WHITE, false));
 
   if ( decalLine1 == nullptr ||
        decalLine1->id < 0 )
@@ -174,7 +184,7 @@ AssetManager <olc::Font>::ui_show_preview(
 
   ImGui::Image(ImTextureID(decalLine1->id), {width, height});
 
-  decalLine2.reset(handle->RenderStringToDecal(textSampleLine2, olc::WHITE));
+  decalLine2.reset(handle->RenderStringToDecal(textSampleLine2, olc::WHITE,  false));
 
   if ( decalLine2 == nullptr ||
        decalLine2->id < 0 )

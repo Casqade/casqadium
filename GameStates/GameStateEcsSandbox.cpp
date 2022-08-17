@@ -58,66 +58,6 @@
 #include <json/value.h>
 
 
-static std::shared_ptr <olc::Renderable>
-textureFromText(
-  const std::string& text,
-  const olc::Pixel& color,
-  const bool monospaced,
-  olc::PixelGameEngine* pge )
-{
-  const auto textSize = monospaced ?
-                          pge->GetTextSize(text)
-                        : pge->GetTextSizeProp(text);
-
-  auto texture = std::make_shared <olc::Renderable> ();
-  texture->Create(textSize.x, textSize.y);
-
-  const auto drawTargetPrev = pge->GetDrawTarget();
-
-  pge->SetDrawTarget(texture->Sprite());
-  monospaced ?
-      pge->DrawString({0, 0}, text, color)
-    : pge->DrawStringProp({0, 0}, text, color);
-  pge->SetDrawTarget(drawTargetPrev);
-
-  texture->Decal()->Update();
-
-  return texture;
-}
-
-static std::shared_ptr <olc::Renderable>
-texturePlaceholder()
-{
-  auto texture = std::make_shared <olc::Renderable> ();
-  texture->Create(16, 16);
-
-  for ( int32_t px = 0;
-        px < texture->Sprite()->width;
-        ++px )
-    for ( int32_t py = 0;
-          py < texture->Sprite()->height;
-          ++py )
-    texture->Sprite()->SetPixel(px, py,
-                                (px + py) % 2 == 0 ? olc::BLACK : olc::MAGENTA);
-
-  texture->Decal()->Update();
-
-  return texture;
-}
-
-static std::shared_ptr <std::vector <glm::vec3>>
-geometryPlaceholder()
-{
-  return std::make_shared <std::vector <glm::vec3>> (
-  std::vector <glm::vec3>
-  {
-    {-0.5f, 0.5f, 0.0f},
-    {-0.5f, -0.5f, 0.0f},
-    {0.5f, -0.5f, 0.0f},
-    {0.5f, 0.5f, 0.0f}
-  });
-}
-
 GameStateEcsSandbox::GameStateEcsSandbox(
   GameStateController* const stateController )
   : GameState(stateController)
@@ -133,15 +73,6 @@ GameStateEcsSandbox::GameStateEcsSandbox(
   auto& fonts = mRegistry.ctx().at <FontAssetManager> ();
   auto& geometry = mRegistry.ctx().at <GeometryAssetManager> ();
   auto& textures = mRegistry.ctx().at <TextureAssetManager> ();
-  auto& strings = mRegistry.ctx().at <TextStringAssetManager> ();
-
-  auto textureError = textureFromText("ERROR", olc::RED, true, mPGE);
-
-  geometry.insert("null", geometryPlaceholder());
-  geometry.insert("error", geometryPlaceholder());
-
-  textures.insert("null", texturePlaceholder());
-  textures.insert("error", textureError);
 
   auto& packageManager = mRegistry.ctx().at <PackageManager> ();
 

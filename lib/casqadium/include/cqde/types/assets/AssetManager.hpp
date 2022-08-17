@@ -51,6 +51,8 @@ class AssetManager
   mutable std::recursive_mutex mAssetsMutex {};
 
 
+  void initPlaceholders();
+
   void parseJsonEntryImpl( const Json::Value&,
                            const AssetId& );
   AssetHandle loadImpl( const AssetId&,

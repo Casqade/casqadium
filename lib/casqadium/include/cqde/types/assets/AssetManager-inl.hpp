@@ -76,7 +76,9 @@ template <typename Asset>
 AssetManager <Asset>::AssetManager(
   ctpl::thread_pool& tp )
   : mThreadPool(tp)
-{}
+{
+  initPlaceholders();
+}
 
 template <typename Asset>
 AssetManager <Asset>::~AssetManager()
@@ -84,6 +86,11 @@ AssetManager <Asset>::~AssetManager()
   for ( auto& [id, entry] : mAssets )
     unload(id);
 }
+
+template <typename Asset>
+void
+AssetManager <Asset>::initPlaceholders()
+{}
 
 template <typename Asset>
 void

@@ -1,6 +1,7 @@
 #include <cqde/types/assets/AssetManager-inl.hpp>
 
 #include <cqde/json_helpers.hpp>
+#include <cqde/render_helpers.hpp>
 
 #include <cqde/util/logger.hpp>
 
@@ -57,6 +58,30 @@ AssetManager <olc::Renderable>::Validate(
   asset = AssetJsonDbEntryReference();
 
   jsonValidateObject(json, reference);
+}
+
+template <>
+void
+AssetManager <olc::Renderable>::initPlaceholders()
+{
+  auto textureNull = std::make_shared <olc::Renderable> ();
+  textureNull->Create(16, 16);
+
+  for ( int32_t px = 0;
+        px < textureNull->Sprite()->width;
+        ++px )
+    for ( int32_t py = 0;
+          py < textureNull->Sprite()->height;
+          ++py )
+    textureNull->Sprite()->SetPixel(px, py,
+                                (px + py) % 2 == 0 ? olc::BLACK : olc::MAGENTA);
+
+  textureNull->Decal()->Update();
+
+  insert(null_id, textureNull);
+
+  auto textureError = textureFromText("ERROR", olc::RED, true);
+  insert("error"_id, textureError);
 }
 
 template <>
@@ -126,6 +151,9 @@ AssetManager <olc::Renderable>::try_get(
 
   switch (status(id))
   {
+    case AssetStatus::Error:
+      return mAssets.at("error"_id).handle;
+
     case AssetStatus::Loading:
       return {};
 
