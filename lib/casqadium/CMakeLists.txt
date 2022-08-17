@@ -22,6 +22,9 @@ target_sources(${TARGET} PRIVATE
   src/json_helpers.cpp
   include/${CASQADIUM_SHORT}/json_helpers.hpp
 
+  src/render_helpers.cpp
+  include/${CASQADIUM_SHORT}/render_helpers.hpp
+
   src/common.cpp
   include/${CASQADIUM_SHORT}/common.hpp
 
