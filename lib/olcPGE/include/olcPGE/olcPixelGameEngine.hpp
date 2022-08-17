@@ -878,6 +878,8 @@ public: // Utility
   void SetMouseCursor(const Mouse::Cursor&);
   Mouse::Cursor GetMouseCursor() const;
 
+  static std::string GetFontData();
+
 public: // CONFIGURATION ROUTINES
   // Layer targeting functions
   void SetDrawTarget(uint8_t layer);
