@@ -357,4 +357,18 @@ EntityManager::idInvalidate(
     mEntitiesTags.erase(id);
 }
 
+bool
+EntityManager::idRegister(
+  const EntityId& id,
+  const entt::entity entity )
+{
+  if ( mEntitiesTags.count(id) == 0 )
+  {
+    mEntitiesTags[id] = entity;
+    return true;
+  }
+
+  return false;
+}
+
 } // namespace cqde::types
