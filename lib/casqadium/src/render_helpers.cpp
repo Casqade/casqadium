@@ -1,5 +1,3 @@
-#pragma once
-
 #include <cqde/render_helpers.hpp>
 
 #include <olcPGE/olcPGEX_TTF.hpp>
