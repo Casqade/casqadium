@@ -1371,6 +1371,14 @@ void PixelGameEngine::DrawLineDecal(const olc::vf2d& pos1, const olc::vf2d& pos2
   vLayers[nTargetLayer].vecDecalInstance.push_back(di);
 }
 
+void PixelGameEngine::DrawRectDecal(const olc::vf2d& pos, const olc::vf2d& size, const olc::Pixel col)
+{
+  DrawLineDecal(pos, {pos.x + size.x, pos.y}, col);
+  DrawLineDecal({pos.x + size.x, pos.y}, pos + size, col);
+  DrawLineDecal(pos + size, {pos.x, pos.y + size.y}, col);
+  DrawLineDecal({pos.x, pos.y + size.y}, pos, col);
+}
+
 void PixelGameEngine::FillRectDecal(const olc::vf2d& pos, const olc::vf2d& size, const olc::Pixel col)
 {
   std::array<olc::vf2d, 4> points = { { {pos}, {pos.x, pos.y + size.y}, {pos + size}, {pos.x + size.x, pos.y} } };
