@@ -239,6 +239,9 @@ void
 AssetManager <vertexBuffer>::ui_show_preview(
   const AssetId& geometryId )
 {
+//  todo: impl
+  ImGui::Text("WIP");
+
 //  auto drawList = ImGui::GetWindowDrawList();
 
 //  drawList->AddPolyline();
