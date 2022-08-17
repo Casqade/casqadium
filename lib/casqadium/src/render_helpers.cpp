@@ -2,6 +2,8 @@
 
 #include <cqde/render_helpers.hpp>
 
+#include <olcPGE/olcPGEX_TTF.hpp>
+
 
 namespace cqde
 {
@@ -34,6 +36,19 @@ textureFromText(
   texture->Decal()->Update();
 
   return texture;
+}
+
+std::shared_ptr <olc::Renderable>
+textureFromText(
+  const std::string& text,
+  olc::Font* font,
+  const olc::Pixel& color,
+  const bool antialiased )
+{
+  const std::u32string textU32 {text.begin(), text.end()};
+  auto renderable = font->RenderStringToRenderable(textU32, color, antialiased);
+
+  return std::make_shared <olc::Renderable> (std::move(renderable));
 }
 
 } // namespace cqde
