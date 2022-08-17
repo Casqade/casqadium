@@ -50,14 +50,23 @@ class AssetManager
 
   mutable std::recursive_mutex mAssetsMutex {};
 
+
+  void parseJsonEntryImpl( const Json::Value&,
+                           const AssetId& );
+  AssetHandle loadImpl( const AssetId&,
+                        const AssetPath& ) const;
+  void unloadImpl( AssetHandle& ) const;
+
 public:
   AssetManager( ctpl::thread_pool& );
   ~AssetManager();
 
   static Json::Value AssetJsonDbEntryReference();
   static void Validate( const Json::Value& );
-  static std::string StatusAsString( const AssetStatus );
-  static uint32_t StatusAsColor( const AssetStatus );
+
+  static uint32_t     StatusAsColor( const AssetStatus );
+  static std::string  StatusAsString( const AssetStatus );
+
   const std::string MemoryResidentPath {"***memory***"};
 
   void parseAssetDbFile( const path& );
@@ -70,12 +79,6 @@ public:
   void insert( const AssetId&, const AssetHandle );
   void remove( const AssetId& );
   void clear( const bool keepMemoryResidents = true );
-
-  void parseJsonEntryImpl( const Json::Value&,
-                           const AssetId& );
-  AssetHandle loadImpl( const AssetId&,
-                        const AssetPath& ) const;
-  void unloadImpl( AssetHandle& ) const;
 
   void ui_show_preview( const AssetId& );
   void ui_show( Json::Value& ) const;
