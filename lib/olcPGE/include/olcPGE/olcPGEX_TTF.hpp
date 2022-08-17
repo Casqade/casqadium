@@ -39,6 +39,7 @@ public:
   Font& operator=(Font&& other);
 
   olc::rcode LoadFromFile(const std::string& path, const int fontSize);
+  olc::rcode LoadFontDefault(const int fontSize);
 
   olc::rcode DrawString(std::u32string string, int x, int y,
                         olc::Pixel color = olc::BLACK,
@@ -80,6 +81,8 @@ private:
 
   static FT_Library OLCPGE_EXPORT library;
   static std::string OLCPGE_EXPORT libraryErrorMessage;
+
+  static std::vector <uint32_t> FontDefault;
 };
 
 } // namespace olc
