@@ -998,7 +998,8 @@ Font::LoadFontDefault(const int _fontSize)
 
 olc::rcode
 Font::DrawString( std::u32string string, int x, int y,
-                  olc::Pixel color, float angle)
+                  olc::Pixel color, float angle,
+                  const bool antialiased)
 {
     FT_Matrix rotMat;
     rotMat.xx = (FT_Fixed)(std::cos(angle) * 0x10000L);
@@ -1039,9 +1040,13 @@ Font::DrawString( std::u32string string, int x, int y,
             pen.y += kern.y;
         }
 
+        int loadFlags = FT_LOAD_RENDER | FT_LOAD_COLOR;
+        if (antialiased == false)
+          loadFlags |= FT_LOAD_MONOCHROME;
+
         FT_Set_Transform(toUse->fontFace, &rotMat, &pen);
         FT_Error error = FT_Load_Char(toUse->fontFace, chr,
-                                      FT_LOAD_RENDER | FT_LOAD_COLOR);
+                                      loadFlags);
         if (error)
         {
             const char *errorString = FT_Error_String(error);
@@ -1074,9 +1079,10 @@ Font::DrawString( std::u32string string, int x, int y,
 
 olc::rcode
 Font::DrawString(std::u32string string, olc::vi2d pos,
-                 olc::Pixel color, float angle)
+                 olc::Pixel color, float angle,
+                 const bool antialiased)
 {
-    return DrawString(string, pos.x, pos.y, color, angle);
+    return DrawString(string, pos.x, pos.y, color, angle, antialiased);
 }
 
 FontRect
@@ -1179,7 +1185,7 @@ Font::GetStringBounds(std::u32string string, float angle)
 }
 
 olc::Sprite*
-Font::RenderStringToSprite(std::u32string string, olc::Pixel color)
+Font::RenderStringToSprite(std::u32string string, olc::Pixel color, const bool antialiased)
 {
     olc::FontRect rect = GetStringBounds(string);
     olc::Sprite *sprite = new olc::Sprite{rect.size.x, rect.size.y};
@@ -1224,9 +1230,13 @@ Font::RenderStringToSprite(std::u32string string, olc::Pixel color)
             pen.y += kern.y;
         }
 
+        int loadFlags = FT_LOAD_RENDER | FT_LOAD_COLOR;
+        if (antialiased == false)
+          loadFlags |= FT_LOAD_MONOCHROME;
+
         FT_Set_Transform(toUse->fontFace, nullptr, &pen);
         FT_Error error = FT_Load_Char(toUse->fontFace, chr,
-                                      FT_LOAD_RENDER | FT_LOAD_COLOR);
+                                      loadFlags);
         if (error)
         {
             const char *errorString = FT_Error_String(error);
@@ -1257,17 +1267,17 @@ Font::RenderStringToSprite(std::u32string string, olc::Pixel color)
 }
 
 olc::Decal*
-Font::RenderStringToDecal(std::u32string string, olc::Pixel color)
+Font::RenderStringToDecal(std::u32string string, olc::Pixel color, const bool antialiased)
 {
-    Sprite *sprite = RenderStringToSprite(string, color);
+    Sprite *sprite = RenderStringToSprite(string, color, antialiased);
     olc::Decal *decal = new olc::Decal{sprite};
     return decal;
 }
 
 olc::Renderable
-Font::RenderStringToRenderable(std::u32string string, olc::Pixel color)
+Font::RenderStringToRenderable(std::u32string string, olc::Pixel color, const bool antialiased)
 {
-    Sprite *sprite = RenderStringToSprite(string, color);
+    Sprite *sprite = RenderStringToSprite(string, color, antialiased);
     olc::Renderable renderable;
     renderable.Create(sprite->width, sprite->height);
 

@@ -43,20 +43,25 @@ public:
 
   olc::rcode DrawString(std::u32string string, int x, int y,
                         olc::Pixel color = olc::BLACK,
-                        float angle = 0.0f);
+                        float angle = 0.0f,
+                        const bool antialiased = true);
   olc::rcode DrawString(std::u32string string, olc::vi2d pos,
                         olc::Pixel color = olc::BLACK,
-                        float angle = 0.0f);
+                        float angle = 0.0f,
+                        const bool antialiased = true);
 
   FontRect GetStringBounds(std::u32string string, float angle = 0.0f);
 
   olc::Sprite* RenderStringToSprite(std::u32string string,
-                                    olc::Pixel color);
+                                    olc::Pixel color,
+                                    const bool antialiased = true);
   olc::Decal* RenderStringToDecal(std::u32string string,
-                                  olc::Pixel color);
+                                  olc::Pixel color,
+                                  const bool antialiased = true);
 
   olc::Renderable RenderStringToRenderable(std::u32string string,
-                                           olc::Pixel color);
+                                           olc::Pixel color,
+                                           const bool antialiased = true);
 
   void AddFallbackFont(std::string path);
 
