@@ -216,7 +216,8 @@ void InputManager::assignBinding(
   const InputAxisId& axisId,
   const std::shared_ptr <InputBinding> binding )
 {
-  mBindings.insert({ binding, axisId });
+  if ( bindingAssigned(axisId, binding->inputId) == false )
+    mBindings.insert({ binding, axisId });
 }
 
 void InputManager::assignBindings(
@@ -224,7 +225,7 @@ void InputManager::assignBindings(
   const InputBindings& bindings )
 {
   for ( auto& binding : bindings )
-    mBindings.insert({ binding, axisId });
+    assignBinding(axisId, binding);
 }
 
 void
