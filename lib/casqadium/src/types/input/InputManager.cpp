@@ -289,6 +289,22 @@ InputManager::axisAssigned(
   return false;
 }
 
+bool
+InputManager::bindingAssigned(
+  const InputAxisId& axisId,
+  const InputHwId binding ) const
+{
+  const auto [axesBegin, axesEnd] = mBindings.equal_range(binding);
+
+  for ( auto iter = axesBegin;
+        iter != axesEnd;
+        ++iter )
+    if ( auto& [binding, axis] = *iter; axis == axisId )
+      return true;
+
+  return false;
+}
+
 std::set <InputAxisId>
 InputManager::axes() const
 {
