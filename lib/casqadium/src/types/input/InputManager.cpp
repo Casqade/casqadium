@@ -213,14 +213,14 @@ InputManager::Validate(
 }
 
 void InputManager::assignBinding(
-  const InputAxisId axisId,
+  const InputAxisId& axisId,
   const std::shared_ptr <InputBinding> binding )
 {
   mBindings.insert({ binding, axisId });
 }
 
 void InputManager::assignBindings(
-  const InputAxisId axisId,
+  const InputAxisId& axisId,
   const InputBindings& bindings )
 {
   for ( auto& binding : bindings )

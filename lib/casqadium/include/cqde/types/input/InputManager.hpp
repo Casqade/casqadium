@@ -50,10 +50,10 @@ public:
 
   static void Validate( const Json::Value& );
 
-  void assignBinding( const InputAxisId,
+  void assignBinding( const InputAxisId&,
                       const std::shared_ptr <InputBinding> );
 
-  void assignBindings(  const InputAxisId,
+  void assignBindings(  const InputAxisId&,
                         const InputBindings& );
 
   void handleAxisInput( const InputHwCode,
@@ -68,7 +68,6 @@ public:
   size_t inputHistoryLength() const;
 
   const std::deque <InputEvent>& inputHistory() const;
-
 };
 
 } // namespace cqde::types
