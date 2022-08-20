@@ -65,6 +65,9 @@ public:
 
   void delayedRemove( entt::registry& );
 
+  bool valid( const entt::entity,
+              const entt::registry& ) const;
+
   entt::entity get( const EntityId& ) const;
   entt::entity get_if_valid( const EntityId&,
                              const entt::registry& ) const;
