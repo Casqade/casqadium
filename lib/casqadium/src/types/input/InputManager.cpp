@@ -316,15 +316,34 @@ InputManager::axes() const
   return axes;
 }
 
-std::set <InputHwId>
+std::vector <InputAxisId>
+InputManager::axes(
+  const InputHwId binding ) const
+{
+  std::vector <InputAxisId> axes {};
+
+  const auto [axesBegin, axesEnd] = mBindings.equal_range(binding);
+
+  for ( auto iter = axesBegin;
+        iter != axesEnd;
+        ++iter )
+  {
+    auto& [binding, axis] = *iter;
+    axes.push_back(axis);
+  }
+
+  return axes;
+}
+
+std::vector <InputHwId>
 InputManager::bindings(
   const InputAxisId& axisId ) const
 {
-  std::set <InputHwId> bindings {};
+  std::vector <InputHwId> bindings {};
 
   for ( auto& [binding, axis] : mBindings )
     if ( axis == axisId )
-      bindings.insert(binding->inputId);
+      bindings.push_back(binding->inputId);
 
   return bindings;
 }

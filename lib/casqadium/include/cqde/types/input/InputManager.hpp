@@ -66,7 +66,9 @@ public:
                         const InputHwId ) const;
 
   std::set <InputAxisId> axes() const;
-  std::set <InputHwId> bindings( const InputAxisId& ) const;
+
+  std::vector <InputAxisId> axes( const InputHwId ) const;
+  std::vector <InputHwId> bindings( const InputAxisId& ) const;
 
   void setInputHistoryLength( const size_t );
   size_t inputHistoryLength() const;
