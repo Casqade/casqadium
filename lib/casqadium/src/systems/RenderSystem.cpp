@@ -60,6 +60,9 @@ RenderSystem( entt::registry& registry )
         }
       }
 
+      if ( cCamera.renderMode == Camera::RenderMode::Solid )
+        continue;
+
 //      Draw outline
       for ( size_t i = 0, iNext = 1;
             i < vertices.size();
