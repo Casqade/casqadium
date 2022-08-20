@@ -63,6 +63,8 @@ public:
   void delayedRemove( entt::registry& );
 
   entt::entity get( const EntityId& ) const;
+  entt::entity get_if_valid( const EntityId&,
+                             const entt::registry& ) const;
 
   EntityId idGenerate( const EntityId& hint = {"e_"} ) const;
   void idInvalidate( const EntityId& );

@@ -331,6 +331,25 @@ EntityManager::get(
   }
 }
 
+entt::entity
+EntityManager::get_if_valid(
+  const EntityId& id,
+  const entt::registry& registry ) const
+{
+  using entity_traits = entt::entt_traits <entt::entity>;
+
+  const entt::entity entity = get(id);
+
+  const auto versionCurrent = registry.current(entity);
+  const auto versionActual = entity_traits::to_version(entity);
+
+  if ( registry.valid(entity) &&
+       versionCurrent == versionActual )
+    return entity;
+
+  return entt::null;
+}
+
 EntityId
 EntityManager::idGenerate(
   const EntityId& hint ) const
