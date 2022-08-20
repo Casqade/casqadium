@@ -57,32 +57,33 @@ InputManager::InputManager()
 
   mHwControlMap =
   {
-    {Key::NONE, "Key_Unknown"_id},
-    {Key::A, "Key_A"_id},
-    {Key::D, "Key_D"_id},
-    {Key::S, "Key_S"_id},
-    {Key::W, "Key_W"_id},
-    {Key::C, "Key_C"_id},
-    {Key::Q, "Key_Q"_id},
-    {Key::MENU, "Key_Alt"_id},
-    {Key::SHIFT, "Key_Shift"_id},
-    {Key::SPACE, "Key_Space"_id},
-    {Key::ENTER, "Key_Enter"_id},
+    {Key::NONE, "Key_Unknown"},
+    {Key::A, "Key_A"},
+    {Key::D, "Key_D"},
+    {Key::S, "Key_S"},
+    {Key::W, "Key_W"},
+    {Key::C, "Key_C"},
+    {Key::Q, "Key_Q"},
+    {Key::MENU, "Key_Alt"},
+    {Key::SHIFT, "Key_Shift"},
+    {Key::SPACE, "Key_Space"},
+    {Key::ENTER, "Key_Enter"},
+    {Key::ESCAPE, "Key_Escape"},
 
-    {InputHwCode(MouseInputId::ButtonLeft), "MouseButton_Left"_id},
-    {InputHwCode(MouseInputId::ButtonRight), "MouseButton_Right"_id},
-    {InputHwCode(MouseInputId::ButtonMiddle), "MouseButton_Middle"_id},
-    {InputHwCode(MouseInputId::ButtonX1), "MouseButton_X1"_id},
-    {InputHwCode(MouseInputId::ButtonX2), "MouseButton_X2"_id},
+    {InputHwCode(MouseInputId::ButtonLeft), "MouseButton_Left"},
+    {InputHwCode(MouseInputId::ButtonRight), "MouseButton_Right"},
+    {InputHwCode(MouseInputId::ButtonMiddle), "MouseButton_Middle"},
+    {InputHwCode(MouseInputId::ButtonX1), "MouseButton_X1"},
+    {InputHwCode(MouseInputId::ButtonX2), "MouseButton_X2"},
 
-    {InputHwCode(MouseInputId::Wheel), "MouseWheel_Y"_id},
+    {InputHwCode(MouseInputId::Wheel), "MouseWheel_Y"},
 
-    {InputHwCode(MouseInputId::MoveX), "MouseMove_X"_id},
-    {InputHwCode(MouseInputId::MoveY), "MouseMove_Y"_id},
-    {InputHwCode(MouseInputId::PosX), "MousePos_X"_id},
-    {InputHwCode(MouseInputId::PosY), "MousePos_Y"_id},
+    {InputHwCode(MouseInputId::MoveX), "MouseMove_X"},
+    {InputHwCode(MouseInputId::MoveY), "MouseMove_Y"},
+    {InputHwCode(MouseInputId::PosX), "MousePos_X"},
+    {InputHwCode(MouseInputId::PosY), "MousePos_Y"},
 
-    {InputHwCode(MouseInputId::ENUM_END), "Undefined"_id},
+    {InputHwCode(MouseInputId::ENUM_END), "Undefined"},
   };
 }
 
