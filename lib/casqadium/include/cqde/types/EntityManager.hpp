@@ -48,6 +48,9 @@ public:
              const std::set <entt::id_type>& excludedComponents ) const;
 
   template <typename Component>
+  void registerEmptyComponent( const std::string& name );
+
+  template <typename Component>
   void registerComponent( const std::string& name );
 
   std::string   componentName( const ComponentType ) const;
@@ -73,7 +76,7 @@ public:
 
 template <typename Component>
 void
-EntityManager::registerComponent(
+EntityManager::registerEmptyComponent(
   const std::string& name )
 {
   using namespace entt::literals;
@@ -81,14 +84,29 @@ EntityManager::registerComponent(
 
   auto factory = entt::meta <Component> ();
   factory.type();
-  factory.prop("typename"_hs, name.substr());
-  factory.template func <&component_get <Component>, entt::as_ref_t> ("get"_hs);
-  factory.template func <&component_get_const <Component>, entt::as_cref_t> ("get_const"_hs);
+  factory.props(std::make_pair("empty"_hs, true),
+                std::make_pair("typename"_hs, name.substr()));
   factory.template func <&Component::serialize> ("serialize"_hs);
   factory.template func <&Component::deserialize> ("deserialize"_hs);
   factory.template func <&Component::ui_edit_props> ("ui_edit_props"_hs);
 
   mComponentTypes[name] = type_hash <Component> ();
+}
+
+template <typename Component>
+void
+EntityManager::registerComponent(
+  const std::string& name )
+{
+  using namespace entt::literals;
+
+  registerEmptyComponent <Component> (name);
+
+  auto factory = entt::meta <Component> ();
+  factory.props(std::make_pair("empty"_hs, false),
+                std::make_pair("typename"_hs, name.substr()));
+  factory.template func <&component_get <Component>, entt::as_ref_t> ("get"_hs);
+  factory.template func <&component_get_const <Component>, entt::as_cref_t> ("get_const"_hs);
 }
 
 } // namespace cqde::types
