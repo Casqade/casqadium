@@ -9,6 +9,7 @@ namespace cqde
 {
 
 std::string component_name( const ComponentType );
+bool component_is_empty( const ComponentType );
 
 void each_component(
   const entt::entity,

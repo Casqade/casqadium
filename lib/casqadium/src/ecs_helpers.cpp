@@ -18,6 +18,18 @@ component_name(
     .cast <std::string> ();
 }
 
+bool
+component_is_empty(
+  const ComponentType component )
+{
+  using namespace entt::literals;
+
+  return entt::resolve(component)
+    .prop("empty"_hs)
+    .value()
+    .cast <bool> ();
+}
+
 void
 each_component(
   const entt::entity entity,

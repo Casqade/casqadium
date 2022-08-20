@@ -199,6 +199,12 @@ EntityManager::save(
         LOG_TRACE("Serializing component '{}' (entity '{}')",
                   componentName, entityId);
 
+        if ( component_is_empty(componentType) == true )
+        {
+          registryJson[entityId][componentName] = Json::objectValue;
+          return true;
+        }
+
         auto componentGet = component.func("get_const"_hs);
         auto componentInstance = componentGet.invoke({}, entt::forward_as_meta(registry), entity);
         auto serializedComponent = component.func("serialize"_hs).invoke(componentInstance);

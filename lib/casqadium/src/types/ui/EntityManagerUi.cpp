@@ -164,10 +164,21 @@ EntityManagerUi::ui_show(
 
   ImGui::BulletText("%s", format("{} -> {}", entityId.str(), componentName).c_str());
 
+  if ( component_is_empty(mSelectedComponent) == true )
+  {
+    ImGui::Text("No data for this component");
+    ImGui::End(); // Component view
+    return;
+  }
+
   auto componentGet = component.func("get"_hs);
   auto componentInstance = componentGet.invoke({}, entt::forward_as_meta(registry), mSelectedEntity);
-  auto componentUiShow = component.func("ui_edit_props"_hs);
-  componentUiShow.invoke(componentInstance, mSelectedEntity, entt::forward_as_meta(registry));
+
+  if ( componentInstance )
+  {
+    auto componentUiShow = component.func("ui_edit_props"_hs);
+    componentUiShow.invoke(componentInstance, mSelectedEntity, entt::forward_as_meta(registry));
+  }
 
   ImGui::End(); // Component view
 }
