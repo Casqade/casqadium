@@ -61,6 +61,8 @@ public:
                         const float direction,
                         entt::registry& );
 
+  bool axisAssigned( const InputAxisId& ) const;
+
   std::set <InputAxisId> axes() const;
   std::set <InputHwId> bindings( const InputAxisId& ) const;
 

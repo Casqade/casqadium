@@ -278,6 +278,17 @@ InputManager::handleAxisInput(
   }
 }
 
+bool
+InputManager::axisAssigned(
+  const InputAxisId& axisId ) const
+{
+  for ( const auto& [binding, axis] : mBindings )
+    if ( axis == axisId )
+      return true;
+
+  return false;
+}
+
 std::set <InputAxisId>
 InputManager::axes() const
 {
