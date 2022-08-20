@@ -104,6 +104,15 @@ Camera::ui_edit_props(
     if ( ImGui::RadioButton("Orthographic", projectionType == Projection::Orthographic) )
       projectionType = Projection::Orthographic;
   }
+
+  if ( ImGui::CollapsingHeader("Render mode", ImGuiTreeNodeFlags_DefaultOpen) )
+  {
+    if ( ImGui::RadioButton("Wireframe", renderMode == RenderMode::Wireframe) )
+      renderMode = RenderMode::Wireframe;
+
+    if ( ImGui::RadioButton("Solid", renderMode == RenderMode::Solid) )
+      renderMode = RenderMode::Solid;
+  }
 }
 
 } // namespace cqde::compos
