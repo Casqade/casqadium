@@ -275,7 +275,7 @@ EntityManager::componentNames() const
 void
 EntityManager::clear()
 {
-  mEntitiesTags.clear();
+  mEntitiesTags = {{null_id, entt::null}};
   mEntitesToRemove.clear();
   mComponentsToRemove.clear();
 }
@@ -284,7 +284,7 @@ void
 EntityManager::removeLater(
   const entt::entity entity )
 {
-  mEntitesToRemove.insert(entity);
+  mEntitesToRemove.push_back(entity);
 }
 
 void
@@ -292,7 +292,7 @@ EntityManager::removeLater(
   const entt::entity  entity,
   const ComponentType component )
 {
-  mComponentsToRemove[entity].insert(component);
+  mComponentsToRemove[entity].push_back(component);
 }
 
 void
@@ -310,7 +310,8 @@ EntityManager::delayedRemove(
   for ( const auto& [entity, componentList] : mComponentsToRemove )
     if ( valid(entity, registry) == true )
       for ( const auto component : componentList )
-        if ( const auto iter = registry.storage(component); iter < registry.storage().end() )
+        if ( const auto iter = registry.storage(component);
+             iter < registry.storage().end() )
           iter->second.remove(entity);
 
   mEntitesToRemove.clear();

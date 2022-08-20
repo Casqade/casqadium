@@ -28,12 +28,14 @@ class EntityManager
 
   using path = std::filesystem::path;
 
-  std::map <EntityId, entt::entity> mEntitiesTags {{null_id, entt::null}};
-  std::map <std::string, ComponentType> mComponentTypes {};
+  std::unordered_map <EntityId, entt::entity,
+                      identifier_hash> mEntitiesTags {{null_id, entt::null}};
 
-  std::set <entt::entity> mEntitesToRemove {};
-  std::map <entt::entity,
-            std::set <ComponentType>> mComponentsToRemove {};
+  std::unordered_map <std::string, ComponentType> mComponentTypes {};
+
+  std::vector <entt::entity> mEntitesToRemove {};
+  std::unordered_map <entt::entity,
+                      std::vector <ComponentType>> mComponentsToRemove {};
 
 public:
   EntityManager() = default;
