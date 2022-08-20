@@ -231,9 +231,9 @@ GetWorldMatrix(
   std::function <glm::mat4(const SceneNode&)> parentModelWorld =
   [&] ( const SceneNode& child ) -> glm::mat4
   {
-    entt::entity eParent = child.parent.get(registry);
+    const entt::entity eParent = child.parent.get_if_valid(registry);
 
-    if ( registry.valid(eParent) == false )
+    if ( eParent == entt::null )
       return glm::mat4(1.0f);
 
     const auto& [parentTransform, parentSceneNode] = registry.get <Transform, SceneNode> (eParent);

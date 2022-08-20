@@ -22,12 +22,15 @@ entt::entity
 EntityReference::get(
   const entt::registry& registry ) const
 {
-  const auto entity = registry.ctx().at <EntityManager> ().get(id);
+  return registry.ctx().at <EntityManager> ().get(id);
+}
 
-  if ( registry.valid(entity) == true )
-    return entity;
-
-  return entt::null;
+entt::entity
+EntityReference::get_if_valid(
+  const entt::registry& registry ) const
+{
+  const auto& entityManager = registry.ctx().at <EntityManager> ();
+  return entityManager.get_if_valid(id, registry);
 }
 
 bool

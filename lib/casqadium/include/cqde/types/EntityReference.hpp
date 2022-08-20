@@ -19,6 +19,7 @@ struct EntityReference
   EntityReference( const compos::Tag& );
 
   entt::entity get( const entt::registry& ) const;
+  entt::entity get_if_valid( const entt::registry& ) const;
 
   bool operator < ( const EntityReference& ) const;
 };
