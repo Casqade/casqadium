@@ -74,11 +74,11 @@ AttachChildNode(
   SceneNode& cParentNode = registry.get <SceneNode> (eParent);
   SceneNode& cChildNode = registry.get <SceneNode> (eChild);
 
-  Tag& cParentTag = registry.get <Tag> (eParent);
-  Tag& cChildTag = registry.get <Tag> (eChild);
+  const Tag& cParentTag = registry.get <Tag> (eParent);
+  const Tag& cChildTag = registry.get <Tag> (eChild);
 
-  cParentNode.children.insert(types::EntityReference(cChildTag));
-  cChildNode.parent = types::EntityReference(cParentTag);
+  cParentNode.children.insert({cChildTag});
+  cChildNode.parent = {cParentTag};
 }
 
 entt::entity
@@ -90,11 +90,11 @@ DetachChildNode(
   SceneNode& cParentNode = registry.get <SceneNode> (eParent);
   SceneNode& cChildNode = registry.get <SceneNode> (eChild);
 
-  Tag& cParentTag = registry.get <Tag> (eParent);
-  Tag& cChildTag = registry.get <Tag> (eChild);
+  const Tag& cParentTag = registry.get <Tag> (eParent);
+  const Tag& cChildTag = registry.get <Tag> (eChild);
 
-  cParentNode.children.erase(types::EntityReference(cChildTag));
-  cChildNode.parent = types::EntityReference();
+  cParentNode.children.erase({cChildTag});
+  cChildNode.parent = {};
 
   return eChild;
 }
@@ -109,7 +109,7 @@ RemoveChildNode(
 
   Tag& cChildTag = registry.get <Tag> (eChild);
 
-  cParentNode.children.erase(types::EntityReference(cChildTag));
+  cParentNode.children.erase({cChildTag});
 
   cChildTag.invalidate(registry);
   registry.destroy(eChild);
