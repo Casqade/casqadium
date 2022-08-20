@@ -3365,7 +3365,7 @@ namespace olc
 
       // Define window furniture
       DWORD dwExStyle = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
-      DWORD dwStyle = WS_CAPTION | WS_SYSMENU | WS_VISIBLE | WS_THICKFRAME;
+      DWORD dwStyle = WS_CAPTION | WS_SYSMENU | WS_VISIBLE;
 
       olc::vi2d vTopLeft = vWindowPos;
 
