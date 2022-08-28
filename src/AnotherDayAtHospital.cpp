@@ -10,14 +10,8 @@
 AnotherDayAtHospital::AnotherDayAtHospital(
   const uint64_t tickRate,
   const uint64_t frameRate )
-  : olc::PixelGameEngine()
-  , mImGui(true)
-  , mTickInterval(tickRate > 0 ? 1.0 / tickRate : TimeUtils::Duration())
+  : mTickInterval(tickRate > 0 ? 1.0 / tickRate : TimeUtils::Duration())
   , mFrameInterval(frameRate > 0 ? 1.0 / frameRate : TimeUtils::Duration())
-  , mTickPrevious(TimeUtils::Now())
-  , mFramePrevious(TimeUtils::Now())
-  , mGameStateController()
-  , mEventHandler(this)
 {
   sAppName = u8"Another Day At Hospital";
 }
@@ -49,9 +43,10 @@ AnotherDayAtHospital::OnUserCreate()
     return false;
   }
 
-  const uint32_t mainLayer = CreateLayer();
-  EnableLayer( mainLayer, true );
-  SetDrawTarget( mainLayer );
+  mGameLayer = CreateLayer();
+
+  EnableLayer(mGameLayer, true);
+  SetDrawTarget(mGameLayer);
 
   mGameStateController.setState <GameStateEcsSandbox> ();
 
@@ -101,7 +96,7 @@ AnotherDayAtHospital::OnUserUpdate( float )
 
   if ( frames != 0 )
   {
-    SetDrawTarget(1); // Dear ImGui compatibility
+    SetDrawTarget(mGameLayer); // Dear ImGui compatibility
     mGameStateController.render(frames, mFrameInterval);
   }
 

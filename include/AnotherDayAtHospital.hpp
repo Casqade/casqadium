@@ -14,12 +14,14 @@ class AnotherDayAtHospital : public olc::PixelGameEngine
   TimeUtils::Duration mTickInterval;
   TimeUtils::Duration mFrameInterval;
 
-  TimeUtils::Duration mTickPrevious;
-  TimeUtils::Duration mFramePrevious;
+  TimeUtils::Duration mTickPrevious {TimeUtils::Now()};
+  TimeUtils::Duration mFramePrevious {TimeUtils::Now()};
 
-  GameStateController mGameStateController;
-  olc::EventHandler   mEventHandler;
-  olc::imgui::PGE_ImGUI mImGui;
+  GameStateController mGameStateController {};
+  olc::EventHandler   mEventHandler {this};
+  olc::imgui::PGE_ImGUI mImGui {true};
+
+  uint32_t mGameLayer {};
 
   bool update( const uint32_t,
                const TimeUtils::Duration );
