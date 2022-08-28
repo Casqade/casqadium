@@ -233,7 +233,7 @@ FetchContent_MakeAvailable(TimeUtils)
 
 FetchContent_Declare(EnTT
   GIT_REPOSITORY https://github.com/skypjack/entt
-  GIT_TAG        v3.10.1
+  GIT_TAG        v3.10.3
   GIT_SHALLOW    TRUE
 )
 
