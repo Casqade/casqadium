@@ -35,10 +35,20 @@ struct SceneNode
 namespace cqde
 {
 
-void AttachChildNode( entt::registry&, entt::entity parent, entt::entity child );
+bool CanAddChildNode( entt::registry&,
+                      const entt::entity parent,
+                      const EntityId& child );
 
-entt::entity DetachChildNode( entt::registry&, entt::entity parent, entt::entity child );
+void AttachChildNode( entt::registry&,
+                      entt::entity parent,
+                      entt::entity child );
 
-void RemoveChildNode( entt::registry&, entt::entity parent, entt::entity child );
+void DetachChildNode( entt::registry&,
+                      entt::entity parent,
+                      entt::entity child );
+
+void RemoveChildNode( entt::registry&,
+                      entt::entity parent,
+                      entt::entity child );
 
 } // namespace cqde

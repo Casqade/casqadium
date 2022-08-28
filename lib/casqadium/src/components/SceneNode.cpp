@@ -1,6 +1,9 @@
 #include <cqde/components/SceneNode.hpp>
 #include <cqde/components/Tag.hpp>
 
+#include <cqde/types/EntityManager.hpp>
+
+#include <cqde/common.hpp>
 #include <cqde/json_helpers.hpp>
 
 #include <entt/entity/registry.hpp>
@@ -65,38 +68,86 @@ SceneNode::deserialize(
     comp.children.insert({Tag{child.asString()}});
 }
 
+} // namespace cqde::compos
+
+namespace cqde
+{
+
+bool
+CanAddChildNode(
+  entt::registry& registry,
+  const entt::entity eParent,
+  const EntityId& childId )
+{
+  using compos::Tag;
+  using compos::SceneNode;
+
+  if ( eParent == entt::null )
+    return true;
+
+  const auto& cTag = registry.get <Tag> (eParent);
+
+  if ( cTag.id == childId )
+    return false;
+
+  const auto& cNode = registry.get <SceneNode> (eParent);
+
+  const auto superParent = cNode.parent.get_if_valid(registry);
+
+  return CanAddChildNode(registry, superParent, childId);
+}
+
 void
 AttachChildNode(
   entt::registry& registry,
   const entt::entity eParent,
   const entt::entity eChild )
 {
-  SceneNode& cParentNode = registry.get <SceneNode> (eParent);
+  using compos::Tag;
+  using compos::SceneNode;
+
+  CQDE_ASSERT_DEBUG(eChild != entt::null, return);
+
   SceneNode& cChildNode = registry.get <SceneNode> (eChild);
 
-  const Tag& cParentTag = registry.get <Tag> (eParent);
-  const Tag& cChildTag = registry.get <Tag> (eChild);
+  DetachChildNode(registry, cChildNode.parent.get_if_valid(registry), eChild);
 
-  cParentNode.children.insert({cChildTag});
-  cChildNode.parent = {cParentTag};
+  if ( eParent == entt::null )
+  {
+    cChildNode.parent = {};
+    return;
+  }
+
+  SceneNode& cParentNode = registry.get <SceneNode> (eParent);
+
+  const auto& cParentTag = registry.get <Tag> (eParent);
+  const auto& cChildTag = registry.get <Tag> (eChild);
+
+  cParentNode.children.insert(cChildTag);
+
+  cChildNode.parent = cParentTag;
 }
 
-entt::entity
+void
 DetachChildNode(
   entt::registry& registry,
   const entt::entity eParent,
   const entt::entity eChild )
 {
+  using compos::Tag;
+  using compos::SceneNode;
+
+  if ( eParent == entt::null ||
+       eChild == entt::null )
+    return;
+
   SceneNode& cParentNode = registry.get <SceneNode> (eParent);
   SceneNode& cChildNode = registry.get <SceneNode> (eChild);
 
-  const Tag& cParentTag = registry.get <Tag> (eParent);
   const Tag& cChildTag = registry.get <Tag> (eChild);
 
-  cParentNode.children.erase({cChildTag});
+  cParentNode.children.erase(cChildTag);
   cChildNode.parent = {};
-
-  return eChild;
 }
 
 void
@@ -105,14 +156,24 @@ RemoveChildNode(
   const entt::entity eParent,
   const entt::entity eChild )
 {
-  SceneNode& cParentNode = registry.get <SceneNode> (eParent);
+  using compos::Tag;
+  using compos::SceneNode;
+  using types::EntityManager;
 
-  Tag& cChildTag = registry.get <Tag> (eChild);
+  if ( eChild == entt::null )
+    return;
 
-  cParentNode.children.erase({cChildTag});
+  DetachChildNode(registry, eParent, eChild);
 
-  cChildTag.invalidate(registry);
-  registry.destroy(eChild);
+  const auto& cTag  = registry.get <Tag> (eChild);
+  const auto& cNode = registry.get <SceneNode> (eChild);
+
+  const auto children = cNode.children;
+
+  for ( const auto& child : children )
+    RemoveChildNode(registry, eChild, child.get_if_valid(registry));
+
+  registry.ctx().at <EntityManager> ().removeLater(eChild);
 }
 
-} // namespace cqde::compos
+} // namespace cqde
