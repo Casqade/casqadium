@@ -41,6 +41,7 @@ olc::rcode PGE_ImGUI::ImGui_ImplPGE_Init()
   ImGuiIO& io = ImGui::GetIO();
 
   io.BackendPlatformName = "imgui_impl_pge";
+  io.ConfigWindowsMoveFromTitleBarOnly = true;
 
   io.KeyMap[ImGuiKey_Tab] = olc::TAB;
   io.KeyMap[ImGuiKey_LeftArrow] = olc::LEFT;
