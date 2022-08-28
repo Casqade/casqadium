@@ -46,8 +46,11 @@ SceneNode::serialize() const
 
   json["parent"] = parent.id.str();
 
+  auto& jsonChildren = json["children"];
+  jsonChildren = Json::arrayValue;
+
   for ( const auto& child : children )
-    json["children"].append(child.id.str());
+    jsonChildren.append(child.id.str());
 
   return json;
 }
