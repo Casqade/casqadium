@@ -17,7 +17,7 @@ struct Tag
 
   Tag() = default;
 
-  void invalidate( entt::registry& );
+  void invalidate( entt::registry& ) const;
 
 
   void ui_edit_props( const entt::entity,

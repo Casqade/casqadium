@@ -10,7 +10,7 @@ namespace cqde::compos
 {
 
 void
-Tag::invalidate( entt::registry& registry )
+Tag::invalidate( entt::registry& registry ) const
 {
   registry.ctx().at <types::EntityManager> ().idInvalidate(id);
 }
