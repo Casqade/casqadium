@@ -17,6 +17,7 @@ class GameStateEcsSandbox
   void keyEvent( const olc::Event ) override;
   void mouseMoveEvent( const olc::Event::MouseMoveEvent ) override;
   void mouseButtonEvent( const olc::Event ) override;
+  void mouseWheelEvent( const olc::Event::MouseWheelScrollEvent ) override;
 
 public:
   GameStateEcsSandbox( GameStateController* const );

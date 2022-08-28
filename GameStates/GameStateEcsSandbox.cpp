@@ -353,6 +353,20 @@ GameStateEcsSandbox::mouseButtonEvent( const olc::Event event )
                                 mRegistry );
 }
 
+void
+GameStateEcsSandbox::mouseWheelEvent( const olc::Event::MouseWheelScrollEvent event )
+{
+  using olc::MouseInputId;
+  using cqde::InputHwCode;
+  using cqde::types::InputManager;
+
+  auto& inputManager = mRegistry.ctx().at <InputManager> ();
+
+  inputManager.handleAxisInput( InputHwCode(MouseInputId::Wheel),
+                                std::abs(event.delta), event.delta,
+                                mRegistry );
+}
+
 bool
 GameStateEcsSandbox::update(  const uint32_t ticks,
                               const TimeUtils::Duration& interval )

@@ -73,6 +73,10 @@ GameState::handleEvent( const olc::Event event )
       mouseButtonEvent( event );
       break;
 
+    case EventType::MouseWheelScrolled:
+      mouseWheelEvent( event.mouseWheelScroll );
+      break;
+
     case EventType::WindowResized:
       windowResizeEvent(event.windowResize);
       break;
@@ -96,6 +100,12 @@ GameState::mouseMoveEvent( const olc::Event::MouseMoveEvent )
 
 void
 GameState::mouseButtonEvent( const olc::Event )
+{
+  LOG_TRACE("{}", __FUNCTION__);
+}
+
+void
+GameState::mouseWheelEvent( const olc::Event::MouseWheelScrollEvent )
 {
   LOG_TRACE("{}", __FUNCTION__);
 }
