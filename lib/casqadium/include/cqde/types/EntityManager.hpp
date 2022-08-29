@@ -49,6 +49,17 @@ public:
              const entt::registry&,
              const std::set <entt::id_type>& excludedComponents ) const;
 
+  entt::entity entityCreate(  const EntityId&,
+                              entt::registry& );
+
+  void componentAdd( const ComponentType,
+                     const entt::entity,
+                     entt::registry& );
+
+  void componentRemove( const ComponentType,
+                        const entt::entity,
+                        entt::registry& );
+
   template <typename Component>
   void registerEmptyComponent( const std::string& name );
 
@@ -92,6 +103,8 @@ EntityManager::registerEmptyComponent(
   factory.type();
   factory.props(std::make_pair("empty"_hs, true),
                 std::make_pair("typename"_hs, name.substr()));
+  factory.template func <&component_exists <Component>> ("exists"_hs);
+  factory.template func <&component_remove <Component>> ("remove"_hs);
   factory.template func <&Component::serialize> ("serialize"_hs);
   factory.template func <&Component::deserialize> ("deserialize"_hs);
   factory.template func <&Component::ui_edit_props> ("ui_edit_props"_hs);

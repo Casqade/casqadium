@@ -237,6 +237,75 @@ EntityManager::save(
   fileStream << Json::writeString(jsonWriter(), registryJson);
 }
 
+entt::entity
+EntityManager::entityCreate(
+  const EntityId& id,
+  entt::registry& registry )
+{
+  using compos::Tag;
+
+  auto entity = get_if_valid(id, registry);
+
+  if ( entity == entt::null )
+  {
+    entity = registry.create();
+    auto& cTag = registry.emplace <Tag> (entity);
+    cTag.id = id;
+
+    idRegister(id, entity);
+  }
+
+  return entity;
+}
+
+void
+EntityManager::componentAdd(
+  const ComponentType componentType,
+  const entt::entity entity,
+  entt::registry& registry )
+{
+  using namespace entt::literals;
+
+  const auto component = entt::resolve(componentType);
+  const auto existsFunc = component.func("exists"_hs);
+  const auto serializeFunc = component.func("serialize"_hs);
+  auto instance = component.construct();
+
+  if ( !instance || !existsFunc || !serializeFunc )
+    return LOG_ERROR("Failed to add unresolved component '{}'",
+                      componentName(componentType));
+
+  if ( existsFunc.invoke({}, entt::forward_as_meta(registry),
+                         entity).cast <bool> () == true )
+    return;
+
+  Json::Value componentJson = Json::objectValue;
+  componentJson = serializeFunc.invoke(instance).cast <Json::Value> ();
+
+  const auto deserializeFunc = component.func("deserialize"_hs);
+  deserializeFunc.invoke( {}, entt::forward_as_meta(registry),
+                          entity,
+                          entt::forward_as_meta(componentJson));
+}
+
+void
+EntityManager::componentRemove(
+  const ComponentType componentType,
+  const entt::entity entity,
+  entt::registry& registry )
+{
+  using namespace entt::literals;
+
+  const auto component = entt::resolve(componentType);
+  const auto removeFunc = component.func("remove"_hs);
+
+  if ( !removeFunc )
+    return LOG_ERROR("Failed to remove unresolved component '{}'",
+                      componentName(componentType));
+
+  removeFunc.invoke({}, entt::forward_as_meta(registry), entity);
+}
+
 std::string
 EntityManager::componentName(
   const ComponentType type ) const
