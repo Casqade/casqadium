@@ -58,6 +58,7 @@ public:
   std::string   componentName( const ComponentType ) const;
   ComponentType componentType( const std::string& name ) const;
 
+  std::vector <EntityId> entities() const;
   std::vector <std::string> componentNames() const;
 
   void clear();

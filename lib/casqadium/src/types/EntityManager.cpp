@@ -258,6 +258,18 @@ EntityManager::componentType(
   return {};
 }
 
+std::vector <EntityId>
+EntityManager::entities() const
+{
+  std::vector <EntityId> result {};
+  result.reserve(mEntitiesTags.size());
+
+  for ( const auto& [id, entity] : mEntitiesTags )
+    result.push_back(id);
+
+  return result;
+}
+
 std::vector <std::string>
 EntityManager::componentNames() const
 {
