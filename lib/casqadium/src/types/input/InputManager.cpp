@@ -158,11 +158,11 @@ InputManager::deserialize(
 
   for ( const auto& axisId : inputConfig.getMemberNames() )
   {
-    LOG_DEBUG("Binding inputs to axis '{}'", axisId);
+    LOG_DEBUG("Deserializing inputs for axis '{}'", axisId);
 
     for ( const auto& bindingHwId : inputConfig[axisId].getMemberNames() )
     {
-      LOG_TRACE("Binding input '{}' to axis '{}'",
+      LOG_TRACE("Deserializing input '{}' for axis '{}'",
                 bindingHwId, axisId);
 
       try
@@ -178,7 +178,7 @@ InputManager::deserialize(
       {
         using fmt::format;
         throw std::runtime_error(
-          format("Failed to bind '{}' to axis '{}' - {}",
+          format("Failed to deserialize '{}' for axis '{}' - {}",
                   bindingHwId, axisId, e.what()));
       }
     }
@@ -217,7 +217,12 @@ void InputManager::assignBinding(
   const std::shared_ptr <InputBinding> binding )
 {
   if ( bindingAssigned(axisId, binding->inputId) == false )
+  {
+    LOG_TRACE("Binding input '{}' to axis '{}'",
+              binding->inputId.str(), axisId.str());
+
     mBindings.insert({ binding, axisId });
+  }
 }
 
 void InputManager::assignBindings(

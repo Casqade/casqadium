@@ -125,9 +125,10 @@ EntityManager::load(
 
         const auto& componentJson = entityJson[componentName];
 
-        auto deserializeFunc = component.func("deserialize"_hs);
+        const auto deserializeFunc = component.func("deserialize"_hs);
         deserializeFunc.invoke( {}, entt::forward_as_meta(registry),
-                                entity, entt::forward_as_meta(componentJson));
+                                entity,
+                                entt::forward_as_meta(componentJson));
       }
       catch ( const std::exception& e )
       {
@@ -461,7 +462,7 @@ EntityManager::idGenerate(
   {
     id = std::stoi(tokens.back());
   }
-  catch( const std::exception& e )
+  catch ( ... )
   {
     tokens.push_back(std::to_string(id));
   }
