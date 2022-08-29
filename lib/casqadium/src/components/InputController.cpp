@@ -20,9 +20,15 @@ const static Json::Value inputControllerJsonReference =
   root.setComment("// JSON root must be an object"s,
                    Json::CommentPlacement::commentBefore);
 
-  root["inputs"] = ValueType::objectValue;
-  root["inputs"].setComment("// 'inputs' must be a JSON object"s,
-                            Json::CommentPlacement::commentBefore);
+  Json::Value& inputs = root["inputs"];
+  inputs = ValueType::objectValue;
+  inputs.setComment("// 'inputs' must be a JSON object"s,
+                    Json::CommentPlacement::commentBefore);
+
+  Json::Value& axis = inputs["cqde_json_anykey"];
+  axis = ValueType::objectValue;
+  axis.setComment("// input axis entry must be a JSON object"s,
+                  Json::CommentPlacement::commentBefore);
 
   return root;
 }();
@@ -32,8 +38,11 @@ InputController::serialize() const
 {
   Json::Value json {};
 
+  auto& jsonInputs = json["inputs"];
+  jsonInputs = Json::objectValue;
+
   for ( const auto& [axisId, controlAxis] : inputs )
-    json[axisId.str()] = controlAxis.toJson();
+    jsonInputs[axisId.str()] = controlAxis.toJson();
 
   return json;
 }

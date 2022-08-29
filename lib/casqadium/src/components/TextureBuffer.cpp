@@ -36,8 +36,11 @@ TextureBuffer::serialize() const
 {
   Json::Value json {};
 
+  auto& jsonTextures = json["textures"];
+  jsonTextures = Json::arrayValue;
+
   for ( const auto& texture : textures )
-    json["textures"].append(texture.str());
+    jsonTextures.append(texture.str());
 
   return json;
 }

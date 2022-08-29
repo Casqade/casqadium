@@ -82,8 +82,11 @@ ControlAxis::toJson() const
   json["constraint"].append(constraint.first);
   json["constraint"].append(constraint.second);
 
+  auto& jsonCallbacks = json["callbacks"];
+  jsonCallbacks = Json::arrayValue;
+
   for ( const auto& callback : callbacks )
-    json["callbacks"] = callback.str();
+    jsonCallbacks.append(callback.str());
 
   return json;
 }
