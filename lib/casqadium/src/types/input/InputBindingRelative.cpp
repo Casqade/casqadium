@@ -32,13 +32,13 @@ const static Json::Value inputBindingJsonReference =
 }();
 
 InputBindingRelative::InputBindingRelative(
-  const cqde::InputHwId& inputHwId,
+  const InputHwId& inputHwId,
   const Json::Value& json )
   : InputBinding(inputHwId, json)
 {}
 
 InputBindingRelative::InputBindingRelative(
-  const cqde::InputHwId& _inputId,
+  const InputHwId& _inputId,
   const float _sensitivity )
   : InputBinding(_inputId, _sensitivity)
 {}

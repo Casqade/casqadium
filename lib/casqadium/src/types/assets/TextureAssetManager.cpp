@@ -179,7 +179,7 @@ AssetManager <olc::Renderable>::try_get(
     }
 
     default:
-      return mAssets.at(cqde::null_id).handle;
+      return mAssets.at(null_id).handle;
   }
 }
 

@@ -7,7 +7,7 @@ namespace cqde::types
 void
 CallbackManager::execute(
   const CallbackId& callbackId,
-  entt::registry& registry,
+  entt::registry&   registry,
   const std::vector <std::any>& args ) const
 {
   mCallbacks.at(callbackId)(registry, args);
@@ -15,8 +15,8 @@ CallbackManager::execute(
 
 void
 CallbackManager::Register(
-  const CallbackId& callbackId,
-  const CallbackFunc&     callback )
+  const CallbackId&   callbackId,
+  const CallbackFunc& callback )
 {
   mCallbacks[callbackId] = callback;
 }

@@ -14,7 +14,7 @@ namespace cqde::compos
 
 struct TextureBuffer
 {
-  std::vector <cqde::TextureId> textures {};
+  std::vector <TextureId> textures {};
 
 
   TextureBuffer() = default;

@@ -54,6 +54,9 @@ EntityManager::load(
   entt::registry& registry )
 {
   using fmt::format;
+  using compos::Tag;
+  using compos::EntityMetaInfo;
+  using namespace entt::literals;
 
   if ( fileExists(registryPath) == false )
     return;
@@ -85,9 +88,6 @@ EntityManager::load(
       format("Failed to validate entity registry '{}': {}",
               registryPath.string(), e.what()));
   }
-
-  using namespace cqde::compos;
-  using namespace entt::literals;
 
   for ( const auto& entityId : registryJson.getMemberNames() )
   {
@@ -137,8 +137,6 @@ EntityManager::load(
       }
     }
 
-//    CQDE_ASSERT_DEBUG(packageId != null_id, return);
-
     auto& metaInfo = registry.emplace_or_replace <EntityMetaInfo> (entity);
     metaInfo.packageId = packageId;
   }
@@ -154,8 +152,8 @@ EntityManager::save(
   using namespace entt::literals;
 
   using fmt::format;
-  using cqde::compos::Tag;
-  using cqde::compos::EntityMetaInfo;
+  using compos::Tag;
+  using compos::EntityMetaInfo;
 
   Json::Value registryJson {};
 
@@ -188,7 +186,7 @@ EntityManager::save(
         if ( excludedComponents.count(componentType) != 0 )
           return true;
 
-        auto component = entt::resolve(componentType);
+        const auto component = entt::resolve(componentType);
         if ( !component )
           throw std::runtime_error(
             format("Unknown component (id_type {})",
@@ -205,9 +203,9 @@ EntityManager::save(
           return true;
         }
 
-        auto componentGet = component.func("get_const"_hs);
+        const auto componentGet = component.func("get_const"_hs);
         auto componentInstance = componentGet.invoke({}, entt::forward_as_meta(registry), entity);
-        auto serializedComponent = component.func("serialize"_hs).invoke(componentInstance);
+        const auto serializedComponent = component.func("serialize"_hs).invoke(componentInstance);
 
         if ( serializedComponent )
         {
@@ -320,7 +318,7 @@ EntityManager::delayedRemove(
 
 bool
 EntityManager::valid(
-  const entt::entity entity,
+  const entt::entity    entity,
   const entt::registry& registry ) const
 {
   using entity_traits = entt::entt_traits <entt::entity>;

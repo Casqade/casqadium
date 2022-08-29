@@ -23,8 +23,8 @@ namespace cqde::systems
 void
 RenderSystem( entt::registry& registry )
 {
-  using namespace cqde::compos;
-  using namespace cqde::types;
+  using namespace compos;
+  using namespace types;
 
   for ( const auto&& [eCamera, cCamera] : registry.view <Camera> ().each() )
   {

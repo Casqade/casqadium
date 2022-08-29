@@ -10,12 +10,12 @@ struct InputBindingAbsolute : public InputBinding
   float deadzone {};
 
 
-  InputBindingAbsolute( const cqde::InputHwId&,
+  InputBindingAbsolute( const InputHwId&,
                         const Json::Value& );
-  InputBindingAbsolute( const cqde::InputHwId&,
+  InputBindingAbsolute( const InputHwId&,
                         const float _sensitivity = 1.0f );
 
-  void handleInput( cqde::types::ControlAxis&,
+  void handleInput( ControlAxis&,
                     const float amount ) const override;
 
   void ui_show( Json::Value& ) override;

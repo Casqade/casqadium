@@ -21,7 +21,7 @@ vertexShader(
   const glm::mat4& projectionMatrix,
   const glm::vec4& viewport )
 {
-  using cqde::types::VertexBuffer;
+  using types::VertexBuffer;
 
   if ( vertices.size() == 0 )
     return {{}, -1.0f, {}};
@@ -100,7 +100,7 @@ vertexShader(
 void CullingSystem(
   entt::registry& registry )
 {
-  using namespace cqde::compos;
+  using namespace compos;
   using types::GeometryAssetManager;
 
   auto& geometry = registry.ctx().at <GeometryAssetManager> ();

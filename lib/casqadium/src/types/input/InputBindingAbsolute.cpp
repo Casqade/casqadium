@@ -33,7 +33,7 @@ const static Json::Value InputBindingAbsoluteJsonReference =
 }();
 
 InputBindingAbsolute::InputBindingAbsolute(
-  const cqde::InputHwId& inputHwId,
+  const InputHwId& inputHwId,
   const Json::Value& json )
   : InputBinding(inputHwId, json)
   , curve{}
@@ -53,14 +53,14 @@ InputBindingAbsolute::InputBindingAbsolute(
 }
 
 InputBindingAbsolute::InputBindingAbsolute(
-  const cqde::InputHwId& _inputId,
+  const InputHwId& _inputId,
   const float _sensitivity )
   : InputBinding(_inputId, _sensitivity)
 {}
 
 void
 InputBindingAbsolute::handleInput(
-  cqde::types::ControlAxis& targetAxis,
+  ControlAxis& targetAxis,
   const float amount ) const
 {
   // todo : curve + deadzone

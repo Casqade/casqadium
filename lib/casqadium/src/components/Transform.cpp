@@ -228,7 +228,7 @@ GetWorldMatrix(
   using compos::SceneNode;
   using compos::Transform;
 
-  std::function <glm::mat4(const SceneNode&)> parentModelWorld =
+  const std::function <glm::mat4(const SceneNode&)> parentModelWorld =
   [&] ( const SceneNode& child ) -> glm::mat4
   {
     const entt::entity eParent = child.parent.get_if_valid(registry);

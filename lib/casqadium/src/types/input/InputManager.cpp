@@ -53,7 +53,6 @@ InputManager::InputManager()
 {
   using olc::Key;
   using olc::MouseInputId;
-  using cqde::InputHwId;
 
   mHwControlMap =
   {

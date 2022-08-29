@@ -124,7 +124,7 @@ AssetManager <olc::Font>::try_get(
       return mAssets.at(id).handle;
 
     default:
-      return mAssets.at(cqde::null_id).handle;
+      return mAssets.at(null_id).handle;
   }
 }
 

@@ -31,7 +31,7 @@ class AssetManager
 {
   using path = std::filesystem::path;
 
-  using AssetId = cqde::identifier;
+  using AssetId = identifier;
   using AssetPath = std::filesystem::path;
   using AssetHandle = std::shared_ptr <Asset>;
 

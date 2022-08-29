@@ -35,7 +35,7 @@ const static Json::Value InputBindingJsonReference =
 
 
 InputBinding::InputBinding(
-  const cqde::InputHwId& inputHwId,
+  const InputHwId& inputHwId,
   const Json::Value& json )
   : inputId{inputHwId}
   , sensitivity{}
@@ -53,15 +53,15 @@ InputBinding::InputBinding(
 }
 
 InputBinding::InputBinding(
-  const InputHwId& _inputId,
+  const InputHwId& inputHwId,
   const float _sensitivity )
-  : inputId(_inputId)
+  : inputId(inputHwId)
   , sensitivity(_sensitivity)
 {}
 
 void
 InputBinding::handleInput(
-  cqde::types::ControlAxis&,
+  ControlAxis&,
   const float amount ) const
 {
   CQDE_ASSERT_DEBUG(false, return;);
@@ -106,13 +106,13 @@ InputBindingComparator::operator () ( const std::shared_ptr <InputBinding>& lhs,
 }
 
 bool
-InputBindingComparator::operator () ( const cqde::InputHwId& lhs, const std::shared_ptr <InputBinding>& rhs ) const
+InputBindingComparator::operator () ( const InputHwId& lhs, const std::shared_ptr <InputBinding>& rhs ) const
 {
   return lhs < rhs->inputId;
 }
 
 bool
-InputBindingComparator::operator () ( const std::shared_ptr <InputBinding>& lhs, const cqde::InputHwId& rhs ) const
+InputBindingComparator::operator () ( const std::shared_ptr <InputBinding>& lhs, const InputHwId& rhs ) const
 {
   return lhs->inputId < rhs;
 }
