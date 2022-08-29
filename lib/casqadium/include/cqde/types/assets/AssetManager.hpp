@@ -2,6 +2,8 @@
 
 #include <cqde/alias.hpp>
 
+#include <cqde/types/assets/AssetStatus.hpp>
+
 #include <json/value.h>
 
 #include <filesystem>
@@ -16,15 +18,6 @@ class thread_pool;
 
 namespace cqde::types
 {
-
-enum class AssetStatus
-{
-  Undefined,
-  Unloaded,
-  Loading,
-  Loaded,
-  Error,
-};
 
 template <typename Asset>
 class AssetManager

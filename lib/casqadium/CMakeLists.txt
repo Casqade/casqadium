@@ -121,6 +121,8 @@ target_sources(${TARGET} PRIVATE
   src/types/PackageManager.cpp
   include/${CASQADIUM_SHORT}/types/PackageManager.hpp
 
+  include/${CASQADIUM_SHORT}/types/assets/AssetStatus.hpp
+
   include/${CASQADIUM_SHORT}/types/assets/AssetManager.hpp
   include/${CASQADIUM_SHORT}/types/assets/AssetManager-inl.hpp
 
