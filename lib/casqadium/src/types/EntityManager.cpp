@@ -297,12 +297,17 @@ void
 EntityManager::delayedRemove(
   entt::registry& registry )
 {
+  using compos::Tag;
+
   for ( const auto entity : mEntitesToRemove )
   {
     mComponentsToRemove.erase(entity);
 
     if ( valid(entity, registry) == true )
+    {
+      idInvalidate( registry.get <Tag> (entity).id );
       registry.destroy(entity);
+    }
   }
 
   for ( const auto& [entity, componentList] : mComponentsToRemove )
