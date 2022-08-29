@@ -1,5 +1,8 @@
 #include <cqde/types/CallbackManager.hpp>
 
+#include <cqde/common.hpp>
+#include <cqde/util/logger.hpp>
+
 
 namespace cqde::types
 {
@@ -10,7 +13,11 @@ CallbackManager::execute(
   entt::registry&   registry,
   const std::vector <std::any>& args ) const
 {
-  mCallbacks.at(callbackId)(registry, args);
+  if ( mCallbacks.count(callbackId) > 0 )
+    return mCallbacks.at(callbackId)(registry, args);
+
+  LOG_ERROR("Can't execute unknown callback '{}'", callbackId.str());
+  CQDE_ASSERT_DEBUG(false, return);
 }
 
 void
