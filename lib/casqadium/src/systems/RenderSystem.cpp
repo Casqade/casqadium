@@ -71,6 +71,7 @@ RenderSystem( entt::registry& registry )
                                               vertices[iNext],
                                               olc::CYAN );
     }
+    cCamera.zBuffer.clear();
   }
 }
 
