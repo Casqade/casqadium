@@ -54,4 +54,13 @@ component_exists(
   return registry.template all_of <Component> (entity);
 }
 
+template <typename Component>
+void
+component_remove(
+  entt::registry&     registry,
+  const entt::entity  entity )
+{
+  registry.template remove <Component> (entity);
+}
+
 } // namespace cqde
