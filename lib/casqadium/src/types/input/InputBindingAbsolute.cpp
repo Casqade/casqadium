@@ -64,10 +64,14 @@ InputBindingAbsolute::handleInput(
   const float amount ) const
 {
   // todo : curve + deadzone
-  targetAxis.value
-    = std::clamp(amount * sensitivity,
-                 targetAxis.constraint.first,
-                 targetAxis.constraint.second );
+  if ( targetAxis.constraint.second >=
+       targetAxis.constraint.first )
+    targetAxis.value
+      = std::clamp(amount * sensitivity,
+                   targetAxis.constraint.first,
+                   targetAxis.constraint.second );
+  else
+    targetAxis.value = amount * sensitivity;
 }
 
 Json::Value

@@ -14,6 +14,7 @@ struct ControlAxis
 {
   float value {};
   std::pair <float, float> constraint {};
+//          second < first to disable limits
 
   std::set <CallbackId> callbacks {};
 

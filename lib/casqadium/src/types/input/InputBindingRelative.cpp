@@ -45,13 +45,17 @@ InputBindingRelative::InputBindingRelative(
 
 void
 InputBindingRelative::handleInput(
-  cqde::types::ControlAxis& targetAxis,
+  ControlAxis& targetAxis,
   const float amount ) const
 {
-  targetAxis.value
-    = std::clamp(targetAxis.value + amount * sensitivity,
-                 targetAxis.constraint.first,
-                 targetAxis.constraint.second );
+  if ( targetAxis.constraint.second >=
+       targetAxis.constraint.first )
+    targetAxis.value
+      = std::clamp(targetAxis.value + amount * sensitivity,
+                   targetAxis.constraint.first,
+                   targetAxis.constraint.second );
+  else
+    targetAxis.value += amount * sensitivity;
 }
 
 Json::Value
