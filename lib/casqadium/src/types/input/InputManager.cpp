@@ -237,13 +237,16 @@ InputManager::handleAxisInput(
 {
   using compos::InputController;
 
-  InputEvent event {};
+  if ( mHwControlMap.count(inputHwCode) == 0 )
+    return;
 
   const std::string inputDir  = direction > 0.0f
                               ? "+"
                               : "-";
 
   InputHwId inputId = inputDir + mHwControlMap[inputHwCode].str();
+
+  InputEvent event {};
 
   event.inputId = inputId;
   event.amount = amount;
