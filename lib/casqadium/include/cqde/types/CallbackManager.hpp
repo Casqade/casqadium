@@ -36,6 +36,8 @@ public:
 
   void Register( const CallbackId&,
                  const CallbackFunc& );
+
+  std::vector <CallbackId> callbacks() const;
 };
 
 } // namespace cqde::types

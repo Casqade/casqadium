@@ -21,4 +21,15 @@ CallbackManager::Register(
   mCallbacks[callbackId] = callback;
 }
 
+std::vector <CallbackId>
+CallbackManager::callbacks() const
+{
+  std::vector <CallbackId> result {};
+
+  for ( const auto& [callbackId, callback] : mCallbacks )
+    result.push_back(callbackId);
+
+  return result;
+}
+
 } // namespace cqde::types
