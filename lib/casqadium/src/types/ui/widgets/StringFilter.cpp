@@ -16,8 +16,11 @@ StringFilter::StringFilter(
 
 bool
 StringFilter::search(
-  const std::string& newQuery )
+  const std::string& newQuery,
+  const int inputTextFlags )
 {
+  ImGui::PushID(mHint.c_str());
+
   ImGui::AlignTextToFramePadding();
   ImGui::Text("Find:");
 
@@ -27,10 +30,28 @@ StringFilter::search(
   ImGui::SameLine();
   mCaseSensitivity = mCaseSensitivityButton.isDown();
 
+  if ( ImGui::IsItemHovered() )
+    ImGui::SetTooltip("Case sensitivity");
+
+  ImGui::SameLine();
+  mExcludeQueried = mExcludeQuerriedButton.isDown();
+
+  if ( ImGui::IsItemHovered() )
+    ImGui::SetTooltip("Exclusive filter");
+
   ImGui::SameLine();
 
-  return ImGui::InputTextWithHint(("##" + mHint).c_str(),
-                                  mHint.c_str(), &mQuery);
+  const bool queryWasChanged =
+    ImGui::InputTextWithHint(("##" + mHint).c_str(),
+                              mHint.c_str(), &mQuery,
+                              inputTextFlags);
+
+  if ( ImGui::IsItemHovered() )
+    ImGui::SetTooltip("%s", mHint.c_str());
+
+  ImGui::PopID(); // mHint
+
+  return queryWasChanged;
 }
 
 bool
@@ -45,7 +66,9 @@ StringFilter::query(
     query = toLowerCase(query);
   }
 
-  return value.find(query) != std::string::npos;
+  const bool found = value.find(query) != std::string::npos;
+
+  return found ^ mExcludeQueried | query.empty();
 }
 
 std::string
