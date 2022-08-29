@@ -368,6 +368,9 @@ EntityManager::idGenerate(
 
   auto tokens = stringSplit(hint.str(), '_');
 
+  if ( tokens.empty() == true )
+    tokens.push_back("e");
+
   try
   {
     id = std::stoi(tokens.back());
