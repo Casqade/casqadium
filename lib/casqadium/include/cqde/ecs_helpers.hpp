@@ -45,4 +45,13 @@ component_get_const(
   return registry.template get <Component> (entity);
 }
 
+template <typename Component>
+bool
+component_exists(
+  entt::registry&     registry,
+  const entt::entity  entity )
+{
+  return registry.template all_of <Component> (entity);
+}
+
 } // namespace cqde
