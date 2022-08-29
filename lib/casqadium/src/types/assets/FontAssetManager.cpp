@@ -144,11 +144,14 @@ AssetManager <olc::Font>::ui_show_preview(
   if ( assetStatus == AssetStatus::Undefined )
     return;
 
-  if ( mAssets.at(fontId).path != MemoryResidentPath &&
-       ImGui::Button("Reload") )
+  if ( mAssets.at(fontId).path != MemoryResidentPath )
   {
-    unload(fontId);
-    load({fontId});
+    ImGui::SameLine();
+    if ( ImGui::Button("Reload") )
+    {
+      unload(fontId);
+      load({fontId});
+    }
   }
 
   if ( ImGui::CollapsingHeader("Path", ImGuiTreeNodeFlags_DefaultOpen) )

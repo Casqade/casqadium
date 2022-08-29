@@ -199,11 +199,14 @@ AssetManager <olc::Renderable>::ui_show_preview(
   if ( assetStatus == AssetStatus::Undefined )
     return;
 
-  if ( mAssets.at(textureId).path != MemoryResidentPath &&
-       ImGui::Button("Reload") )
+  if ( mAssets.at(textureId).path != MemoryResidentPath )
   {
-    unload(textureId);
-    load({textureId});
+    ImGui::SameLine();
+    if ( ImGui::Button("Reload") )
+    {
+      unload(textureId);
+      load({textureId});
+    }
   }
 
   if ( ImGui::CollapsingHeader("Path", ImGuiTreeNodeFlags_DefaultOpen) )

@@ -268,11 +268,14 @@ AssetManager <std::string>::ui_show_preview(
   if ( assetStatus == AssetStatus::Undefined )
     return;
 
-  if ( mAssets.at(stringId).path != MemoryResidentPath &&
-       ImGui::Button("Reload") )
+  if ( mAssets.at(stringId).path != MemoryResidentPath )
   {
-    unload(stringId);
-    load({stringId});
+    ImGui::SameLine();
+    if ( ImGui::Button("Reload") )
+    {
+      unload(stringId);
+      load({stringId});
+    }
   }
 
   if ( ImGui::CollapsingHeader("Path", ImGuiTreeNodeFlags_DefaultOpen) )
