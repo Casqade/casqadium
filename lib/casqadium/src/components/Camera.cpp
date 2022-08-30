@@ -43,12 +43,12 @@ Camera::projMatrix() const
 {
   const glm::vec4 viewport = viewportScaled();
 
-  return  projectionType == Projection::Perspective ?
-          glm::perspectiveFov(fov,
-                              viewport.z, viewport.w,
-                              zRange.first, zRange.second )
-        : glm::ortho( -viewport.z * 0.5f, viewport.z * 0.5f,
-                      -viewport.w * 0.5f, viewport.w * 0.5f,
+  if ( projectionType == Projection::Perspective )
+    return glm::perspectiveFov( fov, viewport.z, viewport.w,
+                                zRange.first, zRange.second);
+
+  return glm::ortho(-viewport.z * zoom, viewport.z * zoom,
+                    -viewport.w * zoom, viewport.w * zoom,
                       zRange.first, zRange.second );
 }
 
@@ -108,7 +108,11 @@ Camera::serialize() const
   json["viewport"] << viewport;
   json["z-range"].append(zRange.first);
   json["z-range"].append(zRange.second);
-  json["fov"] = glm::degrees(fov);
+
+  if ( projectionType == Projection::Perspective )
+    json["fov"] = glm::degrees(fov);
+  else
+    json["fov"] = fov;
 
   json["projection"] = projectionType == Projection::Perspective
                        ? "perspective"
@@ -144,14 +148,19 @@ Camera::deserialize(
 
   auto& comp = registry.emplace <Camera> (entity);
 
-  comp.fov = glm::radians(json["fov"].asFloat());
+  comp.projectionType = projection == "perspective"
+                        ? Projection::Perspective
+                        : Projection::Orthographic;
+
+  if ( comp.projectionType == Projection::Perspective )
+    comp.fov = glm::radians(json["fov"].asFloat());
+  else
+    comp.fov = json["fov"].asFloat();
+
   comp.viewport << json["viewport"];
   comp.zRange.first = json["z-range"][0].asFloat();
   comp.zRange.second = json["z-range"][1].asFloat();
 
-  comp.projectionType = projection == "perspective"
-                        ? Projection::Perspective
-                        : Projection::Orthographic;
 
 //  todo: render, texture & lighting modes
 }

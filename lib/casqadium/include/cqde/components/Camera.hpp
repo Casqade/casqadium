@@ -50,7 +50,12 @@ struct Camera
 
   glm::vec4 viewport {0.0, 0.0, 1.0, 1.0};
   std::pair <float, float> zRange {0.1f, 1000.0f};
-  float fov {1.0f}; // = 57 degrees
+
+  union
+  {
+    float fov {1.0f}; // = 57 degrees
+    float zoom;
+  };
 
   Projection    projectionType = Projection::Perspective;
   RenderMode    renderMode = RenderMode::Solid;

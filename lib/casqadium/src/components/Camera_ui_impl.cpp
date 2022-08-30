@@ -67,29 +67,52 @@ Camera::ui_edit_props(
                       flags);
   }
 
-  if ( ImGui::CollapsingHeader("Fov", ImGuiTreeNodeFlags_DefaultOpen) )
+  const std::string headerTitle = projectionType == Projection::Perspective ? "Fov" : "Zoom";
+
+  if ( ImGui::CollapsingHeader((headerTitle + "###cameraScale").c_str(), ImGuiTreeNodeFlags_DefaultOpen) )
   {
-    if ( fovAsRadians == false )
+    switch (projectionType)
     {
-      float fovDegrees = glm::degrees(fov);
+      case Projection::Perspective:
+      {
+        if ( fovAsRadians == false )
+        {
+          float fovDegrees = glm::degrees(fov);
 
-      if ( ImGui::DragFloat("##fov", &fovDegrees,
-                            1.0f, glm::epsilon <float> (), 180.0f, "%.2f deg") )
-        fov = glm::radians(fovDegrees);
-    }
-    else
-      ImGui::DragFloat("##fov", &fov,
-                       glm::radians(1.0f), glm::epsilon <float> (),
-                       glm::pi <float> (), "%.3f rad");
+          if ( ImGui::DragFloat("##fov", &fovDegrees,
+                                1.0f, std::numeric_limits <float>::min(),
+                                180.0f, "%.2f deg", flags) )
+            fov = glm::radians(fovDegrees);
+        }
+        else
+          ImGui::DragFloat("##fov", &fov,
+                           glm::radians(1.0f),
+                           std::numeric_limits <float>::min(),
+                           glm::pi <float> (), "%.3f rad", flags);
 
-    ImGui::SameLine();
-    if ( fovAsRadians == true )
-    {
-      if ( ImGui::Button("rad") )
-        fovAsRadians = false;
+        ImGui::SameLine();
+        if ( fovAsRadians == true )
+        {
+          if ( ImGui::Button("rad") )
+            fovAsRadians = false;
+        }
+        else if ( ImGui::Button("deg") )
+          fovAsRadians = true;
+
+        break;
+      }
+
+      case Projection::Orthographic:
+      {
+        float zoomScaled = 1.0f / std::max(zoom, std::numeric_limits <float>::min());
+
+        if ( ImGui::DragFloat("##zoom", &zoomScaled, 1.0f,
+                              std::numeric_limits <float>::min(),
+                              std::numeric_limits <float>::max(),
+                              "%.3f", flags) )
+          zoom = 1.0f / zoomScaled;
+      }
     }
-    else if ( ImGui::Button("deg") )
-      fovAsRadians = true;
   }
 
   if ( ImGui::CollapsingHeader("Projection", ImGuiTreeNodeFlags_DefaultOpen) )
