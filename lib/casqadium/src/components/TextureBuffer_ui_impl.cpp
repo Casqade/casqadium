@@ -1,6 +1,8 @@
 #include <cqde/components/TextureBuffer.hpp>
 #include <cqde/types/assets/TextureAssetManager.hpp>
 
+#include <cqde/types/ui/widgets/StringFilter.hpp>
+
 #include <entt/entity/registry.hpp>
 
 #include <spdlog/fmt/bundled/format.h>
@@ -22,31 +24,41 @@ TextureBuffer::ui_edit_props(
   if ( ImGui::CollapsingHeader("Textures", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
 
-  const auto assets = registry.ctx().at <TextureAssetManager> ().assetIdList();
+  const auto textureList = registry.ctx().at <TextureAssetManager> ().assetIdList();
 
-  if ( assets.empty() == true )
+  static ui::StringFilter textureFilter {"Texture ID"};
+
+  if ( ImGui::SmallButton("+##textureAdd") )
+    ImGui::OpenPopup("##textureAddPopup");
+
+  if ( ImGui::BeginPopup("##textureAddPopup") )
   {
-    ImGui::Text("No textures in TextureAssetManager");
-    return;
-  }
+    if ( ImGui::IsWindowAppearing() )
+      ImGui::SetKeyboardFocusHere(2);
 
-  static TextureId textureToAdd {assets.front()};
+    textureFilter.search({}, ImGuiInputTextFlags_AutoSelectAll);
 
-  if ( ImGui::Button("+##textureAdd") )
-    textures.push_back(textureToAdd);
+    bool texturesFound {};
 
-  ImGui::SameLine();
-  if ( ImGui::BeginCombo("##textureId", textureToAdd.str().c_str(),
-                         ImGuiComboFlags_HeightLargest) )
-  {
-    for ( const auto& asset : assets )
+    for ( const auto& textureId : textureList )
     {
-      const bool selected = (textureToAdd == asset);
+      if ( textureFilter.query(textureId.str()) == false )
+        continue;
 
-      if ( ImGui::Selectable(asset.str().c_str(), selected) )
-        textureToAdd = asset;
+      texturesFound = true;
+
+      if ( ImGui::Selectable(textureId.str().c_str(), false) )
+      {
+        textures.push_back(textureId);
+        ImGui::CloseCurrentPopup();
+        break;
+      }
     }
-    ImGui::EndCombo();
+
+    if ( texturesFound == false )
+      ImGui::Text("No textures matching filter");
+
+    ImGui::EndPopup(); // textureAddPopup
   }
 
   ImGui::Separator();
@@ -97,56 +109,6 @@ TextureBuffer::ui_edit_props(
 
     ImGui::PopID();
   }
-
-//  for ( size_t i = 0;
-//        i < textures.size();
-//        ++i )
-//  {
-//    ImGui::PushID(i);
-
-//    const auto texture = textures.at(i);
-
-//    if ( ImGui::SmallButton("-##textureDel") )
-//      textures.erase(textures.begin() + i);
-
-//    if ( i >= textures.size() )
-//      break;
-
-//    ImGui::SameLine();
-//    ImGui::TreeNodeEx(format("{}###{}", texture.str(), i).c_str(),
-//                      ImGuiTreeNodeFlags_Leaf |
-//                      ImGuiTreeNodeFlags_NoTreePushOnOpen );
-
-//    if ( ImGui::BeginDragDropSource(ImGuiDragDropFlags_SourceNoPreviewTooltip |
-//                                    ImGuiDragDropFlags_SourceNoDisableHover) )
-//    {
-//      LOG_INFO("src {}", i);
-//      ImGui::SetDragDropPayload("textureIndex", &i, sizeof(size_t));
-//      ImGui::EndDragDropSource();
-//    }
-
-//    if ( ImGui::GetDragDropPayload() != nullptr &&
-//         ImGui::BeginDragDropTarget() )
-//    {
-//      LOG_INFO("tgt {}", i);
-//      auto payload = ImGui::AcceptDragDropPayload("textureIndex",
-//                                                  ImGuiDragDropFlags_AcceptBeforeDelivery);
-//      if ( payload != nullptr )
-//      {
-//        IM_ASSERT(payload->DataSize == sizeof(size_t));
-
-//        size_t i_source = *(const size_t*) payload->Data;
-//        std::swap(textures.at(i), textures.at(i_source));
-
-//        if ( ImGui::IsMouseReleased(ImGuiMouseButton_Left) == false )
-//        {
-//          ImGui::SetDragDropPayload("textureIndex", &i, sizeof(size_t));
-//        }
-//      }
-//      ImGui::EndDragDropTarget();
-//    }
-//    ImGui::PopID();
-//  }
 }
 
 } // namespace cqde::compos
