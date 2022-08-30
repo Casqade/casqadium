@@ -17,37 +17,33 @@ Camera::ui_edit_props(
 {
   static bool fovAsRadians {};
 
-  const std::array <std::string, 2> projectionString
-  {
-    "Perspective",
-    "Orthographic",
-  };
-
   const float width = ImGui::GetContentRegionAvail().x / 2;
+
+  const auto flags = ImGuiSliderFlags_AlwaysClamp | ImGuiSliderFlags_NoRoundToFormat;
 
   if ( ImGui::CollapsingHeader("Viewport", ImGuiTreeNodeFlags_DefaultOpen) )
   {
     ImGui::SetNextItemWidth(width);
-    ImGui::DragFloat("##viewportX", &viewport.x,
-                      0.01f, 0.0f, 1.0f - viewport.z + glm::epsilon <float> (), "X %.2f",
-                      ImGuiSliderFlags_AlwaysClamp | ImGuiSliderFlags_NoRoundToFormat);
+    ImGui::DragFloat("##viewportX", &viewport.x, 0.01f,
+                     0.0f, 1.0f - viewport.z + glm::epsilon <float> (),
+                     "X %.2f", flags);
 
     ImGui::SameLine();
     ImGui::SetNextItemWidth(width);
-    ImGui::DragFloat("##viewportY", &viewport.y,
-                      0.01f, 0.0f, 1.0f - viewport.w + glm::epsilon <float> (), "Y %.2f",
-                      ImGuiSliderFlags_AlwaysClamp | ImGuiSliderFlags_NoRoundToFormat);
+    ImGui::DragFloat("##viewportY", &viewport.y, 0.01f,
+                     0.0f, 1.0f - viewport.w + glm::epsilon <float> (),
+                     "Y %.2f", flags);
 
     ImGui::SetNextItemWidth(width);
-    ImGui::DragFloat("##viewportW", &viewport.z,
-                      0.01f, glm::epsilon <float> (), 1.0f - viewport.x, "W %.2f",
-                      ImGuiSliderFlags_AlwaysClamp | ImGuiSliderFlags_NoRoundToFormat);
+    ImGui::DragFloat("##viewportW", &viewport.z, 0.01f,
+                     glm::epsilon <float> (), 1.0f - viewport.x,
+                     "W %.2f", flags);
 
     ImGui::SameLine();
     ImGui::SetNextItemWidth(width);
-    ImGui::DragFloat("##viewportH", &viewport.w,
-                      0.01f, glm::epsilon <float> (), 1.0f - viewport.y, "H %.2f",
-                      ImGuiSliderFlags_AlwaysClamp | ImGuiSliderFlags_NoRoundToFormat);
+    ImGui::DragFloat("##viewportH", &viewport.w, 0.01f,
+                     glm::epsilon <float> (), 1.0f - viewport.y,
+                     "H %.2f", flags);
   }
 
   if ( ImGui::CollapsingHeader("Z-range", ImGuiTreeNodeFlags_DefaultOpen) )
@@ -59,7 +55,7 @@ Camera::ui_edit_props(
     ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
     ImGui::DragFloat("##zRangeNear", &zRange.first,
                       0.01f, 0.0f, zRange.second, "%.2f",
-                      ImGuiSliderFlags_AlwaysClamp | ImGuiSliderFlags_NoRoundToFormat);
+                      flags);
 
     ImGui::AlignTextToFramePadding();
     ImGui::Text("zFar ");
@@ -67,8 +63,8 @@ Camera::ui_edit_props(
     ImGui::SameLine();
     ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
     ImGui::DragFloat("##zRangeFar", &zRange.second,
-                      0.01f, zRange.first, FLT_MAX, "%.2f",
-                      ImGuiSliderFlags_AlwaysClamp | ImGuiSliderFlags_NoRoundToFormat);
+                      0.01f, zRange.first, std::numeric_limits <float>::max(), "%.2f",
+                      flags);
   }
 
   if ( ImGui::CollapsingHeader("Fov", ImGuiTreeNodeFlags_DefaultOpen) )
