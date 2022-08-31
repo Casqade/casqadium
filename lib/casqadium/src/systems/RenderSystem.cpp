@@ -1,6 +1,7 @@
 #include <cqde/systems/RenderSystem.hpp>
 
 #include <cqde/common.hpp>
+#include <cqde/render_helpers.hpp>
 
 #include <cqde/components/Camera.hpp>
 #include <cqde/components/TextureBuffer.hpp>
@@ -62,16 +63,8 @@ RenderSystem( entt::registry& registry )
         }
       }
 
-      if ( cCamera.renderMode == Camera::RenderMode::Solid )
-        continue;
-
-//      Draw outline
-      for ( size_t i = 0, iNext = 1;
-            i < vertices.size();
-            ++i, iNext = (i + 1) % vertices.size() )
-        olc::renderer->ptrPGE->DrawLineDecal( vertices[i],
-                                              vertices[iNext],
-                                              olc::CYAN );
+      if ( cCamera.renderMode == Camera::RenderMode::Wireframe )
+        drawLines(buffer.vertices, olc::GREY, LineRenderMode::Loop);
     }
   }
 }
