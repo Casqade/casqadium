@@ -291,6 +291,8 @@ GameStateEcsSandbox::GameStateEcsSandbox(
 
       return entityManagerUi.entitySelect(entity);
     }
+
+    entityManagerUi.entitySelect(entt::null);
   };
 
   const auto CameraControlSystem =
