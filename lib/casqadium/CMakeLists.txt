@@ -58,6 +58,7 @@ target_sources(${TARGET} PRIVATE
   include/${CASQADIUM_SHORT}/types/input/InputManager.hpp
 
   src/types/input/ControlAxis.cpp
+  src/types/input/ControlAxis_ui_impl.cpp
   include/${CASQADIUM_SHORT}/types/input/ControlAxis.hpp
 
   src/types/input/InputBinding.cpp
