@@ -15,6 +15,7 @@
 #include <entt/entity/registry.hpp>
 
 #include <imgui.h>
+#include <imgui_internal.h>
 
 
 namespace cqde::ui
@@ -22,33 +23,25 @@ namespace cqde::ui
 
 bool
 ViewportManagerUi::mouseOverViewport(
-  const EntityId& cameraId )
+  const EntityId& cameraId ) const
 {
   if ( mViewports.count(cameraId) == 0 )
     return false;
 
-  const bool windowOpened = mViewports[cameraId];
+  const bool windowOpened = mViewports.at(cameraId);
 
   if ( windowOpened == false )
     return false;
 
-  if ( ImGui::Begin((cameraId.str() + "##viewport").c_str()) == false )
-  {
-    ImGui::End(); // cameraId
+  const auto window = ImGui::FindWindowByName((cameraId.str() + "##viewport").c_str());
+
+  if ( window == nullptr )
     return false;
-  }
 
-  bool result {};
+  const auto windowPos = window->Pos;
+  const auto windowSize = window->Size;
 
-  const auto windowPos = ImGui::GetWindowPos();
-  const auto windowSize = ImGui::GetWindowSize();
-
-  if ( ImGui::IsMouseHoveringRect(windowPos, {windowPos.x + windowSize.x, windowPos.y + windowSize.y}) )
-    result = true;
-
-  ImGui::End(); // cameraId
-
-  return result;
+  return ImGui::IsMouseHoveringRect(windowPos, {windowPos.x + windowSize.x, windowPos.y + windowSize.y}, false);
 }
 
 void
@@ -200,9 +193,6 @@ ViewportManagerUi::ui_show_viewport_windows(
       cCamera.zBuffer.emplace( vBuffer, eDrawable );
     }
 
-    ImGui::InvisibleButton("##mouseBlocker", windowRegion);
-
-    ImGui::SetCursorPos(ImGui::GetCursorStartPos());
     ImGui::Text("%s", format("Z-buffer depth: {}", cCamera.zBuffer.size()).c_str());
 
     const uint32_t colorWindow = ImGui::GetColorU32(ImGuiCol_Border, 0.75f);

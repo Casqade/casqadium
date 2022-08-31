@@ -24,7 +24,7 @@ class ViewportManagerUi
 public:
   ViewportManagerUi() = default;
 
-  bool mouseOverViewport( const EntityId& cameraId );
+  bool mouseOverViewport( const EntityId& cameraId ) const;
 
   void ui_show( entt::registry& );
   void ui_show_viewport_windows( entt::registry& );
