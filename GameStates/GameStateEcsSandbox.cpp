@@ -220,8 +220,8 @@ GameStateEcsSandbox::GameStateEcsSandbox(
   };
 
   const auto editorCameraFovControl =
-  [this] (  entt::registry& registry,
-            const std::vector <std::any>& args )
+  [] (  entt::registry& registry,
+        const std::vector <std::any>& args )
   {
     const auto eCamera = std::any_cast <entt::entity> (args.at(0));
     const auto cController = std::any_cast <InputController*> (args.at(1));
@@ -233,8 +233,8 @@ GameStateEcsSandbox::GameStateEcsSandbox(
   };
 
   const auto editorCameraZoomControl =
-  [this] (  entt::registry& registry,
-            const std::vector <std::any>& args )
+  [] (  entt::registry& registry,
+        const std::vector <std::any>& args )
   {
     const auto eCamera = std::any_cast <entt::entity> (args.at(0));
     const auto cController = std::any_cast <InputController*> (args.at(1));
