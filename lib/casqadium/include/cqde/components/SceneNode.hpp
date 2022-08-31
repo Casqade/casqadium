@@ -20,7 +20,7 @@ struct SceneNode
 
 
   void ui_edit_props( const entt::entity,
-                      const entt::registry& );
+                      entt::registry& );
 
   Json::Value serialize() const;
 
@@ -35,7 +35,7 @@ struct SceneNode
 namespace cqde
 {
 
-bool CanAddChildNode( entt::registry&,
+bool CanAddChildNode( const entt::registry&,
                       const entt::entity parent,
                       const EntityId& child );
 

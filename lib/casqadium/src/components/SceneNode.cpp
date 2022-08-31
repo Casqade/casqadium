@@ -78,7 +78,7 @@ namespace cqde
 
 bool
 CanAddChildNode(
-  entt::registry& registry,
+  const entt::registry& registry,
   const entt::entity eParent,
   const EntityId& childId )
 {
