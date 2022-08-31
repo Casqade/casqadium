@@ -47,7 +47,7 @@ void DetachChildNode( entt::registry&,
                       entt::entity parent,
                       entt::entity child );
 
-void RemoveChildNode( entt::registry&,
+void DestroyChildNode( entt::registry&,
                       entt::entity parent,
                       entt::entity child );
 

@@ -440,7 +440,7 @@ EntityManagerUi::ui_show_scene_graph_window(
   AttachChildNode(registry, nodeToAttach.first, nodeToAttach.second);
 
   if ( nodeToDestroy.second != entt::null )
-    RemoveChildNode(registry, nodeToDestroy.first, nodeToDestroy.second);
+    DestroyChildNode(registry, nodeToDestroy.first, nodeToDestroy.second);
 
   ImGui::End(); // SceneGraph view
 }

@@ -154,7 +154,7 @@ DetachChildNode(
 }
 
 void
-RemoveChildNode(
+DestroyChildNode(
   entt::registry& registry,
   const entt::entity eParent,
   const entt::entity eChild )
@@ -174,7 +174,7 @@ RemoveChildNode(
   const auto children = cNode.children;
 
   for ( const auto& child : children )
-    RemoveChildNode(registry, eChild, child.get_if_valid(registry));
+    DestroyChildNode(registry, eChild, child.get_if_valid(registry));
 
   registry.ctx().at <EntityManager> ().removeLater(eChild);
 }
