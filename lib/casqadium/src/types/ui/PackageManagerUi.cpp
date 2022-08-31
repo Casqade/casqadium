@@ -230,7 +230,11 @@ PackageManagerUi::ui_show_menu_bar(
 
   if ( ImGui::MenuItem("Save") )
   {
-    auto fileStream = fileOpen(mPackageMgr->rootPath(), std::ios::out | std::ios::trunc);
+    const auto streamFlags = std::ios::out |
+                             std::ios::trunc |
+                             std::ios::binary;
+
+    auto fileStream = fileOpen(mPackageMgr->rootPath(), streamFlags);
     fileStream << Json::writeString(jsonWriter(), mConfigState.root);
     fileStream.close();
 
@@ -249,7 +253,11 @@ PackageManagerUi::ui_show_menu_bar(
       }
       catch (...)
       {
-        fileStream = fileOpen(packageManifestPath, std::ios::out | std::ios::trunc);
+        const auto streamFlags = std::ios::out |
+                                 std::ios::trunc |
+                                 std::ios::binary;
+
+        fileStream = fileOpen(packageManifestPath, streamFlags);
         fileStream << Json::writeString(jsonWriter(), mConfigState.packages[package.asString()]);
       }
     }

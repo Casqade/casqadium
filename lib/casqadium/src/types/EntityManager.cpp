@@ -234,7 +234,11 @@ EntityManager::save(
     LOG_TRACE("Writing package '{}' entity registry to '{}'",
               packageId.str(), registryPath.string());
 
-  auto fileStream = fileOpen(registryPath, std::ios::out);
+  const auto streamFlags = std::ios::out |
+                           std::ios::trunc |
+                           std::ios::binary;
+
+  auto fileStream = fileOpen(registryPath, streamFlags);
   fileStream << Json::writeString(jsonWriter(), registryJson);
 }
 

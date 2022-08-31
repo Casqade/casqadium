@@ -183,7 +183,11 @@ Package::save(
 
   try
   {
-    auto fileStream = fileOpen(path, std::ios::out | std::ios::trunc);
+    const auto streamFlags = std::ios::out |
+                             std::ios::trunc |
+                             std::ios::binary;
+
+    auto fileStream = fileOpen(path, streamFlags);
     fileStream << Json::writeString(jsonWriter(), data);
   }
   catch ( const std::exception& e )

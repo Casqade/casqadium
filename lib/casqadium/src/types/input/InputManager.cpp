@@ -147,7 +147,11 @@ InputManager::save(
   LOG_TRACE("Writing input config to '{}'",
             configPath.string());
 
-  auto fileStream = fileOpen(configPath, std::ios::out | std::ios::trunc);
+  const auto streamFlags = std::ios::out |
+                           std::ios::trunc |
+                           std::ios::binary;
+
+  auto fileStream = fileOpen(configPath, streamFlags);
   fileStream << Json::writeString(jsonWriter(), inputConfig);
 }
 
