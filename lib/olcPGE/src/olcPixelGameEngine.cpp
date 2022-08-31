@@ -3503,9 +3503,11 @@ namespace olc
           ptrPGE->olc_UpdateKeyState(mapKeys[wParam], false);
           return 0;
         case WM_LBUTTONDOWN:
+          SetCapture(hWnd);
           ptrPGE->olc_UpdateMouseState(0, true);
           return 0;
         case WM_LBUTTONUP:
+          ReleaseCapture();
           ptrPGE->olc_UpdateMouseState(0, false);
           return 0;
         case WM_RBUTTONDOWN:
