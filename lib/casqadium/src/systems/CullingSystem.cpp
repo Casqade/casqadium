@@ -28,10 +28,6 @@ vertexShader(
   if ( vertices.size() == 0 )
     return {{}, -1.0f, {}};
 
-  Rect bb {};
-
-  bool bb_initialzed {};
-
   VertexBuffer vb{};
   vb.vertices.reserve(vertices.size());
 
@@ -49,31 +45,9 @@ vertexShader(
     vb.vertices.push_back({ vertex.x, // converting y axis to top-left origin
                             viewport.y * 2 + viewport.w - vertex.y });
     vb.depth += vertex.z;
-
-    const auto& vb_vertex = vb.vertices.back();
-
-    if ( bb_initialzed == false )
-    {
-      bb_initialzed = true;
-      bb =
-      {
-        vb_vertex.x, vb_vertex.x,
-        vb_vertex.y, vb_vertex.y,
-      };
-    }
-
-    if ( vb_vertex.x < bb.left )
-      bb.left = vb_vertex.x;
-
-    else if ( vb_vertex.x > bb.right )
-      bb.right = vb_vertex.x;
-
-    if ( vb_vertex.y < bb.top )
-      bb.top = vb_vertex.y;
-
-    else if ( vb_vertex.y > bb.bottom )
-      bb.bottom = vb_vertex.y;
   }
+
+  const Rect bb = boundingBox(vb.vertices);
 
   const Rect vp
   {
