@@ -504,11 +504,11 @@ GameStateEcsSandbox::GameStateEcsSandbox(
     if ( inputManager.axisAssigned("EditorCameraZoom") == false )
     {
       auto binding = std::make_shared <InputBindingRelative> ("+MouseWheel_Y");
-      binding->sensitivity = 0.00001f;
+      binding->sensitivity = -0.00001f;
       inputManager.assignBinding("EditorCameraZoom", binding);
 
       binding = std::make_shared <InputBindingRelative> ("-MouseWheel_Y");
-      binding->sensitivity = -0.00001f;
+      binding->sensitivity = 0.00001f;
       inputManager.assignBinding("EditorCameraZoom", binding);
     }
   };
