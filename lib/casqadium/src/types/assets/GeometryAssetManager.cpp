@@ -255,8 +255,10 @@ void
 AssetManager <vertexBuffer>::ui_show_preview(
   const AssetId& geometryId )
 {
+  if ( ImGui::CollapsingHeader("Preview", ImGuiTreeNodeFlags_DefaultOpen) )
+    ImGui::Text("WIP");
+
 //  todo: impl
-  ImGui::Text("WIP");
 
 //  auto drawList = ImGui::GetWindowDrawList();
 

@@ -8,6 +8,7 @@
 #include <cqde/util/logger.hpp>
 
 #include <cqde/components/InputController.hpp>
+#include <cqde/components/SubscriberInput.hpp>
 
 #include <cqde/types/CallbackManager.hpp>
 
@@ -241,6 +242,7 @@ InputManager::handleAxisInput(
   entt::registry& registry )
 {
   using compos::InputController;
+  using compos::SubscriberInput;
 
   if ( mHwControlMap.count(inputHwCode) == 0 )
     return;
@@ -270,7 +272,7 @@ InputManager::handleAxisInput(
   {
     auto& [binding, axisId] = *iter;
 
-    for ( auto&& [entity, cController] : registry.view <InputController> ().each() )
+    for ( auto&& [entity, cController] : registry.view <InputController, SubscriberInput> ().each() )
       if ( const auto& iter = cController.inputs.find(axisId);
            iter != cController.inputs.end() )
       {

@@ -6,7 +6,6 @@
 #include <cqde/components/Transform.hpp>
 #include <cqde/components/GeometryBuffer.hpp>
 
-#include <cqde/types/SystemManager.hpp>
 #include <cqde/systems/CullingSystem.hpp>
 
 #include <cqde/types/assets/GeometryAssetManager.hpp>
@@ -21,6 +20,37 @@
 namespace cqde::ui
 {
 
+bool
+ViewportManagerUi::mouseOverViewport(
+  const EntityId& cameraId )
+{
+  if ( mViewports.count(cameraId) == 0 )
+    return false;
+
+  const bool windowOpened = mViewports[cameraId];
+
+  if ( windowOpened == false )
+    return false;
+
+  if ( ImGui::Begin((cameraId.str() + "##viewport").c_str()) == false )
+  {
+    ImGui::End(); // cameraId
+    return false;
+  }
+
+  bool result {};
+
+  const auto windowPos = ImGui::GetWindowPos();
+  const auto windowSize = ImGui::GetWindowSize();
+
+  if ( ImGui::IsMouseHoveringRect(windowPos, {windowPos.x + windowSize.x, windowPos.y + windowSize.y}) )
+    result = true;
+
+  ImGui::End(); // cameraId
+
+  return result;
+}
+
 void
 ViewportManagerUi::ui_show(
   entt::registry& registry )
@@ -29,27 +59,37 @@ ViewportManagerUi::ui_show(
   using compos::Camera;
 
   if ( ImGui::Begin("Viewports") == false )
-  {
-    ImGui::End(); // Viewports
-    return;
-  }
+    return ImGui::End(); // Viewports
 
   mCameraFilter.search();
 
-  for ( const auto&& [eCamera, cCamera, cTag] : registry.view <Camera, Tag> ().each() )
+  ImGui::Separator();
+
+  if ( ImGui::BeginTable( "ViewportsList", 1, ImGuiTableFlags_ScrollY,
+                          {0.0f, ImGui::GetContentRegionAvail().y}) )
   {
-    const auto camRef = EntityReference{cTag};
+    ImGui::TableNextColumn();
 
-    if ( mCameraFilter.query(camRef.id.str()) == false )
-      continue;
+    for ( const auto&& [eCamera, cCamera, cTag] : registry.view <Camera, Tag> ().each() )
+    {
+      if ( mCameraFilter.query(cTag.id.str()) == false )
+        continue;
 
-    bool selected {};
+      bool selected {};
 
-    if ( const auto viewport =  mViewports.find(camRef); viewport != mViewports.end() )
-      selected = viewport->second;
+      const EntityReference camRef {cTag};
 
-    if ( ImGui::Selectable(cTag.id.str().c_str(), selected ) )
-      mViewports[EntityReference{cTag}] = true;
+      if ( const auto viewport =  mViewports.find(camRef); viewport != mViewports.end() )
+        selected = viewport->second;
+
+      if ( ImGui::Selectable(camRef.id.str().c_str(), selected ) )
+      {
+        mViewports[camRef] = true;
+        ImGui::SetWindowFocus((camRef.id.str() + "##viewport").c_str());
+      }
+    }
+
+    ImGui::EndTable(); // ViewportsList
   }
 
   ImGui::End(); // Viewports
@@ -67,12 +107,6 @@ ViewportManagerUi::ui_show_viewport_windows(
   using compos::Transform;
   using compos::GeometryBuffer;
   using types::GeometryAssetManager;
-  using types::SystemManager;
-
-  auto& systemsManager = registry.ctx().at <SystemManager> ();
-
-  systemsManager.activate("RenderSystem"_id);
-  systemsManager.deactivate("CullingSystem"_id);
 
   auto& geometry = registry.ctx().at <GeometryAssetManager> ();
 
@@ -81,10 +115,43 @@ ViewportManagerUi::ui_show_viewport_windows(
     if ( windowOpened == false )
       continue;
 
-    if ( ImGui::Begin(cameraRef.id.str().c_str(),
-                      &windowOpened, ImGuiWindowFlags_NoBackground) == false )
+    const auto eCamera = cameraRef.get_if_valid(registry);
+
+    if ( eCamera == entt::null ||
+         registry.all_of <Camera,
+                          SceneNode,
+                          Transform> (eCamera) == false )
+      continue;
+
+    auto* pge = olc::renderer->ptrPGE;
+    const auto defaultWindowSize = olc::vf2d{0.25f, 0.25f} * pge->GetWindowSize();
+
+    ImGui::SetNextWindowPos({defaultWindowSize.x,
+                            defaultWindowSize.y},
+                            ImGuiCond_FirstUseEver);
+
+    ImGui::SetNextWindowSize({defaultWindowSize.x,
+                              defaultWindowSize.y},
+                             ImGuiCond_FirstUseEver);
+
+    if ( ImGui::Begin((cameraRef.id.str() + "##viewport").c_str(),
+                      &windowOpened,
+                      ImGuiWindowFlags_NoBackground) == false ||
+         windowOpened == false )
     {
-      ImGui::End();
+      auto cCamera = registry.try_get <Camera> (eCamera);
+      if ( cCamera != nullptr )
+        cCamera->zBuffer.clear();
+
+      ImGui::End(); // cameraRef.id
+      continue;
+    }
+
+    const auto windowRegion = ImGui::GetContentRegionAvail();
+
+    if ( windowRegion.x <= 0.0f || windowRegion.y <= 0.0f )
+    {
+      ImGui::End(); // cameraRef.id
       continue;
     }
 
@@ -92,14 +159,6 @@ ViewportManagerUi::ui_show_viewport_windows(
     const auto windowSize = ImGui::GetWindowSize();
 
     const float windowRatio = windowSize.x / windowSize.y;
-
-    const auto eCamera = cameraRef.get(registry);
-
-    if ( eCamera == entt::null )
-    {
-      ImGui::End();
-      continue;
-    }
 
     const auto& [cCamera, cCameraNode, cCameraTransform] = registry.get <Camera, SceneNode, Transform> (eCamera);
 
@@ -141,20 +200,23 @@ ViewportManagerUi::ui_show_viewport_windows(
       cCamera.zBuffer.emplace( vBuffer, eDrawable );
     }
 
+    ImGui::InvisibleButton("##mouseBlocker", windowRegion);
+
+    ImGui::SetCursorPos(ImGui::GetCursorStartPos());
     ImGui::Text("%s", format("Z-buffer depth: {}", cCamera.zBuffer.size()).c_str());
 
     const uint32_t colorWindow = ImGui::GetColorU32(ImGuiCol_Border, 0.75f);
     const uint32_t colorViewport = ImGui::GetColorU32(ImGuiCol_FrameBg);
 
-    olc::renderer->ptrPGE->DrawRectDecal({windowPos.x, windowPos.y},
-                                         {windowSize.x, windowSize.y},
-                                         colorWindow);
+    pge->DrawRectDecal({windowPos.x, windowPos.y},
+                       {windowSize.x, windowSize.y},
+                       colorWindow);
 
-    olc::renderer->ptrPGE->DrawRectDecal({camViewport.x, camViewport.y},
-                                         {camViewport.z, camViewport.w},
-                                         colorViewport);
+    pge->DrawRectDecal({camViewport.x, camViewport.y},
+                       {camViewport.z, camViewport.w},
+                       colorViewport);
 
-    ImGui::End();
+    ImGui::End(); // cameraRef.id
   }
 }
 

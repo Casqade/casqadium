@@ -63,12 +63,6 @@ PackageManagerUi::ui_show(
                     ImGuiWindowFlags_MenuBar) == false )
     return ImGui::End(); // Package management
 
-  if ( ImGui::BeginTable( "Packages", 1, ImGuiTableFlags_ScrollY,
-                          {0.0f, ImGui::GetContentRegionAvail().y}) == false )
-    return ImGui::End(); // Package management
-
-  ImGui::TableNextColumn();
-
   if ( mConfigState.root.empty() == true )
   {
     mConfigState.root = fileParse(mPackageMgr->mPackagesRoot);
@@ -96,6 +90,12 @@ PackageManagerUi::ui_show(
   }
 
   ImGui::Separator();
+
+  if ( ImGui::BeginTable( "Packages", 1, ImGuiTableFlags_ScrollY,
+                          {0.0f, ImGui::GetContentRegionAvail().y}) == false )
+    return ImGui::End(); // Package management
+
+  ImGui::TableNextColumn();
 
   bool packageNameInvalid = mPackageNewName.empty() == true;
 
@@ -130,7 +130,12 @@ PackageManagerUi::ui_show(
     ImGui::PushID(index);
 
     if ( ImGui::SmallButton("-##packageDel") )
+    {
+      if ( mEditedPackageId == packages[index].asString() )
+        mEditedPackageId.clear();
+
       packages.removeIndex(index, nullptr);
+    }
 
     if ( index == packages.size() )
     {
@@ -169,6 +174,7 @@ PackageManagerUi::ui_show(
     if ( ImGui::IsItemActivated() )
     {
       mPackageWindowOpened = true;
+      ImGui::SetWindowFocus("PackageEdit");
 
       mEditedPackageId = packages[index].asString();
 

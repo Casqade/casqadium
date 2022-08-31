@@ -146,29 +146,13 @@ target_sources(${TARGET} PRIVATE
   include/${CASQADIUM_SHORT}/types/assets/TextureAssetManager.hpp
 
 
-  src/components/EntityMetaInfo.cpp
-  src/components/EntityMetaInfo_ui_impl.cpp
-  include/${CASQADIUM_SHORT}/components/EntityMetaInfo.hpp
-
   src/components/Camera.cpp
   src/components/Camera_ui_impl.cpp
   include/${CASQADIUM_SHORT}/components/Camera.hpp
 
-  src/components/SceneNode.cpp
-  src/components/SceneNode_ui_impl.cpp
-  include/${CASQADIUM_SHORT}/components/SceneNode.hpp
-
-  src/components/SequenceManager.cpp
-  src/components/SequenceManager_ui_impl.cpp
-  include/${CASQADIUM_SHORT}/components/SequenceManager.hpp
-
-  src/components/Transform.cpp
-  src/components/Transform_ui_impl.cpp
-  include/${CASQADIUM_SHORT}/components/Transform.hpp
-
-  src/components/Tag.cpp
-  src/components/Tag_ui_impl.cpp
-  include/${CASQADIUM_SHORT}/components/Tag.hpp
+  src/components/EntityMetaInfo.cpp
+  src/components/EntityMetaInfo_ui_impl.cpp
+  include/${CASQADIUM_SHORT}/components/EntityMetaInfo.hpp
 
   src/components/GeometryBuffer.cpp
   src/components/GeometryBuffer_ui_impl.cpp
@@ -178,9 +162,37 @@ target_sources(${TARGET} PRIVATE
   src/components/InputController_ui_impl.cpp
   include/${CASQADIUM_SHORT}/components/InputController.hpp
 
+  src/components/SceneNode.cpp
+  src/components/SceneNode_ui_impl.cpp
+  include/${CASQADIUM_SHORT}/components/SceneNode.hpp
+
+  src/components/SequenceManager.cpp
+  src/components/SequenceManager_ui_impl.cpp
+  include/${CASQADIUM_SHORT}/components/SequenceManager.hpp
+
+  src/components/SnapshotExcluded.cpp
+  src/components/SnapshotExcluded_ui_impl.cpp
+  include/${CASQADIUM_SHORT}/components/SnapshotExcluded.hpp
+
+  src/components/SubscriberInput.cpp
+  src/components/SubscriberInput_ui_impl.cpp
+  include/${CASQADIUM_SHORT}/components/SubscriberInput.hpp
+
+  src/components/SubscriberUpdate.cpp
+  src/components/SubscriberUpdate_ui_impl.cpp
+  include/${CASQADIUM_SHORT}/components/SubscriberUpdate.hpp
+
+  src/components/Tag.cpp
+  src/components/Tag_ui_impl.cpp
+  include/${CASQADIUM_SHORT}/components/Tag.hpp
+
   src/components/TextureBuffer.cpp
   src/components/TextureBuffer_ui_impl.cpp
   include/${CASQADIUM_SHORT}/components/TextureBuffer.hpp
+
+  src/components/Transform.cpp
+  src/components/Transform_ui_impl.cpp
+  include/${CASQADIUM_SHORT}/components/Transform.hpp
 
 
   src/systems/CullingSystem.cpp

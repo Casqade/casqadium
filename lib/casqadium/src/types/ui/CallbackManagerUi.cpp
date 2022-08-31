@@ -20,15 +20,27 @@ CallbackManagerUi::ui_show(
 {
   CQDE_ASSERT_DEBUG(mCallbackMgr != nullptr, return);
 
-  if ( ImGui::Begin("Callbacks", nullptr,
-                    ImGuiWindowFlags_HorizontalScrollbar ) == false )
-  {
-    ImGui::End(); // Callbacks
-    return;
-  }
+  if ( ImGui::Begin("Callbacks") == false )
+    return ImGui::End(); // Callbacks
 
-  for ( const auto& [callbackId, callback] : mCallbackMgr->mCallbacks )
-    ImGui::Text("%s", callbackId.str().c_str());
+  mCallbackIdFilter.search();
+
+  ImGui::Separator();
+
+  const auto flags = ImGuiTableFlags_ScrollX |
+                     ImGuiTableFlags_ScrollY;
+
+  if ( ImGui::BeginTable( "CallbacksList", 1, flags,
+                          ImGui::GetContentRegionAvail()) )
+  {
+    ImGui::TableNextColumn();
+
+    for ( const auto& [callbackId, callback] : mCallbackMgr->mCallbacks )
+      if ( mCallbackIdFilter.query(callbackId.str()) == true )
+        ImGui::Text("%s", callbackId.str().c_str());
+
+    ImGui::EndTable(); // CallbacksList
+  }
 
   ImGui::End(); // Callbacks
 }

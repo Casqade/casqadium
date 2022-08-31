@@ -175,14 +175,15 @@ AssetManagerUi::ui_show(
   auto& pkgMgr = registry.ctx().at <PackageManager> ();
 
   auto package = pkgMgr.package(mPackageFilter.package());
+
+  ui_show_menu_bar(registry);
+
   if ( package == nullptr )
   {
-    ui_show_menu_bar(registry);
     ui_show_live_state(registry);
     return ImGui::End(); // Assets
   }
 
-  ui_show_menu_bar(registry);
   ui_show_package_state(registry);
 
   ImGui::End(); // Assets
@@ -196,154 +197,47 @@ void
 AssetManagerUi::ui_show_live_state(
   entt::registry& registry )
 {
-  using FontAssetManager = types::FontAssetManager;
-  using GeometryAssetManager = types::GeometryAssetManager;
-  using TextStringAssetManager = types::TextStringAssetManager;
-  using TextureAssetManager = types::TextureAssetManager;
+  if ( ImGui::BeginTable( "AssetsLiveList", 1, ImGuiTableFlags_ScrollY,
+                          {0.0f, ImGui::GetContentRegionAvail().y}) == false )
+    return;
+
+  ImGui::TableNextColumn();
 
   switch (mSelectedAssetType)
   {
     case ContentType::Fonts:
     {
-      auto& fontMgr = registry.ctx().at <FontAssetManager> ();
-      auto assets = fontMgr.assetIdList();
-
-      for ( const auto& asset : assets )
-        if ( mAssetIdFilter.query(asset.str()) == false )
-          continue;
-
-        else if ( ImGui::Selectable(asset.str().c_str(),
-                                    asset.str() == mSelectedAssetIds[mSelectedAssetType] ) )
-        {
-          mAssetWindowOpened = true;
-          mSelectedAssetIds[mSelectedAssetType] = asset.str();
-        }
-
-      if ( mAssetWindowOpened == false )
-        break;
-
-      const auto& selectedFontId = mSelectedAssetIds[mSelectedAssetType];
-
-      if ( selectedFontId.empty() == true )
-        break;
-
-      if ( ImGui::Begin("Asset", &mAssetWindowOpened) == true )
-      {
-        fontMgr.load({selectedFontId});
-        fontMgr.ui_show_preview(selectedFontId);
-      }
-
-      ImGui::End(); // Asset
+      ui_show_live_font(registry);
       break;
     }
     case ContentType::Geometry:
     {
-      auto& geometryMgr = registry.ctx().at <GeometryAssetManager> ();
-      auto assets = geometryMgr.assetIdList();
-
-      for ( const auto& asset : assets )
-        if ( mAssetIdFilter.query(asset.str()) == false )
-          continue;
-
-        else if ( ImGui::Selectable(asset.str().c_str(),
-                                    asset.str() == mSelectedAssetIds[mSelectedAssetType] ) )
-        {
-          mAssetWindowOpened = true;
-          mSelectedAssetIds[mSelectedAssetType] = asset.str();
-        }
-
-      if ( mAssetWindowOpened == false )
-        break;
-
-      const auto& selectedGeometryId = mSelectedAssetIds[mSelectedAssetType];
-
-      if ( selectedGeometryId.empty() == true )
-        break;
-
-      if ( ImGui::Begin("Asset", &mAssetWindowOpened) == true )
-      {
-        geometryMgr.load({selectedGeometryId});
-        geometryMgr.ui_show_preview(selectedGeometryId);
-      }
-
-      ImGui::End(); // Asset
+      ui_show_live_geometry(registry);
       break;
     }
     case ContentType::Text:
     {
-      auto& textMgr = registry.ctx().at <TextStringAssetManager> ();
-      auto assets = textMgr.assetIdList();
-
-      for ( const auto& asset : assets )
-        if ( mAssetIdFilter.query(asset.str()) == false )
-          continue;
-
-        else if ( ImGui::Selectable(asset.str().c_str(),
-                                    asset.str() == mSelectedAssetIds[mSelectedAssetType] ) )
-        {
-          mAssetWindowOpened = true;
-          mSelectedAssetIds[mSelectedAssetType] = asset.str();
-        }
-
-      if ( mAssetWindowOpened == false )
-        break;
-
-      const auto& selectedTextureId = mSelectedAssetIds[mSelectedAssetType];
-
-      if ( selectedTextureId.empty() == true )
-        break;
-
-      if ( ImGui::Begin("Asset", &mAssetWindowOpened) == true )
-      {
-        textMgr.load({selectedTextureId});
-        textMgr.ui_show_preview(selectedTextureId);
-      }
-
-      ImGui::End(); // Asset
+      ui_show_live_text(registry);
       break;
     }
     case ContentType::Textures:
     {
-      auto& textureMgr = registry.ctx().at <TextureAssetManager> ();
-      auto assets = textureMgr.assetIdList();
-
-      for ( const auto& asset : assets )
-        if ( mAssetIdFilter.query(asset.str()) == false )
-          continue;
-
-        else if ( ImGui::Selectable(asset.str().c_str(),
-                                    asset.str() == mSelectedAssetIds[mSelectedAssetType] ) )
-        {
-          mAssetWindowOpened = true;
-          mSelectedAssetIds[mSelectedAssetType] = asset.str();
-        }
-
-      if ( mAssetWindowOpened == false )
-        break;
-
-      const auto& selectedTextureId = mSelectedAssetIds[mSelectedAssetType];
-
-      if ( selectedTextureId.empty() == true )
-        break;
-
-      if ( ImGui::Begin("Asset", &mAssetWindowOpened) == true )
-      {
-        textureMgr.load({selectedTextureId});
-        textureMgr.ui_show_preview(selectedTextureId);
-      }
-
-      ImGui::End(); // Asset
+      ui_show_live_texture(registry);
       break;
     }
     default:
-      CQDE_ASSERT_DEBUG(false, return);
+      CQDE_ASSERT_DEBUG(false, break);
   }
+
+  ImGui::EndTable(); // AssetsLiveList
 }
 
 void
 AssetManagerUi::ui_show_package_state(
   entt::registry& registry )
 {
+  using fmt::format;
+
   using PackageManager = types::PackageManager;
 
   using FontAssetManager = types::FontAssetManager;
@@ -444,6 +338,12 @@ AssetManagerUi::ui_show_package_state(
 
   ImGui::Separator();
 
+  if ( ImGui::BeginTable( "AssetsPackageList", 1, ImGuiTableFlags_ScrollY,
+                          {0.0f, ImGui::GetContentRegionAvail().y}) == false )
+    return;
+
+  ImGui::TableNextColumn();
+
   for ( const auto& asset : assetDb.getMemberNames() )
   {
     if ( assetDb.isMember(asset) == false )
@@ -469,8 +369,10 @@ AssetManagerUi::ui_show_package_state(
     if ( ImGui::Selectable( asset.c_str(),
                             asset == mSelectedAssetIds[mSelectedAssetType] ) )
     {
-      mAssetWindowOpened = true;
       mSelectedAssetIds[mSelectedAssetType] = asset;
+
+      mAssetWindowOpened = true;
+      ImGui::SetWindowFocus("###assetEditWindow");
     }
 
     if ( ImGui::IsItemHovered() &&
@@ -482,25 +384,48 @@ AssetManagerUi::ui_show_package_state(
 
     if ( ImGui::BeginPopup("##assetRenamePopup") )
     {
+      ImGui::SetKeyboardFocusHere();
+
       ImGui::Text("Rename asset:");
-      ImGui::InputText("##assetRename", &mRenamedAssetId,
-                       ImGuiInputTextFlags_AutoSelectAll);
 
-      if ( ImGui::IsItemDeactivatedAfterEdit() )
+      const bool assetRenamed = ImGui::InputText("##assetRename", &mRenamedAssetId,
+                                                  ImGuiInputTextFlags_AutoSelectAll |
+                                                  ImGuiInputTextFlags_EnterReturnsTrue);
+
+      const bool assetExists =  mRenamedAssetId != asset &&
+                                assetDb.isMember(mRenamedAssetId);
+
+      if ( assetExists == true )
+        ImGui::TextColored(ImVec4{1.0f, 0.0f, 0.0f, 1.0f},
+                           "%s", format("Asset '{}' already exists",
+                                        mRenamedAssetId).c_str());
+
+      if ( mRenamedAssetId == null_id.str() )
+        ImGui::TextColored(ImVec4{1.0f, 0.0f, 0.0f, 1.0f},
+                           "Invalid asset ID");
+
+      if ( assetRenamed == true &&
+           mRenamedAssetId != null_id.str() )
       {
-        assetDb[mRenamedAssetId].swap(assetDb[asset]);
+        if ( assetExists == false )
+          ImGui::CloseCurrentPopup();
 
-        if ( assetDb[asset].empty() == true )
+        if ( assetDb.isMember(mRenamedAssetId) == false )
+        {
+          assetDb[mRenamedAssetId] = assetDb[asset];
           assetDb.removeMember(asset);
 
-        if ( mSelectedAssetIds[mSelectedAssetType] == asset )
-          mSelectedAssetIds[mSelectedAssetType] = mRenamedAssetId;
+          if ( mSelectedAssetIds[mSelectedAssetType] == asset )
+            mSelectedAssetIds[mSelectedAssetType] = mRenamedAssetId;
+        }
       }
       ImGui::EndPopup();
     }
 
     ImGui::PopID();
   }
+
+  ImGui::EndTable(); // AssetsPackageList
 }
 
 void
@@ -571,6 +496,8 @@ void
 AssetManagerUi::ui_show_asset_window(
   entt::registry& registry )
 {
+  using fmt::format;
+
   using FontAssetManager = types::FontAssetManager;
   using GeometryAssetManager = types::GeometryAssetManager;
   using TextStringAssetManager = types::TextStringAssetManager;
@@ -590,8 +517,10 @@ AssetManagerUi::ui_show_asset_window(
   if ( assetDb.isMember(selectedAssetId) == false )
     return;
 
-  if ( ImGui::Begin("Asset", &mAssetWindowOpened) == false )
-    return ImGui::End(); // Asset
+  const auto windowTitle = format("Asset '{}'###assetEditWindow", selectedAssetId);
+
+  if ( ImGui::Begin(windowTitle.c_str(), &mAssetWindowOpened) == false )
+    return ImGui::End(); // windowTitle
 
   auto& assetEntry = assetDb[selectedAssetId];
 
@@ -628,7 +557,194 @@ AssetManagerUi::ui_show_asset_window(
 
   ImGui::PopID();
 
-  ImGui::End(); // Asset
+  ImGui::End(); // windowTitle
+}
+
+void
+AssetManagerUi::ui_show_live_font(
+  entt::registry& registry )
+{
+  using fmt::format;
+  using FontAssetManager = types::FontAssetManager;
+
+  auto& fontMgr = registry.ctx().at <FontAssetManager> ();
+  auto assets = fontMgr.assetIdList();
+
+  for ( const auto& asset : assets )
+  {
+    if ( mAssetIdFilter.query(asset.str()) == false )
+      continue;
+
+    if ( ImGui::Selectable( asset.str().c_str(),
+                            asset.str() == mSelectedAssetIds[mSelectedAssetType] ) )
+    {
+      mSelectedAssetIds[mSelectedAssetType] = asset.str();
+
+      mAssetWindowOpened = true;
+      ImGui::SetWindowFocus("###assetEditWindow");
+    }
+  }
+
+  if ( mAssetWindowOpened == false )
+    return;
+
+  const auto& selectedFontId = mSelectedAssetIds[mSelectedAssetType];
+
+  if ( selectedFontId.empty() == true )
+    return;
+
+  const auto windowTitle = format("Font '{}'###assetEditWindow",
+                                  mSelectedAssetIds[mSelectedAssetType]);
+
+  if ( ImGui::Begin(windowTitle.c_str(), &mAssetWindowOpened) == true )
+  {
+    if ( fontMgr.status(selectedFontId) != AssetStatus::Undefined )
+      fontMgr.load({selectedFontId});
+
+    fontMgr.ui_show_preview(selectedFontId);
+  }
+
+  ImGui::End(); // windowTitle
+}
+
+void
+AssetManagerUi::ui_show_live_geometry(
+  entt::registry& registry )
+{
+  using fmt::format;
+  using GeometryAssetManager = types::GeometryAssetManager;
+
+  auto& geometryMgr = registry.ctx().at <GeometryAssetManager> ();
+  auto assets = geometryMgr.assetIdList();
+
+  for ( const auto& asset : assets )
+  {
+    if ( mAssetIdFilter.query(asset.str()) == false )
+      continue;
+
+    if ( ImGui::Selectable( asset.str().c_str(),
+                            asset.str() == mSelectedAssetIds[mSelectedAssetType] ) )
+    {
+      mSelectedAssetIds[mSelectedAssetType] = asset.str();
+
+      mAssetWindowOpened = true;
+      ImGui::SetWindowFocus("###assetEditWindow");
+    }
+  }
+
+  if ( mAssetWindowOpened == false )
+    return;
+
+  const auto& selectedGeometryId = mSelectedAssetIds[mSelectedAssetType];
+
+  if ( selectedGeometryId.empty() == true )
+    return;
+
+  const auto windowTitle = format("Geometry '{}'###assetEditWindow",
+                                  mSelectedAssetIds[mSelectedAssetType]);
+
+  if ( ImGui::Begin(windowTitle.c_str(), &mAssetWindowOpened) == true )
+  {
+    if ( geometryMgr.status(selectedGeometryId) != AssetStatus::Undefined )
+      geometryMgr.load({selectedGeometryId});
+
+    geometryMgr.ui_show_preview(selectedGeometryId);
+  }
+
+  ImGui::End(); // windowTitle
+}
+
+void
+AssetManagerUi::ui_show_live_text(
+  entt::registry& registry )
+{
+  using fmt::format;
+  using TextStringAssetManager = types::TextStringAssetManager;
+
+  auto& textMgr = registry.ctx().at <TextStringAssetManager> ();
+  auto assets = textMgr.assetIdList();
+
+  for ( const auto& asset : assets )
+  {
+    if ( mAssetIdFilter.query(asset.str()) == false )
+      continue;
+
+    if ( ImGui::Selectable( asset.str().c_str(),
+                            asset.str() == mSelectedAssetIds[mSelectedAssetType] ) )
+    {
+      mSelectedAssetIds[mSelectedAssetType] = asset.str();
+
+      mAssetWindowOpened = true;
+      ImGui::SetWindowFocus("###assetEditWindow");
+    }
+  }
+
+  if ( mAssetWindowOpened == false )
+    return;
+
+  const auto& selectedTextId = mSelectedAssetIds[mSelectedAssetType];
+
+  if ( selectedTextId.empty() == true )
+    return;
+
+  const auto windowTitle = format("Text '{}'###assetEditWindow",
+                                  mSelectedAssetIds[mSelectedAssetType]);
+
+  if ( ImGui::Begin(windowTitle.c_str(), &mAssetWindowOpened) == true )
+  {
+    if ( textMgr.status(selectedTextId) != AssetStatus::Undefined )
+      textMgr.load({selectedTextId});
+
+    textMgr.ui_show_preview(selectedTextId);
+  }
+
+  ImGui::End(); // windowTitle
+}
+
+void
+AssetManagerUi::ui_show_live_texture(
+  entt::registry& registry )
+{
+  using fmt::format;
+  using TextureAssetManager = types::TextureAssetManager;
+
+  auto& textureMgr = registry.ctx().at <TextureAssetManager> ();
+  auto assets = textureMgr.assetIdList();
+
+  for ( const auto& asset : assets )
+  {
+    if ( mAssetIdFilter.query(asset.str()) == false )
+      continue;
+
+    if ( ImGui::Selectable( asset.str().c_str(),
+                            asset.str() == mSelectedAssetIds[mSelectedAssetType] ) )
+    {
+      mSelectedAssetIds[mSelectedAssetType] = asset.str();
+
+      mAssetWindowOpened = true;
+      ImGui::SetWindowFocus("###assetEditWindow");
+    }
+  }
+
+  if ( mAssetWindowOpened == false )
+    return;
+
+  const auto& selectedTextureId = mSelectedAssetIds[mSelectedAssetType];
+
+  if ( selectedTextureId.empty() == true )
+    return;
+
+  const auto windowTitle = format("Texture '{}'###assetEditWindow", selectedTextureId);
+
+  if ( ImGui::Begin(windowTitle.c_str(), &mAssetWindowOpened) == true )
+  {
+    if ( textureMgr.status(selectedTextureId) != AssetStatus::Undefined )
+      textureMgr.load({selectedTextureId});
+
+    textureMgr.ui_show_preview(selectedTextureId);
+  }
+
+  ImGui::End(); // windowTitle
 }
 
 } // namespace cqde::ui

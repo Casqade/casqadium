@@ -26,7 +26,8 @@ public:
                                             const std::vector <std::any>&)>;
 
 private:
-  std::map <CallbackId, CallbackFunc> mCallbacks {};
+  std::unordered_map <CallbackId, CallbackFunc,
+                      identifier_hash> mCallbacks {};
 
 public:
   CallbackManager() = default;

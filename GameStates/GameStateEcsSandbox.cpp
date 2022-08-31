@@ -45,7 +45,9 @@
 #include <cqde/components/EntityMetaInfo.hpp>
 #include <cqde/components/GeometryBuffer.hpp>
 #include <cqde/components/InputController.hpp>
+#include <cqde/components/SubscriberInput.hpp>
 #include <cqde/components/TextureBuffer.hpp>
+#include <cqde/components/SubscriberUpdate.hpp>
 
 #include <cqde/systems/RenderSystem.hpp>
 #include <cqde/systems/CullingSystem.hpp>
@@ -101,58 +103,90 @@ GameStateEcsSandbox::GameStateEcsSandbox(
   auto textTexture = std::make_shared <olc::Renderable> (std::move(textRenderable));
   textures.insert("text_texture", textTexture);
 
-  static float valPitch{};
-  static float valYaw{};
-
-  const auto cameraLookOn =
+  const auto mouseAutoCenterEnable =
   [this] (  entt::registry& registry,
             const std::vector <std::any>& args )
   {
-    auto cController = std::any_cast <InputController*> (args.at(1));
-
-    mPGE->SetMouseCursor(olc::Mouse::Cursor{});
     mPGE->SetKeepMouseCentered(true);
-
-    ControlAxis iAxisPitch{};
-    iAxisPitch.constraint = {-90.0f, 90.0f};
-    iAxisPitch.value = valPitch;
-
-    ControlAxis iAxisYaw{};
-    iAxisYaw.constraint = {-3600.0f, 3600.0f};
-    iAxisYaw.value = valYaw;
-    iAxisYaw.callbacks.insert("CameraYawClamp"_id);
-
-    cController->inputs["Pitch"] = iAxisPitch;
-    cController->inputs["Yaw"] = iAxisYaw;
   };
 
-  const auto cameraLookOff =
+  const auto mouseAutoCenterDisable =
   [this] (  entt::registry& registry,
             const std::vector <std::any>& args )
   {
-    auto cController = std::any_cast <InputController*> (args.at(1));
-
-    mPGE->ResetMouseCursor();
     mPGE->SetKeepMouseCentered(false);
-
-    valPitch = cController->inputs["Pitch"].value;
-    valYaw = cController->inputs["Yaw"].value;
-
-    cController->inputs.erase("Pitch");
-    cController->inputs.erase("Yaw");
   };
 
-  const auto cameraLookToggle =
-  [cameraLookOn, cameraLookOff] ( entt::registry& registry,
-                                          const std::vector <std::any>& args )
+  const auto mouseCursorHide =
+  [this] (  entt::registry& registry,
+            const std::vector <std::any>& args )
   {
-    auto entity = std::any_cast <entt::entity> (args.at(0));
-    auto cController = std::any_cast <InputController*> (args.at(1));
+    mPGE->SetMouseCursor(olc::Mouse::Cursor{});
+  };
 
-    if ( cController->inputs.count("Pitch") > 0 || cController->inputs.count("Yaw") > 0 )
-      cameraLookOff( registry, {entity, cController} );
-    else
-      cameraLookOn( registry, {entity, cController} );
+  const auto mouseCursorShow =
+  [this] (  entt::registry& registry,
+            const std::vector <std::any>& args )
+  {
+    mPGE->ResetMouseCursor();
+  };
+
+  const auto entityInputOn =
+  [] (  entt::registry& registry,
+        const std::vector <std::any>& args )
+  {
+    const auto entity = std::any_cast <entt::entity> (args.at(0));
+    registry.emplace_or_replace <SubscriberInput> (entity);
+  };
+
+  const auto entityInputOff =
+  [] (  entt::registry& registry,
+        const std::vector <std::any>& args )
+  {
+    const auto entity = std::any_cast <entt::entity> (args.at(0));
+    registry.remove <SubscriberInput> (entity);
+  };
+
+  const auto entityActivate =
+  [] (  entt::registry& registry,
+        const std::vector <std::any>& args )
+  {
+    const auto entity = std::any_cast <entt::entity> (args.at(0));
+    registry.emplace_or_replace <SubscriberUpdate> (entity);
+  };
+
+  const auto entityDeactivate =
+  [] (  entt::registry& registry,
+        const std::vector <std::any>& args )
+  {
+    const auto entity = std::any_cast <entt::entity> (args.at(0));
+    registry.remove <SubscriberUpdate> (entity);
+  };
+
+  const auto editorCameraControlOn =
+  [entityInputOn, mouseCursorHide, mouseAutoCenterEnable] (
+    entt::registry& registry,
+    const std::vector <std::any>& args )
+  {
+    using cqde::ui::ViewportManagerUi;
+
+    if ( registry.ctx().at <ViewportManagerUi> ().mouseOverViewport("cqde_editor_camera") == false )
+      return;
+
+    auto& entityManager = registry.ctx().at <EntityManager> ();
+
+    const auto eCamera = entityManager.get_if_valid("cqde_editor_camera", registry);
+
+    if ( eCamera == entt::null )
+      return;
+
+    if ( registry.all_of <SubscriberInput> (eCamera) == true )
+      return;
+
+    entityInputOn(registry, {eCamera});
+
+    mouseAutoCenterEnable(registry, args);
+    mouseCursorHide(registry, args);
   };
 
   const auto cameraYawClamp =
@@ -161,38 +195,57 @@ GameStateEcsSandbox::GameStateEcsSandbox(
   {
     auto cController = std::any_cast <InputController*> (args.at(1));
 
-    if ( cController->inputs.count("Yaw") == 0 )
-      return;
-
     float& yaw = cController->inputs["Yaw"].value;
     yaw = yaw > 180.0f ? yaw - 360.0f : yaw;
     yaw = yaw < -180.0f ? yaw + 360.0f : yaw;
   };
 
-  const auto quitGame =
+  const auto engineShutdown =
   [this] (  entt::registry& registry,
             const std::vector <std::any>& args )
   {
+    using entt::type_hash;
+
     mRunning = false;
 
-    auto& entityManager = registry.ctx().at <EntityManager> ();
-    auto& inputManager = registry.ctx().at <InputManager> ();
+    registry.ctx().at <EntityManager> ().save(
+      "entities.json", "editor",
+      registry,
+      {
+        type_hash <Tag> (),
+        type_hash <EntityMetaInfo> ()
+      });
+  };
 
-    using entt::type_hash;
-    entityManager.save("entities.json", "editor"_id,
-                       registry,
-                       {
-                         type_hash <Tag> (),
-                         type_hash <EntityMetaInfo> ()
-                       });
+  const auto editorCameraFovControl =
+  [this] (  entt::registry& registry,
+            const std::vector <std::any>& args )
+  {
+    const auto eCamera = std::any_cast <entt::entity> (args.at(0));
+    const auto cController = std::any_cast <InputController*> (args.at(1));
+
+    auto& cCamera = registry.get <Camera> (eCamera);
+
+    if ( cCamera.projectionType == Camera::Projection::Perspective )
+      cCamera.fov = cController->inputs["EditorCameraFov"].value;
+  };
+
+  const auto editorCameraZoomControl =
+  [this] (  entt::registry& registry,
+            const std::vector <std::any>& args )
+  {
+    const auto eCamera = std::any_cast <entt::entity> (args.at(0));
+    const auto cController = std::any_cast <InputController*> (args.at(1));
+
+    auto& cCamera = registry.get <Camera> (eCamera);
+
+    if ( cCamera.projectionType == Camera::Projection::Orthographic )
+      cCamera.fov = cController->inputs["EditorCameraZoom"].value;
   };
 
   const auto CameraControlSystem =
   [] ( entt::registry& registry )
   {
-    using namespace entt::literals;
-    using TimeUtils::Duration;
-
     const auto& tick = registry.ctx().at <TickCurrent> ();
 
     const auto ticks = tick.ticksElapsed;
@@ -201,30 +254,27 @@ GameStateEcsSandbox::GameStateEcsSandbox(
     const double dt = ticks * static_cast <double> (elapsed);
     const float cameraVelocity = 10.0f;
 
-    for ( auto&& [eCamera,
-                  cCamera,
-                  cController,
-                  cTransform] : registry.view < Camera,
-                                                InputController,
-                                                Transform>().each() )
-    {
-      const float translationX = cController.inputs["TranslateX"_id].value * cameraVelocity * dt;
-      cTransform.translation += cTransform.right() * translationX;
+    const auto& entityManager = registry.ctx().at <EntityManager> ();
 
-      const float translationY = cController.inputs["TranslateY"_id].value * cameraVelocity * dt;
-      cTransform.translation += cTransform.up() * translationY;
+    const auto eCamera = entityManager.get("cqde_editor_camera");
+    if ( eCamera == entt::null )
+      return;
 
-      const float translationZ = cController.inputs["TranslateZ"_id].value * cameraVelocity * dt;
-      cTransform.translation += cTransform.front() * translationZ;
+    auto [cController, cTransform] = registry.get <SubscriberUpdate, InputController, Transform> (eCamera);
 
-      if ( cController.inputs.count("Pitch") == 0 || cController.inputs.count("Yaw") == 0 )
-        continue;
+    const float translationX = cController.inputs["TranslateX"].value * cameraVelocity * dt;
+    cTransform.translation += cTransform.right() * translationX;
 
-      const float pitch = glm::radians( cController.inputs["Pitch"_id].value );
-      const float yaw = glm::radians( cController.inputs["Yaw"_id].value );
+    const float translationY = cController.inputs["TranslateY"].value * cameraVelocity * dt;
+    cTransform.translation += cTransform.up() * translationY;
 
-      cTransform.orientation = glm::quat( {pitch, yaw, 0.0f} );
-    }
+    const float translationZ = cController.inputs["TranslateZ"].value * cameraVelocity * dt;
+    cTransform.translation += cTransform.front() * translationZ;
+
+    const float pitch = glm::radians( cController.inputs["Pitch"].value );
+    const float yaw = glm::radians( cController.inputs["Yaw"].value );
+
+    cTransform.orientation = glm::quat( {pitch, yaw, 0.0f} );
   };
 
   const auto EditorSystem =
@@ -238,6 +288,9 @@ GameStateEcsSandbox::GameStateEcsSandbox(
     using cqde::ui::SystemManagerUi;
     using cqde::ui::ViewportManagerUi;
 
+    auto& entityManager = registry.ctx().at <EntityManager> ();
+    entityManager.delayedRemove(registry);
+
     registry.ctx().at <PackageManagerUi> ().ui_show(registry);
     registry.ctx().at <AssetManagerUi> ().ui_show(registry);
     registry.ctx().at <CallbackManagerUi> ().ui_show(registry);
@@ -245,38 +298,171 @@ GameStateEcsSandbox::GameStateEcsSandbox(
     registry.ctx().at <InputManagerUi> ().ui_show(registry);
     registry.ctx().at <SystemManagerUi> ().ui_show(registry);
     registry.ctx().at <ViewportManagerUi> ().ui_show(registry);
+
+    if ( entityManager.get_if_valid("cqde_editor_camera", registry) == entt::null )
+    {
+      auto eCamera = registry.create();
+      auto& cTag = registry.emplace <Tag> (eCamera);
+
+      cTag.id = "cqde_editor_camera";
+      entityManager.idRegister(cTag.id, eCamera);
+
+      registry.emplace <SubscriberUpdate> (eCamera);
+
+      auto& cMetaInfo = registry.emplace <EntityMetaInfo> (eCamera);
+      cMetaInfo.packageId = "";
+
+      auto& cCamera = registry.emplace <Camera> (eCamera);
+      auto& cTransform = registry.emplace <Transform> (eCamera);
+      auto& cSceneNode = registry.emplace <SceneNode> (eCamera);
+
+      auto& cInputController = registry.emplace <InputController> (eCamera);
+
+      auto& iTranslateX = cInputController.inputs["TranslateX"];
+      auto& iTranslateY = cInputController.inputs["TranslateY"];
+      auto& iTranslateZ = cInputController.inputs["TranslateZ"];
+
+      iTranslateX.constraint = {-1.0f, 1.0f};
+      iTranslateY.constraint = {-1.0f, 1.0f};
+      iTranslateZ.constraint = {-1.0f, 1.0f};
+
+      auto& iPitch = cInputController.inputs["Pitch"];
+      auto& iYaw = cInputController.inputs["Yaw"];
+      auto& iRoll = cInputController.inputs["Roll"];
+
+      iPitch.constraint = {-90.0f, 90.0f};
+      iYaw.constraint = {-3600.0f, 3600.0f};
+      iRoll.constraint = {-180.0f, 180.0f};
+
+      iYaw.callbacks.insert("CameraYawClamp");
+
+      auto& iCameraControlOff = cInputController.inputs["EditorCameraControlOff"];
+
+      iCameraControlOff.callbacks.insert("EntityInputOff");
+      iCameraControlOff.callbacks.insert("MouseAutoCenterDisable");
+      iCameraControlOff.callbacks.insert("MouseCursorShow");
+
+      auto& iCameraFov = cInputController.inputs["EditorCameraFov"];
+      iCameraFov.value = cCamera.fov;
+      iCameraFov.callbacks.insert("EditorCameraFovControl");
+      iCameraFov.constraint = { glm::epsilon <float> (),
+                                glm::pi <float> () - glm::epsilon <float> () };
+
+      auto& iCameraZoom = cInputController.inputs["EditorCameraZoom"];
+      iCameraZoom.value = 0.01;
+      iCameraZoom.callbacks.insert("EditorCameraZoomControl");
+      iCameraZoom.constraint = {  std::numeric_limits <float>::min(),
+                                  std::numeric_limits <float>::max() };
+    }
+
+    if ( entityManager.get_if_valid("cqde_editor_controller", registry) == entt::null )
+    {
+      auto eEditorController = registry.create();
+      auto& cTag = registry.emplace <Tag> (eEditorController);
+
+      cTag.id = "cqde_editor_controller";
+      entityManager.idRegister(cTag.id, eEditorController);
+
+      auto& cMetaInfo = registry.emplace <EntityMetaInfo> (eEditorController);
+      cMetaInfo.packageId = "";
+
+      registry.emplace <SubscriberInput> (eEditorController);
+
+      auto& cInputController = registry.emplace <InputController> (eEditorController);
+
+      auto& iEngineShutdown = cInputController.inputs["EngineShutdown"];
+      iEngineShutdown.callbacks.insert("EngineShutdown");
+
+      auto& iCameraControlOn = cInputController.inputs["EditorCameraControlOn"];
+      iCameraControlOn.callbacks.insert("EditorCameraControlOn");
+    }
+
+    auto& inputManager = registry.ctx().at <InputManager> ();
+
+    if ( inputManager.axisAssigned("EngineShutdown") == false )
+    {
+      auto binding = std::make_shared <InputBindingRelative> ("-Key_Q", 0.0f);
+      inputManager.assignBinding("EngineShutdown", binding);
+    }
+
+    if ( inputManager.axisAssigned("EditorCameraControlOn") == false )
+    {
+      auto binding = std::make_shared <InputBindingRelative> ("+MouseButton_Right", 0.0f);
+      inputManager.assignBinding("EditorCameraControlOn", binding);
+    }
+
+    if ( inputManager.axisAssigned("EditorCameraControlOff") == false )
+    {
+      auto binding = std::make_shared <InputBindingRelative> ("+Key_Escape", 0.0f);
+      inputManager.assignBinding("EditorCameraControlOff", binding);
+    }
+
+    if ( inputManager.axisAssigned("EditorCameraFov") == false )
+    {
+      auto binding = std::make_shared <InputBindingRelative> ("+MouseWheel_Y");
+      binding->sensitivity = -0.0005f;
+      inputManager.assignBinding("EditorCameraFov", binding);
+
+      binding = std::make_shared <InputBindingRelative> ("-MouseWheel_Y");
+      binding->sensitivity = 0.0005f;
+      inputManager.assignBinding("EditorCameraFov", binding);
+    }
+
+    if ( inputManager.axisAssigned("EditorCameraZoom") == false )
+    {
+      auto binding = std::make_shared <InputBindingRelative> ("+MouseWheel_Y");
+      binding->sensitivity = 0.00001f;
+      inputManager.assignBinding("EditorCameraZoom", binding);
+
+      binding = std::make_shared <InputBindingRelative> ("-MouseWheel_Y");
+      binding->sensitivity = -0.00001f;
+      inputManager.assignBinding("EditorCameraZoom", binding);
+    }
   };
 
   auto& callbackMgr = mRegistry.ctx().at <CallbackManager> ();
 
-  callbackMgr.Register("CameraLookOn"_id, cameraLookOn);
-  callbackMgr.Register("CameraLookOff"_id, cameraLookOff);
-  callbackMgr.Register("CameraLookToggle"_id, cameraLookToggle);
-  callbackMgr.Register("CameraYawClamp"_id, cameraYawClamp);
-  callbackMgr.Register("QuitGame"_id, quitGame);
+  callbackMgr.Register("EditorCameraControlOn", editorCameraControlOn);
+  callbackMgr.Register("EditorCameraFovControl", editorCameraFovControl);
+  callbackMgr.Register("EditorCameraZoomControl", editorCameraZoomControl);
+
+  callbackMgr.Register("MouseAutoCenterEnable", mouseAutoCenterEnable);
+  callbackMgr.Register("MouseAutoCenterDisable", mouseAutoCenterDisable);
+
+  callbackMgr.Register("MouseCursorHide", mouseCursorHide);
+  callbackMgr.Register("MouseCursorShow", mouseCursorShow);
+
+  callbackMgr.Register("EntityInputOn", entityInputOn);
+  callbackMgr.Register("EntityInputOff", entityInputOff);
+
+  callbackMgr.Register("EntityActivate", entityActivate);
+  callbackMgr.Register("EntityDeactivate", entityDeactivate);
+
+  callbackMgr.Register("CameraYawClamp", cameraYawClamp);
+  callbackMgr.Register("EngineShutdown", engineShutdown);
 
   auto& systemMgr = mRegistry.ctx().at <SystemManager> ();
 
   using namespace cqde::systems;
 
-  systemMgr.Register("CameraControlSystem"_id,
+  systemMgr.Register("CameraControlSystem",
                      CameraControlSystem,
                      System::Phase::Logic);
-  systemMgr.Register("EditorSystem"_id,
+  systemMgr.Register("EditorSystem",
                      EditorSystem,
                      System::Phase::Logic);
 
-  systemMgr.Register("CullingSystem"_id,
+  systemMgr.Register("CullingSystem",
                      CullingSystem,
                      System::Phase::Render);
-  systemMgr.Register("RenderSystem"_id,
+  systemMgr.Register("RenderSystem",
                      RenderSystem,
                      System::Phase::Render);
 
-  systemMgr.activate("CameraControlSystem"_id);
-  systemMgr.activate("CullingSystem"_id);
-  systemMgr.activate("RenderSystem"_id);
-  systemMgr.activate("EditorSystem"_id);
+  systemMgr.activate("CameraControlSystem");
+//  systemMgr.activate("CullingSystem");
+  systemMgr.activate("RenderSystem");
+  systemMgr.activate("EditorSystem");
 }
 
 void

@@ -2,6 +2,8 @@
 
 #include <cqde/alias.hpp>
 
+#include <cqde/types/assets/AssetStatus.hpp>
+
 #include <cqde/types/ui/widgets/PackageFilter.hpp>
 #include <cqde/types/ui/widgets/StringFilter.hpp>
 
@@ -16,6 +18,7 @@ namespace cqde::ui
 
 class AssetManagerUi
 {
+  using AssetStatus = types::AssetStatus;
   using AssetsState = std::map <PackageId, Json::Value>;
   using UndoRedoQueue = types::UndoRedoQueue <AssetsState>;
   using ContentType = types::Package::ContentType;
@@ -51,6 +54,11 @@ private:
 
   void ui_show_menu_bar( entt::registry& );
   void ui_show_asset_window( entt::registry& );
+
+  void ui_show_live_font( entt::registry& );
+  void ui_show_live_geometry( entt::registry& );
+  void ui_show_live_text( entt::registry& );
+  void ui_show_live_texture( entt::registry& );
 };
 
 } // namespace cqde::ui

@@ -2,14 +2,17 @@
 
 #include <cqde/ecs_helpers.hpp>
 
-#include <cqde/components/InputController.hpp>
 #include <cqde/components/Camera.hpp>
-#include <cqde/components/SceneNode.hpp>
-#include <cqde/components/Tag.hpp>
-#include <cqde/components/Transform.hpp>
-#include <cqde/components/GeometryBuffer.hpp>
-#include <cqde/components/TextureBuffer.hpp>
 #include <cqde/components/EntityMetaInfo.hpp>
+#include <cqde/components/GeometryBuffer.hpp>
+#include <cqde/components/InputController.hpp>
+#include <cqde/components/SubscriberInput.hpp>
+#include <cqde/components/SceneNode.hpp>
+#include <cqde/components/SnapshotExcluded.hpp>
+#include <cqde/components/SubscriberUpdate.hpp>
+#include <cqde/components/Tag.hpp>
+#include <cqde/components/TextureBuffer.hpp>
+#include <cqde/components/Transform.hpp>
 
 #include <cqde/types/CallbackManager.hpp>
 #include <cqde/types/EntityManager.hpp>
@@ -75,14 +78,19 @@ engineInit( entt::registry& registry )
   registry.ctx().emplace <TextureAssetManager> (tp);
   registry.ctx().emplace <TextStringAssetManager> (tp);
 
-  entityManager.registerComponent <SceneNode> ("SceneNode");
-  entityManager.registerComponent <InputController> ("InputController");
-  entityManager.registerComponent <Transform> ("Transform");
-  entityManager.registerComponent <GeometryBuffer> ("GeometryBuffer");
-  entityManager.registerComponent <TextureBuffer> ("TextureBuffer");
   entityManager.registerComponent <Camera> ("Camera");
-  entityManager.registerComponent <Tag> ("Tag");
   entityManager.registerComponent <EntityMetaInfo> ("EntityMetaInfo");
+  entityManager.registerComponent <GeometryBuffer> ("GeometryBuffer");
+  entityManager.registerComponent <InputController> ("InputController");
+  entityManager.registerComponent <SceneNode> ("SceneNode");
+  entityManager.registerComponent <Tag> ("Tag");
+  entityManager.registerComponent <TextureBuffer> ("TextureBuffer");
+  entityManager.registerComponent <Transform> ("Transform");
+
+//  Tags
+  entityManager.registerEmptyComponent <SnapshotExcluded> ("SnapshotExcluded");
+  entityManager.registerEmptyComponent <SubscriberInput> ("SubscriberInput");
+  entityManager.registerEmptyComponent <SubscriberUpdate> ("SubscriberUpdate");
 }
 
 std::string

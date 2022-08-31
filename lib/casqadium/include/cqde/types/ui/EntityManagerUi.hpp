@@ -23,12 +23,19 @@ class EntityManagerUi
   entt::entity  mSelectedEntity {};
   ComponentType mSelectedComponent {};
 
+  std::string mNewEntityName {"NewEntity"};
+
+  StringFilter mNewComponentFilter {"Component type"};
+
   types::EntityManager* mEntityMgr {};
 
 public:
   EntityManagerUi( types::EntityManager* );
 
   void ui_show( entt::registry& );
+  void ui_show_component_window( entt::registry& );
+
+  void ui_show_scene_graph_window( entt::registry& );
 };
 
 } // namespace cqde::types

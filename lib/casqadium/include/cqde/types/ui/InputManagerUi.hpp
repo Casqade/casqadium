@@ -29,8 +29,10 @@ class InputManagerUi
   using InputConfigs = std::map <PackageId, Json::Value>;
   using UndoRedoQueue = types::UndoRedoQueue <InputConfigs>;
 
-  ui::PackageFilter mPackageFilter {};
-  ui::StringFilter mAxisFilter {"Axis ID"};
+  PackageFilter mPackageFilter {};
+  StringFilter mAxisFilter {"Axis ID"};
+
+  StringFilter mBindingFilter {"Binding ID"};
 
   InputConfigs mInputConfigs {};
 

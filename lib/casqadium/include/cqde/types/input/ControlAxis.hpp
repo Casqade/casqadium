@@ -6,7 +6,7 @@
 
 #include <json/forwards.h>
 
-#include <set>
+#include <unordered_set>
 
 
 namespace cqde::types
@@ -18,7 +18,7 @@ struct ControlAxis
   std::pair <float, float> constraint {};
 //          second < first to disable limits
 
-  std::set <CallbackId> callbacks {};
+  std::unordered_set <CallbackId, identifier_hash> callbacks {};
 
 
   ControlAxis() = default;

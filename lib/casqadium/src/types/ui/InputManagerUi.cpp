@@ -50,6 +50,9 @@ InputManagerUi::configApply(
 
     const auto inputConfigPath = package->contentPath(ContentType::Input);
 
+    if ( fileExists(inputConfigPath) == false )
+      continue;
+
     mInputMgr->deserialize( fileParse(inputConfigPath) );
   }
 }
@@ -154,8 +157,15 @@ InputManagerUi::ui_show(
 
   ImGui::EndDisabled();
 
+  const bool disabled = mNewAxisName.empty() == true ||
+                        inputConfig.isMember(mNewAxisName) == true;
+
+  ImGui::BeginDisabled(disabled);
+
   ImGui::SameLine();
   const bool newAxisInserted = ImGui::Button("+##axisAdd");
+
+  ImGui::EndDisabled();
 
   ImGui::SameLine();
   ImGui::InputTextWithHint("##newAxisId", "New axis ID", &mNewAxisName,
@@ -181,9 +191,29 @@ InputManagerUi::ui_show(
       if ( mAxisFilter.query(axisId) == false )
         continue;
 
-      const bool axisNodeOpened
-        = ImGui::TreeNodeEx(axisId.c_str(),
-                            ImGuiTreeNodeFlags_OpenOnArrow);
+      ImGui::PushID(axisId.c_str());
+
+      if ( ImGui::SmallButton("-##axisRemove") )
+      {
+        if ( axisId == mSelectedAxis.str() )
+        {
+          mSelectedAxis = null_id;
+          mSelectedBinding = null_id;
+        }
+
+        inputConfig.removeMember(axisId);
+
+        ImGui::PopID(); // axisId
+        continue;
+      }
+      ImGui::PopID(); // axisId
+
+      const auto axisFlags =  ImGuiTreeNodeFlags_OpenOnArrow |
+                              ImGuiTreeNodeFlags_AllowItemOverlap;
+
+      ImGui::SameLine();
+
+      const bool axisNodeOpened = ImGui::TreeNodeEx(axisId.c_str(), axisFlags);
 
       ImGui::PushID(axisId.c_str());
 
@@ -198,62 +228,48 @@ InputManagerUi::ui_show(
           ImGui::OpenPopup("##axisContextMenu");
       }
 
-      ImGui::SameLine();
-      if ( ImGui::SmallButton("-##axisRemove") )
-      {
-        if ( axisId == mSelectedAxis.str() )
-        {
-          mSelectedAxis = null_id;
-          mSelectedBinding = null_id;
-        }
-
-        inputConfig.removeMember(axisId);
-
-        if ( axisNodeOpened == true )
-          ImGui::TreePop();
-
-        ImGui::PopID();
-        continue;
-      }
-
       if ( ImGui::BeginPopup("##axisRenamePopup") )
       {
+        ImGui::SetKeyboardFocusHere();
+
         ImGui::Text("Rename axis:");
-        ImGui::InputText("##axisRename", &mRenamedAxisId,
-                         ImGuiInputTextFlags_AutoSelectAll);
 
-        if ( ImGui::IsItemDeactivatedAfterEdit() )
+        const bool axisRenamed = ImGui::InputText("##axisRename", &mRenamedAxisId,
+                                                   ImGuiInputTextFlags_AutoSelectAll |
+                                                   ImGuiInputTextFlags_EnterReturnsTrue);
+
+        const bool axisExists = mRenamedAxisId != axisId &&
+                                inputConfig.isMember(mRenamedAxisId);
+
+        if ( axisExists == true )
+          ImGui::TextColored(ImVec4{1.0f, 0.0f, 0.0f, 1.0f},
+                             "%s", format("Axis '{}' already exists",
+                                          mRenamedAxisId).c_str());
+
+        if ( axisRenamed == true )
         {
-          inputConfig[mRenamedAxisId].swap(inputConfig[axisId]);
+          if ( axisExists == false )
+            ImGui::CloseCurrentPopup();
 
-          bool iterationSkipNeeded {};
-
-          if ( inputConfig[axisId].empty() == true )
+          if ( inputConfig.isMember(mRenamedAxisId) == false )
           {
+            inputConfig[mRenamedAxisId] = inputConfig[axisId];
             inputConfig.removeMember(axisId);
-            iterationSkipNeeded = true;
-          }
 
-          if ( mSelectedAxis == axisId )
-          {
-            mSelectedAxis = mRenamedAxisId;
-            iterationSkipNeeded = true;
-          }
+            if ( mSelectedAxis == axisId )
+              mSelectedAxis = mRenamedAxisId;
 
-          ImGui::CloseCurrentPopup();
-
-          if ( iterationSkipNeeded == true )
-          {
-            ImGui::EndPopup();
+            ImGui::EndPopup(); // ##axisRenamePopup
 
             if ( axisNodeOpened == true )
-              ImGui::TreePop();
+              ImGui::TreePop(); //axisId
 
-            ImGui::PopID();
+            ImGui::PopID(); // axisId
             continue;
           }
         }
-        ImGui::EndPopup();
+
+        ImGui::EndPopup(); // ##axisRenamePopup
       }
 
       if ( ImGui::BeginPopup("##axisContextMenu") )
@@ -281,25 +297,8 @@ InputManagerUi::ui_show(
           if ( inputConfig[axisId].isMember(bindingId) == false )
             continue; // handle bindings removed during loop
 
-          auto flags = ImGuiTreeNodeFlags_Bullet |
-                       ImGuiTreeNodeFlags_NoTreePushOnOpen;
-
-          if ( mSelectedAxis == axisId &&
-               mSelectedBinding == bindingId )
-            flags |= ImGuiTreeNodeFlags_Selected;
-
-          ImGui::TreeNodeEx(bindingId.c_str(), flags);
-
           ImGui::PushID(bindingId.c_str());
 
-          if ( ImGui::IsItemActivated() )
-          {
-            mSelectedAxis = axisId;
-            mSelectedBinding = bindingId;
-            mBindingWindowOpened = true;
-          }
-
-          ImGui::SameLine();
           if ( ImGui::SmallButton("-##bindingRemove") )
           {
             if ( bindingId == mSelectedBinding.str() )
@@ -307,11 +306,24 @@ InputManagerUi::ui_show(
 
             inputConfig[axisId].removeMember(bindingId);
           }
-          ImGui::PopID();
+
+          const bool selected = mSelectedAxis == axisId &&
+                                mSelectedBinding == bindingId;
+
+          ImGui::SameLine();
+          if ( ImGui::Selectable(bindingId.c_str(), selected) )
+          {
+            mSelectedAxis = axisId;
+            mSelectedBinding = bindingId;
+
+            mBindingWindowOpened = true;
+            ImGui::SetWindowFocus("InputBinding");
+          }
+          ImGui::PopID(); // bindingId
         }
 
         if ( ImGui::SmallButton("+##bindingAdd") )
-          inputConfig[axisId]["Undefined"] = InputBindingRelative{"Undefined"}.toJson();
+          ImGui::OpenPopup("##bindingAddPopup");
 
         ImGui::BeginDisabled(mClipboardBinding.empty() == true);
 
@@ -321,8 +333,74 @@ InputManagerUi::ui_show(
 
         ImGui::EndDisabled();
 
+        if ( ImGui::BeginPopup("##bindingAddPopup") )
+        {
+          if ( ImGui::IsWindowAppearing() )
+            ImGui::SetKeyboardFocusHere(2);
+
+          mBindingFilter.search({}, ImGuiInputTextFlags_AutoSelectAll);
+
+          bool bindingsFound {};
+
+          ImGui::Spacing();
+          ImGui::Separator();
+
+          const auto configPrev = inputConfig[axisId];
+
+          for ( const auto& [inputHwCode, inputHwId] : mInputMgr->mHwControlMap )
+          {
+            using olc::Key;
+            using olc::MouseInputId;
+
+            if ( inputHwCode > Key::NONE &&
+                 inputHwCode < InputHwCode(MouseInputId::ENUM_END) )
+            {
+              const std::string inputHwIdPositive = "+" + inputHwId.str();
+              const std::string inputHwIdNegative = "-" + inputHwId.str();
+
+              if ( mBindingFilter.query(inputHwIdPositive) == true &&
+                   inputConfig[axisId].isMember(inputHwIdPositive) == false )
+              {
+                bindingsFound = true;
+
+                if ( ImGui::Selectable(inputHwIdPositive.c_str(), false) )
+                  inputConfig[axisId][inputHwIdPositive] = InputBindingRelative{inputHwIdPositive}.toJson();
+              }
+
+              if ( mBindingFilter.query(inputHwIdNegative) == true &&
+                   inputConfig[axisId].isMember(inputHwIdNegative) == false )
+              {
+                bindingsFound = true;
+
+                if ( ImGui::Selectable(inputHwIdNegative.c_str(), false) )
+                  inputConfig[axisId][inputHwIdNegative] = InputBindingRelative{inputHwIdNegative}.toJson();
+              }
+            }
+            else if ( inputHwCode == InputHwCode(MouseInputId::ENUM_END) )
+            {
+              if ( mBindingFilter.query(inputHwId.str()) == true &&
+                   inputConfig[axisId].isMember(inputHwId.str()) == false )
+              {
+                bindingsFound = true;
+
+                if ( ImGui::Selectable(inputHwId.str().c_str(), false) )
+                  inputConfig[axisId][inputHwId.str()] = InputBindingRelative{inputHwId.str()}.toJson();
+              }
+            }
+          }
+
+          if ( bindingsFound == false )
+            ImGui::Text("No binding IDs matching filter");
+
+          if ( inputConfig[axisId] != configPrev )
+            ImGui::CloseCurrentPopup();
+
+          ImGui::EndPopup(); // bindingAddPopup
+        }
+
         ImGui::TreePop();
       }
+
       ImGui::PopID();
     }
 
@@ -465,9 +543,19 @@ InputManagerUi::ui_show_binding_window()
   if ( ImGui::CollapsingHeader("Binding ID", ImGuiTreeNodeFlags_DefaultOpen) )
   {
     ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-    if ( ImGui::BeginCombo("##bindingEditId", mSelectedBinding.str().c_str(),
-                           ImGuiComboFlags_HeightLargest) )
+
+    if ( ImGui::BeginCombo("##bindingEditId", mSelectedBinding.str().c_str()) )
     {
+      if ( ImGui::IsWindowAppearing() )
+        ImGui::SetKeyboardFocusHere(2);
+
+      mBindingFilter.search({}, ImGuiInputTextFlags_AutoSelectAll);
+
+      ImGui::Spacing();
+      ImGui::Separator();
+
+      bool bindingsFound {};
+
       for ( const auto& [inputHwCode, inputHwId] : mInputMgr->mHwControlMap )
       {
         using olc::Key;
@@ -481,22 +569,37 @@ InputManagerUi::ui_show_binding_window()
           const std::string inputHwIdPositive = "+" + inputHwId.str();
           const std::string inputHwIdNegative = "-" + inputHwId.str();
 
-          bool selected = (mSelectedBinding == inputHwIdPositive);
+          if ( mBindingFilter.query(inputHwIdPositive) == true )
+          {
+            bindingsFound = true;
 
-          if ( ImGui::Selectable(inputHwIdPositive.c_str(), selected) )
-            mSelectedBinding = inputHwIdPositive;
+            const bool selected = (mSelectedBinding == inputHwIdPositive);
 
-          selected = (mSelectedBinding == inputHwIdNegative);
+            if ( ImGui::Selectable(inputHwIdPositive.c_str(), selected) )
+              mSelectedBinding = inputHwIdPositive;
+          }
 
-          if ( ImGui::Selectable(inputHwIdNegative.c_str(), selected) )
-            mSelectedBinding = inputHwIdNegative;
+          if ( mBindingFilter.query(inputHwIdNegative) == true )
+          {
+            bindingsFound = true;
+
+            const bool selected = (mSelectedBinding == inputHwIdNegative);
+
+            if ( ImGui::Selectable(inputHwIdNegative.c_str(), selected) )
+              mSelectedBinding = inputHwIdNegative;
+          }
         }
         else if ( inputHwCode == InputHwCode(MouseInputId::ENUM_END) )
         {
-          bool selected = (mSelectedBinding == inputHwId);
+          if ( mBindingFilter.query(inputHwId.str()) == true )
+          {
+            bindingsFound = true;
 
-          if ( ImGui::Selectable(inputHwId.str().c_str(), selected) )
-            mSelectedBinding = inputHwId;
+            const bool selected = (mSelectedBinding == inputHwId);
+
+            if ( ImGui::Selectable(inputHwId.str().c_str(), selected) )
+              mSelectedBinding = inputHwId;
+          }
         }
 
         if ( mSelectedBinding != bindingPrev )
@@ -510,6 +613,10 @@ InputManagerUi::ui_show_binding_window()
             inputConfig[mSelectedAxis.str()].removeMember(bindingPrev.str());
         }
       }
+
+      if ( bindingsFound == false )
+        ImGui::Text("No binding IDs matching filter");
+
       ImGui::EndCombo();
     }
   }

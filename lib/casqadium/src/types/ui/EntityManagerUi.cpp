@@ -6,10 +6,12 @@
 #include <cqde/types/input/InputManager.hpp>
 
 #include <cqde/components/Tag.hpp>
+#include <cqde/components/SceneNode.hpp>
 #include <cqde/components/EntityMetaInfo.hpp>
 
 #include <cqde/common.hpp>
 #include <cqde/ecs_helpers.hpp>
+#include <cqde/util/logger.hpp>
 
 #include <entt/entity/registry.hpp>
 #include <entt/meta/resolve.hpp>
@@ -18,6 +20,7 @@
 
 #include <imgui.h>
 #include <imgui_stdlib.h>
+#include <imgui_internal.h>
 
 
 namespace cqde::ui
@@ -46,8 +49,42 @@ EntityManagerUi::ui_show(
     return;
   }
 
-  if ( ImGui::CollapsingHeader("Filter") )
+  if ( ImGui::CollapsingHeader("Filter", ImGuiTreeNodeFlags_DefaultOpen) )
     mRegistryFilter.show(registry);
+
+  ImGui::Separator();
+
+  const auto tagType = mEntityMgr->componentType("Tag");
+
+  const bool entityNameInvalid =  mNewEntityName.empty() == true ||
+                                  mNewEntityName == null_id.str() ||
+                                  mEntityMgr->get(mNewEntityName) != entt::null;
+
+  ImGui::BeginDisabled(entityNameInvalid);
+
+  const bool newEntityAdded = ImGui::Button("+##entityAdd");
+
+  ImGui::EndDisabled();
+
+  ImGui::SameLine();
+
+  if ( ImGui::Button("%##entityIdGen") )
+    mNewEntityName = mEntityMgr->idGenerate(mNewEntityName).str();
+
+  if ( ImGui::IsItemHovered() )
+    ImGui::SetTooltip("Generate unique entity ID");
+
+  ImGui::SameLine();
+  ImGui::InputTextWithHint("##newEntityId", "New entity ID", &mNewEntityName,
+                           ImGuiInputTextFlags_AutoSelectAll);
+
+  if ( newEntityAdded == true )
+  {
+    const auto newEntity = mEntityMgr->entityCreate(mNewEntityName, registry);
+
+    auto& cEntityInfo = registry.emplace <EntityMetaInfo> (newEntity);
+    cEntityInfo.packageId = mRegistryFilter.package();
+  }
 
   ImGui::Separator();
 
@@ -59,15 +96,13 @@ EntityManagerUi::ui_show(
   {
     ImGui::TableNextColumn();
 
-    bool entitiesFound {};
-
     registry.each(
-    [ this, &registry, &entitiesFound] ( const entt::entity entity )
+    [ this, &registry, tagType] ( const entt::entity entity )
     {
       const auto packageSelected = mRegistryFilter.package();
 
       if (  packageSelected.str().empty() == false &&
-            packageSelected != registry.get <EntityMetaInfo> (entity).packageId)
+            packageSelected != registry.get <EntityMetaInfo> (entity).packageId )
         return;
 
       const auto entityId = registry.get <Tag> (entity).id;
@@ -91,43 +126,139 @@ EntityManagerUi::ui_show(
       if ( componentFound == false )
         return;
 
-      entitiesFound = true;
+      ImGui::PushID(entityId.str().c_str());
 
-      const auto nodeFlags = ImGuiTreeNodeFlags_OpenOnArrow |
-                             ImGuiTreeNodeFlags_OpenOnDoubleClick;
+      if ( ImGui::SmallButton("-##entityRemove") )
+        mEntityMgr->removeLater(entity);
 
-      if ( ImGui::TreeNodeEx(entityId.str().c_str(), nodeFlags) )
+      ImGui::PopID(); // entityId
+
+      auto nodeFlags =  ImGuiTreeNodeFlags_OpenOnArrow |
+                        ImGuiTreeNodeFlags_AllowItemOverlap |
+                        ImGuiTreeNodeFlags_OpenOnDoubleClick;
+
+      if ( entity == mSelectedEntity )
+        nodeFlags |= ImGuiTreeNodeFlags_Selected;
+
+      ImGui::SameLine();
+
+      const bool nodeOpened = ImGui::TreeNodeEx(entityId.str().c_str(), nodeFlags);
+
+      if ( ImGui::IsItemActivated() == true &&
+           ImGui::IsItemToggledOpen() == false )
+      {
+        if ( entity != mSelectedEntity )
+          mSelectedComponent = entt::null;
+
+        mSelectedEntity = entity;
+      }
+
+      if ( nodeOpened == true )
       {
         each_component(entity, registry,
-        [this, &registry, entity, entityId] ( const ComponentType componentType )
+        [ this, &registry, entity,
+          entityId, tagType] ( const ComponentType componentType )
         {
-          auto flags = ImGuiTreeNodeFlags_Bullet |
+          ImGui::PushID(componentType);
+
+          ImGui::BeginDisabled(componentType == tagType);
+
+          if ( ImGui::SmallButton("-##componentRemove") )
+          {
+            mEntityMgr->removeLater(entity, componentType);
+
+            if ( mSelectedEntity == entity &&
+                 mSelectedComponent == componentType )
+              mSelectedComponent = entt::null;
+          }
+
+          ImGui::EndDisabled();
+
+          auto flags = ImGuiTreeNodeFlags_Leaf |
+                       ImGuiTreeNodeFlags_AllowItemOverlap |
                        ImGuiTreeNodeFlags_NoTreePushOnOpen;
 
           if ( mSelectedEntity == entity &&
                mSelectedComponent == componentType )
             flags |= ImGuiTreeNodeFlags_Selected;
 
-          ImGui::TreeNodeEx(component_name(componentType).c_str(), flags);
-          if ( ImGui::IsItemActivated() )
+          ImGui::SameLine();
+
+          const bool selected = mSelectedEntity == entity &&
+                                mSelectedComponent == componentType;
+
+          if ( ImGui::Selectable(component_name(componentType).c_str(), selected) )
           {
             mSelectedEntity = entity;
             mSelectedComponent = componentType;
           }
 
+          ImGui::PopID(); // componentType
+
           return true;
         });
-        ImGui::TreePop();
+
+        ImGui::Spacing();
+
+        if ( ImGui::SmallButton("+##componentAdd") )
+          ImGui::OpenPopup("##componentAddPopup");
+
+        if ( ImGui::IsItemHovered() )
+          ImGui::SetTooltip("Add component");
+
+        ImGui::Spacing();
+
+        if ( ImGui::BeginPopup("##componentAddPopup") )
+        {
+          if ( ImGui::IsWindowAppearing() )
+            ImGui::SetKeyboardFocusHere(2);
+
+          mNewComponentFilter.search({}, ImGuiInputTextFlags_AutoSelectAll);
+
+          bool componentsFound {};
+
+          for ( const auto& componentName : mEntityMgr->componentNames() )
+          {
+            if ( mNewComponentFilter.query(componentName) == false )
+              continue;
+
+            componentsFound = true;
+
+            if ( ImGui::Selectable(componentName.c_str(), false) )
+            {
+              mEntityMgr->componentAdd(mEntityMgr->componentType(componentName),
+                                       entity, registry);
+
+              ImGui::CloseCurrentPopup();
+              break;
+            }
+          }
+
+          if ( componentsFound == false )
+            ImGui::Text("No components matching filter");
+
+          ImGui::EndPopup(); // componentAddPopup
+        }
+
+        ImGui::TreePop(); // entityId
       }
     });
-
-    if ( entitiesFound == false )
-      ImGui::Text("No results");
 
     ImGui::EndTable(); // Entities
   }
 
   ImGui::End(); // Registry view
+
+  ui_show_component_window(registry);
+
+  ui_show_scene_graph_window(registry);
+}
+
+void
+EntityManagerUi::ui_show_component_window(
+  entt::registry& registry )
+{
+  using compos::Tag;
 
   if ( ImGui::Begin("Component view") == false )
   {
@@ -181,6 +312,137 @@ EntityManagerUi::ui_show(
   }
 
   ImGui::End(); // Component view
+}
+
+void
+EntityManagerUi::ui_show_scene_graph_window(
+  entt::registry& registry )
+{
+  using compos::Tag;
+  using compos::SceneNode;
+
+  if ( ImGui::Begin("Scene graph view", NULL, ImGuiWindowFlags_HorizontalScrollbar) == false )
+    return ImGui::End(); // SceneGraph view
+
+  std::pair <entt::entity, entt::entity> nodeToAttach {entt::null, entt::null};
+  std::pair <entt::entity, entt::entity> nodeToDestroy {entt::null, entt::null};
+
+  const auto window = ImGui::GetCurrentWindow();
+
+  if ( ImGui::BeginDragDropTargetCustom(window->WorkRect, window->ID) )
+  {
+    auto payload = ImGui::AcceptDragDropPayload("sceneNodePayload");
+
+    if ( payload != nullptr )
+    {
+      IM_ASSERT(payload->DataSize == sizeof(entt::entity));
+
+      const auto eDragged = *(const entt::entity*) payload->Data;
+
+      nodeToAttach = {entt::null, eDragged};
+    }
+    ImGui::EndDragDropTarget();
+  }
+
+  const std::function <void(const entt::entity)> each_node =
+  [&] ( const entt::entity eParent ) -> void
+  {
+    if ( eParent == entt::null )
+      return;
+
+    auto [cNode, cTag] = registry.try_get <SceneNode, Tag> (eParent);
+
+    if ( cNode == nullptr ||
+         cTag == nullptr )
+      return;
+
+    const auto nodeId = cTag->id;
+
+    ImGui::PushID(nodeId.str().c_str());
+
+    if ( ImGui::SmallButton("-##nodeDestroy") )
+      nodeToDestroy = {cNode->parent.get_if_valid(registry), eParent};
+
+    auto flags =  ImGuiTreeNodeFlags_OpenOnArrow |
+                  ImGuiTreeNodeFlags_OpenOnDoubleClick |
+                  ImGuiTreeNodeFlags_AllowItemOverlap;
+
+    if ( cNode->children.empty() == true )
+    {
+      flags |= ImGuiTreeNodeFlags_Bullet;
+      flags |= ImGuiTreeNodeFlags_Leaf;
+      flags |= ImGuiTreeNodeFlags_NoTreePushOnOpen;
+    }
+
+    if ( mSelectedEntity == eParent )
+      flags |= ImGuiTreeNodeFlags_Selected;
+
+    ImGui::SameLine();
+    const bool nodeOpened = ImGui::TreeNodeEx(nodeId.str().c_str(), flags);
+
+    if ( ImGui::IsItemActivated() == true &&
+         ImGui::IsItemToggledOpen() == false )
+    {
+      if ( eParent != mSelectedEntity )
+        mSelectedComponent = entt::null;
+
+      mSelectedEntity = eParent;
+    }
+
+    if ( ImGui::BeginDragDropSource() )
+    {
+      ImGui::SetDragDropPayload("sceneNodePayload",
+                                &eParent, sizeof(eParent));
+      ImGui::EndDragDropSource();
+    }
+
+    auto payload = ImGui::GetDragDropPayload();
+
+    if ( payload != nullptr &&
+         payload->IsDataType("sceneNodePayload") == true )
+    {
+      IM_ASSERT(payload->DataSize == sizeof(eParent));
+
+      const auto eDragged = *(const entt::entity*) payload->Data;
+
+      auto& cTagDragged = registry.get <Tag> (eDragged);
+
+      if ( CanAddChildNode(registry, eParent, cTagDragged.id) == true &&
+           ImGui::BeginDragDropTarget() )
+      {
+        if ( ImGui::AcceptDragDropPayload("sceneNodePayload") != nullptr )
+          nodeToAttach = {eParent, eDragged};
+        ImGui::EndDragDropTarget();
+      }
+    }
+
+    if ( nodeOpened == false )
+      return ImGui::PopID(); // nodeId
+
+    for ( const auto& childRef :  (cNode->children) )
+      each_node( mEntityMgr->get_if_valid(childRef.id, registry) );
+
+    if ( cNode->children.empty() == false )
+      ImGui::TreePop(); // cTag.id
+
+    ImGui::PopID(); // nodeId
+  };
+
+  for ( auto&& [eNode, cNode, cTag] : registry.view <SceneNode, Tag> ().each() )
+  {
+    if ( cNode.parent.id != null_id )
+      continue;
+
+    each_node(eNode);
+  }
+
+  if ( nodeToAttach.second != entt::null )
+  AttachChildNode(registry, nodeToAttach.first, nodeToAttach.second);
+
+  if ( nodeToDestroy.second != entt::null )
+    RemoveChildNode(registry, nodeToDestroy.first, nodeToDestroy.second);
+
+  ImGui::End(); // SceneGraph view
 }
 
 } // namespace cqde::types

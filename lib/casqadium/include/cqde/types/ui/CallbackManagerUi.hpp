@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cqde/types/ui/widgets/StringFilter.hpp>
+
 #include <entt/fwd.hpp>
 
 
@@ -14,6 +16,8 @@ namespace cqde::ui
 class CallbackManagerUi
 {
   types::CallbackManager* mCallbackMgr {};
+
+  StringFilter mCallbackIdFilter {"Callback ID"};
 
 public:
   CallbackManagerUi( types::CallbackManager* );

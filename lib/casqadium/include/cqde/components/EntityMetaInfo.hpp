@@ -12,7 +12,7 @@ namespace cqde::compos
 
 struct EntityMetaInfo
 {
-  PackageId packageId {};
+  PackageId packageId {""};
 
 
   EntityMetaInfo() = default;

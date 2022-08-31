@@ -1,8 +1,10 @@
 #include <cqde/systems/RenderSystem.hpp>
 
 #include <cqde/common.hpp>
+
 #include <cqde/components/Camera.hpp>
 #include <cqde/components/TextureBuffer.hpp>
+
 #include <cqde/types/assets/TextureAssetManager.hpp>
 
 #include <entt/entt.hpp>
@@ -71,7 +73,6 @@ RenderSystem( entt::registry& registry )
                                               vertices[iNext],
                                               olc::CYAN );
     }
-    cCamera.zBuffer.clear();
   }
 }
 
