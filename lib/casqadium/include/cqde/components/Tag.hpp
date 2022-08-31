@@ -21,7 +21,7 @@ struct Tag
 
 
   void ui_edit_props( const entt::entity,
-                      const entt::registry& );
+                      entt::registry& );
 
   Json::Value serialize() const;
 
