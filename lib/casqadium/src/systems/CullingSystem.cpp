@@ -1,5 +1,7 @@
 #include <cqde/systems/CullingSystem.hpp>
 
+#include <cqde/math_helpers.hpp>
+
 #include <cqde/components/Camera.hpp>
 #include <cqde/components/GeometryBuffer.hpp>
 #include <cqde/components/Transform.hpp>
@@ -26,12 +28,7 @@ vertexShader(
   if ( vertices.size() == 0 )
     return {{}, -1.0f, {}};
 
-  struct
-  {
-    float left, right {};
-    float top, bottom {};
-
-  } bb {};
+  Rect bb {};
 
   bool bb_initialzed {};
 
@@ -78,15 +75,15 @@ vertexShader(
       bb.bottom = vb_vertex.y;
   }
 
-  const bool onScreen
+  const Rect vp
   {
-    bb.left < viewport.x + viewport.z &&
-    bb.right > viewport.x &&
-    bb.top < viewport.y + viewport.w &&
-    bb.bottom > viewport.y
+    .left = viewport.x,
+    .right = viewport.x + viewport.z,
+    .top = viewport.y,
+    .bottom = viewport.y + viewport.w
   };
 
-  if ( onScreen == false )
+  if ( rectsIntersect(bb, vp) == false )
     return {{}, -1.0f};
 
   vb.depth /= vb.vertices.size();
