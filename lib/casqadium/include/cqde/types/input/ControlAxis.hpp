@@ -2,6 +2,8 @@
 
 #include <cqde/alias.hpp>
 
+#include <entt/fwd.hpp>
+
 #include <json/forwards.h>
 
 #include <set>
@@ -21,6 +23,8 @@ struct ControlAxis
 
   ControlAxis() = default;
   ControlAxis( const Json::Value& );
+
+  void ui_show( const entt::registry& );
 
   bool operator == ( const ControlAxis& ) const;
 
