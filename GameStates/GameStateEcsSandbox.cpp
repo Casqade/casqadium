@@ -275,6 +275,9 @@ GameStateEcsSandbox::GameStateEcsSandbox(
 
     const auto eCamera = entityManager.get("cqde_editor_camera");
 
+    if ( registry.all_of <SubscriberInput> (eCamera) == true )
+      return;
+
     auto& cCamera = registry.get <Camera> (eCamera);
 
     for ( auto iter = cCamera.zBuffer.rbegin();
