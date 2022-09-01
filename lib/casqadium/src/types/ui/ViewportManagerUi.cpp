@@ -93,7 +93,11 @@ ViewportManagerUi::ui_show(
   using compos::Camera;
 
   if ( ImGui::Begin("Viewports") == false )
-    return ImGui::End(); // Viewports
+  {
+    ImGui::End(); // Viewports
+    ui_show_viewport_windows(registry);
+    return;
+  }
 
   if ( ImGui::Button("+##viewportAdd") )
     mViewports.push_back({});
