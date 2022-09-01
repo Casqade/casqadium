@@ -372,6 +372,10 @@ GameStateEcsSandbox::GameStateEcsSandbox(
     auto& entityManager = registry.ctx().at <EntityManager> ();
     entityManager.delayedRemove(registry);
 
+    ImGui::PushStyleColor(ImGuiCol_WindowBg, 0);
+    ImGui::DockSpaceOverViewport(NULL, ImGuiDockNodeFlags_PassthruCentralNode);
+    ImGui::PopStyleColor();
+
     registry.ctx().at <PackageManagerUi> ().ui_show(registry);
     registry.ctx().at <AssetManagerUi> ().ui_show(registry);
     registry.ctx().at <CallbackManagerUi> ().ui_show(registry);
