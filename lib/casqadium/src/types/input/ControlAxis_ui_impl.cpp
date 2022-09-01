@@ -58,13 +58,17 @@ ControlAxis::ui_show(
 
   if ( ImGui::CollapsingHeader("Constraint", ImGuiTreeNodeFlags_DefaultOpen) )
   {
-    ImGui::SetNextItemWidth(width / 2);
-    ImGui::DragFloat("Min##constraintFirst", &constraint.first, 0.1f,
+    ImGui::Text("Min");
+    ImGui::SameLine();
+    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+    ImGui::DragFloat("##constraintFirst", &constraint.first, 0.1f,
                      std::numeric_limits <float>::lowest(), constraint.second, "%.3f",
                      ImGuiSliderFlags_NoRoundToFormat);
 
-    ImGui::SetNextItemWidth(width / 2);
-    ImGui::DragFloat("Max##constraintSecond", &constraint.second, 0.1f,
+    ImGui::Text("Max");
+    ImGui::SameLine();
+    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+    ImGui::DragFloat("##constraintSecond", &constraint.second, 0.1f,
                      constraint.first, std::numeric_limits <float>::max(), "%.3f",
                      ImGuiSliderFlags_NoRoundToFormat);
   }
