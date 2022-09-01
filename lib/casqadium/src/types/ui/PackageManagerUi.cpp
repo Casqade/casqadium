@@ -59,9 +59,9 @@ PackageManagerUi::ui_show(
 
   CQDE_ASSERT_DEBUG(mPackageMgr != nullptr, return);
 
-  if ( ImGui::Begin("Package management", NULL,
+  if ( ImGui::Begin("Packages", NULL,
                     ImGuiWindowFlags_MenuBar) == false )
-    return ImGui::End(); // Package management
+    return ImGui::End(); // Packages
 
   if ( mConfigState.root.empty() == true )
   {
@@ -91,9 +91,9 @@ PackageManagerUi::ui_show(
 
   ImGui::Separator();
 
-  if ( ImGui::BeginTable( "Packages", 1, ImGuiTableFlags_ScrollY,
+  if ( ImGui::BeginTable( "PackagesList", 1, ImGuiTableFlags_ScrollY,
                           {0.0f, ImGui::GetContentRegionAvail().y}) == false )
-    return ImGui::End(); // Package management
+    return ImGui::End(); // Packages
 
   ImGui::TableNextColumn();
 
@@ -197,11 +197,11 @@ PackageManagerUi::ui_show(
     ImGui::PopID();
   }
 
-  ImGui::EndTable(); // Packages
+  ImGui::EndTable(); // PackagesList
 
   ui_show_menu_bar(registry);
 
-  ImGui::End(); // Package management
+  ImGui::End(); // Packages
 
   ui_show_package_window(registry);
 
