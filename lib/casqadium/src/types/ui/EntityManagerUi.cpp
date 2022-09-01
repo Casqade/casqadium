@@ -56,15 +56,18 @@ EntityManagerUi::ui_show(
 
   const auto tagType = mEntityMgr->componentType("Tag");
 
-  const bool entityNameInvalid =  mNewEntityName.empty() == true ||
-                                  mNewEntityName == null_id.str() ||
-                                  mEntityMgr->get(mNewEntityName) != entt::null;
+  if ( ImGui::Button("+##entityAdd") )
+  {
+    if ( mNewEntityName.empty() == true ||
+         mNewEntityName == null_id.str() ||
+         mEntityMgr->get(mNewEntityName) != entt::null )
+      mNewEntityName = mEntityMgr->idGenerate(mNewEntityName).str();
 
-  ImGui::BeginDisabled(entityNameInvalid);
+    const auto newEntity = mEntityMgr->entityCreate(mNewEntityName, registry);
 
-  const bool newEntityAdded = ImGui::Button("+##entityAdd");
-
-  ImGui::EndDisabled();
+    auto& cEntityInfo = registry.emplace <EntityMetaInfo> (newEntity);
+    cEntityInfo.packageId = mRegistryFilter.package();
+  }
 
   ImGui::SameLine();
 
@@ -77,14 +80,6 @@ EntityManagerUi::ui_show(
   ImGui::SameLine();
   ImGui::InputTextWithHint("##newEntityId", "New entity ID", &mNewEntityName,
                            ImGuiInputTextFlags_AutoSelectAll);
-
-  if ( newEntityAdded == true )
-  {
-    const auto newEntity = mEntityMgr->entityCreate(mNewEntityName, registry);
-
-    auto& cEntityInfo = registry.emplace <EntityMetaInfo> (newEntity);
-    cEntityInfo.packageId = mRegistryFilter.package();
-  }
 
   ImGui::Separator();
 
