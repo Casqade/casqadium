@@ -351,7 +351,7 @@ GameStateEcsSandbox::GameStateEcsSandbox(
     if ( eCamera == entt::null )
       return;
 
-    auto&& cCamera = registry.get <Camera> (eCamera);
+    const auto& cCamera = registry.get <Camera> (eCamera);
 
     for ( const auto& [vBuf, entity] : cCamera.zBuffer )
       if ( entity == selectedEntity )

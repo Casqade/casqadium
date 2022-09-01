@@ -239,7 +239,7 @@ ViewportManagerUi::ui_show_viewport_windows(
     const auto windowSize = ImGui::GetWindowSize();
 
     if ( eCamera != entt::null &&
-         registry.all_of <Camera, Transform, SceneNode> (eCamera ) == true )
+         registry.all_of <Camera, Transform, SceneNode> (eCamera) == true )
     {
       const float windowRatio = windowSize.x / windowSize.y;
 
