@@ -168,37 +168,29 @@ AssetManager <olc::Font>::ui_show_preview(
   if ( ImGui::CollapsingHeader("Preview", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
 
-  const auto textSampleLine1 = U"The quick brown fox";
-  const auto textSampleLine2 = U"jumps over the lazy dog";
+  static std::string textSample {u8"Preview"};
+  static std::unique_ptr <olc::Decal> decalPreview {nullptr};
 
-  static std::unique_ptr <olc::Decal> decalLine1 {nullptr};
-  static std::unique_ptr <olc::Decal> decalLine2 {nullptr};
+  if ( ImGui::InputTextWithHint("##textPreview", "Type text to preview", &textSample) ||
+       decalPreview == nullptr )
+  {
+    std::wstring_convert<std::codecvt_utf8 <char32_t>, char32_t> convert {};
+    decalPreview.reset(handle->RenderStringToDecal(convert.from_bytes(textSample), olc::WHITE, false));
+  }
 
-  decalLine1.reset(handle->RenderStringToDecal(textSampleLine1, olc::WHITE, false));
-
-  if ( decalLine1 == nullptr ||
-       decalLine1->id < 0 )
+  if ( textSample.empty() == true )
     return;
 
-  float spriteRatio = 1.0f * decalLine1->sprite->width / decalLine1->sprite->height;
+  if ( decalPreview == nullptr ||
+       decalPreview->id < 0 )
+    return;
+
+  float spriteRatio = 1.0f * decalPreview->sprite->width / decalPreview->sprite->height;
 
   float height = ImGui::GetContentRegionAvail().y / 2.0f;
   float width = height * spriteRatio;
 
-  ImGui::Image(ImTextureID(decalLine1->id), {width, height});
-
-  decalLine2.reset(handle->RenderStringToDecal(textSampleLine2, olc::WHITE,  false));
-
-  if ( decalLine2 == nullptr ||
-       decalLine2->id < 0 )
-    return;
-
-  spriteRatio = 1.0f * decalLine2->sprite->width / decalLine2->sprite->height;
-
-  height = ImGui::GetContentRegionAvail().y;
-  width = height * spriteRatio;
-
-  ImGui::Image(ImTextureID(decalLine2->id), {width, height});
+  ImGui::Image(ImTextureID(decalPreview->id), {width, height});
 }
 
 template <>
