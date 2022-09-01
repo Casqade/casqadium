@@ -20,7 +20,8 @@ SystemManagerUi::ui_show(
 {
   CQDE_ASSERT_DEBUG(mSystemMgr != nullptr, return);
 
-  if ( ImGui::Begin("Systems") == false )
+  if ( ImGui::Begin("Systems", NULL,
+                    ImGuiWindowFlags_HorizontalScrollbar) == false )
   {
     ImGui::End(); // Systems
     return;

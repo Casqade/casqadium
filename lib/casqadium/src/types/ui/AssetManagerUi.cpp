@@ -138,7 +138,7 @@ AssetManagerUi::ui_show(
   using ContentType = types::Package::ContentType;
 
   if ( ImGui::Begin("Assets", nullptr,
-                    ImGuiWindowFlags_MenuBar ) == false )
+                    ImGuiWindowFlags_MenuBar) == false )
   {
     ImGui::End(); // Assets
     return;
@@ -197,8 +197,10 @@ void
 AssetManagerUi::ui_show_live_state(
   entt::registry& registry )
 {
-  if ( ImGui::BeginTable( "AssetsLiveList", 1, ImGuiTableFlags_ScrollY,
-                          {0.0f, ImGui::GetContentRegionAvail().y}) == false )
+  const auto tableFlags = ImGuiTableFlags_ScrollX |
+                          ImGuiTableFlags_ScrollY;
+
+  if ( ImGui::BeginTable( "AssetsLiveList", 1, tableFlags) == false )
     return;
 
   ImGui::TableNextColumn();
@@ -338,8 +340,10 @@ AssetManagerUi::ui_show_package_state(
 
   ImGui::Separator();
 
-  if ( ImGui::BeginTable( "AssetsPackageList", 1, ImGuiTableFlags_ScrollY,
-                          {0.0f, ImGui::GetContentRegionAvail().y}) == false )
+  const auto tableFlags = ImGuiTableFlags_ScrollX |
+                          ImGuiTableFlags_ScrollY;
+
+  if ( ImGui::BeginTable( "AssetsPackageList", 1, tableFlags) == false )
     return;
 
   ImGui::TableNextColumn();
@@ -519,7 +523,8 @@ AssetManagerUi::ui_show_asset_window(
 
   const auto windowTitle = format("Asset '{}'###assetEditWindow", selectedAssetId);
 
-  if ( ImGui::Begin(windowTitle.c_str(), &mAssetWindowOpened) == false )
+  if ( ImGui::Begin(windowTitle.c_str(), &mAssetWindowOpened,
+                    ImGuiWindowFlags_HorizontalScrollbar) == false )
     return ImGui::End(); // windowTitle
 
   auto& assetEntry = assetDb[selectedAssetId];
@@ -596,7 +601,8 @@ AssetManagerUi::ui_show_live_font(
   const auto windowTitle = format("Font '{}'###assetEditWindow",
                                   mSelectedAssetIds[mSelectedAssetType]);
 
-  if ( ImGui::Begin(windowTitle.c_str(), &mAssetWindowOpened) == true )
+  if ( ImGui::Begin(windowTitle.c_str(), &mAssetWindowOpened,
+                    ImGuiWindowFlags_HorizontalScrollbar) == true )
   {
     if ( fontMgr.status(selectedFontId) != AssetStatus::Undefined )
       fontMgr.load({selectedFontId});
@@ -643,7 +649,8 @@ AssetManagerUi::ui_show_live_geometry(
   const auto windowTitle = format("Geometry '{}'###assetEditWindow",
                                   mSelectedAssetIds[mSelectedAssetType]);
 
-  if ( ImGui::Begin(windowTitle.c_str(), &mAssetWindowOpened) == true )
+  if ( ImGui::Begin(windowTitle.c_str(), &mAssetWindowOpened,
+                    ImGuiWindowFlags_HorizontalScrollbar) == true )
   {
     if ( geometryMgr.status(selectedGeometryId) != AssetStatus::Undefined )
       geometryMgr.load({selectedGeometryId});
@@ -690,7 +697,8 @@ AssetManagerUi::ui_show_live_text(
   const auto windowTitle = format("Text '{}'###assetEditWindow",
                                   mSelectedAssetIds[mSelectedAssetType]);
 
-  if ( ImGui::Begin(windowTitle.c_str(), &mAssetWindowOpened) == true )
+  if ( ImGui::Begin(windowTitle.c_str(), &mAssetWindowOpened,
+                    ImGuiWindowFlags_HorizontalScrollbar) == true )
   {
     if ( textMgr.status(selectedTextId) != AssetStatus::Undefined )
       textMgr.load({selectedTextId});
@@ -736,7 +744,8 @@ AssetManagerUi::ui_show_live_texture(
 
   const auto windowTitle = format("Texture '{}'###assetEditWindow", selectedTextureId);
 
-  if ( ImGui::Begin(windowTitle.c_str(), &mAssetWindowOpened) == true )
+  if ( ImGui::Begin(windowTitle.c_str(), &mAssetWindowOpened,
+                    ImGuiWindowFlags_HorizontalScrollbar) == true )
   {
     if ( textureMgr.status(selectedTextureId) != AssetStatus::Undefined )
       textureMgr.load({selectedTextureId});

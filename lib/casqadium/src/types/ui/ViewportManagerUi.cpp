@@ -104,8 +104,10 @@ ViewportManagerUi::ui_show(
 
   ImGui::Separator();
 
-  if ( ImGui::BeginTable( "ViewportsList", 1, ImGuiTableFlags_ScrollY,
-                          {0.0f, ImGui::GetContentRegionAvail().y}) )
+  const auto tableFlags = ImGuiTableFlags_ScrollX |
+                          ImGuiTableFlags_ScrollY;
+
+  if ( ImGui::BeginTable( "ViewportsList", 1, tableFlags) )
   {
     ImGui::TableNextColumn();
 

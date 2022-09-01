@@ -88,11 +88,11 @@ EntityManagerUi::ui_show(
 
   ImGui::Separator();
 
-  const auto tableFlags = ImGuiTableFlags_ScrollY |
+  const auto tableFlags = ImGuiTableFlags_ScrollX |
+                          ImGuiTableFlags_ScrollY |
                           ImGuiTableFlags_RowBg;
 
-  if ( ImGui::BeginTable( "Entities", 1, tableFlags,
-                          {0.0f, ImGui::GetContentRegionAvail().y}) )
+  if ( ImGui::BeginTable( "Entities", 1, tableFlags) )
   {
     ImGui::TableNextColumn();
 

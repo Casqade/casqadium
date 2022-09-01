@@ -91,12 +91,6 @@ PackageManagerUi::ui_show(
 
   ImGui::Separator();
 
-  if ( ImGui::BeginTable( "PackagesList", 1, ImGuiTableFlags_ScrollY,
-                          {0.0f, ImGui::GetContentRegionAvail().y}) == false )
-    return ImGui::End(); // Packages
-
-  ImGui::TableNextColumn();
-
   bool packageNameInvalid = mPackageNewName.empty() == true;
 
   if ( packageNameInvalid == false )
@@ -122,6 +116,14 @@ PackageManagerUi::ui_show(
                            ImGuiInputTextFlags_AutoSelectAll);
 
   ImGui::Separator();
+
+  const auto tableFlags = ImGuiTableFlags_ScrollX |
+                          ImGuiTableFlags_ScrollY;
+
+  if ( ImGui::BeginTable( "PackagesList", 1, tableFlags) == false )
+    return ImGui::End(); // Packages
+
+  ImGui::TableNextColumn();
 
   for ( Json::ArrayIndex index = 0;
         index < packages.size();
@@ -335,7 +337,8 @@ PackageManagerUi::ui_show_package_window(
   if ( mPackageWindowOpened == false )
     mEditedPackageId.clear();
 
-  if ( ImGui::Begin("PackageEdit", &mPackageWindowOpened) == false )
+  if ( ImGui::Begin("PackageEdit", &mPackageWindowOpened,
+                    ImGuiWindowFlags_HorizontalScrollbar) == false )
     return ImGui::End(); // PackageEdit
 
   Package {mEditedPackageId}.ui_show(mConfigState.packages[mEditedPackageId]);

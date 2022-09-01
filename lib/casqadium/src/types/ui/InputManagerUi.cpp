@@ -178,8 +178,10 @@ InputManagerUi::ui_show(
 
   ImGui::Separator();
 
-  if ( ImGui::BeginTable( "InputConfig", 1, ImGuiTableFlags_ScrollY,
-                          {0.0f, ImGui::GetContentRegionAvail().y}) )
+  const auto tableFlags = ImGuiTableFlags_ScrollX |
+                          ImGuiTableFlags_ScrollY;
+
+  if ( ImGui::BeginTable( "InputConfig", 1, tableFlags) )
   {
     ImGui::TableNextColumn();
 
@@ -522,7 +524,8 @@ InputManagerUi::ui_show_binding_window()
     return;
   }
 
-  if ( ImGui::Begin("InputBinding", &mBindingWindowOpened) == false )
+  if ( ImGui::Begin("InputBinding", &mBindingWindowOpened,
+                    ImGuiWindowFlags_HorizontalScrollbar) == false )
     return ImGui::End(); // InputBinding
 
   if ( ImGui::Button("Copy##bindingCopy") )

@@ -30,8 +30,7 @@ CallbackManagerUi::ui_show(
   const auto flags = ImGuiTableFlags_ScrollX |
                      ImGuiTableFlags_ScrollY;
 
-  if ( ImGui::BeginTable( "CallbacksList", 1, flags,
-                          ImGui::GetContentRegionAvail()) )
+  if ( ImGui::BeginTable( "CallbacksList", 1, flags) )
   {
     ImGui::TableNextColumn();
 
