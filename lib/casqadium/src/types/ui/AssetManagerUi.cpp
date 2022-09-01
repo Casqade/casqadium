@@ -369,9 +369,14 @@ AssetManagerUi::ui_show_package_state(
       continue;
     }
 
+    const bool selected = asset == mSelectedAssetIds[mSelectedAssetType];
+
+    const auto flags =  ImGuiSelectableFlags_SpanAllColumns |
+                        ImGuiSelectableFlags_AllowItemOverlap;
+
     ImGui::SameLine();
     if ( ImGui::Selectable( asset.c_str(),
-                            asset == mSelectedAssetIds[mSelectedAssetType] ) )
+                            selected, flags ) )
     {
       mSelectedAssetIds[mSelectedAssetType] = asset;
 
@@ -580,8 +585,13 @@ AssetManagerUi::ui_show_live_font(
     if ( mAssetIdFilter.query(asset.str()) == false )
       continue;
 
+    const bool selected = asset.str() == mSelectedAssetIds[mSelectedAssetType];
+
+    const auto flags =  ImGuiSelectableFlags_SpanAllColumns |
+                        ImGuiSelectableFlags_AllowItemOverlap;
+
     if ( ImGui::Selectable( asset.str().c_str(),
-                            asset.str() == mSelectedAssetIds[mSelectedAssetType] ) )
+                            selected, flags ) )
     {
       mSelectedAssetIds[mSelectedAssetType] = asset.str();
 
@@ -628,8 +638,13 @@ AssetManagerUi::ui_show_live_geometry(
     if ( mAssetIdFilter.query(asset.str()) == false )
       continue;
 
+    const bool selected = asset.str() == mSelectedAssetIds[mSelectedAssetType];
+
+    const auto flags =  ImGuiSelectableFlags_SpanAllColumns |
+                        ImGuiSelectableFlags_AllowItemOverlap;
+
     if ( ImGui::Selectable( asset.str().c_str(),
-                            asset.str() == mSelectedAssetIds[mSelectedAssetType] ) )
+                            selected, flags ) )
     {
       mSelectedAssetIds[mSelectedAssetType] = asset.str();
 
@@ -676,8 +691,13 @@ AssetManagerUi::ui_show_live_text(
     if ( mAssetIdFilter.query(asset.str()) == false )
       continue;
 
+    const bool selected = asset.str() == mSelectedAssetIds[mSelectedAssetType];
+
+    const auto flags =  ImGuiSelectableFlags_SpanAllColumns |
+                        ImGuiSelectableFlags_AllowItemOverlap;
+
     if ( ImGui::Selectable( asset.str().c_str(),
-                            asset.str() == mSelectedAssetIds[mSelectedAssetType] ) )
+                            selected, flags ) )
     {
       mSelectedAssetIds[mSelectedAssetType] = asset.str();
 
@@ -724,8 +744,13 @@ AssetManagerUi::ui_show_live_texture(
     if ( mAssetIdFilter.query(asset.str()) == false )
       continue;
 
+    const bool selected = asset.str() == mSelectedAssetIds[mSelectedAssetType];
+
+    const auto flags =  ImGuiSelectableFlags_SpanAllColumns |
+                        ImGuiSelectableFlags_AllowItemOverlap;
+
     if ( ImGui::Selectable( asset.str().c_str(),
-                            asset.str() == mSelectedAssetIds[mSelectedAssetType] ) )
+                            selected, flags ) )
     {
       mSelectedAssetIds[mSelectedAssetType] = asset.str();
 

@@ -168,18 +168,21 @@ AssetManager <olc::Font>::ui_show_preview(
   if ( ImGui::CollapsingHeader("Preview", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
 
+  static AssetId fontCurrent {fontId};
   static std::string textSample {u8"Preview"};
   static std::unique_ptr <olc::Decal> decalPreview {nullptr};
 
   if ( ImGui::InputTextWithHint("##textPreview", "Type text to preview", &textSample) ||
-       decalPreview == nullptr )
+       decalPreview == nullptr ||
+       fontCurrent != fontId )
   {
-    std::wstring_convert<std::codecvt_utf8 <char32_t>, char32_t> convert {};
-    decalPreview.reset(handle->RenderStringToDecal(convert.from_bytes(textSample), olc::WHITE, false));
+    if ( textSample.empty() == false )
+    {
+      fontCurrent = fontId;
+      std::wstring_convert<std::codecvt_utf8 <char32_t>, char32_t> convert {};
+      decalPreview.reset(handle->RenderStringToDecal(convert.from_bytes(textSample), olc::WHITE, false));
+    }
   }
-
-  if ( textSample.empty() == true )
-    return;
 
   if ( decalPreview == nullptr ||
        decalPreview->id < 0 )

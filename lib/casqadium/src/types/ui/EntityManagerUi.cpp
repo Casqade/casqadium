@@ -84,8 +84,7 @@ EntityManagerUi::ui_show(
   ImGui::Separator();
 
   const auto tableFlags = ImGuiTableFlags_ScrollX |
-                          ImGuiTableFlags_ScrollY |
-                          ImGuiTableFlags_RowBg;
+                          ImGuiTableFlags_ScrollY;
 
   if ( ImGui::BeginTable( "Entities", 1, tableFlags) )
   {

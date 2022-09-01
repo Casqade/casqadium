@@ -47,21 +47,31 @@ InputController::ui_edit_props(
 
   ImGui::Separator();
 
+  const auto tableFlags = ImGuiTableFlags_ScrollX |
+                          ImGuiTableFlags_ScrollY;
+
+  if ( ImGui::BeginTable( "InputAxesList", 1, tableFlags) == false )
+    return;
+
+  ImGui::TableNextColumn();
+
   std::vector <InputAxisId> axesToRemove {};
 
   for ( const auto& [axisId, axis] : inputs )
   {
     ImGui::PushID(axisId.str().c_str());
 
-    auto flags = ImGuiTreeNodeFlags_Bullet |
-                 ImGuiTreeNodeFlags_NoTreePushOnOpen;
+    if ( ImGui::SmallButton("-##axisRemove") )
+      axesToRemove.push_back(axisId);
 
-    if ( axisId == selectedAxisId )
-      flags |= ImGuiTreeNodeFlags_Selected;
+    const bool selected = axisId == selectedAxisId;
 
-    ImGui::TreeNodeEx(axisId.str().c_str(), flags);
+    const auto flags =  ImGuiSelectableFlags_SpanAllColumns |
+                        ImGuiSelectableFlags_AllowItemOverlap;
 
-    if ( ImGui::IsItemActivated() )
+    ImGui::SameLine();
+    if ( ImGui::Selectable(axisId.str().c_str(),
+                           selected, flags) )
     {
       selectedAxisId = axisId;
 
@@ -69,13 +79,10 @@ InputController::ui_edit_props(
       ImGui::SetWindowFocus("###axisEditWindow");
     }
 
-    ImGui::SameLine();
-
-    if ( ImGui::SmallButton("-##axisRemove") )
-      axesToRemove.push_back(axisId);
-
     ImGui::PopID(); // axisId
   }
+
+  ImGui::EndTable(); // InputAxesList
 
   for ( const auto& axisId : axesToRemove )
     inputs.erase(axisId);

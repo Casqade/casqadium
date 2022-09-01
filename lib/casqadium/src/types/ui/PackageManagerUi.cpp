@@ -145,9 +145,14 @@ PackageManagerUi::ui_show(
       break;
     }
 
+    const bool selected = mEditedPackageId == packages[index].asString();
+
+    const auto flags =  ImGuiSelectableFlags_SpanAllColumns |
+                        ImGuiSelectableFlags_AllowItemOverlap;
+
     ImGui::SameLine();
     ImGui::Selectable(format("{}###", packages[index].asString()).c_str(),
-                      mEditedPackageId == packages[index].asString() );
+                      selected, flags );
 
     if ( ImGui::IsItemHovered() == true )
       ImGui::SetTooltip("Drag to reorder");

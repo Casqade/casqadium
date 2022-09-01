@@ -117,12 +117,15 @@ ViewportManagerUi::ui_show(
     {
       const auto index = std::distance(mViewports.begin(), iter);
 
-      if ( ImGui::Selectable(("Viewport " + std::to_string(index)).c_str()) )
+      const auto flags =  ImGuiSelectableFlags_SpanAllColumns |
+                          ImGuiSelectableFlags_AllowItemOverlap;
+
+      if ( ImGui::Selectable(("Viewport " + std::to_string(index)).c_str(),
+                             false, flags) )
         ImGui::SetWindowFocus(("Viewport " + std::to_string(index) + "##viewport").c_str());
 
       if ( ImGui::IsItemHovered() )
         ImGui::SetTooltip("%s", iter->id.str().c_str());
-
     }
 
     ImGui::EndTable(); // ViewportsList

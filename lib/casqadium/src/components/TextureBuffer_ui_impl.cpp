@@ -63,6 +63,14 @@ TextureBuffer::ui_edit_props(
 
   ImGui::Separator();
 
+  const auto tableFlags = ImGuiTableFlags_ScrollX |
+                          ImGuiTableFlags_ScrollY;
+
+  if ( ImGui::BeginTable( "TexturesList", 1, tableFlags) == false )
+    return;
+
+  ImGui::TableNextColumn();
+
   for ( auto iter = textures.begin();
         iter < textures.end();
         ++iter )
@@ -78,8 +86,12 @@ TextureBuffer::ui_edit_props(
       break;
     }
 
+    const auto flags =  ImGuiSelectableFlags_SpanAllColumns |
+                        ImGuiSelectableFlags_AllowItemOverlap;
+
     ImGui::SameLine();
-    ImGui::Selectable(format("{}###", iter->str()).c_str());
+    ImGui::Selectable(format("{}###", iter->str()).c_str(),
+                      false, flags);
 
     static auto iter_dragged = textures.end();
 
@@ -109,6 +121,8 @@ TextureBuffer::ui_edit_props(
 
     ImGui::PopID();
   }
+
+  ImGui::EndTable(); // TexturesList
 }
 
 } // namespace cqde::compos
