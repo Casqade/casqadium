@@ -21,40 +21,82 @@
 namespace cqde::ui
 {
 
+int32_t
+ViewportManagerUi::viewportIndex(
+  const EntityId& cameraId ) const
+{
+  for ( auto iter = mViewports.begin();
+        iter != mViewports.end();
+        ++iter )
+    if ( iter->id == cameraId )
+      return std::distance( mViewports.begin(), iter );
+
+  return -1;
+}
+
+bool
+ViewportManagerUi::hasViewport(
+  const EntityId& cameraId ) const
+{
+  for ( auto iter = mViewports.begin();
+        iter != mViewports.end();
+        ++iter )
+    if ( iter->id == cameraId )
+      return true;
+
+  return false;
+}
+
 bool
 ViewportManagerUi::mouseOverViewport(
   const EntityId& cameraId ) const
 {
-  if ( mViewports.count(cameraId) == 0 )
+  const auto index  = viewportIndex(cameraId);
+
+  if ( index < 0 )
     return false;
 
-  const bool windowOpened = mViewports.at(cameraId);
+  const auto windowTitle = "Viewport " + std::to_string(index) + "##viewport";
 
-  if ( windowOpened == false )
-    return false;
-
-  const auto window = ImGui::FindWindowByName((cameraId.str() + "##viewport").c_str());
+  const auto window = ImGui::FindWindowByName(windowTitle.c_str());
 
   if ( window == nullptr )
     return false;
 
-  const auto windowPos = window->Pos;
-  const auto windowSize = window->Size;
+  const auto rectMin = window->Pos;
 
-  return ImGui::IsMouseHoveringRect(windowPos, {windowPos.x + windowSize.x, windowPos.y + windowSize.y}, false);
+  const ImVec2 rectMax
+  {
+    rectMin.x + window->Size.x,
+    rectMin.y + window->Size.y,
+  };
+
+  const auto context = ImGui::GetCurrentContext();
+  const auto contextWindow = ImGui::GetCurrentWindowRead();
+
+  context->CurrentWindow = window;
+
+  bool result = ImGui::IsWindowHovered();
+
+  context->CurrentWindow = contextWindow;
+  ImGui::SetCurrentContext(context);
+
+  return result;
 }
 
 void
 ViewportManagerUi::ui_show(
   entt::registry& registry )
 {
+  using fmt::format;
   using compos::Tag;
   using compos::Camera;
 
   if ( ImGui::Begin("Viewports") == false )
     return ImGui::End(); // Viewports
 
-  mCameraFilter.search();
+  if ( ImGui::Button("+##viewportAdd") )
+    mViewports.push_back({});
 
   ImGui::Separator();
 
@@ -63,23 +105,18 @@ ViewportManagerUi::ui_show(
   {
     ImGui::TableNextColumn();
 
-    for ( const auto&& [eCamera, cCamera, cTag] : registry.view <Camera, Tag> ().each() )
+    for ( auto iter = mViewports.begin();
+          iter != mViewports.end();
+          ++iter )
     {
-      if ( mCameraFilter.query(cTag.id.str()) == false )
-        continue;
+      const auto index = std::distance(mViewports.begin(), iter);
 
-      bool selected {};
+      if ( ImGui::Selectable(("Viewport " + std::to_string(index)).c_str()) )
+        ImGui::SetWindowFocus(("Viewport " + std::to_string(index) + "##viewport").c_str());
 
-      const EntityReference camRef {cTag};
+      if ( ImGui::IsItemHovered() )
+        ImGui::SetTooltip("%s", iter->id.str().c_str());
 
-      if ( const auto viewport =  mViewports.find(camRef); viewport != mViewports.end() )
-        selected = viewport->second;
-
-      if ( ImGui::Selectable(camRef.id.str().c_str(), selected ) )
-      {
-        mViewports[camRef] = true;
-        ImGui::SetWindowFocus((camRef.id.str() + "##viewport").c_str());
-      }
     }
 
     ImGui::EndTable(); // ViewportsList
@@ -95,6 +132,7 @@ ViewportManagerUi::ui_show_viewport_windows(
   entt::registry& registry )
 {
   using fmt::format;
+  using compos::Tag;
   using compos::Camera;
   using compos::SceneNode;
   using compos::Transform;
@@ -103,18 +141,14 @@ ViewportManagerUi::ui_show_viewport_windows(
 
   auto& geometry = registry.ctx().at <GeometryAssetManager> ();
 
-  for ( auto& [cameraRef, windowOpened] : mViewports )
+  int32_t windowToClose {-1};
+
+  for ( auto iter = mViewports.begin();
+        iter < mViewports.end();
+        ++iter )
   {
-    if ( windowOpened == false )
-      continue;
-
-    const auto eCamera = cameraRef.get_if_valid(registry);
-
-    if ( eCamera == entt::null ||
-         registry.all_of <Camera,
-                          SceneNode,
-                          Transform> (eCamera) == false )
-      continue;
+    auto& cameraRef = *iter;
+    const auto viewportIndex = std::distance(mViewports.begin(), iter);
 
     auto* pge = olc::renderer->ptrPGE;
     const auto defaultWindowSize = olc::vf2d{0.25f, 0.25f} * pge->GetWindowSize();
@@ -127,87 +161,142 @@ ViewportManagerUi::ui_show_viewport_windows(
                               defaultWindowSize.y},
                              ImGuiCond_FirstUseEver);
 
-    if ( ImGui::Begin((cameraRef.id.str() + "##viewport").c_str(),
-                      &windowOpened,
-                      ImGuiWindowFlags_NoBackground) == false ||
-         windowOpened == false )
-    {
-      auto cCamera = registry.try_get <Camera> (eCamera);
-      if ( cCamera != nullptr )
-        cCamera->zBuffer.clear();
+    const std::string windowTitle = "Viewport " +
+                                    std::to_string(viewportIndex) +
+                                    "##viewport";
 
-      ImGui::End(); // cameraRef.id
+    bool windowOpened {true};
+
+    auto eCamera = cameraRef.get_if_valid(registry);
+
+    if ( eCamera == entt::null )
+      cameraRef = null_id;
+
+    if (  ImGui::Begin( windowTitle.c_str(), &windowOpened,
+                        ImGuiWindowFlags_NoBackground) == false ||
+          windowOpened == false )
+    {
+      windowToClose = viewportIndex;
+
+      if ( eCamera != entt::null )
+        registry.get <Camera> (eCamera).zBuffer.clear();
+
+      ImGui::End(); // windowTitle
       continue;
     }
 
     const auto windowRegion = ImGui::GetContentRegionAvail();
 
-    if ( windowRegion.x <= 0.0f || windowRegion.y <= 0.0f )
+    if ( windowRegion.x <= 0.0f ||
+         windowRegion.y <= 0.0f )
     {
       ImGui::End(); // cameraRef.id
       continue;
     }
 
+    ImGui::SetNextItemWidth(ImGui::CalcItemWidth());
+
+    if ( ImGui::BeginCombo("##cameraIdCombo",
+                           cameraRef.id.str().c_str(),
+                           ImGuiComboFlags_PopupAlignLeft) )
+    {
+      if ( ImGui::IsWindowAppearing() )
+        ImGui::SetKeyboardFocusHere(2);
+
+      mCameraFilter.search({}, ImGuiInputTextFlags_AutoSelectAll);
+
+      for ( const auto&& [entity, cCamera, cTag] : registry.view <Camera, Tag> ().each() )
+      {
+        if ( mCameraFilter.query(cTag.id.str()) == false )
+          continue;
+
+        const bool selected = cameraRef.id == cTag.id;
+
+        if ( selected == true ||
+             hasViewport(cTag.id) == true )
+          continue;
+
+        if ( ImGui::Selectable(cTag.id.str().c_str(), selected) )
+        {
+          if ( cameraRef.id != null_id )
+            registry.get <Camera> (entity).zBuffer.clear();
+
+          *iter = cTag;
+          eCamera = entity;
+        }
+      }
+
+      ImGui::EndCombo(); // cameraIdCombo
+    }
+
     const auto windowPos = ImGui::GetWindowPos();
     const auto windowSize = ImGui::GetWindowSize();
 
-    const float windowRatio = windowSize.x / windowSize.y;
-
-    const auto& [cCamera, cCameraNode, cCameraTransform] = registry.get <Camera, SceneNode, Transform> (eCamera);
-
-    cCamera.zBuffer.clear();
-
-    const glm::mat4 camView = cCamera.viewMatrix(registry, cCameraNode, cCameraTransform);
-    const glm::mat4 camProjection = cCamera.projMatrix();
-    glm::vec4 camViewport = cCamera.viewportScaled();
-
-    const float viewportRatio = camViewport.z / camViewport.w;
-
-    camViewport.x = windowPos.x + camViewport.x * windowSize.x;
-    camViewport.y = windowPos.y + camViewport.y * windowSize.y;
-    camViewport.z = windowSize.x;
-    camViewport.w = windowSize.y;
-
-    camViewport.z = std::min(camViewport.z, camViewport.z / windowRatio * viewportRatio);
-    camViewport.w = std::min(camViewport.w, camViewport.w * windowRatio / viewportRatio);
-
-    for ( const auto&& [eDrawable, cGeometryBuffer, cNode, cTransform]
-            : registry.view <GeometryBuffer, SceneNode, Transform>().each() )
+    if ( eCamera != entt::null &&
+         registry.all_of <Camera, Transform, SceneNode> (eCamera ) == true )
     {
-      const auto gBuffer = geometry.get(cGeometryBuffer.buffer);
+      const float windowRatio = windowSize.x / windowSize.y;
 
-      if ( gBuffer == nullptr )
-        continue;
+      const auto& [cCamera, cCameraNode, cCameraTransform] = registry.get <Camera, SceneNode, Transform> (eCamera);
 
-      const glm::mat4 modelView = camView * GetWorldMatrix(registry, cTransform, cNode);
+      cCamera.zBuffer.clear();
 
-      auto vBuffer = systems::vertexShader(
-        *gBuffer,
-        modelView,
-        camProjection,
-        camViewport );
+      const glm::mat4 camView = cCamera.viewMatrix(registry, cCameraNode, cCameraTransform);
+      const glm::mat4 camProjection = cCamera.projMatrix();
+      glm::vec4 camViewport = cCamera.viewportScaled();
 
-      if ( vBuffer.depth < 0.0f )
-        continue;
+      const float viewportRatio = camViewport.z / camViewport.w;
 
-      cCamera.zBuffer.emplace( vBuffer, eDrawable );
+      camViewport.x = windowPos.x + camViewport.x * windowSize.x;
+      camViewport.y = windowPos.y + camViewport.y * windowSize.y;
+      camViewport.z = windowSize.x;
+      camViewport.w = windowSize.y;
+
+      camViewport.z = std::min(camViewport.z, camViewport.z / windowRatio * viewportRatio);
+      camViewport.w = std::min(camViewport.w, camViewport.w * windowRatio / viewportRatio);
+
+      for ( const auto&& [eDrawable, cGeometryBuffer, cNode, cTransform]
+              : registry.view <GeometryBuffer, SceneNode, Transform>().each() )
+      {
+        const auto gBuffer = geometry.get(cGeometryBuffer.buffer);
+
+        if ( gBuffer == nullptr )
+          continue;
+
+        const glm::mat4 modelView = camView * GetWorldMatrix(registry, cTransform, cNode);
+
+        auto vBuffer = systems::vertexShader(
+          *gBuffer,
+          modelView,
+          camProjection,
+          camViewport );
+
+        if ( vBuffer.depth < 0.0f )
+          continue;
+
+        cCamera.zBuffer.emplace( vBuffer, eDrawable );
+      }
+
+      ImGui::Text("%s", format("Z-buffer depth: {}", cCamera.zBuffer.size()).c_str());
+
+      const uint32_t colorViewport = ImGui::GetColorU32(ImGuiCol_FrameBg);
+
+      pge->DrawRectDecal({camViewport.x, camViewport.y},
+                         {camViewport.z, camViewport.w},
+                         colorViewport);
     }
 
-    ImGui::Text("%s", format("Z-buffer depth: {}", cCamera.zBuffer.size()).c_str());
-
     const uint32_t colorWindow = ImGui::GetColorU32(ImGuiCol_Border, 0.75f);
-    const uint32_t colorViewport = ImGui::GetColorU32(ImGuiCol_FrameBg);
 
     pge->DrawRectDecal({windowPos.x, windowPos.y},
                        {windowSize.x, windowSize.y},
                        colorWindow);
 
-    pge->DrawRectDecal({camViewport.x, camViewport.y},
-                       {camViewport.z, camViewport.w},
-                       colorViewport);
-
-    ImGui::End(); // cameraRef.id
+    ImGui::End(); // windowTitle
   }
+
+  if ( windowToClose != -1 )
+    mViewports.erase(mViewports.begin() + windowToClose);
 }
 
 } // namespace cqde::ui

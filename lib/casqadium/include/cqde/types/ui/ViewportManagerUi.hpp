@@ -7,7 +7,7 @@
 
 #include <entt/fwd.hpp>
 
-#include <map>
+#include <vector>
 
 
 namespace cqde::ui
@@ -17,13 +17,16 @@ class ViewportManagerUi
 {
   using EntityReference = types::EntityReference;
 
-  std::map <EntityReference, bool> mViewports {};
+  std::vector <types::EntityReference> mViewports {};
 
   StringFilter mCameraFilter {"Camera entity ID"};
+
+  int32_t viewportIndex( const EntityId& cameraId ) const;
 
 public:
   ViewportManagerUi() = default;
 
+  bool hasViewport( const EntityId& cameraId ) const;
   bool mouseOverViewport( const EntityId& cameraId ) const;
 
   void ui_show( entt::registry& );
