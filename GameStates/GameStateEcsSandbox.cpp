@@ -9,6 +9,8 @@
 #include <cqde/alias.hpp>
 #include <cqde/common.hpp>
 #include <cqde/ecs_helpers.hpp>
+#include <cqde/math_helpers.hpp>
+#include <cqde/render_helpers.hpp>
 
 #include <cqde/types/CallbackManager.hpp>
 #include <cqde/types/EntityManager.hpp>
@@ -218,8 +220,8 @@ GameStateEcsSandbox::GameStateEcsSandbox(
   };
 
   const auto editorCameraFovControl =
-  [this] (  entt::registry& registry,
-            const std::vector <std::any>& args )
+  [] (  entt::registry& registry,
+        const std::vector <std::any>& args )
   {
     const auto eCamera = std::any_cast <entt::entity> (args.at(0));
     const auto cController = std::any_cast <InputController*> (args.at(1));
@@ -231,8 +233,8 @@ GameStateEcsSandbox::GameStateEcsSandbox(
   };
 
   const auto editorCameraZoomControl =
-  [this] (  entt::registry& registry,
-            const std::vector <std::any>& args )
+  [] (  entt::registry& registry,
+        const std::vector <std::any>& args )
   {
     const auto eCamera = std::any_cast <entt::entity> (args.at(0));
     const auto cController = std::any_cast <InputController*> (args.at(1));
@@ -241,6 +243,56 @@ GameStateEcsSandbox::GameStateEcsSandbox(
 
     if ( cCamera.projectionType == Camera::Projection::Orthographic )
       cCamera.fov = cController->inputs["EditorCameraZoom"].value;
+  };
+
+  const auto editorEntitySelect =
+  [] (  entt::registry& registry,
+        const std::vector <std::any>& args )
+  {
+    using cqde::drawLines;
+    using cqde::boundingBox;
+    using cqde::pointInRect;
+    using cqde::LineRenderMode;
+
+    using cqde::ui::ViewportManagerUi;
+    using cqde::ui::EntityManagerUi;
+
+    const auto cController = std::any_cast <InputController*> (args.at(1));
+
+    const auto& viewportManagerUi = registry.ctx().at <ViewportManagerUi> ();
+
+    if ( viewportManagerUi.mouseOverViewport("cqde_editor_camera") == false )
+      return;
+
+    const glm::vec2 cursorPos
+    {
+      cController->inputs["CursorPosX"].value,
+      cController->inputs["CursorPosY"].value,
+    };
+
+    const auto& entityManager = registry.ctx().at <EntityManager> ();
+    auto& entityManagerUi = registry.ctx().at <EntityManagerUi> ();
+
+    const auto eCamera = entityManager.get("cqde_editor_camera");
+
+    auto& cCamera = registry.get <Camera> (eCamera);
+
+    for ( auto iter = cCamera.zBuffer.rbegin();
+          iter != cCamera.zBuffer.rend();
+          ++iter )
+    {
+      const auto& [vBuf, entity] = *iter;
+
+      if ( pointInRect( cursorPos, boundingBox(vBuf.vertices) ) == false )
+        continue;
+
+      if ( entityManagerUi.selectedEntity() == entity )
+        continue;
+
+      return entityManagerUi.entitySelect(entity);
+    }
+
+    entityManagerUi.entitySelect(entt::null);
   };
 
   const auto CameraControlSystem =
@@ -275,6 +327,32 @@ GameStateEcsSandbox::GameStateEcsSandbox(
     const float yaw = glm::radians( cController.inputs["Yaw"].value );
 
     cTransform.orientation = glm::quat( {pitch, yaw, 0.0f} );
+  };
+
+  const auto EditorEntityHighlightSystem =
+  [] ( entt::registry& registry )
+  {
+    using cqde::drawLines;
+    using cqde::LineRenderMode;
+    using cqde::ui::EntityManagerUi;
+
+    const auto& entityManager   = registry.ctx().at <EntityManager> ();
+    const auto& entityManagerUi = registry.ctx().at <EntityManagerUi> ();
+
+    const auto selectedEntity = entityManagerUi.selectedEntity();
+
+    if ( selectedEntity == entt::null )
+      return;
+
+    const auto eCamera = entityManager.get("cqde_editor_camera");
+    if ( eCamera == entt::null )
+      return;
+
+    auto&& cCamera = registry.get <Camera> (eCamera);
+
+    for ( const auto& [vBuf, entity] : cCamera.zBuffer )
+      if ( entity == selectedEntity )
+        drawLines(vBuf.vertices, olc::YELLOW, LineRenderMode::Loop);
   };
 
   const auto EditorSystem =
@@ -375,6 +453,15 @@ GameStateEcsSandbox::GameStateEcsSandbox(
 
       auto& iCameraControlOn = cInputController.inputs["EditorCameraControlOn"];
       iCameraControlOn.callbacks.insert("EditorCameraControlOn");
+
+      auto& iEntitySelect = cInputController.inputs["EditorEntitySelect"];
+      iEntitySelect.callbacks.insert("EditorEntitySelect");
+
+      auto& iCursorPosX = cInputController.inputs["CursorPosX"];
+      auto& iCursorPosY = cInputController.inputs["CursorPosY"];
+
+      iCursorPosX.constraint.first = 1.0f;
+      iCursorPosY.constraint.first = 1.0f;
     }
 
     auto& inputManager = registry.ctx().at <InputManager> ();
@@ -383,6 +470,12 @@ GameStateEcsSandbox::GameStateEcsSandbox(
     {
       auto binding = std::make_shared <InputBindingRelative> ("-Key_Q", 0.0f);
       inputManager.assignBinding("EngineShutdown", binding);
+    }
+
+    if ( inputManager.axisAssigned("EditorEntitySelect") == false )
+    {
+      auto binding = std::make_shared <InputBindingRelative> ("+MouseButton_Left", 0.0f);
+      inputManager.assignBinding("EditorEntitySelect", binding);
     }
 
     if ( inputManager.axisAssigned("EditorCameraControlOn") == false )
@@ -411,17 +504,18 @@ GameStateEcsSandbox::GameStateEcsSandbox(
     if ( inputManager.axisAssigned("EditorCameraZoom") == false )
     {
       auto binding = std::make_shared <InputBindingRelative> ("+MouseWheel_Y");
-      binding->sensitivity = 0.00001f;
+      binding->sensitivity = -0.00001f;
       inputManager.assignBinding("EditorCameraZoom", binding);
 
       binding = std::make_shared <InputBindingRelative> ("-MouseWheel_Y");
-      binding->sensitivity = -0.00001f;
+      binding->sensitivity = 0.00001f;
       inputManager.assignBinding("EditorCameraZoom", binding);
     }
   };
 
   auto& callbackMgr = mRegistry.ctx().at <CallbackManager> ();
 
+  callbackMgr.Register("EditorEntitySelect", editorEntitySelect);
   callbackMgr.Register("EditorCameraControlOn", editorCameraControlOn);
   callbackMgr.Register("EditorCameraFovControl", editorCameraFovControl);
   callbackMgr.Register("EditorCameraZoomControl", editorCameraZoomControl);
@@ -458,11 +552,15 @@ GameStateEcsSandbox::GameStateEcsSandbox(
   systemMgr.Register("RenderSystem",
                      RenderSystem,
                      System::Phase::Render);
+  systemMgr.Register("EditorEntityHighlightSystem",
+                     EditorEntityHighlightSystem,
+                     System::Phase::Render);
 
   systemMgr.activate("CameraControlSystem");
 //  systemMgr.activate("CullingSystem");
   systemMgr.activate("RenderSystem");
   systemMgr.activate("EditorSystem");
+  systemMgr.activate("EditorEntityHighlightSystem");
 }
 
 void

@@ -6,6 +6,39 @@
 namespace cqde
 {
 
+void drawLines(
+  const std::vector <olc::vf2d>& vertices,
+  const olc::Pixel& color,
+  const LineRenderMode mode )
+{
+  auto pge = olc::renderer->ptrPGE;
+
+  switch (mode)
+  {
+    case LineRenderMode::Strip:
+    {
+      for ( size_t i = 0, iNext = 1;
+            iNext < vertices.size();
+            ++i, ++iNext )
+        pge->DrawLineDecal( vertices[i],
+                            vertices[iNext],
+                            color );
+      return;
+    }
+
+    case LineRenderMode::Loop:
+    {
+      for ( size_t i = 0, iNext = 1;
+            i < vertices.size();
+            ++i, iNext = (i + 1) % vertices.size() )
+        pge->DrawLineDecal( vertices[i],
+                            vertices[iNext],
+                            color );
+      return;
+    }
+  }
+}
+
 std::shared_ptr <olc::Renderable>
 textureFromText(
   const std::string& text,

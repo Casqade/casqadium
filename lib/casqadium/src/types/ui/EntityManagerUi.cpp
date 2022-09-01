@@ -445,4 +445,31 @@ EntityManagerUi::ui_show_scene_graph_window(
   ImGui::End(); // SceneGraph view
 }
 
+void
+EntityManagerUi::entitySelect(
+  const entt::entity entity )
+{
+  mSelectedEntity = entity;
+  mSelectedComponent = entt::null;
+}
+
+void
+EntityManagerUi::componentSelect(
+  const ComponentType component )
+{
+  mSelectedComponent = component;
+}
+
+entt::entity
+EntityManagerUi::selectedEntity() const
+{
+  return mSelectedEntity;
+}
+
+ComponentType
+EntityManagerUi::selectedComponent() const
+{
+  return mSelectedComponent;
+}
+
 } // namespace cqde::types

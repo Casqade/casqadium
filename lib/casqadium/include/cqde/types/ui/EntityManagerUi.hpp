@@ -36,6 +36,12 @@ public:
   void ui_show_component_window( entt::registry& );
 
   void ui_show_scene_graph_window( entt::registry& );
+
+  void entitySelect( const entt::entity );
+  void componentSelect( const ComponentType );
+
+  entt::entity  selectedEntity() const;
+  ComponentType selectedComponent() const;
 };
 
 } // namespace cqde::types
