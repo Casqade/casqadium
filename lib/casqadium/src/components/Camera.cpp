@@ -91,6 +91,10 @@ const static Json::Value cameraJsonReference =
   root["fov"].setComment("// 'fov' must be a JSON float"s,
                           Json::CommentPlacement::commentBefore);
 
+  root["layer"] = ValueType::intValue;
+  root["layer"].setComment("// 'layer' must be a JSON integer"s,
+                          Json::CommentPlacement::commentBefore);
+
   root["projection"] = ValueType::stringValue;
   root["projection"].setComment("// 'projection' must be a JSON string"s,
                                 Json::CommentPlacement::commentBefore);
@@ -113,6 +117,8 @@ Camera::serialize() const
     json["fov"] = glm::degrees(fov);
   else
     json["fov"] = fov;
+
+  json["layer"] = layer;
 
   json["projection"] = projectionType == Projection::Perspective
                        ? "perspective"
@@ -156,6 +162,8 @@ Camera::deserialize(
     comp.fov = glm::radians(json["fov"].asFloat());
   else
     comp.fov = json["fov"].asFloat();
+
+  comp.layer = json["layer"].asInt();
 
   comp.viewport << json["viewport"];
   comp.zRange.first = json["z-range"][0].asFloat();

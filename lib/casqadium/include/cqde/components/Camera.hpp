@@ -48,6 +48,9 @@ struct Camera
     Diffuse,
   };
 
+  std::multimap < types::VertexBuffer, entt::entity,
+                  std::greater <types::VertexBuffer>> zBuffer {};
+
   glm::vec4 viewport {0.0, 0.0, 1.0, 1.0};
   std::pair <float, float> zRange {0.1f, 1000.0f};
 
@@ -57,13 +60,12 @@ struct Camera
     float zoom;
   };
 
+  int32_t layer {};
+
   Projection    projectionType = Projection::Perspective;
   RenderMode    renderMode = RenderMode::Solid;
   TextureMode   textureMode = TextureMode::Textured;
   LightingMode  lightingMode = LightingMode::Diffuse;
-
-  std::multimap < types::VertexBuffer, entt::entity,
-                  std::greater <types::VertexBuffer>> zBuffer {};
 
 
   Camera() = default;

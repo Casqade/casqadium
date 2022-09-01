@@ -67,6 +67,9 @@ Camera::ui_edit_props(
                       flags);
   }
 
+  if ( ImGui::CollapsingHeader("Layer", ImGuiTreeNodeFlags_DefaultOpen) )
+    ImGui::DragInt("##layer", &layer, 1.0f);
+
   const std::string headerTitle = projectionType == Projection::Perspective ? "Fov" : "Zoom";
 
   if ( ImGui::CollapsingHeader((headerTitle + "###cameraScale").c_str(), ImGuiTreeNodeFlags_DefaultOpen) )

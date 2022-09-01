@@ -29,6 +29,12 @@ RenderSystem( entt::registry& registry )
   using namespace compos;
   using namespace types;
 
+  registry.sort <Camera> (
+  [] ( const Camera& lhs, const Camera& rhs )
+  {
+    return lhs.layer > rhs.layer;
+  });
+
   for ( const auto&& [eCamera, cCamera] : registry.view <Camera> ().each() )
   {
     for ( const auto& [buffer, entity] : cCamera.zBuffer )

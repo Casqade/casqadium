@@ -52,6 +52,7 @@
       "viewport": [0.0, 0.0, 1.0, 1.0],
       "z-range": [0.1, 1000.0],
       "fov": 45.0,
+      "layer": 0,
       "projection": "perspective",
     },
     "Transform":
