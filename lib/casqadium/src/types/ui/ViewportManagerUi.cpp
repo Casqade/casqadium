@@ -221,7 +221,7 @@ ViewportManagerUi::ui_show_viewport_windows(
         if ( ImGui::Selectable(cTag.id.str().c_str(), selected) )
         {
           if ( cameraRef.id != null_id )
-            registry.get <Camera> (entity).zBuffer.clear();
+            registry.get <Camera> (eCamera).zBuffer.clear();
 
           *iter = cTag;
           eCamera = entity;
