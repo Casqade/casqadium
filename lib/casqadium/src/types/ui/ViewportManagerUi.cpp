@@ -194,11 +194,13 @@ ViewportManagerUi::ui_show_viewport_windows(
       continue;
     }
 
-    ImGui::SetNextItemWidth(ImGui::CalcItemWidth());
+    float comboWidth {};
+    comboWidth = std::min(ImGui::GetContentRegionAvail().x,
+                          ImGui::CalcTextSize("camera_id_long_enough").x + ImGui::GetFrameHeightWithSpacing());
 
+    ImGui::SetNextItemWidth(comboWidth);
     if ( ImGui::BeginCombo("##cameraIdCombo",
-                           cameraRef.id.str().c_str(),
-                           ImGuiComboFlags_PopupAlignLeft) )
+                           cameraRef.id.str().c_str()) )
     {
       if ( ImGui::IsWindowAppearing() )
         ImGui::SetKeyboardFocusHere(2);
