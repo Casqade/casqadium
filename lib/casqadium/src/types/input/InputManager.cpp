@@ -70,6 +70,11 @@ InputManager::InputManager()
     {Key::ENTER, "Key_Enter"},
     {Key::ESCAPE, "Key_Escape"},
 
+    {Key::LEFT, "Key_Left"},
+    {Key::RIGHT, "Key_Right"},
+    {Key::UP, "Key_Up"},
+    {Key::DOWN, "Key_Down"},
+
     {InputHwCode(MouseInputId::ButtonLeft), "MouseButton_Left"},
     {InputHwCode(MouseInputId::ButtonRight), "MouseButton_Right"},
     {InputHwCode(MouseInputId::ButtonMiddle), "MouseButton_Middle"},
@@ -242,7 +247,7 @@ void
 InputManager::handleAxisInput(
   const InputHwCode inputHwCode,
   const float amount,
-  const float direction,
+  const int8_t direction,
   entt::registry& registry )
 {
   using compos::InputController;
@@ -251,11 +256,12 @@ InputManager::handleAxisInput(
   if ( mHwControlMap.count(inputHwCode) == 0 )
     return;
 
-  const std::string inputDir  = direction > 0.0f
+  const std::string prefix  = direction > 0
                               ? "+"
-                              : "-";
+                              : direction < 0
+                                ? "-" : "~";
 
-  InputHwId inputId = inputDir + mHwControlMap[inputHwCode].str();
+  InputHwId inputId = prefix + mHwControlMap[inputHwCode].str();
 
   InputEvent event {};
 

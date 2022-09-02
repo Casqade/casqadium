@@ -58,7 +58,7 @@ public:
 
   void handleAxisInput( const InputHwCode,
                         const float amount,
-                        const float direction,
+                        const int8_t direction,
                         entt::registry& );
 
   bool axisAssigned( const InputAxisId& ) const;

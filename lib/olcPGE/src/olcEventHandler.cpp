@@ -64,6 +64,9 @@ EventHandler::update()
     else if ( keyState.bReleased )
       event.type = Event::EventType::KeyReleased;
 
+    else if ( keyState.bHeld )
+      event.type = Event::EventType::KeyHeld;
+
     else
       continue;
 
@@ -111,6 +114,9 @@ EventHandler::update()
 
     else if ( mouseState.bReleased )
       event.type = Event::EventType::MouseButtonReleased;
+
+    else if ( mouseState.bHeld )
+      event.type = Event::EventType::MouseButtonHeld;
 
     else
       continue;

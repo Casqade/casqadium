@@ -358,6 +358,7 @@ InputManagerUi::ui_show(
                  inputHwCode < InputHwCode(MouseInputId::ENUM_END) )
             {
               const std::string inputHwIdPositive = "+" + inputHwId.str();
+              const std::string inputHwIdNeutral = "~" + inputHwId.str();
               const std::string inputHwIdNegative = "-" + inputHwId.str();
 
               if ( mBindingFilter.query(inputHwIdPositive) == true &&
@@ -367,6 +368,15 @@ InputManagerUi::ui_show(
 
                 if ( ImGui::Selectable(inputHwIdPositive.c_str(), false) )
                   inputConfig[axisId][inputHwIdPositive] = InputBindingRelative{inputHwIdPositive}.toJson();
+              }
+
+              if ( mBindingFilter.query(inputHwIdNeutral) == true &&
+                   inputConfig[axisId].isMember(inputHwIdNeutral) == false )
+              {
+                bindingsFound = true;
+
+                if ( ImGui::Selectable(inputHwIdNeutral.c_str(), false) )
+                  inputConfig[axisId][inputHwIdNeutral] = InputBindingRelative{inputHwIdNeutral}.toJson();
               }
 
               if ( mBindingFilter.query(inputHwIdNegative) == true &&
@@ -571,6 +581,7 @@ InputManagerUi::ui_show_binding_window()
              inputHwCode < InputHwCode(MouseInputId::ENUM_END) )
         {
           const std::string inputHwIdPositive = "+" + inputHwId.str();
+          const std::string inputHwIdNeutral = "~" + inputHwId.str();
           const std::string inputHwIdNegative = "-" + inputHwId.str();
 
           if ( mBindingFilter.query(inputHwIdPositive) == true )
@@ -581,6 +592,16 @@ InputManagerUi::ui_show_binding_window()
 
             if ( ImGui::Selectable(inputHwIdPositive.c_str(), selected) )
               mSelectedBinding = inputHwIdPositive;
+          }
+
+          if ( mBindingFilter.query(inputHwIdNeutral) == true )
+          {
+            bindingsFound = true;
+
+            const bool selected = (mSelectedBinding == inputHwIdNeutral);
+
+            if ( ImGui::Selectable(inputHwIdNeutral.c_str(), selected) )
+              mSelectedBinding = inputHwIdNeutral;
           }
 
           if ( mBindingFilter.query(inputHwIdNegative) == true )

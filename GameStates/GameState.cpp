@@ -59,6 +59,7 @@ GameState::handleEvent( const olc::Event event )
 
   switch (event.type)
   {
+    case EventType::KeyHeld:
     case EventType::KeyPressed:
     case EventType::KeyReleased:
       keyEvent( event );
@@ -68,6 +69,7 @@ GameState::handleEvent( const olc::Event event )
       mouseMoveEvent( event.mouseMove );
       break;
 
+    case EventType::MouseButtonHeld:
     case EventType::MouseButtonPressed:
     case EventType::MouseButtonReleased:
       mouseButtonEvent( event );

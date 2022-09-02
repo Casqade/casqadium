@@ -585,9 +585,7 @@ GameStateEcsSandbox::keyEvent( const olc::Event event )
 
   auto& inputManager = mRegistry.ctx().at <InputManager> ();
 
-  const float inputDirection = event.type == olc::Event::KeyPressed
-                          ? +1.0f
-                          : -1.0f;
+  const int8_t inputDirection = event.type - olc::Event::KeyHeld;
 
   inputManager.handleAxisInput( InputHwCode(event.key.code),
                                 1.0f, inputDirection,
@@ -633,11 +631,10 @@ GameStateEcsSandbox::mouseButtonEvent( const olc::Event event )
 
   auto& inputManager = mRegistry.ctx().at <InputManager> ();
 
-  const InputHwCode inputHwCode = InputHwCode(MouseInputId::ENUM_BEGIN) + InputHwCode(event.mouseButton.button);
+  const InputHwCode inputHwCode = InputHwCode(MouseInputId::ENUM_BEGIN) +
+                                  InputHwCode(event.mouseButton.button);
 
-  const float inputDirection = event.type == olc::Event::MouseButtonPressed
-                            ? 1.0f
-                            : -1.0f;
+  const int8_t inputDirection = event.type - olc::Event::MouseButtonHeld;
 
   inputManager.handleAxisInput( inputHwCode,
                                 1.0f, inputDirection,
