@@ -191,15 +191,132 @@ GameStateEcsSandbox::GameStateEcsSandbox(
     mouseCursorHide(registry, args);
   };
 
-  const auto cameraYawClamp =
+  const auto controlTranslateXRelative =
   [] (  entt::registry& registry,
         const std::vector <std::any>& args )
   {
+    const auto entity = std::any_cast <entt::entity> (args.at(0));
     auto cController = std::any_cast <InputController*> (args.at(1));
 
-    float& yaw = cController->inputs["Yaw"].value;
-    yaw = yaw > 180.0f ? yaw - 360.0f : yaw;
-    yaw = yaw < -180.0f ? yaw + 360.0f : yaw;
+    const auto& tick = registry.ctx().at <TickCurrent> ();
+    const auto ticks = tick.ticksElapsed;
+    const auto elapsed = tick.tickInterval;
+
+    const float dt = ticks * static_cast <double> (elapsed);
+
+    auto& cTransform = registry.get <Transform> (entity);
+
+    auto& axisValue = cController->inputs["TranslateX"].value;
+
+    cTransform.translation += cTransform.right() * axisValue * dt;
+
+    axisValue = 0.0f;
+  };
+
+  const auto controlTranslateYRelative =
+  [] (  entt::registry& registry,
+        const std::vector <std::any>& args )
+  {
+    const auto entity = std::any_cast <entt::entity> (args.at(0));
+    auto cController = std::any_cast <InputController*> (args.at(1));
+
+    const auto& tick = registry.ctx().at <TickCurrent> ();
+    const auto ticks = tick.ticksElapsed;
+    const auto elapsed = tick.tickInterval;
+
+    const float dt = ticks * static_cast <double> (elapsed);
+
+    auto& cTransform = registry.get <Transform> (entity);
+
+    auto& axisValue = cController->inputs["TranslateY"].value;
+
+    cTransform.translation += cTransform.up() * axisValue * dt;
+
+    axisValue = 0.0f;
+  };
+
+  const auto controlTranslateZRelative =
+  [] (  entt::registry& registry,
+        const std::vector <std::any>& args )
+  {
+    const auto entity = std::any_cast <entt::entity> (args.at(0));
+    auto cController = std::any_cast <InputController*> (args.at(1));
+
+    const auto& tick = registry.ctx().at <TickCurrent> ();
+    const auto ticks = tick.ticksElapsed;
+    const auto elapsed = tick.tickInterval;
+
+    const float dt = ticks * static_cast <double> (elapsed);
+
+    auto& cTransform = registry.get <Transform> (entity);
+
+    auto& axisValue = cController->inputs["TranslateZ"].value;
+
+    cTransform.translation += cTransform.front() * axisValue * dt;
+
+    axisValue = 0.0f;
+  };
+
+  const auto controlPitchRelative =
+  [] (  entt::registry& registry,
+        const std::vector <std::any>& args )
+  {
+    const auto entity = std::any_cast <entt::entity> (args.at(0));
+    auto cController = std::any_cast <InputController*> (args.at(1));
+
+    auto& cTransform = registry.get <Transform> (entity);
+
+    auto& axisValue = cController->inputs["Pitch"].value;
+
+    const auto angle = glm::angleAxis(glm::radians(axisValue),
+                                      glm::vec3 {1.0f, 0.0f, 0.0f});
+
+    const auto orientationPrev = cTransform.orientation;
+
+    cTransform.orientation = glm::normalize(cTransform.orientation * angle);
+
+    if ( cTransform.up().y < 0.0f )
+      cTransform.orientation = orientationPrev;
+
+    axisValue = 0.0f;
+  };
+
+  const auto controlYawRelative =
+  [] (  entt::registry& registry,
+        const std::vector <std::any>& args )
+  {
+    const auto entity = std::any_cast <entt::entity> (args.at(0));
+    auto cController = std::any_cast <InputController*> (args.at(1));
+
+    auto& cTransform = registry.get <Transform> (entity);
+
+    auto& axisValue = cController->inputs["Yaw"].value;
+
+    const auto angle = glm::angleAxis(glm::radians(axisValue),
+                                      glm::vec3 {0.0f, 1.0f, 0.0f});
+
+    cTransform.orientation = glm::normalize(angle * cTransform.orientation);
+
+    axisValue = 0.0f;
+  };
+
+  const auto controlRollRelative =
+  [] (  entt::registry& registry,
+        const std::vector <std::any>& args )
+  {
+    const auto entity = std::any_cast <entt::entity> (args.at(0));
+    auto cController = std::any_cast <InputController*> (args.at(1));
+
+    auto& cTransform = registry.get <Transform> (entity);
+
+    auto& axisValue = cController->inputs["Roll"].value;
+
+    const auto angle = glm::angleAxis(glm::radians(axisValue),
+                                      glm::vec3 {0.0f, 0.0f, 1.0f});
+
+    cTransform.orientation = glm::normalize(angle * cTransform.orientation);
+
+    axisValue = 0.0f;
   };
 
   const auto engineShutdown =
@@ -298,40 +415,6 @@ GameStateEcsSandbox::GameStateEcsSandbox(
     entityManagerUi.entitySelect(entt::null);
   };
 
-  const auto CameraControlSystem =
-  [] ( entt::registry& registry )
-  {
-    const auto& tick = registry.ctx().at <TickCurrent> ();
-
-    const auto ticks = tick.ticksElapsed;
-    const auto elapsed = tick.tickInterval;
-
-    const double dt = ticks * static_cast <double> (elapsed);
-    const float cameraVelocity = 10.0f;
-
-    const auto& entityManager = registry.ctx().at <EntityManager> ();
-
-    const auto eCamera = entityManager.get("cqde_editor_camera");
-    if ( eCamera == entt::null )
-      return;
-
-    auto [cController, cTransform] = registry.get <SubscriberUpdate, InputController, Transform> (eCamera);
-
-    const float translationX = cController.inputs["TranslateX"].value * cameraVelocity * dt;
-    cTransform.translation += cTransform.right() * translationX;
-
-    const float translationY = cController.inputs["TranslateY"].value * cameraVelocity * dt;
-    cTransform.translation += cTransform.up() * translationY;
-
-    const float translationZ = cController.inputs["TranslateZ"].value * cameraVelocity * dt;
-    cTransform.translation += cTransform.front() * translationZ;
-
-    const float pitch = glm::radians( cController.inputs["Pitch"].value );
-    const float yaw = glm::radians( cController.inputs["Yaw"].value );
-
-    cTransform.orientation = glm::quat( {pitch, yaw, 0.0f} );
-  };
-
   const auto EditorEntityHighlightSystem =
   [] ( entt::registry& registry )
   {
@@ -401,6 +484,8 @@ GameStateEcsSandbox::GameStateEcsSandbox(
       auto& cTransform = registry.emplace <Transform> (eCamera);
       auto& cSceneNode = registry.emplace <SceneNode> (eCamera);
 
+      cCamera.renderMode = Camera::RenderMode::Wireframe;
+
       auto& cInputController = registry.emplace <InputController> (eCamera);
 
       auto& iTranslateX = cInputController.inputs["TranslateX"];
@@ -411,15 +496,21 @@ GameStateEcsSandbox::GameStateEcsSandbox(
       iTranslateY.constraint = {-1.0f, 1.0f};
       iTranslateZ.constraint = {-1.0f, 1.0f};
 
+      iTranslateX.callbacks.insert("ControlTranslateXRelative");
+      iTranslateY.callbacks.insert("ControlTranslateYRelative");
+      iTranslateZ.callbacks.insert("ControlTranslateZRelative");
+
       auto& iPitch = cInputController.inputs["Pitch"];
       auto& iYaw = cInputController.inputs["Yaw"];
       auto& iRoll = cInputController.inputs["Roll"];
 
-      iPitch.constraint = {-90.0f, 90.0f};
-      iYaw.constraint = {-3600.0f, 3600.0f};
-      iRoll.constraint = {-180.0f, 180.0f};
+      iPitch.constraint = {1.0f, 0.0f};
+      iYaw.constraint = {1.0f, 0.0f};
+      iRoll.constraint = {1.0f, 0.0f};
 
-      iYaw.callbacks.insert("CameraYawClamp");
+      iPitch.callbacks.insert("ControlPitchRelative");
+      iYaw.callbacks.insert("ControlYawRelative");
+      iRoll.callbacks.insert("ControlRollRelative");
 
       auto& iCameraControlOff = cInputController.inputs["EditorCameraControlOff"];
 
@@ -522,6 +613,14 @@ GameStateEcsSandbox::GameStateEcsSandbox(
 
   auto& callbackMgr = mRegistry.ctx().at <CallbackManager> ();
 
+  callbackMgr.Register("ControlTranslateXRelative", controlTranslateXRelative);
+  callbackMgr.Register("ControlTranslateYRelative", controlTranslateYRelative);
+  callbackMgr.Register("ControlTranslateZRelative", controlTranslateZRelative);
+
+  callbackMgr.Register("ControlPitchRelative", controlPitchRelative);
+  callbackMgr.Register("ControlYawRelative", controlYawRelative);
+  callbackMgr.Register("ControlRollRelative", controlRollRelative);
+
   callbackMgr.Register("EditorEntitySelect", editorEntitySelect);
   callbackMgr.Register("EditorCameraControlOn", editorCameraControlOn);
   callbackMgr.Register("EditorCameraFovControl", editorCameraFovControl);
@@ -539,16 +638,12 @@ GameStateEcsSandbox::GameStateEcsSandbox(
   callbackMgr.Register("EntityActivate", entityActivate);
   callbackMgr.Register("EntityDeactivate", entityDeactivate);
 
-  callbackMgr.Register("CameraYawClamp", cameraYawClamp);
   callbackMgr.Register("EngineShutdown", engineShutdown);
 
   auto& systemMgr = mRegistry.ctx().at <SystemManager> ();
 
   using namespace cqde::systems;
 
-  systemMgr.Register("CameraControlSystem",
-                     CameraControlSystem,
-                     System::Phase::Logic);
   systemMgr.Register("EditorSystem",
                      EditorSystem,
                      System::Phase::Logic);
@@ -563,7 +658,6 @@ GameStateEcsSandbox::GameStateEcsSandbox(
                      EditorEntityHighlightSystem,
                      System::Phase::Render);
 
-  systemMgr.activate("CameraControlSystem");
 //  systemMgr.activate("CullingSystem");
   systemMgr.activate("RenderSystem");
   systemMgr.activate("EditorSystem");
