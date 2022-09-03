@@ -50,38 +50,64 @@ struct Transform
 } // namespace compos
 
 
-glm::vec3 ToLocalSpace( const glm::vec3& point,
-                        const entt::registry&,
-                        const compos::Transform&,
-                        const compos::SceneNode& );
+void SetTranslationWorld(
+  const glm::vec3& origin,
+  const entt::registry&,
+  compos::Transform&,
+  const compos::SceneNode& );
 
-glm::quat ToLocalSpace( const glm::quat& orientation,
-                        const entt::registry&,
-                        const compos::Transform&,
-                        const compos::SceneNode& );
+void SetOrientationWorld(
+  const glm::quat& orientation,
+  const entt::registry&,
+  compos::Transform&,
+  const compos::SceneNode& );
 
-glm::mat4 ToLocalSpace( const glm::mat4& matrix,
-                        const entt::registry&,
-                        const compos::Transform&,
-                        const compos::SceneNode& );
+void SetScaleWorld(
+  const glm::vec3& scale,
+  const entt::registry&,
+  compos::Transform&,
+  const compos::SceneNode& );
 
-glm::vec3 ToWorldSpace( const glm::vec3& point,
-                        const entt::registry&,
-                        const compos::Transform&,
-                        const compos::SceneNode& );
 
-glm::quat ToWorldSpace( const glm::quat& orientation,
-                        const entt::registry&,
-                        const compos::Transform&,
-                        const compos::SceneNode& );
+glm::vec3 ToLocalSpace(
+  const glm::vec3& point,
+  const entt::registry&,
+  const compos::Transform&,
+  const compos::SceneNode& );
 
-glm::mat4 ToWorldSpace( const glm::mat4& matrix,
-                        const entt::registry&,
-                        const compos::Transform&,
-                        const compos::SceneNode& );
+glm::quat ToLocalSpace(
+  const glm::quat& orientation,
+  const entt::registry&,
+  const compos::Transform&,
+  const compos::SceneNode& );
 
-glm::mat4 GetWorldMatrix( const entt::registry&,
-                          const compos::Transform&,
-                          const compos::SceneNode& );
+glm::mat4 ToLocalSpace(
+  const glm::mat4& matrix,
+  const entt::registry&,
+  const compos::Transform&,
+  const compos::SceneNode& );
+
+glm::vec3 ToWorldSpace(
+  const glm::vec3& point,
+  const entt::registry&,
+  const compos::Transform&,
+  const compos::SceneNode& );
+
+glm::quat ToWorldSpace(
+  const glm::quat& orientation,
+  const entt::registry&,
+  const compos::Transform&,
+  const compos::SceneNode& );
+
+glm::mat4 ToWorldSpace(
+  const glm::mat4& matrix,
+  const entt::registry&,
+  const compos::Transform&,
+  const compos::SceneNode& );
+
+glm::mat4 GetWorldMatrix(
+  const entt::registry&,
+  const compos::Transform&,
+  const compos::SceneNode& );
 
 } // namespace cqde

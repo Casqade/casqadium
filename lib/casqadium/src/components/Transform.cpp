@@ -97,7 +97,7 @@ namespace cqde
 {
 
 void
-SetOriginWorld(
+SetTranslationWorld(
   const glm::vec3& origin,
   const entt::registry& registry,
   compos::Transform& cTransform,
