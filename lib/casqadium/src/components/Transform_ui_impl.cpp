@@ -1,4 +1,11 @@
 #include <cqde/components/Transform.hpp>
+#include <cqde/components/SceneNode.hpp>
+
+#include <entt/entity/registry.hpp>
+
+#include <glm/gtc/matrix_access.hpp>
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/compatibility.hpp>
 
 #include <imgui.h>
 
@@ -8,142 +15,236 @@ namespace cqde::compos
 
 void
 Transform::ui_edit_props(
-  const entt::entity,
-  const entt::registry& )
+  const entt::entity entity,
+  const entt::registry& registry )
 {
-  static bool orientationAsQuat {};
+  static enum class OrientationMode
+  {
+    Quat,
+    Euler,
+    Matrix,
 
-  bool orientationChanged {};
+  } orientationMode {};
+
+  static bool showInWorldSpace {};
+
+  const auto cNode = registry.try_get <SceneNode> (entity);
+
+  if ( cNode == nullptr )
+    showInWorldSpace = false;
+
+  else
+  {
+    if ( ImGui::CollapsingHeader("Coordinate space", ImGuiTreeNodeFlags_DefaultOpen) )
+    {
+      if ( ImGui::RadioButton("Local space", showInWorldSpace == false) )
+        showInWorldSpace = false;
+
+      if ( ImGui::RadioButton("World space", showInWorldSpace == true) )
+        showInWorldSpace = true;
+    }
+  }
+
+  const auto flags = ImGuiSliderFlags_NoRoundToFormat |
+                     ImGuiSliderFlags_AlwaysClamp;
 
   if ( ImGui::CollapsingHeader("Translation", ImGuiTreeNodeFlags_DefaultOpen) )
   {
+    auto translationBuffer = translation;
+
+    if ( showInWorldSpace == true )
+      translationBuffer = ToWorldSpace(translation,
+                                       registry,
+                                       *this, *cNode);
+
     ImGui::AlignTextToFramePadding();
     ImGui::Text("X");
 
     ImGui::SameLine();
     ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-    ImGui::DragFloat("##translationX", &translation.x,
-                     0.01f, 0.0f, 0.0f, "%.3f",
-                     ImGuiSliderFlags_NoRoundToFormat);
+    ImGui::DragFloat("##translationX", &translationBuffer.x,
+                     0.01f, 0.0f, 0.0f, "%.3f", flags);
 
     ImGui::AlignTextToFramePadding();
     ImGui::Text("Y");
 
     ImGui::SameLine();
     ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-    ImGui::DragFloat("##translationY", &translation.y,
-                     0.01f, 0.0f, 0.0f, "%.3f",
-                     ImGuiSliderFlags_NoRoundToFormat);
+    ImGui::DragFloat("##translationY", &translationBuffer.y,
+                     0.01f, 0.0f, 0.0f, "%.3f", flags);
 
     ImGui::AlignTextToFramePadding();
     ImGui::Text("Z");
 
     ImGui::SameLine();
     ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-    ImGui::DragFloat("##translationZ", &translation.z,
-                     0.01f, 0.0f, 0.0f, "%.3f",
-                     ImGuiSliderFlags_NoRoundToFormat);
+    ImGui::DragFloat("##translationZ", &translationBuffer.z,
+                     0.01f, 0.0f, 0.0f, "%.3f", flags);
 
     if ( ImGui::Button("Reset##translationReset") )
-      translation = glm::vec3{};
+      translationBuffer = glm::vec3{};
+
+    if ( translationBuffer != translation )
+    {
+      if ( showInWorldSpace == false )
+        translation = translationBuffer;
+      else
+        SetTranslationWorld(translationBuffer,
+                            registry,
+                            *this, *cNode);
+    }
   }
 
   if ( ImGui::CollapsingHeader("Orientation", ImGuiTreeNodeFlags_DefaultOpen) )
   {
-    if ( orientationAsQuat == true )
+    auto orientationBuffer = orientation;
+
+    if ( showInWorldSpace == true )
+      orientationBuffer = ToWorldSpace(orientation,
+                                       registry,
+                                       *this, *cNode);
+
+    if ( ImGui::RadioButton("Quaternion",
+                            orientationMode == OrientationMode::Quat) )
+      orientationMode = OrientationMode::Quat;
+
+    if ( ImGui::RadioButton("Euler",
+                            orientationMode == OrientationMode::Euler) )
+      orientationMode = OrientationMode::Euler;
+
+    if ( ImGui::RadioButton("Matrix",
+                            orientationMode == OrientationMode::Matrix) )
+      orientationMode = OrientationMode::Matrix;
+
+    switch (orientationMode)
     {
-      if ( ImGui::Button("Quaternion") )
-        orientationAsQuat = false;
-    }
-    else if ( ImGui::Button("XYZ Euler") )
-      orientationAsQuat = true;
+      case OrientationMode::Quat:
+      {
+        ImGui::AlignTextToFramePadding();
+        ImGui::Text("X");
 
-    if ( orientationAsQuat == true )
-    {
-      ImGui::AlignTextToFramePadding();
-      ImGui::Text("X");
+        ImGui::SameLine();
+        ImGui::BeginDisabled(true);
+        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+        ImGui::DragFloat( "##orientationX", &orientationBuffer.x,
+                          glm::radians(0.1f), 0.0f, 1.0f, "%.3f",
+                          flags);
+        ImGui::EndDisabled();
 
-      ImGui::SameLine();
-      ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-      if ( ImGui::DragFloat("##orientationX", &orientation.x,
-                            glm::radians(0.1f), 0.0f, 0.0f, "%.3f",
-                            ImGuiSliderFlags_NoRoundToFormat | ImGuiSliderFlags_AlwaysClamp) )
-        orientationChanged = true;
+        ImGui::AlignTextToFramePadding();
+        ImGui::Text("Y");
 
-      ImGui::AlignTextToFramePadding();
-      ImGui::Text("Y");
+        ImGui::SameLine();
+        ImGui::BeginDisabled(true);
+        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+        ImGui::DragFloat( "##orientationY", &orientationBuffer.y,
+                          glm::radians(0.1f), 0.0f, 1.0f, "%.3f",
+                          flags);
+        ImGui::EndDisabled();
 
-      ImGui::SameLine();
-      ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-      if ( ImGui::DragFloat("##orientationY", &orientation.y,
-                            glm::radians(0.1f), 0.0f, 0.0f, "%.3f",
-                            ImGuiSliderFlags_NoRoundToFormat | ImGuiSliderFlags_AlwaysClamp) )
-        orientationChanged = true;
+        ImGui::AlignTextToFramePadding();
+        ImGui::Text("Z");
 
-      ImGui::AlignTextToFramePadding();
-      ImGui::Text("Z");
+        ImGui::SameLine();
+        ImGui::BeginDisabled(true);
+        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+        ImGui::DragFloat( "##orientationZ", &orientationBuffer.z,
+                          glm::radians(0.1f), 0.0f, 1.0f, "%.3f",
+                          flags);
+        ImGui::EndDisabled();
 
-      ImGui::SameLine();
-      ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-      if ( ImGui::DragFloat("##orientationZ", &orientation.z,
-                            glm::radians(0.1f), 0.0f, 0.0f, "%.3f",
-                            ImGuiSliderFlags_NoRoundToFormat | ImGuiSliderFlags_AlwaysClamp) )
-        orientationChanged = true;
+        ImGui::AlignTextToFramePadding();
+        ImGui::Text("W");
 
-      ImGui::AlignTextToFramePadding();
-      ImGui::Text("W");
+        ImGui::SameLine();
+        ImGui::BeginDisabled(true);
+        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+        ImGui::DragFloat( "##orientationW", &orientationBuffer.w,
+                          glm::radians(0.1f), 0.0f, 1.0f, "%.3f",
+                          flags);
+        ImGui::EndDisabled();
 
-      ImGui::SameLine();
-      ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-      if ( ImGui::DragFloat("##orientationW", &orientation.w,
-                            glm::radians(0.1f), 0.0f, 0.0f, "%.3f",
-                            ImGuiSliderFlags_NoRoundToFormat | ImGuiSliderFlags_AlwaysClamp) )
-        orientationChanged = true;
+        break;
+      }
 
+      case OrientationMode::Euler:
+      {
+        auto orientationEuler = glm::degrees(glm::eulerAngles(orientationBuffer));
 
-      if ( orientationChanged == true )
-        orientation = glm::normalize(orientation);
-    }
-    else
-    {
-      glm::vec3 orientationEuler = glm::degrees(glm::eulerAngles(orientation));
+        ImGui::AlignTextToFramePadding();
+        ImGui::Text("X");
 
-      ImGui::AlignTextToFramePadding();
-      ImGui::Text("X");
+        ImGui::SameLine();
+        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+        ImGui::DragFloat( "##orientationX", &orientationEuler.x,
+                          0.1f, -180.0f, 180.0f, "%.1f°", flags);
 
-      ImGui::SameLine();
-      ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-      if ( ImGui::DragFloat("##orientationX", &orientationEuler.x,
-                            0.1f, -180.0f, 180.0f, "%.1f°",
-                            ImGuiSliderFlags_NoRoundToFormat | ImGuiSliderFlags_AlwaysClamp) )
-        orientationChanged = true;
+        ImGui::AlignTextToFramePadding();
+        ImGui::Text("Y");
 
-      ImGui::AlignTextToFramePadding();
-      ImGui::Text("Y");
+        ImGui::SameLine();
+        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+        ImGui::DragFloat( "##orientationY", &orientationEuler.y,
+                          0.1f, -180.0f, 180.0f, "%.1f°", flags);
 
-      ImGui::SameLine();
-      ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-      if ( ImGui::DragFloat("##orientationY", &orientationEuler.y,
-                            0.1f, -180.0f, 180.0f, "%.1f°",
-                            ImGuiSliderFlags_NoRoundToFormat | ImGuiSliderFlags_AlwaysClamp) )
-        orientationChanged = true;
+        ImGui::AlignTextToFramePadding();
+        ImGui::Text("Z");
 
-      ImGui::AlignTextToFramePadding();
-      ImGui::Text("Z");
+        ImGui::SameLine();
+        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+        ImGui::DragFloat( "##orientationZ", &orientationEuler.z,
+                          0.1f, -180.0f, 180.0f, "%.1f°", flags);
 
-      ImGui::SameLine();
-      ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-      if ( ImGui::DragFloat("##orientationZ", &orientationEuler.z,
-                            0.1f, -180.0f, 180.0f, "%.1f°",
-                            ImGuiSliderFlags_NoRoundToFormat | ImGuiSliderFlags_AlwaysClamp) )
-        orientationChanged = true;
+        orientationBuffer = glm::radians(orientationEuler);
 
-      if ( orientationChanged )
-        orientation = glm::normalize(glm::quat{glm::radians(orientationEuler)});
+        break;
+      }
+
+      case OrientationMode::Matrix:
+      {
+        auto orientationMat = glm::toMat4(orientationBuffer);
+
+        auto right = glm::column(orientationMat, 0);
+        auto up = glm::column(orientationMat, 1);
+        auto front = glm::column(orientationMat, 2);
+
+        ImGui::Text("Right");
+        ImGui::SameLine();
+
+        ImGui::BeginDisabled(true);
+        ImGui::DragFloat3("##orientationRight", glm::value_ptr(right));
+        ImGui::EndDisabled();
+
+        ImGui::Text("   Up");
+        ImGui::SameLine();
+
+        ImGui::BeginDisabled(true);
+        ImGui::DragFloat3("##orientationUp", glm::value_ptr(up));
+        ImGui::EndDisabled();
+
+        ImGui::Text("Front");
+        ImGui::SameLine();
+
+        ImGui::BeginDisabled(true);
+        ImGui::DragFloat3("##orientationFront", glm::value_ptr(front));
+        ImGui::EndDisabled();
+
+        break;
+      }
     }
 
     if ( ImGui::Button("Reset##orientationReset") )
-      orientation = glm::vec3{};
+      orientationBuffer = glm::vec3{};
+
+    if ( orientationBuffer != orientation &&
+         glm::all(glm::isfinite(glm::eulerAngles(orientationBuffer))) == true )
+    {
+      if ( showInWorldSpace == false )
+        orientation = glm::normalize(orientationBuffer);
+      else
+        SetOrientationWorld(orientationBuffer, registry,
+                            *this, *cNode);
+    }
   }
 
   if ( ImGui::CollapsingHeader("Scale", ImGuiTreeNodeFlags_DefaultOpen) )
@@ -153,27 +254,24 @@ Transform::ui_edit_props(
 
     ImGui::SameLine();
     ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-    ImGui::DragFloat("##scaleX", &scale.x,
-                     0.01f, 0.0f, 0.0f, "%.2f",
-                     ImGuiSliderFlags_NoRoundToFormat);
+    ImGui::DragFloat("##scaleX", &scale.x, 0.01f,
+                     0.0f, 0.0f, "%.2f", flags);
 
     ImGui::AlignTextToFramePadding();
     ImGui::Text("Y");
 
     ImGui::SameLine();
     ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-    ImGui::DragFloat("##scaleY", &scale.y,
-                     0.01f, 0.0f, 0.0f, "%.2f",
-                     ImGuiSliderFlags_NoRoundToFormat);
+    ImGui::DragFloat("##scaleY", &scale.y, 0.01f,
+                     0.0f, 0.0f, "%.2f", flags);
 
     ImGui::AlignTextToFramePadding();
     ImGui::Text("Z");
 
     ImGui::SameLine();
     ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-    ImGui::DragFloat("##scaleZ", &scale.z,
-                     0.01f, 0.0f, 0.0f, "%.2f",
-                     ImGuiSliderFlags_NoRoundToFormat);
+    ImGui::DragFloat("##scaleZ", &scale.z, 0.01f,
+                     0.0f, 0.0f, "%.2f", flags);
 
     if ( ImGui::Button("Reset##scaleReset") )
       scale = glm::vec3{1.0f};
@@ -186,27 +284,24 @@ Transform::ui_edit_props(
 
     ImGui::SameLine();
     ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-    ImGui::DragFloat("##scaleWorldX", &scaleWorld.x,
-                     0.01f, 0.0f, 0.0f, "%.2f",
-                     ImGuiSliderFlags_NoRoundToFormat);
+    ImGui::DragFloat("##scaleWorldX", &scaleWorld.x, 0.01f,
+                     0.0f, 0.0f, "%.2f", flags);
 
     ImGui::AlignTextToFramePadding();
     ImGui::Text("Y");
 
     ImGui::SameLine();
     ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-    ImGui::DragFloat("##scaleWorldY", &scaleWorld.y,
-                     0.01f, 0.0f, 0.0f, "%.2f",
-                     ImGuiSliderFlags_NoRoundToFormat);
+    ImGui::DragFloat("##scaleWorldY", &scaleWorld.y, 0.01f,
+                     0.0f, 0.0f, "%.2f", flags);
 
     ImGui::AlignTextToFramePadding();
     ImGui::Text("Z");
 
     ImGui::SameLine();
     ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-    ImGui::DragFloat("##scaleWorldZ", &scaleWorld.z,
-                     0.01f, 0.0f, 0.0f, "%.2f",
-                     ImGuiSliderFlags_NoRoundToFormat);
+    ImGui::DragFloat("##scaleWorldZ", &scaleWorld.z, 0.01f,
+                     0.0f, 0.0f, "%.2f", flags);
 
     if ( ImGui::Button("Reset##scaleWorldReset") )
       scaleWorld = glm::vec3{1.0f};
