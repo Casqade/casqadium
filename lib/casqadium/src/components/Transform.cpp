@@ -99,7 +99,7 @@ namespace cqde
 void
 SetOriginWorld(
   const glm::vec3& origin,
-  entt::registry& registry,
+  const entt::registry& registry,
   compos::Transform& cTransform,
   const compos::SceneNode& cSceneNode )
 {
@@ -112,7 +112,7 @@ SetOriginWorld(
 void
 SetOrientationWorld(
   const glm::quat& orientation,
-  entt::registry& registry,
+  const entt::registry& registry,
   compos::Transform& cTransform,
   const compos::SceneNode& cSceneNode )
 {
@@ -125,7 +125,7 @@ SetOrientationWorld(
 void
 SetScaleWorld(
   const glm::vec3& scale,
-  entt::registry& registry,
+  const entt::registry& registry,
   compos::Transform& cTransform,
   const compos::SceneNode& cSceneNode )
 {
@@ -139,7 +139,7 @@ SetScaleWorld(
 glm::vec3
 ToLocalSpace(
   const glm::vec3& point,
-  entt::registry& registry,
+  const entt::registry& registry,
   const compos::Transform& cTransform,
   const compos::SceneNode& cSceneNode )
 {
@@ -153,7 +153,7 @@ ToLocalSpace(
 glm::quat
 ToLocalSpace(
   const glm::quat& orientation,
-  entt::registry& registry,
+  const entt::registry& registry,
   const compos::Transform& cTransform,
   const compos::SceneNode& cSceneNode )
 {
@@ -167,7 +167,7 @@ ToLocalSpace(
 glm::mat4
 ToLocalSpace(
   const glm::mat4& matrix,
-  entt::registry& registry,
+  const entt::registry& registry,
   const compos::Transform& cTransform,
   const compos::SceneNode& cSceneNode )
 {
@@ -181,7 +181,7 @@ ToLocalSpace(
 
 glm::vec3 ToWorldSpace(
   const glm::vec3& point,
-  entt::registry& registry,
+  const entt::registry& registry,
   const compos::Transform& cTransform,
   const compos::SceneNode& cSceneNode )
 {
@@ -194,7 +194,7 @@ glm::vec3 ToWorldSpace(
 
 glm::quat ToWorldSpace(
   const glm::quat& orientation,
-  entt::registry& registry,
+  const entt::registry& registry,
   const compos::Transform& cTransform,
   const compos::SceneNode& cSceneNode )
 {
@@ -208,7 +208,7 @@ glm::quat ToWorldSpace(
 glm::mat4
 ToWorldSpace(
   const glm::mat4& matrix,
-  entt::registry& registry,
+  const entt::registry& registry,
   const compos::Transform& cTransform,
   const compos::SceneNode& cSceneNode )
 {
@@ -221,7 +221,7 @@ ToWorldSpace(
 
 glm::mat4
 GetWorldMatrix(
-  entt::registry& registry,
+  const entt::registry& registry,
   const compos::Transform& cTransform,
   const compos::SceneNode& cSceneNode )
 {

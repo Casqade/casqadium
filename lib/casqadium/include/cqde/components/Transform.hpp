@@ -51,36 +51,36 @@ struct Transform
 
 
 glm::vec3 ToLocalSpace( const glm::vec3& point,
-                        entt::registry&,
+                        const entt::registry&,
                         const compos::Transform&,
                         const compos::SceneNode& );
 
 glm::quat ToLocalSpace( const glm::quat& orientation,
-                        entt::registry&,
+                        const entt::registry&,
                         const compos::Transform&,
                         const compos::SceneNode& );
 
 glm::mat4 ToLocalSpace( const glm::mat4& matrix,
-                        entt::registry&,
+                        const entt::registry&,
                         const compos::Transform&,
                         const compos::SceneNode& );
 
 glm::vec3 ToWorldSpace( const glm::vec3& point,
-                        entt::registry&,
+                        const entt::registry&,
                         const compos::Transform&,
                         const compos::SceneNode& );
 
 glm::quat ToWorldSpace( const glm::quat& orientation,
-                        entt::registry&,
+                        const entt::registry&,
                         const compos::Transform&,
                         const compos::SceneNode& );
 
 glm::mat4 ToWorldSpace( const glm::mat4& matrix,
-                        entt::registry&,
+                        const entt::registry&,
                         const compos::Transform&,
                         const compos::SceneNode& );
 
-glm::mat4 GetWorldMatrix( entt::registry&,
+glm::mat4 GetWorldMatrix( const entt::registry&,
                           const compos::Transform&,
                           const compos::SceneNode& );
 
