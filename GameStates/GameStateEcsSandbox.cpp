@@ -492,9 +492,9 @@ GameStateEcsSandbox::GameStateEcsSandbox(
       auto& iTranslateY = cInputController.inputs["TranslateY"];
       auto& iTranslateZ = cInputController.inputs["TranslateZ"];
 
-      iTranslateX.constraint = {-1.0f, 1.0f};
-      iTranslateY.constraint = {-1.0f, 1.0f};
-      iTranslateZ.constraint = {-1.0f, 1.0f};
+      iTranslateX.constraint = {1.0f, 0.0f};
+      iTranslateY.constraint = {1.0f, 0.0f};
+      iTranslateZ.constraint = {1.0f, 0.0f};
 
       iTranslateX.callbacks.insert("ControlTranslateXRelative");
       iTranslateY.callbacks.insert("ControlTranslateYRelative");

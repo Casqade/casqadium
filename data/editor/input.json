@@ -85,12 +85,12 @@
     "~Key_A" : 
     {
       "absolute" : false,
-      "sensitivity" : -1.0
+      "sensitivity" : -10.0
     },
     "~Key_D" : 
     {
       "absolute" : false,
-      "sensitivity" : 1.0
+      "sensitivity" : 10.0
     }
   },
   "TranslateY" : 
@@ -98,12 +98,12 @@
     "~Key_Shift" : 
     {
       "absolute" : false,
-      "sensitivity" : -1.0
+      "sensitivity" : -10.0
     },
     "~Key_Space" : 
     {
       "absolute" : false,
-      "sensitivity" : 1.0
+      "sensitivity" : 10.0
     }
   },
   "TranslateZ" : 
@@ -111,12 +111,12 @@
     "~Key_S" : 
     {
       "absolute" : false,
-      "sensitivity" : -1.0
+      "sensitivity" : -10.0
     },
     "~Key_W" : 
     {
       "absolute" : false,
-      "sensitivity" : 1.0
+      "sensitivity" : 10.0
     }
   },
   "Yaw" : 
