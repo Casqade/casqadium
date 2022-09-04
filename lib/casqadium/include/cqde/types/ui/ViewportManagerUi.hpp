@@ -21,6 +21,11 @@ class ViewportManagerUi
 
   StringFilter mCameraFilter {"Camera entity ID"};
 
+  int32_t mGizmoCubeUsingIndex {-1};
+
+  bool  mGizmoCubeOrbit {};
+  float mGizmoCubeOrbitDistance {1.0f};
+
   int32_t viewportIndex( const EntityId& cameraId ) const;
 
 public:

@@ -1,4 +1,5 @@
 #include <cqde/types/ui/ViewportManagerUi.hpp>
+#include <cqde/types/ui/EntityManagerUi.hpp>
 
 #include <cqde/components/Tag.hpp>
 #include <cqde/components/Camera.hpp>
@@ -10,11 +11,18 @@
 
 #include <cqde/types/assets/GeometryAssetManager.hpp>
 
+#include <cqde/math_helpers.hpp>
 #include <cqde/util/logger.hpp>
+
+#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/vector_angle.hpp>
+#include <glm/gtx/compatibility.hpp>
+#include <glm/gtx/matrix_decompose.hpp>
 
 #include <entt/entity/registry.hpp>
 
 #include <imgui.h>
+#include <ImGuizmo.h>
 #include <imgui_internal.h>
 
 
@@ -51,6 +59,9 @@ bool
 ViewportManagerUi::mouseOverViewport(
   const EntityId& cameraId ) const
 {
+  if ( ImGuizmo::IsUsing() )
+    return false;
+
   const auto index  = viewportIndex(cameraId);
 
   if ( index < 0 )
@@ -63,20 +74,16 @@ ViewportManagerUi::mouseOverViewport(
   if ( window == nullptr )
     return false;
 
-  const auto rectMin = window->Pos;
-
-  const ImVec2 rectMax
-  {
-    rectMin.x + window->Size.x,
-    rectMin.y + window->Size.y,
-  };
-
   const auto context = ImGui::GetCurrentContext();
   const auto contextWindow = ImGui::GetCurrentWindowRead();
 
   context->CurrentWindow = window;
 
-  bool result = ImGui::IsWindowHovered();
+  const auto rectMin = window->InnerClipRect.Min;
+  const auto rectMax = window->InnerClipRect.Max;
+
+  bool result = ImGui::IsWindowHovered() &&
+                ImGui::IsMouseHoveringRect(rectMin, rectMax);
 
   context->CurrentWindow = contextWindow;
   ImGui::SetCurrentContext(context);
@@ -252,7 +259,7 @@ ViewportManagerUi::ui_show_viewport_windows(
 
       cCamera.zBuffer.clear();
 
-      const glm::mat4 camView = cCamera.viewMatrix(registry, cCameraNode, cCameraTransform);
+      glm::mat4 camView = cCamera.viewMatrix(registry, cCameraNode, cCameraTransform);
       const glm::mat4 camProjection = cCamera.projMatrix();
       glm::vec4 camViewport = cCamera.viewportScaled();
 
@@ -289,6 +296,207 @@ ViewportManagerUi::ui_show_viewport_windows(
       }
 
       ImGui::Text("%s", format("Z-buffer depth: {}", cCamera.zBuffer.size()).c_str());
+
+      ImGui::Checkbox("Orbit cam", &mGizmoCubeOrbit);
+
+      if ( mGizmoCubeOrbit == true )
+      {
+        ImGui::SetNextItemWidth(comboWidth);
+        ImGui::DragFloat("Orbit distance", &mGizmoCubeOrbitDistance, 0.1f,
+                         glm::epsilon <float> (),
+                         std::numeric_limits <float>::max());
+      }
+
+      ImGuizmo::SetID(viewportIndex);
+
+      ImGuizmo::SetRect(camViewport.x, camViewport.y, camViewport.z, camViewport.w);
+      ImGuizmo::SetDrawlist();
+
+      ImGuizmo::SetOrthographic(cCamera.projectionType == Camera::Projection::Orthographic);
+
+      const auto gizmoSize = comboWidth * 0.5f;
+
+      const auto cursorPos = ImGui::GetMousePos();
+      const auto rectPos = ImGui::GetCursorScreenPos();
+
+      const bool gizmoCubeHovered = pointInRect({cursorPos.x, cursorPos.y},
+                                                {rectPos.x - 1, rectPos.x + gizmoSize + 1,
+                                                rectPos.y - 1, rectPos.y + gizmoSize + 1});
+
+      if ( ImGui::BeginChild("##gizmoCube", {gizmoSize, gizmoSize}, true) )
+      {
+        if ( ImGuizmo::IsUsing() == false ||
+             gizmoCubeHovered == false )
+        {
+          const auto camViewPrev = camView;
+
+          ImGuizmo::ViewManipulate(glm::value_ptr(camView), mGizmoCubeOrbitDistance,
+                                   ImGui::GetWindowPos(),
+                                   ImGui::GetWindowSize(),
+                                   ImGui::GetColorU32(ImGuiCol_WindowBg));
+
+          if ( camView != camViewPrev &&
+               (mGizmoCubeUsingIndex == viewportIndex ||
+                mGizmoCubeUsingIndex == -1) )
+          {
+            camView = glm::inverse(camView);
+
+            glm::vec3 camTranslation = camView[3];
+            auto camOrientation = glm::toQuat(camView);
+
+            if ( glm::all(glm::isfinite(camView[3])) == true &&
+                 glm::all(glm::isfinite(glm::eulerAngles(camOrientation))) == true )
+            {
+              camOrientation = ToLocalSpace(camOrientation, registry,
+                                            cCameraTransform, cCameraNode);
+
+              if ( mGizmoCubeOrbit == true )
+              {
+                camTranslation = ToLocalSpace(camTranslation, registry,
+                                              cCameraTransform, cCameraNode);
+                cCameraTransform.translation = camTranslation;
+              }
+
+              cCameraTransform.orientation = camOrientation;
+            }
+            mGizmoCubeUsingIndex = viewportIndex;
+          }
+          else if ( mGizmoCubeUsingIndex == viewportIndex )
+            mGizmoCubeUsingIndex = -1;
+        }
+      }
+      ImGui::EndChild(); // ##gimoCube
+
+      static ImGuizmo::OPERATION gizmoOperation {ImGuizmo::TRANSLATE};
+      static ImGuizmo::MODE gizmoMode {ImGuizmo::LOCAL};
+
+      static bool gizmoUseSnap {};
+      static glm::vec3 gizmoSnap {1.0f};
+
+      if ( ImGui::RadioButton("Local", gizmoMode == ImGuizmo::LOCAL) )
+        gizmoMode = ImGuizmo::LOCAL;
+
+      if ( gizmoOperation != ImGuizmo::SCALE )
+      {
+        ImGui::SameLine();
+        if ( ImGui::RadioButton("World", gizmoMode == ImGuizmo::WORLD) )
+          gizmoMode = ImGuizmo::WORLD;
+      }
+
+      if ( ImGui::RadioButton("Translate",
+                              gizmoOperation == ImGuizmo::TRANSLATE) )
+        gizmoOperation = ImGuizmo::TRANSLATE;
+
+      if ( ImGui::RadioButton("Rotate",
+                              gizmoOperation == ImGuizmo::ROTATE) )
+        gizmoOperation = ImGuizmo::ROTATE;
+
+      if ( ImGui::RadioButton("Scale",
+                              gizmoOperation == ImGuizmo::SCALE) )
+      {
+        gizmoMode = ImGuizmo::LOCAL;
+        gizmoOperation = ImGuizmo::SCALE;
+      }
+
+      ImGui::PushItemWidth(comboWidth);
+
+      switch (gizmoOperation)
+      {
+        case ImGuizmo::TRANSLATE:
+          ImGui::Checkbox("XYZ snap##gizmoSnap", &gizmoUseSnap);
+
+          ImGui::DragFloat("##snapX", &gizmoSnap[0], 1.0f, 0.0f,
+                            std::numeric_limits <float>::max());
+          ImGui::DragFloat("##snapY", &gizmoSnap[1], 1.0f, 0.0f,
+                            std::numeric_limits <float>::max());
+          ImGui::DragFloat("##snapZ", &gizmoSnap[2], 1.0f, 0.0f,
+                            std::numeric_limits <float>::max());
+          break;
+
+        case ImGuizmo::ROTATE:
+          ImGui::Checkbox("Angle snap##gizmoSnap", &gizmoUseSnap);
+
+          ImGui::DragFloat("##angleSnap", glm::value_ptr(gizmoSnap),
+                           1.0f, 0.0f,
+                           std::numeric_limits <float>::max());
+          break;
+
+        case ImGuizmo::SCALE:
+          ImGui::Checkbox("Scale snap##gizmoSnap", &gizmoUseSnap);
+
+          ImGui::DragFloat("##scaleSnap", glm::value_ptr(gizmoSnap),
+                           1.0f, 0.0f,
+                           std::numeric_limits <float>::max());
+          break;
+
+        default:
+          break;
+      }
+
+      ImGui::PopItemWidth(); // comboWidth
+
+      auto& entityManagerUi = registry.ctx().at <EntityManagerUi> ();
+
+      const auto selectedEntity = entityManagerUi.selectedEntity();
+
+      if ( selectedEntity != entt::null  &&
+           selectedEntity != eCamera &&
+           (gizmoCubeHovered == false ||
+            mGizmoCubeUsingIndex == -1 ||
+            ImGuizmo::IsUsing() == true) )
+      {
+        auto [cTransform, cNode] = registry.try_get <Transform, SceneNode> (selectedEntity);
+
+        if ( cTransform != nullptr )
+        {
+          auto matrixWorld = cNode == nullptr
+                         ? cTransform->modelLocal()
+                         : GetWorldMatrix(registry, *cTransform, *cNode);
+
+          glm::mat4 matrixDelta {};
+
+          if ( ImGuizmo::Manipulate( glm::value_ptr(camView),
+                                     glm::value_ptr(camProjection),
+                                     gizmoOperation,
+                                     gizmoMode,
+                                     glm::value_ptr(matrixWorld),
+                                     glm::value_ptr(matrixDelta),
+                                     gizmoUseSnap ? glm::value_ptr(gizmoSnap) : nullptr) )
+          {
+//            Guizmo bug workaround
+            const auto entityPosRelative = glm::translate(camView, glm::vec3{matrixWorld[3]})[3];
+
+            if ( entityPosRelative.z < -cCamera.zRange.first &&
+                 entityPosRelative.z > -cCamera.zRange.second )
+            {
+              matrixWorld = ToLocalSpace(matrixWorld, registry,
+                                         *cTransform, *cNode);
+
+              glm::vec3 nodeTranslation {};
+              glm::quat nodeOrientation {};
+              glm::vec3 nodeScale {};
+              glm::vec3 skew {};
+              glm::vec4 perspective {};
+
+              glm::decompose( matrixWorld,
+                              nodeScale,
+                              nodeOrientation,
+                              nodeTranslation,
+                              skew, perspective );
+
+
+              if ( glm::all(glm::isfinite(nodeTranslation)) == true &&
+                   glm::all(glm::isfinite(glm::eulerAngles(nodeOrientation))) == true &&
+                   glm::all(glm::isfinite(nodeScale)) == true )
+              {
+                cTransform->translation = nodeTranslation;
+                cTransform->orientation = nodeOrientation;
+                cTransform->scale = nodeScale;
+              }
+            }
+          }
+        }
+      }
 
       const uint32_t colorViewport = ImGui::GetColorU32(ImGuiCol_FrameBg);
 

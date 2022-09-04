@@ -10,6 +10,9 @@
 #include "backends/imgui_impl_opengl2.h"
 #endif
 
+#include <ImGuizmo.h>
+
+
 namespace olc
 {
 
@@ -26,6 +29,7 @@ PGE_ImGUI::PGE_ImGUI(bool _register_handler)
 olc::rcode PGE_ImGUI::ImGui_ImplPGE_Init()
 {
   ImGui::CreateContext();
+  ImGuizmo::SetImGuiContext(ImGui::GetCurrentContext());
 
 #ifdef OLC_GFX_OPENGL33
   GLenum err = glewInit();
@@ -160,6 +164,22 @@ void PGE_ImGUI::ImGui_ImplPGE_Shutdown(void)
 
 void PGE_ImGUI::ImGui_ImplPGE_UpdateMouse(void)
 {
+  if ( olc::platform->ptrPGE->GetKeepMouseCentered() == true )
+  {
+    ImGuiIO& io = ImGui::GetIO();
+
+    io.MouseDown[0] = false;
+    io.MouseDown[1] = false;
+    io.MouseDown[2] = false;
+    io.MouseDown[3] = false;
+    io.MouseDown[4] = false;
+
+    io.MousePos = {-100.0f, -100.0f};
+    io.MouseWheel = 0.0f;
+
+    return;
+  }
+
   ImGuiIO& io = ImGui::GetIO();
   olc::vi2d windowMouse = pge->GetWindowMouse();
 
@@ -212,6 +232,7 @@ void PGE_ImGUI::ImGui_ImplPGE_NewFrame(void)
 #else
   ImGui_ImplOpenGL2_NewFrame();
 #endif
+
   ImGuiIO& io = ImGui::GetIO();
   olc::vi2d windowSize = pge->GetWindowSize();
   IM_ASSERT(io.Fonts->IsBuilt() && "Font atlas not built! It is generally built by the renderer back-end. Missing call to renderer _NewFrame() function? e.g. ImGui_ImplOpenGL2_NewFrame().");
@@ -263,6 +284,7 @@ void PGE_ImGUI::OnBeforeUserUpdate(float& fElapsedTime)
 {
   ImGui_ImplPGE_NewFrame();
   ImGui::NewFrame();
+  ImGuizmo::BeginFrame();
 }
 
 //There is currently no "after update" logic to run for ImGui

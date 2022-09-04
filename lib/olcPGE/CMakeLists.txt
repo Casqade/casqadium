@@ -18,9 +18,6 @@ target_sources(${TARGET} PRIVATE
   include/${TARGET}/olcPGEX_TTF.hpp
   src/olcPGEX_TTF.cpp
 
-  ImGuizmo/ImGuizmo.h
-  ImGuizmo/ImGuizmo.cpp
-
   include/${TARGET}/olcPGEX_ImGui.hpp
   src/olcPGEX_ImGui.cpp
 
@@ -65,7 +62,11 @@ target_link_libraries(${TARGET} PUBLIC freetype)
 find_package(Threads REQUIRED)
 target_link_libraries(${TARGET} PRIVATE Threads::Threads)
 
-target_link_libraries(${TARGET} PUBLIC imgui imgui_backend_opengl2)
+target_link_libraries(${TARGET} PUBLIC
+  imgui
+  imgui_backend_opengl2
+  ImGuizmo
+)
 
 
 if(WIN32)
@@ -117,4 +118,3 @@ install(TARGETS ${TARGET}
 install(FILES ${CMAKE_BINARY_DIR}/exports/${TARGET}/${TARGET}_export.hpp
   DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${TARGET}"
 )
-
