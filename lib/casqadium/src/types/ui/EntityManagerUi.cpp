@@ -322,6 +322,10 @@ EntityManagerUi::ui_show_scene_graph_window(
   if ( ImGui::Begin("Scene graph view") == false )
     return ImGui::End(); // SceneGraph view
 
+  mSceneGraphFilter.search();
+
+  ImGui::Separator();
+
   std::pair <entt::entity, entt::entity> nodeToAttach {entt::null, entt::null};
   std::pair <entt::entity, entt::entity> nodeToDestroy {entt::null, entt::null};
 
@@ -357,6 +361,15 @@ EntityManagerUi::ui_show_scene_graph_window(
     const auto nodeId = cTag->id;
 
     ImGui::PushID(nodeId.str().c_str());
+
+    if ( mSceneGraphFilter.query(nodeId.str()) == false )
+    {
+      for ( const auto& childRef :  (cNode->children) )
+        each_node( mEntityMgr->get_if_valid(childRef.id, registry) );
+
+      ImGui::PopID(); // nodeId
+      return;
+    }
 
     if ( ImGui::SmallButton("-##nodeDestroy") )
       nodeToDestroy = {cNode->parent.get_if_valid(registry), eParent};

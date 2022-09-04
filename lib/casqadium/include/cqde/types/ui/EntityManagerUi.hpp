@@ -18,7 +18,8 @@ namespace cqde::ui
 
 class EntityManagerUi
 {
-  ui::RegistryFilter mRegistryFilter {};
+  RegistryFilter mRegistryFilter {};
+  StringFilter mSceneGraphFilter {"Entity ID"};
 
   entt::entity  mSelectedEntity {};
   ComponentType mSelectedComponent {};
