@@ -42,8 +42,7 @@ EntityManagerUi::ui_show(
 
   CQDE_ASSERT_DEBUG(mEntityMgr != nullptr, return);
 
-  if ( ImGui::Begin("Registry view", nullptr,
-                    ImGuiWindowFlags_HorizontalScrollbar ) == false )
+  if ( ImGui::Begin("Registry view") == false )
   {
     ImGui::End(); // Registry view
     return;
@@ -86,7 +85,7 @@ EntityManagerUi::ui_show(
   const auto tableFlags = ImGuiTableFlags_ScrollX |
                           ImGuiTableFlags_ScrollY;
 
-  if ( ImGui::BeginTable( "Entities", 1, tableFlags) )
+  if ( ImGui::BeginTable( "EntitiesTable", 1, tableFlags) )
   {
     ImGui::TableNextColumn();
 
@@ -243,7 +242,7 @@ EntityManagerUi::ui_show(
       }
     });
 
-    ImGui::EndTable(); // Entities
+    ImGui::EndTable(); // EntitiesTable
   }
 
   ImGui::End(); // Registry view
@@ -320,7 +319,7 @@ EntityManagerUi::ui_show_scene_graph_window(
   using compos::Tag;
   using compos::SceneNode;
 
-  if ( ImGui::Begin("Scene graph view", NULL, ImGuiWindowFlags_HorizontalScrollbar) == false )
+  if ( ImGui::Begin("Scene graph view") == false )
     return ImGui::End(); // SceneGraph view
 
   std::pair <entt::entity, entt::entity> nodeToAttach {entt::null, entt::null};
@@ -427,12 +426,18 @@ EntityManagerUi::ui_show_scene_graph_window(
     ImGui::PopID(); // nodeId
   };
 
-  for ( auto&& [eNode, cNode, cTag] : registry.view <SceneNode, Tag> ().each() )
-  {
-    if ( cNode.parent.id != null_id )
-      continue;
+  const auto tableFlags = ImGuiTableFlags_ScrollX |
+                          ImGuiTableFlags_ScrollY;
 
-    each_node(eNode);
+  if ( ImGui::BeginTable( "SceneNodesTable", 1, tableFlags) )
+  {
+    ImGui::TableNextColumn();
+
+    for ( auto&& [eNode, cNode, cTag] : registry.view <SceneNode, Tag> ().each() )
+      if ( cNode.parent.id == null_id )
+        each_node(eNode);
+
+    ImGui::EndTable(); // SceneNodesTable
   }
 
   if ( nodeToAttach.second != entt::null )
