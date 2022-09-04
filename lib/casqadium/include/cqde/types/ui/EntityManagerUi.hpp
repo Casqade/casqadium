@@ -25,6 +25,7 @@ class EntityManagerUi
   ComponentType mSelectedComponent {};
 
   std::string mNewEntityName {"NewEntity"};
+  std::string mNewNodeName {"NewSceneNode"};
 
   StringFilter mNewComponentFilter {"Component type"};
 

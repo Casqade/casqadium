@@ -318,11 +318,45 @@ EntityManagerUi::ui_show_scene_graph_window(
 {
   using compos::Tag;
   using compos::SceneNode;
+  using compos::EntityMetaInfo;
 
   if ( ImGui::Begin("Scene graph view") == false )
     return ImGui::End(); // SceneGraph view
 
   mSceneGraphFilter.search();
+
+  ImGui::Separator();
+
+  if ( ImGui::Button("+##nodeAdd") )
+  {
+    if ( mNewNodeName.empty() == true ||
+         mNewNodeName == null_id.str() ||
+         mEntityMgr->get(mNewNodeName) != entt::null )
+      mNewNodeName = mEntityMgr->idGenerate(mNewNodeName).str();
+
+    const auto newEntity = mEntityMgr->entityCreate(mNewNodeName, registry);
+
+    auto& cNode = registry.emplace <SceneNode> (newEntity);
+
+    if ( mSelectedEntity != entt::null &&
+         registry.all_of <Tag, SceneNode> (mSelectedEntity) )
+      AttachChildNode(registry, mSelectedEntity, newEntity);
+
+    auto& cEntityInfo = registry.emplace <EntityMetaInfo> (newEntity);
+    cEntityInfo.packageId = mRegistryFilter.package();
+  }
+
+  ImGui::SameLine();
+
+  if ( ImGui::Button("%##nodeIdGen") )
+    mNewNodeName = mEntityMgr->idGenerate(mNewNodeName).str();
+
+  if ( ImGui::IsItemHovered() )
+    ImGui::SetTooltip("Generate unique entity ID");
+
+  ImGui::SameLine();
+  ImGui::InputTextWithHint("##newNodeId", "New entity ID", &mNewNodeName,
+                           ImGuiInputTextFlags_AutoSelectAll);
 
   ImGui::Separator();
 
