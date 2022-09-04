@@ -123,7 +123,12 @@ EntityManagerUi::ui_show(
       ImGui::PushID(entityId.str().c_str());
 
       if ( ImGui::SmallButton("-##entityRemove") )
+      {
         mEntityMgr->removeLater(entity);
+
+        if ( entity == mSelectedEntity )
+          entityDeselect();
+      }
 
       ImGui::PopID(); // entityId
 
@@ -434,7 +439,12 @@ EntityManagerUi::ui_show_scene_graph_window(
   AttachChildNode(registry, nodeToAttach.first, nodeToAttach.second);
 
   if ( nodeToDestroy.second != entt::null )
+  {
+    if ( nodeToDestroy.second == mSelectedEntity )
+      entityDeselect();
+
     DestroyChildNode(registry, nodeToDestroy.first, nodeToDestroy.second);
+  }
 
   ImGui::End(); // SceneGraph view
 }
