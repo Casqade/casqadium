@@ -572,7 +572,7 @@ GameStateEcsSandbox::GameStateEcsSandbox(
 
     if ( inputManager.axisAssigned("EditorEntitySelect") == false )
     {
-      auto binding = std::make_shared <InputBindingRelative> ("+MouseButton_Left", 0.0f);
+      auto binding = std::make_shared <InputBindingRelative> ("-MouseButton_Left", 0.0f);
       inputManager.assignBinding("EditorEntitySelect", binding);
     }
 
