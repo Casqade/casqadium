@@ -40,6 +40,9 @@ public:
   void entitySelect( const entt::entity );
   void componentSelect( const ComponentType );
 
+  void entityDeselect();
+  void componentDeselect();
+
   entt::entity  selectedEntity() const;
   ComponentType selectedComponent() const;
 };

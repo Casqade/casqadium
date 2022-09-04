@@ -163,7 +163,7 @@ EntityManagerUi::ui_show(
 
             if ( mSelectedEntity == entity &&
                  mSelectedComponent == componentType )
-              mSelectedComponent = entt::null;
+              componentDeselect();
           }
 
           ImGui::EndDisabled();
@@ -378,7 +378,7 @@ EntityManagerUi::ui_show_scene_graph_window(
          ImGui::IsItemToggledOpen() == false )
     {
       if ( eParent != mSelectedEntity )
-        mSelectedComponent = entt::null;
+        componentDeselect();
 
       mSelectedEntity = eParent;
     }
@@ -452,6 +452,19 @@ EntityManagerUi::componentSelect(
   const ComponentType component )
 {
   mSelectedComponent = component;
+}
+
+void
+EntityManagerUi::entityDeselect()
+{
+  mSelectedEntity = entt::null;
+  mSelectedComponent = entt::null;
+}
+
+void
+EntityManagerUi::componentDeselect()
+{
+  mSelectedComponent = entt::null;
 }
 
 entt::entity
