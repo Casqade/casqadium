@@ -488,7 +488,7 @@ EntityManagerUi::ui_show_scene_graph_window(
   }
 
   if ( nodeToAttach.second != entt::null )
-  AttachChildNode(registry, nodeToAttach.first, nodeToAttach.second);
+    AttachChildNode(registry, nodeToAttach.first, nodeToAttach.second);
 
   if ( nodeToDestroy.second != entt::null )
   {

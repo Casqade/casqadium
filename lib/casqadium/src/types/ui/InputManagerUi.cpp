@@ -468,7 +468,7 @@ InputManagerUi::ui_show_menu_bar(
     {
       for ( const auto& [packageId, config] : mInputConfigs )
         if ( packageId.str().empty() == false )
-        configSave(packageId, registry);
+          configSave(packageId, registry);
 
       configApply(registry);
     }
