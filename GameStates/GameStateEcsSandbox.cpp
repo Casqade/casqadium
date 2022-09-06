@@ -459,14 +459,6 @@ GameStateEcsSandbox::GameStateEcsSandbox(
     ImGui::DockSpaceOverViewport(NULL, ImGuiDockNodeFlags_PassthruCentralNode);
     ImGui::PopStyleColor();
 
-    registry.ctx().at <PackageManagerUi> ().ui_show(registry);
-    registry.ctx().at <AssetManagerUi> ().ui_show(registry);
-    registry.ctx().at <CallbackManagerUi> ().ui_show(registry);
-    registry.ctx().at <EntityManagerUi> ().ui_show(registry);
-    registry.ctx().at <InputManagerUi> ().ui_show(registry);
-    registry.ctx().at <SystemManagerUi> ().ui_show(registry);
-    registry.ctx().at <ViewportManagerUi> ().ui_show(registry);
-
     if ( entityManager.get_if_valid("cqde_editor_camera", registry) == entt::null )
     {
       auto eCamera = registry.create();
@@ -609,6 +601,14 @@ GameStateEcsSandbox::GameStateEcsSandbox(
       binding->sensitivity = 0.00001f;
       inputManager.assignBinding("EditorCameraZoom", binding);
     }
+
+    registry.ctx().at <PackageManagerUi> ().ui_show(registry);
+    registry.ctx().at <AssetManagerUi> ().ui_show(registry);
+    registry.ctx().at <CallbackManagerUi> ().ui_show(registry);
+    registry.ctx().at <EntityManagerUi> ().ui_show(registry);
+    registry.ctx().at <InputManagerUi> ().ui_show(registry);
+    registry.ctx().at <SystemManagerUi> ().ui_show(registry);
+    registry.ctx().at <ViewportManagerUi> ().ui_show(registry);
   };
 
   auto& callbackMgr = mRegistry.ctx().at <CallbackManager> ();
