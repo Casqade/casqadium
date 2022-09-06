@@ -10,6 +10,7 @@
 #include <cqde/components/SceneNode.hpp>
 #include <cqde/components/SnapshotExcluded.hpp>
 #include <cqde/components/SubscriberUpdate.hpp>
+#include <cqde/components/SequenceController.hpp>
 #include <cqde/components/Tag.hpp>
 #include <cqde/components/TextureBuffer.hpp>
 #include <cqde/components/Transform.hpp>
@@ -83,6 +84,7 @@ engineInit( entt::registry& registry )
   entityManager.registerComponent <GeometryBuffer> ("GeometryBuffer");
   entityManager.registerComponent <InputController> ("InputController");
   entityManager.registerComponent <SceneNode> ("SceneNode");
+  entityManager.registerComponent <SequenceController> ("SequenceController");
   entityManager.registerComponent <Tag> ("Tag");
   entityManager.registerComponent <TextureBuffer> ("TextureBuffer");
   entityManager.registerComponent <Transform> ("Transform");

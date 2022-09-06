@@ -108,7 +108,6 @@ target_sources(${TARGET} PRIVATE
   include/${CASQADIUM_SHORT}/types/ui/widgets/RegistryFilter.hpp
 
   include/${CASQADIUM_SHORT}/types/FrameCurrent.hpp
-  include/${CASQADIUM_SHORT}/types/SequenceStep.hpp
   include/${CASQADIUM_SHORT}/types/System.hpp
   include/${CASQADIUM_SHORT}/types/TickCurrent.hpp
 
@@ -166,9 +165,9 @@ target_sources(${TARGET} PRIVATE
   src/components/SceneNode_ui_impl.cpp
   include/${CASQADIUM_SHORT}/components/SceneNode.hpp
 
-  src/components/SequenceManager.cpp
-  src/components/SequenceManager_ui_impl.cpp
-  include/${CASQADIUM_SHORT}/components/SequenceManager.hpp
+  src/components/SequenceController.cpp
+  src/components/SequenceController_ui_impl.cpp
+  include/${CASQADIUM_SHORT}/components/SequenceController.hpp
 
   src/components/SnapshotExcluded.cpp
   src/components/SnapshotExcluded_ui_impl.cpp
