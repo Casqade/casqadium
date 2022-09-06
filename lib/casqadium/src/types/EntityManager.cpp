@@ -91,6 +91,9 @@ EntityManager::load(
 
   for ( const auto& entityId : registryJson.getMemberNames() )
   {
+    if ( entityId == null_id.str() )
+      throw std::runtime_error("Failed to import entity 'null': Invalid entity ID");
+
     if ( mEntitiesTags.count(entityId) == 0 )
       LOG_DEBUG("Importing entity '{}' ('{}')",
                 entityId, registryPath.string());
