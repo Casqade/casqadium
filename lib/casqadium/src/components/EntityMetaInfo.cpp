@@ -18,11 +18,12 @@ const static Json::Value entityMetaInfoJsonReference =
 
   Json::Value root = ValueType::objectValue;
   root.setComment("// JSON root must be an object"s,
-                   Json::CommentPlacement::commentBefore);
+                  Json::CommentPlacement::commentBefore);
 
-  root["packageId"] = ValueType::stringValue;
-  root["packageId"].setComment("// 'packageId' must be a JSON string"s,
-                                Json::CommentPlacement::commentBefore);
+  auto& packageId = root["packageId"];
+  packageId = ValueType::stringValue;
+  packageId.setComment("// 'packageId' must be a JSON string"s,
+                        Json::CommentPlacement::commentBefore);
 
   return root;
 }();

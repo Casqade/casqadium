@@ -22,19 +22,21 @@ const static Json::Value SceneNodeJsonReference =
 
   Json::Value root = ValueType::objectValue;
   root.setComment("// JSON root must be an object"s,
-                   Json::CommentPlacement::commentBefore);
+                  Json::CommentPlacement::commentBefore);
 
-  root["parent"] = ValueType::stringValue;
-  root["parent"].setComment("// 'parent' must be a JSON string"s,
-                            Json::CommentPlacement::commentBefore);
+  auto& parent = root["parent"];
+  parent = ValueType::stringValue;
+  parent.setComment("// 'parent' must be a JSON string"s,
+                    Json::CommentPlacement::commentBefore);
 
-  root["children"] = ValueType::arrayValue;
-  root["children"].setComment("// 'children' must be a JSON array"s,
-                              Json::CommentPlacement::commentBefore);
+  auto& children = root["children"];
+  children = ValueType::arrayValue;
+  children.setComment("// 'children' must be a JSON array"s,
+                      Json::CommentPlacement::commentBefore);
 
-  root["children"].append(ValueType::stringValue);
-  root["children"].begin()->setComment("// 'children' element must be a JSON string"s,
-                                        Json::CommentPlacement::commentBefore);
+  children.append(ValueType::stringValue);
+  children.begin()->setComment("// 'children' element must be a JSON string"s,
+                                Json::CommentPlacement::commentBefore);
 
   return root;
 }();

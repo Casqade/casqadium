@@ -20,13 +20,14 @@ const static Json::Value textureBufferJsonReference =
   root.setComment("// JSON root must be an object"s,
                   Json::CommentPlacement::commentBefore);
 
-  root["textures"] = ValueType::arrayValue;
-  root["textures"].setComment("// 'textures' must be a JSON array"s,
-                              Json::CommentPlacement::commentBefore);
+  Json::Value& textures = root["textures"];
+  textures = ValueType::arrayValue;
+  textures.setComment("// 'textures' must be a JSON array"s,
+                      Json::CommentPlacement::commentBefore);
 
-  root["textures"].append(ValueType::stringValue);
-  root["textures"].begin()->setComment("// 'textures' element must be a JSON string"s,
-                                        Json::CommentPlacement::commentBefore);
+  textures.append(ValueType::stringValue);
+  textures.begin()->setComment("// 'textures' element must be a JSON string"s,
+                                Json::CommentPlacement::commentBefore);
 
   return root;
 }();

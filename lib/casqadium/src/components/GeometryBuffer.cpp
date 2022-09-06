@@ -20,9 +20,10 @@ const static Json::Value geometryBufferJsonReference =
   root.setComment("// JSON root must be an object"s,
                    Json::CommentPlacement::commentBefore);
 
-  root["buffer"] = ValueType::stringValue;
-  root["buffer"].setComment("// 'buffer' must be a JSON string"s,
-                            Json::CommentPlacement::commentBefore);
+  auto& buffer = root["buffer"];
+  buffer = ValueType::stringValue;
+  buffer.setComment("// 'buffer' must be a JSON string"s,
+                    Json::CommentPlacement::commentBefore);
 
   return root;
 }();

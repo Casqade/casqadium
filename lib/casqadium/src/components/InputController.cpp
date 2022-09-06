@@ -20,12 +20,12 @@ const static Json::Value inputControllerJsonReference =
   root.setComment("// JSON root must be an object"s,
                    Json::CommentPlacement::commentBefore);
 
-  Json::Value& inputs = root["inputs"];
-  inputs = ValueType::objectValue;
-  inputs.setComment("// 'inputs' must be a JSON object"s,
-                    Json::CommentPlacement::commentBefore);
+  auto& axes = root["axes"];
+  axes = ValueType::objectValue;
+  axes.setComment("// 'inputs' must be a JSON object"s,
+                  Json::CommentPlacement::commentBefore);
 
-  Json::Value& axis = inputs["cqde_json_anykey"];
+  auto& axis = axes["cqde_json_anykey"];
   axis = ValueType::objectValue;
   axis.setComment("// input axis entry must be a JSON object"s,
                   Json::CommentPlacement::commentBefore);

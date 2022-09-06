@@ -69,7 +69,7 @@
     },
     "InputController":
     {
-      "inputs":
+      "axes":
       {
         "TranslateX":
         {
