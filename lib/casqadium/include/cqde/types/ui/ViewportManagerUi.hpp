@@ -7,6 +7,11 @@
 
 #include <entt/fwd.hpp>
 
+#include <glm/vec3.hpp>
+
+#include <imgui.h>
+#include <ImGuizmo.h>
+
 #include <vector>
 
 
@@ -23,8 +28,16 @@ class ViewportManagerUi
 
   int32_t mGizmoCubeUsingIndex {-1};
 
-  bool  mGizmoCubeOrbit {};
-  float mGizmoCubeOrbitDistance {1.0f};
+  glm::vec3 mGizmoSnap {1.0f};
+
+  ImGuizmo::OPERATION mGizmoOperation {ImGuizmo::TRANSLATE};
+  ImGuizmo::MODE mGizmoSpace {ImGuizmo::LOCAL};
+
+  float mViewCubeOrbitRadius {1.0f};
+
+  bool  mGizmoSettingsExpanded {true};
+  bool  mViewCubeOrbitEnabled {};
+  bool  mGizmoSnapEnabled {};
 
   int32_t viewportIndex( const EntityId& cameraId ) const;
 
