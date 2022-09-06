@@ -152,6 +152,10 @@ AssetManagerUi::ui_show(
     ImGui::SameLine();
     mPackageFilter.select(registry);
 
+    if ( mPackageFilter.package().str().empty() == true &&
+         ImGui::IsItemHovered() )
+      ImGui::SetTooltip("Live assets state");
+
     ImGui::AlignTextToFramePadding();
     ImGui::Text("Type:");
 

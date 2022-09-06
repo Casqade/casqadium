@@ -449,7 +449,7 @@ InputManagerUi::ui_show_menu_bar(
       for ( const auto& [packageId, config] : mInputConfigs )
         configSave(packageId, registry);
 
-    if ( ImGui::MenuItem("Save & apply") )
+    if ( ImGui::MenuItem("Save all & apply") )
     {
       for ( const auto& [packageId, config] : mInputConfigs )
         if ( packageId.str().empty() == false )
@@ -477,7 +477,7 @@ InputManagerUi::ui_show_menu_bar(
     if ( ImGui::MenuItem("Load all") )
       mInputConfigs.clear();
 
-    if ( ImGui::MenuItem("Load & apply") )
+    if ( ImGui::MenuItem("Load all & apply") )
       configApply(registry);
 
     ImGui::EndMenu(); // Load

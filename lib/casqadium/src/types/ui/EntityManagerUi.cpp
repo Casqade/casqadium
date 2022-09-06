@@ -85,7 +85,7 @@ EntityManagerUi::ui_show(
   const auto tableFlags = ImGuiTableFlags_ScrollX |
                           ImGuiTableFlags_ScrollY;
 
-  if ( ImGui::BeginTable( "EntitiesTable", 1, tableFlags) )
+  if ( ImGui::BeginTable("EntitiesTable", 1, tableFlags) )
   {
     ImGui::TableNextColumn();
 

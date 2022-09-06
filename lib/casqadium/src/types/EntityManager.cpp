@@ -120,8 +120,7 @@ EntityManager::load(
           component = entt::resolve(mComponentTypes[componentName]);
 
         if ( !component )
-          throw std::runtime_error(
-            "Unknown component");
+          throw std::runtime_error("Unknown component");
 
         const auto& componentJson = entityJson[componentName];
 
