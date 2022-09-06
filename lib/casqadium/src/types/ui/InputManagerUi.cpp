@@ -113,7 +113,7 @@ InputManagerUi::ui_show(
 
     if ( mPackageFilter.package().str().empty() == true &&
          ImGui::IsItemHovered() )
-      ImGui::SetTooltip("Input config merged from all packages");
+      ImGui::SetTooltip("Live input state");
 
     mAxisFilter.search();
   }
@@ -441,23 +441,8 @@ InputManagerUi::ui_show_menu_bar(
 
   if ( ImGui::BeginMenu("Save") )
   {
-    if ( selectedPackage.str().empty() == true )
-    {
-      if ( ImGui::MenuItem("Save merged config") )
-        try
-        {
-          mInputMgr->save("input.json");
-        }
-        catch ( const std::exception& e )
-        {
-          LOG_ERROR("Failed to write merged input config to '{}': {}",
-                    "input.json", e.what());
-        }
-
-      if ( ImGui::IsItemHovered() )
-        ImGui::SetTooltip("Writes merged input config to './input.json'");
-    }
-    else if ( ImGui::MenuItem(format("Save '{}'", selectedPackage.str()).c_str()) )
+    if (  selectedPackage.str().empty() == false &&
+          ImGui::MenuItem(format("Save '{}'", selectedPackage.str()).c_str()) )
       configSave(selectedPackage, registry);
 
     if ( ImGui::MenuItem("Save all") )
@@ -471,6 +456,13 @@ InputManagerUi::ui_show_menu_bar(
           configSave(packageId, registry);
 
       configApply(registry);
+    }
+
+    if ( selectedPackage.str().empty() == true &&
+         ImGui::MenuItem("Apply live state") )
+    {
+      mInputMgr->clear();
+      mInputMgr->deserialize(mInputConfigs[selectedPackage]);
     }
 
     ImGui::EndMenu(); // Save
