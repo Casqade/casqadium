@@ -17,7 +17,7 @@ namespace cqde::compos
 struct InputController
 {
   std::unordered_map <InputAxisId, types::ControlAxis,
-                      identifier_hash> inputs {};
+                      identifier_hash> axes {};
 
 
   InputController() = default;

@@ -283,8 +283,8 @@ InputManager::handleAxisInput(
     auto& [binding, axisId] = *iter;
 
     for ( auto&& [entity, cController] : registry.view <InputController, SubscriberInput> ().each() )
-      if ( const auto& iter = cController.inputs.find(axisId);
-           iter != cController.inputs.end() )
+      if ( const auto& iter = cController.axes.find(axisId);
+           iter != cController.axes.end() )
       {
         auto& [id, axis] = *iter;
 

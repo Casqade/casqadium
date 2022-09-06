@@ -20,7 +20,7 @@ InputController::ui_edit_props(
 {
   using fmt::format;
 
-  if ( ImGui::CollapsingHeader("inputs", ImGuiTreeNodeFlags_DefaultOpen) == false )
+  if ( ImGui::CollapsingHeader("Axes", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
 
   static auto selectedAxisId = null_id;
@@ -31,12 +31,12 @@ InputController::ui_edit_props(
 
   const bool newAxisIdInvalid = newAxisId.empty() == true ||
                                 newAxisId == null_id.str() ||
-                                inputs.count(newAxisId) > 0;
+                                axes.count(newAxisId) > 0;
 
   ImGui::BeginDisabled(newAxisIdInvalid);
 
   if ( ImGui::Button("+##axisAdd") )
-    inputs[newAxisId] = {};
+    axes[newAxisId] = {};
 
   ImGui::EndDisabled();
 
@@ -57,7 +57,7 @@ InputController::ui_edit_props(
 
   std::vector <InputAxisId> axesToRemove {};
 
-  for ( const auto& [axisId, axis] : inputs )
+  for ( const auto& [axisId, axis] : axes )
   {
     ImGui::PushID(axisId.str().c_str());
 
@@ -85,7 +85,7 @@ InputController::ui_edit_props(
   ImGui::EndTable(); // InputAxesList
 
   for ( const auto& axisId : axesToRemove )
-    inputs.erase(axisId);
+    axes.erase(axisId);
 
   if ( axisWindowOpened == false )
     return;
@@ -93,7 +93,7 @@ InputController::ui_edit_props(
   if ( selectedAxisId == null_id )
     return;
 
-  if ( inputs.count(selectedAxisId) == 0 )
+  if ( axes.count(selectedAxisId) == 0 )
     return;
 
   const auto windowTitle = format("Axis '{}'###axisEditWindow",
@@ -101,7 +101,7 @@ InputController::ui_edit_props(
 
   if ( ImGui::Begin(windowTitle.c_str(),
                     &axisWindowOpened, ImGuiWindowFlags_MenuBar) )
-    inputs.at(selectedAxisId).ui_show(registry);
+    axes.at(selectedAxisId).ui_show(registry);
 
   ImGui::End(); // windowTitle
 }

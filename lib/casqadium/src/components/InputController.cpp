@@ -41,7 +41,7 @@ InputController::serialize() const
   auto& jsonInputs = json["inputs"];
   jsonInputs = Json::objectValue;
 
-  for ( const auto& [axisId, controlAxis] : inputs )
+  for ( const auto& [axisId, controlAxis] : axes )
     jsonInputs[axisId.str()] = controlAxis.toJson();
 
   return json;
@@ -60,7 +60,7 @@ InputController::deserialize(
   auto& comp = registry.emplace <InputController> (entity);
 
   for ( const auto& axisId : json["inputs"].getMemberNames() )
-    comp.inputs[axisId] = ControlAxis(json["inputs"][axisId]);
+    comp.axes[axisId] = ControlAxis(json["inputs"][axisId]);
 }
 
 } // namespace cqde::compos

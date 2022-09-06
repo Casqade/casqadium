@@ -206,7 +206,7 @@ GameStateEcsSandbox::GameStateEcsSandbox(
 
     auto& cTransform = registry.get <Transform> (entity);
 
-    auto& axisValue = cController->inputs["TranslateX"].value;
+    auto& axisValue = cController->axes["TranslateX"].value;
 
     cTransform.translation += cTransform.right() * axisValue * dt;
 
@@ -228,7 +228,7 @@ GameStateEcsSandbox::GameStateEcsSandbox(
 
     auto& cTransform = registry.get <Transform> (entity);
 
-    auto& axisValue = cController->inputs["TranslateY"].value;
+    auto& axisValue = cController->axes["TranslateY"].value;
 
     cTransform.translation += cTransform.up() * axisValue * dt;
 
@@ -250,7 +250,7 @@ GameStateEcsSandbox::GameStateEcsSandbox(
 
     auto& cTransform = registry.get <Transform> (entity);
 
-    auto& axisValue = cController->inputs["TranslateZ"].value;
+    auto& axisValue = cController->axes["TranslateZ"].value;
 
     cTransform.translation += cTransform.front() * axisValue * dt;
 
@@ -266,7 +266,7 @@ GameStateEcsSandbox::GameStateEcsSandbox(
 
     auto& cTransform = registry.get <Transform> (entity);
 
-    auto& axisValue = cController->inputs["Pitch"].value;
+    auto& axisValue = cController->axes["Pitch"].value;
 
     const auto angle = glm::angleAxis(glm::radians(axisValue),
                                       glm::vec3 {1.0f, 0.0f, 0.0f});
@@ -290,7 +290,7 @@ GameStateEcsSandbox::GameStateEcsSandbox(
 
     auto& cTransform = registry.get <Transform> (entity);
 
-    auto& axisValue = cController->inputs["Yaw"].value;
+    auto& axisValue = cController->axes["Yaw"].value;
 
     const auto angle = glm::angleAxis(glm::radians(axisValue),
                                       glm::vec3 {0.0f, 1.0f, 0.0f});
@@ -309,7 +309,7 @@ GameStateEcsSandbox::GameStateEcsSandbox(
 
     auto& cTransform = registry.get <Transform> (entity);
 
-    auto& axisValue = cController->inputs["Roll"].value;
+    auto& axisValue = cController->axes["Roll"].value;
 
     const auto angle = glm::angleAxis(glm::radians(axisValue),
                                       glm::vec3 {0.0f, 0.0f, 1.0f});
@@ -346,7 +346,7 @@ GameStateEcsSandbox::GameStateEcsSandbox(
     auto& cCamera = registry.get <Camera> (eCamera);
 
     if ( cCamera.projectionType == Camera::Projection::Perspective )
-      cCamera.fov = cController->inputs["EditorCameraFov"].value;
+      cCamera.fov = cController->axes["EditorCameraFov"].value;
   };
 
   const auto editorCameraZoomControl =
@@ -359,7 +359,7 @@ GameStateEcsSandbox::GameStateEcsSandbox(
     auto& cCamera = registry.get <Camera> (eCamera);
 
     if ( cCamera.projectionType == Camera::Projection::Orthographic )
-      cCamera.fov = cController->inputs["EditorCameraZoom"].value;
+      cCamera.fov = cController->axes["EditorCameraZoom"].value;
   };
 
   const auto editorEntitySelect =
@@ -383,8 +383,8 @@ GameStateEcsSandbox::GameStateEcsSandbox(
 
     const glm::vec2 cursorPos
     {
-      cController->inputs["CursorPosX"].value,
-      cController->inputs["CursorPosY"].value,
+      cController->axes["CursorPosX"].value,
+      cController->axes["CursorPosY"].value,
     };
 
     const auto& entityManager = registry.ctx().at <EntityManager> ();
@@ -480,9 +480,9 @@ GameStateEcsSandbox::GameStateEcsSandbox(
 
       auto& cInputController = registry.emplace <InputController> (eCamera);
 
-      auto& iTranslateX = cInputController.inputs["TranslateX"];
-      auto& iTranslateY = cInputController.inputs["TranslateY"];
-      auto& iTranslateZ = cInputController.inputs["TranslateZ"];
+      auto& iTranslateX = cInputController.axes["TranslateX"];
+      auto& iTranslateY = cInputController.axes["TranslateY"];
+      auto& iTranslateZ = cInputController.axes["TranslateZ"];
 
       iTranslateX.constraint = {1.0f, 0.0f};
       iTranslateY.constraint = {1.0f, 0.0f};
@@ -492,9 +492,9 @@ GameStateEcsSandbox::GameStateEcsSandbox(
       iTranslateY.callbacks.insert("ControlTranslateYRelative");
       iTranslateZ.callbacks.insert("ControlTranslateZRelative");
 
-      auto& iPitch = cInputController.inputs["Pitch"];
-      auto& iYaw = cInputController.inputs["Yaw"];
-      auto& iRoll = cInputController.inputs["Roll"];
+      auto& iPitch = cInputController.axes["Pitch"];
+      auto& iYaw = cInputController.axes["Yaw"];
+      auto& iRoll = cInputController.axes["Roll"];
 
       iPitch.constraint = {1.0f, 0.0f};
       iYaw.constraint = {1.0f, 0.0f};
@@ -504,19 +504,19 @@ GameStateEcsSandbox::GameStateEcsSandbox(
       iYaw.callbacks.insert("ControlYawRelative");
       iRoll.callbacks.insert("ControlRollRelative");
 
-      auto& iCameraControlOff = cInputController.inputs["EditorCameraControlOff"];
+      auto& iCameraControlOff = cInputController.axes["EditorCameraControlOff"];
 
       iCameraControlOff.callbacks.insert("EntityInputOff");
       iCameraControlOff.callbacks.insert("MouseAutoCenterDisable");
       iCameraControlOff.callbacks.insert("MouseCursorShow");
 
-      auto& iCameraFov = cInputController.inputs["EditorCameraFov"];
+      auto& iCameraFov = cInputController.axes["EditorCameraFov"];
       iCameraFov.value = cCamera.fov;
       iCameraFov.callbacks.insert("EditorCameraFovControl");
       iCameraFov.constraint = { glm::epsilon <float> (),
                                 glm::pi <float> () - glm::epsilon <float> () };
 
-      auto& iCameraZoom = cInputController.inputs["EditorCameraZoom"];
+      auto& iCameraZoom = cInputController.axes["EditorCameraZoom"];
       iCameraZoom.value = 0.01;
       iCameraZoom.callbacks.insert("EditorCameraZoomControl");
       iCameraZoom.constraint = {  std::numeric_limits <float>::min(),
@@ -538,17 +538,17 @@ GameStateEcsSandbox::GameStateEcsSandbox(
 
       auto& cInputController = registry.emplace <InputController> (eEditorController);
 
-      auto& iEngineShutdown = cInputController.inputs["EngineShutdown"];
+      auto& iEngineShutdown = cInputController.axes["EngineShutdown"];
       iEngineShutdown.callbacks.insert("EngineShutdown");
 
-      auto& iCameraControlOn = cInputController.inputs["EditorCameraControlOn"];
+      auto& iCameraControlOn = cInputController.axes["EditorCameraControlOn"];
       iCameraControlOn.callbacks.insert("EditorCameraControlOn");
 
-      auto& iEntitySelect = cInputController.inputs["EditorEntitySelect"];
+      auto& iEntitySelect = cInputController.axes["EditorEntitySelect"];
       iEntitySelect.callbacks.insert("EditorEntitySelect");
 
-      auto& iCursorPosX = cInputController.inputs["CursorPosX"];
-      auto& iCursorPosY = cInputController.inputs["CursorPosY"];
+      auto& iCursorPosX = cInputController.axes["CursorPosX"];
+      auto& iCursorPosY = cInputController.axes["CursorPosY"];
 
       iCursorPosX.constraint.first = 1.0f;
       iCursorPosY.constraint.first = 1.0f;
