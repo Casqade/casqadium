@@ -103,15 +103,20 @@ EntityManagerUi::ui_show(
       if ( mRegistryFilter.query(entityId) == false )
         return;
 
-      bool componentFound {};
+      bool componentFound = mRegistryFilter.componentExclusive();
 
       each_component(entity, registry,
       [this, &componentFound] ( const ComponentType component )
       {
-        componentFound = mRegistryFilter.query(component);
+        if ( mRegistryFilter.componentExclusive() == false )
+        {
+          componentFound = mRegistryFilter.query(component);
 
-        if ( componentFound == true )
-          return false;
+          if ( componentFound == true )
+            return false;
+        }
+        else
+          componentFound &= mRegistryFilter.query(component);
 
         return true;
       });

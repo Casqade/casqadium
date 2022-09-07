@@ -77,4 +77,10 @@ StringFilter::query() const
   return mQuery;
 }
 
+bool
+StringFilter::exclusive() const
+{
+  return mExcludeQueried;
+}
+
 } // namespace cqde::ui

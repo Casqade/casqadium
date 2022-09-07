@@ -25,6 +25,8 @@ public:
   bool query( std::string value ) const;
 
   std::string query() const;
+
+  bool exclusive() const;
 };
 
 } // namespace cqde::ui
