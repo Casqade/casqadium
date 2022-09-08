@@ -238,14 +238,18 @@ GetWorldMatrix(
     if ( eParent == entt::null )
       return glm::mat4{1.0f};
 
-    const auto& [parentTransform, parentSceneNode] = registry.get <Transform, SceneNode> (eParent);
+    const auto [parentTransform, parentSceneNode] = registry.try_get <const Transform, const SceneNode> (eParent);
+
+    if ( parentSceneNode == nullptr ||
+         parentTransform == nullptr )
+      return glm::mat4{1.0f};
 
     return
     {
-      parentModelWorld(parentSceneNode) *
-      glm::translate(glm::mat4(1.0f), parentTransform.translation) *
-      glm::toMat4(parentTransform.orientation) *
-      glm::scale(glm::mat4(1.0f), parentTransform.scaleWorld)
+      parentModelWorld(*parentSceneNode) *
+      glm::translate(glm::mat4(1.0f), parentTransform->translation) *
+      glm::toMat4(parentTransform->orientation) *
+      glm::scale(glm::mat4(1.0f), parentTransform->scaleWorld)
     };
   };
 
