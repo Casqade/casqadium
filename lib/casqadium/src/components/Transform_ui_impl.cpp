@@ -208,26 +208,63 @@ Transform::ui_edit_props(
         auto up = glm::column(orientationMat, 1);
         auto front = glm::column(orientationMat, 2);
 
-        ImGui::Text("Right");
-        ImGui::SameLine();
+        if ( ImGui::BeginTable("##orientationMatrix", 4,
+                               ImGuiTableFlags_SizingStretchSame) )
+        {
 
-        ImGui::BeginDisabled(true);
-        ImGui::DragFloat3("##orientationRight", glm::value_ptr(right));
-        ImGui::EndDisabled();
+          ImGui::TableSetupColumn("##dimension");
+          ImGui::TableSetupColumn("Right");
+          ImGui::TableSetupColumn("Up");
+          ImGui::TableSetupColumn("Front");
 
-        ImGui::Text("   Up");
-        ImGui::SameLine();
+          ImGui::TableHeadersRow();
 
-        ImGui::BeginDisabled(true);
-        ImGui::DragFloat3("##orientationUp", glm::value_ptr(up));
-        ImGui::EndDisabled();
+          ImGui::TableNextColumn();
+          ImGui::Text("X");
 
-        ImGui::Text("Front");
-        ImGui::SameLine();
+          ImGui::BeginDisabled(true);
 
-        ImGui::BeginDisabled(true);
-        ImGui::DragFloat3("##orientationFront", glm::value_ptr(front));
-        ImGui::EndDisabled();
+          ImGui::TableNextColumn();
+          ImGui::DragFloat("##orientationRightX", &right.x);
+
+          ImGui::TableNextColumn();
+          ImGui::DragFloat("##orientationUpX", &up.x);
+
+          ImGui::TableNextColumn();
+          ImGui::DragFloat("##orientationFrontX", &front.x);
+
+          ImGui::EndDisabled();
+
+          ImGui::TableNextColumn();
+          ImGui::Text("Y");
+
+          ImGui::BeginDisabled(true);
+
+          ImGui::TableNextColumn();
+          ImGui::DragFloat("##orientationRightY", &right.y);
+          ImGui::TableNextColumn();
+          ImGui::DragFloat("##orientationUpY", &up.y);
+          ImGui::TableNextColumn();
+          ImGui::DragFloat("##orientationFrontY", &front.y);
+
+          ImGui::EndDisabled();
+
+          ImGui::TableNextColumn();
+          ImGui::Text("Z");
+
+          ImGui::BeginDisabled(true);
+
+          ImGui::TableNextColumn();
+          ImGui::DragFloat("##orientationRightZ", &right.z);
+          ImGui::TableNextColumn();
+          ImGui::DragFloat("##orientationUpZ", &up.z);
+          ImGui::TableNextColumn();
+          ImGui::DragFloat("##orientationFrontZ", &front.z);
+
+          ImGui::EndDisabled();
+
+          ImGui::EndTable(); // orientationMatrix
+        }
 
         break;
       }
