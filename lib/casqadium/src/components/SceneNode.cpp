@@ -61,16 +61,41 @@ void
 SceneNode::deserialize(
   entt::registry& registry,
   entt::entity entity,
-  const Json::Value& json )
+  const Json::Value& json,
+  const std::unordered_map <EntityId, EntityId, identifier_hash>& idMap )
 {
+  using types::EntityManager;
+
   jsonValidateObject(json, SceneNodeJsonReference);
+
+  auto& entityManager = registry.ctx().at <EntityManager> ();
 
   auto& comp = registry.emplace <SceneNode> (entity);
 
-  comp.parent = Tag{json["parent"].asString()};
+  comp.parent = {json["parent"].asString()};
+
+  if ( idMap.count(comp.parent.id) > 0 )
+    comp.parent = idMap.at(comp.parent.id);
+
+  else
+  {
+    const auto parent = entityManager.get_if_valid(comp.parent.id, registry);
+    if ( parent != entt::null )
+    {
+      auto& cNode = registry.get <SceneNode> (parent);
+      cNode.children.insert(registry.get <Tag> (entity).id);
+    }
+  }
 
   for ( const auto& child : json["children"] )
-    comp.children.insert({Tag{child.asString()}});
+  {
+    auto childId = child.asString();
+
+    if ( idMap.count(childId) > 0 )
+      childId = idMap.at(childId).str();
+
+    comp.children.insert({childId});
+  }
 }
 
 } // namespace cqde::compos
@@ -151,7 +176,7 @@ DetachChildNode(
 
   const Tag& cChildTag = registry.get <Tag> (eChild);
 
-  cParentNode.children.erase(cChildTag);
+  cParentNode.children.erase(cChildTag.id);
   cChildNode.parent = {};
 }
 
@@ -179,6 +204,32 @@ DestroyChildNode(
     DestroyChildNode(registry, eChild, child.get_if_valid(registry));
 
   registry.ctx().at <EntityManager> ().removeLater(eChild);
+}
+
+void SerializeChildNode(
+  const entt::registry& registry,
+  Json::Value& json,
+  const entt::entity entity,
+  const std::unordered_set <ComponentType>& excludedComponents )
+{
+  using compos::SceneNode;
+  using types::EntityManager;
+
+  const auto& entityManager = registry.ctx().at <EntityManager> ();
+
+  entityManager.entitySerialize(registry, json, entity,
+                                excludedComponents);
+
+  const auto& cNode = registry.get <SceneNode> (entity);
+
+  for ( const auto& child : cNode.children )
+  {
+    const auto childEntity = child.get_if_valid(registry);
+
+    if ( childEntity != entt::null )
+      SerializeChildNode(registry, json, childEntity,
+                         excludedComponents);
+  }
 }
 
 } // namespace cqde

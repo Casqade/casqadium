@@ -1,6 +1,6 @@
 #pragma once
 
-#include <cqde/fwd.hpp>
+#include <cqde/alias.hpp>
 
 #include <entt/fwd.hpp>
 
@@ -44,7 +44,9 @@ struct Transform
   static void deserialize(
     entt::registry&,
     entt::entity,
-    const Json::Value& );
+    const Json::Value&,
+    const std::unordered_map <EntityId, EntityId,
+                              identifier_hash>& idMap = {} );
 };
 
 } // namespace compos

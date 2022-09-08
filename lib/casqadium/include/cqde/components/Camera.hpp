@@ -1,7 +1,7 @@
 #pragma once
 
 #include <cqde/types/VertexBuffer.hpp>
-#include <cqde/fwd.hpp>
+#include <cqde/alias.hpp>
 
 #include <entt/fwd.hpp>
 
@@ -88,7 +88,9 @@ struct Camera
   static void deserialize(
     entt::registry&,
     entt::entity,
-    const Json::Value& );
+    const Json::Value&,
+    const std::unordered_map <EntityId, EntityId,
+                              identifier_hash>& idMap = {} );
 };
 
 } // namespace cqde::compos

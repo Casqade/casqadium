@@ -28,7 +28,9 @@ struct Tag
   static void deserialize(
     entt::registry&,
     entt::entity,
-    const Json::Value& );
+    const Json::Value&,
+    const std::unordered_map <EntityId, EntityId,
+                              identifier_hash>& idMap = {} );
 };
 
 } // namespace cqde::compos

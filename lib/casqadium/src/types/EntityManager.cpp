@@ -54,9 +54,6 @@ EntityManager::load(
   entt::registry& registry )
 {
   using fmt::format;
-  using compos::Tag;
-  using compos::EntityMetaInfo;
-  using namespace entt::literals;
 
   if ( fileExists(registryPath) == false )
     return;
@@ -72,11 +69,10 @@ EntityManager::load(
   catch ( const std::exception& e )
   {
     throw std::runtime_error(
-      format("Failed to parse entity registry ({})",
-              e.what()));
+      format("Failed to parse entity registry ({})", e.what()));
   }
 
-  LOG_TRACE("Validating entity registry '{}'", registryPath.string());
+  LOG_TRACE("Validating entity registry");
 
   try
   {
@@ -85,72 +81,49 @@ EntityManager::load(
   catch ( const std::exception& e )
   {
     throw std::runtime_error(
-      format("Failed to validate entity registry '{}': {}",
+      format("Failed to validate entity registry: {}", e.what()));
+  }
+
+  try
+  {
+    deserialize(registryJson, packageId, registry);
+  }
+  catch ( const std::exception& e )
+  {
+    throw std::runtime_error(
+      format("Failed to load entity registry '{}': {}",
               registryPath.string(), e.what()));
   }
+}
+
+void
+EntityManager::deserialize(
+  const Json::Value& registryJson,
+  const PackageId& packageId,
+  entt::registry& registry )
+{
+  using fmt::format;
+  using compos::Tag;
+  using compos::EntityMetaInfo;
+  using namespace entt::literals;
+
+  LOG_DEBUG("Deserializing entity registry");
 
   for ( const auto& entityId : registryJson.getMemberNames() )
   {
-    if ( entityId == null_id.str() )
-      throw std::runtime_error("Failed to import entity 'null': Invalid entity ID");
-
-    if ( mEntitiesTags.count(entityId) == 0 )
-      LOG_DEBUG("Importing entity '{}' ('{}')",
-                entityId, registryPath.string());
-    else
-    {
-      LOG_DEBUG("Patching entity '{}' ('{}')",
-                entityId, registryPath.string());
-
-      registry.destroy(mEntitiesTags[entityId]);
-    }
-
-    const entt::entity entity = registry.create();
-    registry.emplace <Tag> (entity).id = entityId;
-    mEntitiesTags[entityId] = entity;
-
-    const auto& entityJson = registryJson[entityId];
-
-    for ( const auto& componentName : entityJson.getMemberNames() )
-    {
-      LOG_TRACE("Importing component '{}' for entity '{}' ('{}')",
-                componentName, entityId, registryPath.string());
-
-      try
-      {
-        entt::meta_type component {};
-        if ( mComponentTypes.count(componentName) != 0 )
-          component = entt::resolve(mComponentTypes[componentName]);
-
-        if ( !component )
-          throw std::runtime_error("Unknown component");
-
-        const auto& componentJson = entityJson[componentName];
-
-        const auto deserializeFunc = component.func("deserialize"_hs);
-        deserializeFunc.invoke( {}, entt::forward_as_meta(registry),
-                                entity,
-                                entt::forward_as_meta(componentJson));
-      }
-      catch ( const std::exception& e )
-      {
-        throw std::runtime_error(
-          format("Failed to import component '{}' (entity '{}'): {}",
-                 componentName, entityId, e.what()));
-      }
-    }
+    const auto entity = entityDeserialize(registry, entityId,
+                                          registryJson[entityId]);
 
     auto& metaInfo = registry.emplace_or_replace <EntityMetaInfo> (entity);
     metaInfo.packageId = packageId;
   }
 }
 
-void
-EntityManager::save(
-  const path& registryPath,
+Json::Value
+EntityManager::serialize(
   const PackageId& packageId,
   const entt::registry& registry,
-  const std::set <entt::id_type>& excludedComponents ) const
+  const std::unordered_set <ComponentType>& excludedComponents ) const
 {
   using namespace entt::literals;
 
@@ -173,75 +146,24 @@ EntityManager::save(
           cMetaInfo.packageId != packageId )
       continue;
 
-    const entt::entity entity = eTag;
-    const std::string entityId = cTag.id.str();
-
-    registryJson[entityId] = Json::objectValue;
+    const auto entity = eTag;
 
     try
     {
-      LOG_DEBUG("Serializing entity '{}'",
-                entityId);
-
-      each_component(entity, registry,
-      [&] ( const ComponentType componentType )
-      {
-        if ( excludedComponents.count(componentType) != 0 )
-          return true;
-
-        const auto component = entt::resolve(componentType);
-        if ( !component )
-          throw std::runtime_error(
-            format("Unknown component (id_type {})",
-                   componentType));
-
-        const std::string componentName = component_name(componentType);
-
-        LOG_TRACE("Serializing component '{}' (entity '{}')",
-                  componentName, entityId);
-
-        if ( component_is_empty(componentType) == true )
-        {
-          registryJson[entityId][componentName] = Json::objectValue;
-          return true;
-        }
-
-        const auto componentGet = component.func("get_const"_hs);
-        auto componentInstance = componentGet.invoke({}, entt::forward_as_meta(registry), entity);
-        const auto serializedComponent = component.func("serialize"_hs).invoke(componentInstance);
-
-        if ( serializedComponent )
-        {
-          registryJson[entityId][componentName] = serializedComponent.cast <Json::Value> ();
-          return true;
-        }
-
-        throw std::runtime_error(
-          format("Component '{}' is not reflected properly",
-                 componentName));
-      });
+      entitySerialize(registry, registryJson,
+                      entity, excludedComponents);
     }
     catch ( const std::exception& e )
     {
+      const auto entityId = cTag.id.str();
+
       throw std::runtime_error(
         format("Failed to serialize entity '{}': {}",
                entityId, e.what()));
     }
   };
 
-  if ( packageId.str().empty() == true )
-    LOG_TRACE("Writing global entity registry to '{}'",
-              registryPath.string());
-  else
-    LOG_TRACE("Writing package '{}' entity registry to '{}'",
-              packageId.str(), registryPath.string());
-
-  const auto streamFlags = std::ios::out |
-                           std::ios::trunc |
-                           std::ios::binary;
-
-  auto fileStream = fileOpen(registryPath, streamFlags);
-  fileStream << Json::writeString(jsonWriter(), registryJson);
+  return registryJson;
 }
 
 entt::entity
@@ -250,6 +172,8 @@ EntityManager::entityCreate(
   entt::registry& registry )
 {
   using compos::Tag;
+
+  CQDE_ASSERT_DEBUG(id != null_id, return entt::null);
 
   auto entity = get_if_valid(id, registry);
 
@@ -260,6 +184,98 @@ EntityManager::entityCreate(
     cTag.id = id;
 
     idRegister(id, entity);
+  }
+
+  return entity;
+}
+
+void
+EntityManager::entitySerialize(
+  const entt::registry& registry,
+  Json::Value& json,
+  const entt::entity entity,
+  const std::unordered_set <ComponentType>& excludedComponents ) const
+{
+  using fmt::format;
+  using compos::Tag;
+
+  const auto entityId = registry.get <Tag> (entity).id.str();
+
+  LOG_DEBUG("Serializing entity '{}'", entityId);
+
+  json[entityId] = Json::objectValue;
+
+  try
+  {
+    each_component(entity, registry,
+    [&] ( const ComponentType componentType )
+    {
+      if ( excludedComponents.count(componentType) != 0 )
+        return true;
+
+      componentSerialize(registry, json[entityId],
+                         entity, componentType);
+
+      return true;
+    });
+  }
+  catch ( const std::exception& e )
+  {
+    throw std::runtime_error(
+      format("Failed to serialize entity '{}': {}",
+             entityId, e.what()));
+  }
+}
+
+entt::entity
+EntityManager::entityDeserialize(
+  entt::registry& registry,
+  EntityId entityId,
+  const Json::Value& entityJson,
+  const std::unordered_map <EntityId, EntityId, identifier_hash>& idMap )
+{
+  using fmt::format;
+  using compos::Tag;
+
+  if ( entityId == null_id.str() )
+    throw std::runtime_error("Failed to deserialize entity 'null': Invalid entity ID");
+
+  if ( mEntitiesTags.count(entityId) == 0 )
+    LOG_DEBUG("Deserializing entity '{}'", entityId.str());
+
+  else if ( idMap.count(entityId) > 0 )
+  {
+    LOG_DEBUG("Deserializing entity '{}' as '{}'",
+              entityId.str(), idMap.at(entityId).str());
+
+    entityId = idMap.at(entityId);
+  }
+  else
+  {
+    LOG_DEBUG("Patching entity '{}'", entityId.str());
+
+    idInvalidate(entityId);
+    removeLater(get(entityId));
+  }
+
+  const auto entity = entityCreate(entityId, registry);
+
+  for ( const auto& componentName : entityJson.getMemberNames() )
+  {
+    LOG_TRACE("Deserializing entity '{}' component '{}'",
+              entityId.str(), componentName);
+
+    try
+    {
+      componentDeserialize(registry, entity, componentName,
+                           entityJson[componentName], idMap);
+    }
+    catch ( const std::exception& e )
+    {
+      throw std::runtime_error(
+        format("Failed to deserialize entity '{}' component '{}': {}",
+               entityId.str(), componentName, e.what()));
+    }
   }
 
   return entity;
@@ -289,10 +305,13 @@ EntityManager::componentAdd(
   Json::Value componentJson = Json::objectValue;
   componentJson = serializeFunc.invoke(instance).cast <Json::Value> ();
 
+  const static std::unordered_map <EntityId, EntityId, identifier_hash> idMap {};
+
   const auto deserializeFunc = component.func("deserialize"_hs);
   deserializeFunc.invoke( {}, entt::forward_as_meta(registry),
                           entity,
-                          entt::forward_as_meta(componentJson));
+                          entt::forward_as_meta(componentJson),
+                          entt::forward_as_meta(idMap));
 }
 
 void
@@ -311,6 +330,72 @@ EntityManager::componentRemove(
                       componentName(componentType));
 
   removeFunc.invoke({}, entt::forward_as_meta(registry), entity);
+}
+
+void
+EntityManager::componentSerialize(
+  const entt::registry& registry,
+  Json::Value& json,
+  const entt::entity entity,
+  const ComponentType componentType ) const
+{
+  using fmt::format;
+  using namespace entt::literals;
+
+  const auto component = entt::resolve(componentType);
+  if ( !component )
+    throw std::runtime_error(
+      format("Unknown component (id_type {})",
+             componentType));
+
+  const std::string componentName = component_name(componentType);
+
+  LOG_TRACE("Serializing component '{}'", componentName);
+
+  if ( component_is_empty(componentType) == true )
+  {
+    json[componentName] = Json::objectValue;
+    return;
+  }
+
+  const auto componentGet = component.func("get_const"_hs);
+  auto componentInstance = componentGet.invoke({}, entt::forward_as_meta(registry), entity);
+  const auto serializedComponent = component.func("serialize"_hs).invoke(componentInstance);
+
+  if ( serializedComponent )
+  {
+    json[componentName] = serializedComponent.cast <Json::Value> ();
+    return;
+  }
+
+  throw std::runtime_error(
+    format("Component '{}' is not reflected properly",
+           componentName));
+}
+
+void
+EntityManager::componentDeserialize(
+  entt::registry& registry,
+  const entt::entity entity,
+  const std::string& componentName,
+  const Json::Value& componentJson,
+  const std::unordered_map <EntityId, EntityId,
+                            identifier_hash>& idMap )
+{
+  using namespace entt::literals;
+
+  entt::meta_type component {};
+  if ( mComponentTypes.count(componentName) > 0 )
+    component = entt::resolve(mComponentTypes.at(componentName));
+
+  if ( !component )
+    throw std::runtime_error("Unknown component");
+
+  const auto deserializeFunc = component.func("deserialize"_hs);
+  deserializeFunc.invoke( {}, entt::forward_as_meta(registry),
+                          entity,
+                          entt::forward_as_meta(componentJson),
+                          entt::forward_as_meta(idMap));
 }
 
 std::string

@@ -6,6 +6,8 @@
 
 #include <entt/fwd.hpp>
 
+#include <json/value.h>
+
 
 namespace cqde::types
 {
@@ -29,6 +31,8 @@ class EntityManagerUi
 
   StringFilter mNewComponentFilter {"Component type"};
 
+  Json::Value mClipboard {};
+
   types::EntityManager* mEntityMgr {};
 
 public:
@@ -38,6 +42,8 @@ public:
   void ui_show_component_window( entt::registry& );
 
   void ui_show_scene_graph_window( entt::registry& );
+
+  void entityPaste( entt::registry& );
 
   void entitySelect( const entt::entity );
   void componentSelect( const ComponentType );

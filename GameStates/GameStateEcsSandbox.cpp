@@ -9,6 +9,8 @@
 #include <cqde/alias.hpp>
 #include <cqde/common.hpp>
 #include <cqde/ecs_helpers.hpp>
+#include <cqde/file_helpers.hpp>
+#include <cqde/json_helpers.hpp>
 #include <cqde/math_helpers.hpp>
 #include <cqde/render_helpers.hpp>
 
@@ -60,6 +62,7 @@
 #include <glm/vec3.hpp>
 
 #include <json/value.h>
+#include <json/writer.h>
 
 
 GameStateEcsSandbox::GameStateEcsSandbox(
@@ -323,17 +326,26 @@ GameStateEcsSandbox::GameStateEcsSandbox(
   [this] (  entt::registry& registry,
             const std::vector <std::any>& args )
   {
+    using cqde::fileOpen;
     using entt::type_hash;
 
     mRunning = false;
 
-    registry.ctx().at <EntityManager> ().save(
-      "entities.json", "editor",
-      registry,
-      {
-        type_hash <Tag> (),
-        type_hash <EntityMetaInfo> ()
-      });
+    const auto snapshot =
+      registry.ctx().at <EntityManager> ().serialize(
+        "editor",
+        registry,
+        {
+          type_hash <Tag> (),
+          type_hash <EntityMetaInfo> ()
+        });
+
+    const auto streamFlags = std::ios::out |
+                             std::ios::trunc |
+                             std::ios::binary;
+
+    auto fileStream = fileOpen("snapshot.json", streamFlags);
+    fileStream << Json::writeString(cqde::jsonWriter(), snapshot);
   };
 
   const auto editorCameraFovControl =

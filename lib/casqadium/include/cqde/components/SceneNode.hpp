@@ -4,7 +4,7 @@
 
 #include <json/forwards.h>
 
-#include <set>
+#include <unordered_set>
 
 
 namespace cqde::compos
@@ -13,7 +13,8 @@ namespace cqde::compos
 struct SceneNode
 {
   types::EntityReference parent {};
-  std::set <types::EntityReference> children {};
+  std::unordered_set <types::EntityReference,
+                      identifier_hash> children {};
 
 
   SceneNode() = default;
@@ -27,7 +28,9 @@ struct SceneNode
   static void deserialize(
     entt::registry&,
     entt::entity,
-    const Json::Value& );
+    const Json::Value&,
+    const std::unordered_map <EntityId, EntityId,
+                              identifier_hash>& idMap = {} );
 };
 
 } // namespace cqde::compos
@@ -35,20 +38,30 @@ struct SceneNode
 namespace cqde
 {
 
-bool CanAddChildNode( const entt::registry&,
-                      const entt::entity parent,
-                      const EntityId& child );
+bool CanAddChildNode(
+  const entt::registry&,
+  const entt::entity parent,
+  const EntityId& child );
 
-void AttachChildNode( entt::registry&,
-                      entt::entity parent,
-                      entt::entity child );
+void AttachChildNode(
+  entt::registry&,
+  entt::entity parent,
+  entt::entity child );
 
-void DetachChildNode( entt::registry&,
-                      entt::entity parent,
-                      entt::entity child );
+void DetachChildNode(
+  entt::registry&,
+  entt::entity parent,
+  entt::entity child );
 
-void DestroyChildNode( entt::registry&,
-                      entt::entity parent,
-                      entt::entity child );
+void DestroyChildNode(
+  entt::registry&,
+  entt::entity parent,
+  entt::entity child );
+
+void SerializeChildNode(
+  const entt::registry&,
+  Json::Value&,
+  const entt::entity,
+  const std::unordered_set <ComponentType>& exclude = {} );
 
 } // namespace cqde

@@ -11,7 +11,7 @@
 
 #include <filesystem>
 #include <map>
-#include <set>
+#include <unordered_set>
 
 
 namespace cqde::ui
@@ -40,25 +40,59 @@ class EntityManager
 public:
   EntityManager() = default;
 
-  void load(  const path& registryPath,
-              const PackageId&,
-              entt::registry& );
-
-  void save( const path& registryPath,
+  void load( const path& registryPath,
              const PackageId&,
-             const entt::registry&,
-             const std::set <entt::id_type>& excludedComponents ) const;
+             entt::registry& );
 
-  entt::entity entityCreate(  const EntityId&,
-                              entt::registry& );
+  Json::Value serialize(  const PackageId&,
+                          const entt::registry&,
+                          const std::unordered_set <ComponentType>& exclude = {} ) const;
 
-  void componentAdd( const ComponentType,
-                     const entt::entity,
-                     entt::registry& );
+  void deserialize(
+    const Json::Value& registryJson,
+    const PackageId&,
+    entt::registry& );
 
-  void componentRemove( const ComponentType,
-                        const entt::entity,
-                        entt::registry& );
+  entt::entity entityCreate(
+    const EntityId&,
+    entt::registry& );
+
+  void entitySerialize(
+    const entt::registry&,
+    Json::Value&,
+    const entt::entity,
+    const std::unordered_set <ComponentType>& exclude = {} ) const;
+
+  entt::entity entityDeserialize(
+    entt::registry&,
+    EntityId,
+    const Json::Value&,
+    const std::unordered_map <EntityId, EntityId,
+                              identifier_hash>& idMap = {} );
+
+  void componentAdd(
+    const ComponentType,
+    const entt::entity,
+    entt::registry& );
+
+  void componentRemove(
+    const ComponentType,
+    const entt::entity,
+    entt::registry& );
+
+  void componentSerialize(
+    const entt::registry&,
+    Json::Value&,
+    const entt::entity,
+    const ComponentType ) const;
+
+  void componentDeserialize(
+    entt::registry&,
+    const entt::entity,
+    const std::string& componentName,
+    const Json::Value&,
+    const std::unordered_map <EntityId, EntityId,
+                              identifier_hash>& idMap = {} );
 
   template <typename Component>
   void registerEmptyComponent( const std::string& name );

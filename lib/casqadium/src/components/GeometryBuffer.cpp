@@ -41,7 +41,9 @@ void
 GeometryBuffer::deserialize(
   entt::registry& registry,
   entt::entity entity,
-  const Json::Value& json )
+  const Json::Value& json,
+  const std::unordered_map <EntityId, EntityId,
+                            identifier_hash>& idMap )
 {
   jsonValidateObject(json, geometryBufferJsonReference);
 
