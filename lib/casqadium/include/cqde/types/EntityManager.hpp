@@ -100,7 +100,12 @@ public:
   template <typename Component>
   void registerComponent( const std::string& name );
 
-  std::string   componentName( const ComponentType ) const;
+  template <typename Component>
+  std::string componentName() const;
+  std::string componentName( const ComponentType ) const;
+
+  template <typename Component>
+  ComponentType componentType() const;
   ComponentType componentType( const std::string& name ) const;
 
   std::vector <EntityId> entities() const;
@@ -160,6 +165,20 @@ EntityManager::registerComponent(
                 std::make_pair("typename"_hs, name.substr()));
   factory.template func <&component_get <Component>, entt::as_ref_t> ("get"_hs);
   factory.template func <&component_get_const <Component>, entt::as_cref_t> ("get_const"_hs);
+}
+
+template <typename Component>
+std::string
+EntityManager::componentName() const
+{
+  return componentName(entt::type_hash <Component> ());
+}
+
+template <typename Component>
+ComponentType
+EntityManager::componentType() const
+{
+  return componentType( componentName <Component> () );
 }
 
 } // namespace cqde::types

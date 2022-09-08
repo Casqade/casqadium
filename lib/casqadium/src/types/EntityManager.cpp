@@ -413,10 +413,11 @@ ComponentType
 EntityManager::componentType(
   const std::string& name ) const
 {
-  if ( mComponentTypes.count(name) != 0 )
-    return mComponentTypes.at(name);
+  if ( const auto iter = mComponentTypes.find(name);
+       iter != mComponentTypes.end() )
+    return iter->second;
 
-  return {};
+  return entt::null;
 }
 
 std::vector <EntityId>

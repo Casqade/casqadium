@@ -55,7 +55,7 @@ EntityManagerUi::ui_show(
 
   ImGui::Separator();
 
-  const auto tagType = mEntityMgr->componentType("Tag");
+  const auto tagType = mEntityMgr->componentType <Tag> ();
 
   if ( ImGui::Button("+##entityAdd") )
   {
