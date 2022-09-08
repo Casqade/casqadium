@@ -58,6 +58,10 @@ void DestroyChildNode(
   entt::entity parent,
   entt::entity child );
 
+void RootifyChildNode(
+  entt::registry&,
+  const entt::entity );
+
 void SerializeChildNode(
   const entt::registry&,
   Json::Value&,

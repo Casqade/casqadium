@@ -192,6 +192,9 @@ EntityManagerUi::ui_show(
 
           if ( ImGui::SmallButton("-##componentRemove") )
           {
+            if ( componentType == mEntityMgr->componentType <SceneNode> () )
+              RootifyChildNode(registry, entity);
+
             mEntityMgr->removeLater(entity, componentType);
 
             if ( mSelectedEntity == entity &&

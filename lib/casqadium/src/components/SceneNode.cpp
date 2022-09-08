@@ -206,6 +206,26 @@ DestroyChildNode(
   registry.ctx().at <EntityManager> ().removeLater(eChild);
 }
 
+void
+RootifyChildNode(
+  entt::registry& registry,
+  const entt::entity entity )
+{
+  using compos::SceneNode;
+
+  const auto& cNode = registry.get <SceneNode> (entity);
+
+  DetachChildNode(registry,
+                  cNode.parent.get_if_valid(registry),
+                  entity);
+
+  const auto children = cNode.children;
+
+  for ( const auto& child : children )
+    DetachChildNode(registry, entity,
+                    child.get_if_valid(registry));
+}
+
 void SerializeChildNode(
   const entt::registry& registry,
   Json::Value& json,
