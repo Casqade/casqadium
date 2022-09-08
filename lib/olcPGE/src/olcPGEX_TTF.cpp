@@ -1312,6 +1312,12 @@ Font::GetErrorMessage() const
   return errorMessage;
 }
 
+std::string
+Font::GetLibraryErrorMessage()
+{
+  return libraryErrorMessage;
+}
+
 olc::rcode
 Font::init()
 {

@@ -19,7 +19,10 @@ AnotherDayAtHospital::AnotherDayAtHospital(
 AnotherDayAtHospital::~AnotherDayAtHospital()
 {
   mGameStateController.clearState();
-  olc::Font::deinit();
+
+  if ( olc::Font::deinit() != olc::rcode::OK )
+    LOG_ERROR("Failed to deinitialize olc::Font: {}",
+              olc::Font::GetLibraryErrorMessage());
 }
 
 bool
@@ -37,9 +40,10 @@ AnotherDayAtHospital::update(
 bool
 AnotherDayAtHospital::OnUserCreate()
 {
-  if ( olc::Font::init() == false )
+  if ( olc::Font::init() != olc::rcode::OK )
   {
-    LOG_ERROR("Failed to initialize olc::Font");
+    LOG_ERROR("Failed to initialize olc::Font: {}",
+              olc::Font::GetLibraryErrorMessage());
     return false;
   }
 
