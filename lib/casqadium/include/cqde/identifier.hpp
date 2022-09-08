@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cqde/fwd.hpp>
+
 #include <entt/core/hashed_string.hpp>
 
 #include <string>
@@ -34,6 +36,7 @@ public:
 struct identifier_hash
 {
   std::size_t operator () ( const identifier& id ) const;
+  std::size_t operator () ( const types::EntityReference& ) const;
 };
 
 

@@ -1,5 +1,7 @@
 #include <cqde/identifier.hpp>
 
+#include <cqde/types/EntityReference.hpp>
+
 #include <entt/core/hashed_string.hpp>
 
 
@@ -62,6 +64,12 @@ std::size_t
 identifier_hash::operator () ( const identifier& id ) const
 {
   return std::hash <entt::hashed_string::hash_type> ()(id.hash().value());
+}
+
+std::size_t
+identifier_hash::operator () ( const types::EntityReference& reference ) const
+{
+  return std::hash <entt::hashed_string::hash_type> ()(reference.id.hash().value());
 }
 
 } // namespace cqde

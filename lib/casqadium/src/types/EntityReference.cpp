@@ -34,6 +34,13 @@ EntityReference::get_if_valid(
 }
 
 bool
+EntityReference::operator == (
+  const EntityReference& other ) const
+{
+  return id.hash().value() == other.id.hash().value();
+}
+
+bool
 EntityReference::operator < (
   const EntityReference& other ) const
 {
