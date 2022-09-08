@@ -39,6 +39,7 @@ public:
     Manifest,
     Entities,
     Input,
+    Audio,
     Fonts,
     Geometry,
     Textures,

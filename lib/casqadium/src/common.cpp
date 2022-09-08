@@ -25,6 +25,7 @@
 #include <cqde/types/TickCurrent.hpp>
 #include <cqde/types/FrameCurrent.hpp>
 
+#include <cqde/types/assets/AudioAssetManager.hpp>
 #include <cqde/types/assets/FontAssetManager.hpp>
 #include <cqde/types/assets/GeometryAssetManager.hpp>
 #include <cqde/types/assets/TextureAssetManager.hpp>
@@ -74,6 +75,7 @@ engineInit( entt::registry& registry )
 
   auto& tp = registry.ctx().emplace <ctpl::thread_pool> (std::thread::hardware_concurrency() | 1);
 
+  registry.ctx().emplace <AudioAssetManager> (tp);
   registry.ctx().emplace <FontAssetManager> (tp);
   registry.ctx().emplace <GeometryAssetManager> (tp);
   registry.ctx().emplace <TextureAssetManager> (tp);

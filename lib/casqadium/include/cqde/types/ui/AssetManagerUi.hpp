@@ -55,6 +55,7 @@ private:
   void ui_show_menu_bar( entt::registry& );
   void ui_show_asset_window( entt::registry& );
 
+  void ui_show_live_audio( entt::registry& );
   void ui_show_live_font( entt::registry& );
   void ui_show_live_geometry( entt::registry& );
   void ui_show_live_text( entt::registry& );

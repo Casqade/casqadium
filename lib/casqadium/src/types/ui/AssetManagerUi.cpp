@@ -1,6 +1,7 @@
 #include <cqde/types/ui/AssetManagerUi.hpp>
 #include <cqde/types/PackageManager.hpp>
 
+#include <cqde/types/assets/AudioAssetManager.hpp>
 #include <cqde/types/assets/FontAssetManager.hpp>
 #include <cqde/types/assets/GeometryAssetManager.hpp>
 #include <cqde/types/assets/TextStringAssetManager.hpp>
@@ -23,6 +24,7 @@ AssetManagerUi::AssetManagerUi()
 {
   mAssetTypeNames =
   {
+    {ContentType::Audio, "Audio"},
     {ContentType::Fonts, "Fonts"},
     {ContentType::Geometry, "Geometry"},
     {ContentType::Text, "Text"},
@@ -31,6 +33,7 @@ AssetManagerUi::AssetManagerUi()
 
   mSelectedAssetIds =
   {
+    {ContentType::Audio, {}},
     {ContentType::Fonts, {}},
     {ContentType::Geometry, {}},
     {ContentType::Text, {}},
@@ -44,6 +47,7 @@ void
 AssetManagerUi::stateApply(
   entt::registry& registry )
 {
+  using AudioAssetManager = types::AudioAssetManager;
   using FontAssetManager = types::FontAssetManager;
   using GeometryAssetManager = types::GeometryAssetManager;
   using TextStringAssetManager = types::TextStringAssetManager;
@@ -52,6 +56,7 @@ AssetManagerUi::stateApply(
   using PackageManager = types::PackageManager;
   using ContentType = types::Package::ContentType;
 
+  auto& audioMgr = registry.ctx().at <AudioAssetManager> ();
   auto& fontMgr = registry.ctx().at <FontAssetManager> ();
   auto& geometryMgr = registry.ctx().at <GeometryAssetManager> ();
   auto& textMgr = registry.ctx().at <TextStringAssetManager> ();
@@ -71,11 +76,13 @@ AssetManagerUi::stateApply(
     auto package = pkgMgr.package(packageId);
     CQDE_ASSERT_DEBUG(package != nullptr, continue);
 
+    const auto audioPath = package->contentPath(ContentType::Audio);
     const auto fontsPath = package->contentPath(ContentType::Fonts);
     const auto geometryPath = package->contentPath(ContentType::Geometry);
     const auto textPath = package->contentPath(ContentType::Text);
     const auto texturesPath = package->contentPath(ContentType::Textures);
 
+    audioMgr.parseAssetDbFile(audioPath);
     fontMgr.parseAssetDbFile(fontsPath);
     geometryMgr.parseAssetDbFile(geometryPath);
     textMgr.parseAssetDbFile(textPath);
@@ -107,10 +114,14 @@ AssetManagerUi::stateSave(
     return;
   }
 
+  const auto& audioDb = mAssetsState[packageId][mAssetTypeNames.at(ContentType::Audio)];
   const auto& fontsDb = mAssetsState[packageId][mAssetTypeNames.at(ContentType::Fonts)];
   const auto& geometryDb = mAssetsState[packageId][mAssetTypeNames.at(ContentType::Geometry)];
   const auto& textDb = mAssetsState[packageId][mAssetTypeNames.at(ContentType::Text)];
   const auto& texturesDb = mAssetsState[packageId][mAssetTypeNames.at(ContentType::Textures)];
+
+  if ( audioDb.isNull() == false )
+    package->save(ContentType::Audio, audioDb);
 
   if ( fontsDb.isNull() == false )
     package->save(ContentType::Fonts, fontsDb);
@@ -129,6 +140,7 @@ void
 AssetManagerUi::ui_show(
   entt::registry& registry )
 {
+  using AudioAssetManager = types::FontAssetManager;
   using FontAssetManager = types::FontAssetManager;
   using GeometryAssetManager = types::GeometryAssetManager;
   using TextStringAssetManager = types::TextStringAssetManager;
@@ -211,6 +223,11 @@ AssetManagerUi::ui_show_live_state(
 
   switch (mSelectedAssetType)
   {
+    case ContentType::Audio:
+    {
+      ui_show_live_audio(registry);
+      break;
+    }
     case ContentType::Fonts:
     {
       ui_show_live_font(registry);
@@ -246,6 +263,7 @@ AssetManagerUi::ui_show_package_state(
 
   using PackageManager = types::PackageManager;
 
+  using AudioAssetManager = types::AudioAssetManager;
   using FontAssetManager = types::FontAssetManager;
   using GeometryAssetManager = types::GeometryAssetManager;
   using TextStringAssetManager = types::TextStringAssetManager;
@@ -277,6 +295,11 @@ AssetManagerUi::ui_show_package_state(
 
   switch (mSelectedAssetType)
   {
+    case ContentType::Audio:
+    {
+      AudioAssetManager::Validate(assetDb);
+      break;
+    }
     case ContentType::Fonts:
     {
       FontAssetManager::Validate(assetDb);
@@ -318,6 +341,10 @@ AssetManagerUi::ui_show_package_state(
 
     switch (mSelectedAssetType)
     {
+      case ContentType::Audio:
+        newAsset = AudioAssetManager::AssetJsonDbEntryReference();
+        break;
+
       case ContentType::Fonts:
         newAsset = FontAssetManager::AssetJsonDbEntryReference();
         break;
@@ -511,6 +538,7 @@ AssetManagerUi::ui_show_asset_window(
 {
   using fmt::format;
 
+  using AudioAssetManager = types::AudioAssetManager;
   using FontAssetManager = types::FontAssetManager;
   using GeometryAssetManager = types::GeometryAssetManager;
   using TextStringAssetManager = types::TextStringAssetManager;
@@ -542,6 +570,11 @@ AssetManagerUi::ui_show_asset_window(
 
   switch (mSelectedAssetType)
   {
+    case ContentType::Audio:
+    {
+      registry.ctx().at <AudioAssetManager> ().ui_show(assetEntry);
+      break;
+    }
     case ContentType::Fonts:
     {
       registry.ctx().at <FontAssetManager> ().ui_show(assetEntry);
@@ -570,6 +603,59 @@ AssetManagerUi::ui_show_asset_window(
   }
 
   ImGui::PopID();
+
+  ImGui::End(); // windowTitle
+}
+
+void
+AssetManagerUi::ui_show_live_audio(
+  entt::registry& registry )
+{
+  using fmt::format;
+  using AudioAssetManager = types::AudioAssetManager;
+
+  auto& audioMgr = registry.ctx().at <AudioAssetManager> ();
+  auto assets = audioMgr.assetIdList();
+
+  for ( const auto& asset : assets )
+  {
+    if ( mAssetIdFilter.query(asset.str()) == false )
+      continue;
+
+    const bool selected = asset.str() == mSelectedAssetIds[mSelectedAssetType];
+
+    const auto flags =  ImGuiSelectableFlags_SpanAllColumns |
+                        ImGuiSelectableFlags_AllowItemOverlap;
+
+    if ( ImGui::Selectable( asset.str().c_str(),
+                            selected, flags ) )
+    {
+      mSelectedAssetIds[mSelectedAssetType] = asset.str();
+
+      mAssetWindowOpened = true;
+      ImGui::SetWindowFocus("###assetEditWindow");
+    }
+  }
+
+  if ( mAssetWindowOpened == false )
+    return;
+
+  const auto& selectedAudioId = mSelectedAssetIds[mSelectedAssetType];
+
+  if ( selectedAudioId.empty() == true )
+    return;
+
+  const auto windowTitle = format("Audio '{}'###assetEditWindow",
+                                  mSelectedAssetIds[mSelectedAssetType]);
+
+  if ( ImGui::Begin(windowTitle.c_str(), &mAssetWindowOpened,
+                    ImGuiWindowFlags_HorizontalScrollbar) == true )
+  {
+    if ( audioMgr.status(selectedAudioId) != AssetStatus::Undefined )
+      audioMgr.load({selectedAudioId});
+
+    audioMgr.ui_show_preview(selectedAudioId);
+  }
 
   ImGui::End(); // windowTitle
 }
