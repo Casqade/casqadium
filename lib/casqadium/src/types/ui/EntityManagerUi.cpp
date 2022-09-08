@@ -382,7 +382,7 @@ EntityManagerUi::ui_show_scene_graph_window(
 
     const auto newEntity = mEntityMgr->entityCreate(mNewNodeName, registry);
 
-    auto& cNode = registry.emplace <SceneNode> (newEntity);
+    registry.emplace <SceneNode> (newEntity);
 
     if ( mSelectedEntity != entt::null &&
          registry.all_of <Tag, SceneNode> (mSelectedEntity) )

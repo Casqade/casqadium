@@ -35,15 +35,15 @@ class EntityManagerUi
 
   types::EntityManager* mEntityMgr {};
 
+  void ui_show_component_window( entt::registry& );
+  void ui_show_scene_graph_window( entt::registry& );
+
+  void entityPaste( entt::registry& );
+
 public:
   EntityManagerUi( types::EntityManager* );
 
   void ui_show( entt::registry& );
-  void ui_show_component_window( entt::registry& );
-
-  void ui_show_scene_graph_window( entt::registry& );
-
-  void entityPaste( entt::registry& );
 
   void entitySelect( const entt::entity );
   void componentSelect( const ComponentType );

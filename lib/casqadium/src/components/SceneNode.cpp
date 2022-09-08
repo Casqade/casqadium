@@ -122,9 +122,9 @@ CanAddChildNode(
 
   const auto& cNode = registry.get <SceneNode> (eParent);
 
-  const auto superParent = cNode.parent.get_if_valid(registry);
+  const auto ancestor = cNode.parent.get_if_valid(registry);
 
-  return CanAddChildNode(registry, superParent, childId);
+  return CanAddChildNode(registry, ancestor, childId);
 }
 
 void
