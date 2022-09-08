@@ -20,8 +20,9 @@ public:
 
   void show( const entt::registry& );
 
-  bool query( const EntityId& );
-  bool query( const ComponentType );
+  bool query( const entt::registry&, const entt::entity ) const;
+  bool query( const EntityId& ) const;
+  bool query( const ComponentType ) const;
 
   PackageId package() const;
 
