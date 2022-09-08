@@ -22,7 +22,7 @@ const static Json::Value inputControllerJsonReference =
 
   auto& axes = root["axes"];
   axes = ValueType::objectValue;
-  axes.setComment("// 'inputs' must be a JSON object"s,
+  axes.setComment("// 'axes' must be a JSON object"s,
                   Json::CommentPlacement::commentBefore);
 
   auto& axis = axes["cqde_json_anykey"];
@@ -38,7 +38,7 @@ InputController::serialize() const
 {
   Json::Value json {};
 
-  auto& jsonInputs = json["inputs"];
+  auto& jsonInputs = json["axes"];
   jsonInputs = Json::objectValue;
 
   for ( const auto& [axisId, controlAxis] : axes )
@@ -61,8 +61,8 @@ InputController::deserialize(
 
   auto& comp = registry.emplace <InputController> (entity);
 
-  for ( const auto& axisId : json["inputs"].getMemberNames() )
-    comp.axes[axisId] = ControlAxis(json["inputs"][axisId]);
+  for ( const auto& axisId : json["axes"].getMemberNames() )
+    comp.axes[axisId] = ControlAxis(json["axes"][axisId]);
 }
 
 } // namespace cqde::compos
