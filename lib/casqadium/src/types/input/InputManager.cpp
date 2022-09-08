@@ -168,12 +168,12 @@ InputManager::deserialize(
 
   for ( const auto& axisId : inputConfig.getMemberNames() )
   {
-    LOG_DEBUG("Deserializing inputs for axis '{}'", axisId);
+    LOG_DEBUG("Deserializing axis '{}'", axisId);
 
     for ( const auto& bindingHwId : inputConfig[axisId].getMemberNames() )
     {
-      LOG_TRACE("Deserializing input '{}' for axis '{}'",
-                bindingHwId, axisId);
+      LOG_TRACE("Deserializing axis '{}' binding '{}'",
+                axisId, bindingHwId);
 
       try
       {
@@ -188,8 +188,8 @@ InputManager::deserialize(
       {
         using fmt::format;
         throw std::runtime_error(
-          format("Failed to deserialize '{}' for axis '{}' - {}",
-                  bindingHwId, axisId, e.what()));
+          format("Failed to deserialize axis '{}' binding '{}' - {}",
+                  axisId, bindingHwId, e.what()));
       }
     }
   }
