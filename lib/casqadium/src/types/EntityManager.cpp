@@ -32,7 +32,7 @@ const static Json::Value registryReference =
 
   Json::Value registry = ValueType::objectValue;
   registry.setComment("// entity registry must be a JSON object"s,
-                       Json::CommentPlacement::commentBefore);
+                      Json::CommentPlacement::commentBefore);
 
   Json::Value& entity = registry["cqde_json_anykey"];
   entity = ValueType::objectValue;

@@ -37,22 +37,27 @@ class EntityManager
   std::unordered_map <entt::entity,
                       std::vector <ComponentType>> mComponentsToRemove {};
 
-public:
-  EntityManager() = default;
-
-  void load( const path& registryPath,
-             const PackageId&,
-             entt::registry& );
-
-  Json::Value serialize(  const PackageId&,
-                          const entt::registry&,
-                          const std::unordered_set <ComponentType>& exclude = {} ) const;
-  static void Validate( const Json::Value& );
 
   void deserialize(
     const Json::Value& registryJson,
     const PackageId&,
     entt::registry& );
+
+public:
+  EntityManager() = default;
+
+  static void Validate( const Json::Value& );
+
+  void load(
+    const path& registryPath,
+    const PackageId&,
+    entt::registry& );
+
+  Json::Value serialize(
+    const PackageId&,
+    const entt::registry&,
+    const std::unordered_set <ComponentType>& exclude = {} ) const;
+
 
   entt::entity entityCreate(
     const EntityId&,
@@ -115,7 +120,8 @@ public:
   void clear();
 
   void removeLater( const entt::entity );
-  void removeLater( const entt::entity, const ComponentType );
+  void removeLater( const entt::entity,
+                    const ComponentType );
 
   void delayedRemove( entt::registry& );
 

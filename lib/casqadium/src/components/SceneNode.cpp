@@ -195,7 +195,6 @@ DestroyChildNode(
 
   DetachChildNode(registry, eParent, eChild);
 
-  const auto& cTag  = registry.get <Tag> (eChild);
   const auto& cNode = registry.get <SceneNode> (eChild);
 
   const auto children = cNode.children;
