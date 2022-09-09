@@ -249,6 +249,7 @@ EntityManager::entityDeserialize(
               entityId.str(), idMap.at(entityId).str());
 
     entityId = idMap.at(entityId);
+    idInvalidate(entityId);
   }
   else
   {

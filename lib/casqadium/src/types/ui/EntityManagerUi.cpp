@@ -577,7 +577,10 @@ EntityManagerUi::entityPaste(
                       identifier_hash> idMap {};
 
   for ( const auto& entityId : entitiesJson.getMemberNames() )
+  {
     idMap[entityId] = mEntityMgr->idGenerate(entityId);
+    mEntityMgr->idRegister(idMap[entityId], entt::null);
+  }
 
   for ( const auto& entityId : entitiesJson.getMemberNames() )
   {
