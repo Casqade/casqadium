@@ -448,7 +448,8 @@ InputManagerUi::ui_show_menu_bar(
 
     if ( ImGui::MenuItem("Save all") )
       for ( const auto& [packageId, config] : mInputConfigs )
-        configSave(packageId, registry);
+        if ( packageId.str().empty() == false )
+          configSave(packageId, registry);
 
     if ( ImGui::MenuItem("Save all & apply") )
     {

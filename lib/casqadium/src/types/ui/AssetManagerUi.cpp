@@ -460,12 +460,14 @@ AssetManagerUi::ui_show_menu_bar(
 
     if ( ImGui::MenuItem("Save all") )
       for ( const auto& [packageId, state] : mAssetsState )
-        stateSave(packageId, registry);
+        if ( packageId.str().empty() == false )
+          stateSave(packageId, registry);
 
     if ( ImGui::MenuItem("Save & apply") )
     {
       for ( const auto& [packageId, state] : mAssetsState )
-        stateSave(packageId, registry);
+        if ( packageId.str().empty() == false )
+          stateSave(packageId, registry);
 
       stateApply(registry);
     }
