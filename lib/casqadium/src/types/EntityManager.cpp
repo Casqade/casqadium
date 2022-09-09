@@ -48,6 +48,13 @@ const static Json::Value registryReference =
 }();
 
 void
+EntityManager::Validate(
+  const Json::Value& registryJson )
+{
+  jsonValidateObject(registryJson, registryReference);
+}
+
+void
 EntityManager::load(
   const path& registryPath,
   const PackageId& packageId,
@@ -76,7 +83,7 @@ EntityManager::load(
 
   try
   {
-    jsonValidateObject(registryJson, registryReference);
+    Validate(registryJson);
   }
   catch ( const std::exception& e )
   {

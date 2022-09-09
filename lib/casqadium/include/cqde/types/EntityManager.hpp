@@ -47,6 +47,7 @@ public:
   Json::Value serialize(  const PackageId&,
                           const entt::registry&,
                           const std::unordered_set <ComponentType>& exclude = {} ) const;
+  static void Validate( const Json::Value& );
 
   void deserialize(
     const Json::Value& registryJson,
