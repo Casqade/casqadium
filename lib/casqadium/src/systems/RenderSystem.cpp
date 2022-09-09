@@ -41,35 +41,37 @@ RenderSystem( entt::registry& registry )
     {
       auto vertices = vec_to_array(buffer.vertices);
 
-      if ( cCamera.textureMode == Camera::TextureMode::Textured )
+      if ( cCamera.renderMode == Camera::RenderMode::Solid )
       {
-        const TextureBuffer* textureBuffer = registry.try_get <TextureBuffer> (entity);
-        if ( textureBuffer != nullptr )
+        if ( cCamera.textureMode == Camera::TextureMode::Textured )
         {
-          if ( (textureBuffer->textures.size() > 0 &&
-                buffer.windingOrder == VertexBuffer::WindingOrder::CounterClockWise) ||
-               (textureBuffer->textures.size() > 1 &&
-                buffer.windingOrder == VertexBuffer::WindingOrder::ClockWise) )
+          const TextureBuffer* textureBuffer = registry.try_get <TextureBuffer> (entity);
+          if ( textureBuffer != nullptr )
           {
-            auto& textures  = registry.ctx().at <TextureAssetManager> ();
-            const TextureId textureId = textureBuffer->textures.at((int) buffer.windingOrder);
-
-            const auto  texture = textures.get(textureId);
-            olc::Decal* decal = texture ?
-                                texture->Decal() : nullptr;
-
-            if ( decal != nullptr )
+            if ( (textureBuffer->textures.size() > 0 &&
+                  buffer.windingOrder == VertexBuffer::WindingOrder::CounterClockWise) ||
+                 (textureBuffer->textures.size() > 1 &&
+                  buffer.windingOrder == VertexBuffer::WindingOrder::ClockWise) )
             {
-              if ( buffer.windingOrder == VertexBuffer::WindingOrder::ClockWise )
-                std::reverse(vertices.begin(), vertices.end());
+              auto& textures  = registry.ctx().at <TextureAssetManager> ();
+              const TextureId textureId = textureBuffer->textures.at((int) buffer.windingOrder);
 
-              olc::renderer->ptrPGE->DrawWarpedDecal( decal, vertices );
+              const auto  texture = textures.get(textureId);
+              olc::Decal* decal = texture ?
+                                  texture->Decal() : nullptr;
+
+              if ( decal != nullptr )
+              {
+                if ( buffer.windingOrder == VertexBuffer::WindingOrder::ClockWise )
+                  std::reverse(vertices.begin(), vertices.end());
+
+                olc::renderer->ptrPGE->DrawWarpedDecal( decal, vertices );
+              }
             }
           }
         }
       }
-
-      if ( cCamera.renderMode == Camera::RenderMode::Wireframe )
+      else
         drawLines(buffer.vertices, olc::GREY, LineRenderMode::Loop);
     }
   }
