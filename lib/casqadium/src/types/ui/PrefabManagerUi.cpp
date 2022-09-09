@@ -213,6 +213,9 @@ PrefabManagerUi::ui_show(
       }
       else if ( ImGui::IsMouseClicked(ImGuiMouseButton_Right) )
         ImGui::OpenPopup("##prefabContextMenu");
+
+      ImGui::SetTooltip("%s", format("{} entities",
+                                     prefabsState[prefabId].size()).c_str());
     }
 
     if ( ImGui::BeginDragDropSource() )
@@ -220,6 +223,10 @@ PrefabManagerUi::ui_show(
       ImGui::SetDragDropPayload("prefabPayload",
                                 &prefabsState[prefabId],
                                 sizeof(prefabsState[prefabId]));
+
+      ImGui::Text("%s", format("Prefab '{}': {} entities", prefabId,
+                                prefabsState[prefabId].size()).c_str());
+
       ImGui::EndDragDropSource();
     }
 
