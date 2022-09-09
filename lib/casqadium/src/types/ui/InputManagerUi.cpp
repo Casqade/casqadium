@@ -1,5 +1,7 @@
 #include <cqde/types/ui/InputManagerUi.hpp>
+
 #include <cqde/types/input/InputManager.hpp>
+#include <cqde/types/input/InputBindingRelative.hpp>
 
 #include <cqde/common.hpp>
 #include <cqde/file_helpers.hpp>
@@ -7,7 +9,6 @@
 
 #include <cqde/types/PackageManager.hpp>
 #include <cqde/types/UndoRedoQueue-inl.hpp>
-#include <cqde/types/input/InputBindingRelative.hpp>
 
 #include <olcPGE/olcMouseInputId.hpp>
 
@@ -16,12 +17,6 @@
 #include <imgui.h>
 #include <imgui_stdlib.h>
 
-
-namespace cqde::types
-{
-template class
-UndoRedoQueue <std::map <PackageId, Json::Value>>;
-}
 
 namespace cqde::ui
 {

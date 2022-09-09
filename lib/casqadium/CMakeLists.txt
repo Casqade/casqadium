@@ -114,6 +114,9 @@ target_sources(${TARGET} PRIVATE
   include/${CASQADIUM_SHORT}/types/UndoRedoQueue.hpp
   include/${CASQADIUM_SHORT}/types/UndoRedoQueue-inl.hpp
 
+  src/types/UndoRedoQueue_types.cpp
+  include/${CASQADIUM_SHORT}/types/UndoRedoQueue_types.hpp
+
   src/types/VertexBuffer.cpp
   include/${CASQADIUM_SHORT}/types/VertexBuffer.hpp
 

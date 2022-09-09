@@ -7,7 +7,7 @@
 #include <cqde/types/ui/widgets/PackageFilter.hpp>
 #include <cqde/types/ui/widgets/StringFilter.hpp>
 
-#include <cqde/types/UndoRedoQueue.hpp>
+#include <cqde/types/UndoRedoQueue_types.hpp>
 #include <cqde/types/Package.hpp>
 
 #include <entt/fwd.hpp>

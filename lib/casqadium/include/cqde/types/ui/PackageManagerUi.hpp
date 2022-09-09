@@ -1,21 +1,14 @@
 #pragma once
 
+#include <cqde/fwd.hpp>
 #include <cqde/alias.hpp>
-#include <cqde/types/UndoRedoQueue.hpp>
-#include <cqde/types/Package.hpp>
+
+#include <cqde/types/UndoRedoQueue_types.hpp>
 
 #include <entt/fwd.hpp>
 
 #include <json/value.h>
 
-
-namespace cqde::types
-{
-class PackageManager;
-
-extern template class
-UndoRedoQueue <Json::Value>;
-}
 
 namespace cqde::ui
 {

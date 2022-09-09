@@ -1,10 +1,12 @@
 #pragma once
 
+#include <cqde/fwd.hpp>
 #include <cqde/alias.hpp>
 
 #include <cqde/types/ui/widgets/PackageFilter.hpp>
 #include <cqde/types/ui/widgets/StringFilter.hpp>
-#include <cqde/types/UndoRedoQueue.hpp>
+
+#include <cqde/types/UndoRedoQueue_types.hpp>
 
 #include <entt/fwd.hpp>
 
@@ -12,14 +14,6 @@
 
 #include <map>
 
-
-namespace cqde::types
-{
-class InputManager;
-
-extern template class
-UndoRedoQueue <std::map <PackageId, Json::Value>>;
-}
 
 namespace cqde::ui
 {

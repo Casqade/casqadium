@@ -26,12 +26,6 @@
 #include <fstream>
 
 
-namespace cqde::types
-{
-template class
-UndoRedoQueue <Json::Value>;
-}
-
 namespace cqde::ui
 {
 

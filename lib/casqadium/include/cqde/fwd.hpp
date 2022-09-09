@@ -40,6 +40,7 @@ struct VertexBuffer;
 
 class CallbackManager;
 class ConfigManager;
+class InputManager;
 class Package;
 class PackageManager;
 class SystemManager;
