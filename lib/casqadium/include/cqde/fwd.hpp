@@ -43,6 +43,7 @@ class ConfigManager;
 class InputManager;
 class Package;
 class PackageManager;
+class PrefabManager;
 class SystemManager;
 
 } // namespace types

@@ -15,6 +15,7 @@
 #include <cqde/types/input/InputManager.hpp>
 
 #include <cqde/types/EntityManager.hpp>
+#include <cqde/types/PrefabManager.hpp>
 
 #include <json/value.h>
 #include <json/writer.h>
@@ -133,6 +134,9 @@ Package::load(
   auto& input = registry.ctx().at <InputManager> ();
   input.load(contentPath(ContentType::Input));
 
+  auto& prefabs = registry.ctx().at <PrefabManager> ();
+  prefabs.load(contentPath(ContentType::Prefabs));
+
   auto& entityManager = registry.ctx().at <EntityManager> ();
   entityManager.load( contentPath(ContentType::Entities),
                       mTitle, registry );
@@ -155,6 +159,10 @@ Package::save(
 
     case ContentType::Entities:
       contentTypeName = "entity registry";
+      break;
+
+    case ContentType::Prefabs:
+      contentTypeName = "prefab database";
       break;
 
     case ContentType::Input:
@@ -247,6 +255,9 @@ Package::ContentFileName(
 
     case ContentType::Entities:
       return "entities.json";
+
+    case ContentType::Prefabs:
+      return "prefabs.json";
 
     case ContentType::Input:
       return "input.json";

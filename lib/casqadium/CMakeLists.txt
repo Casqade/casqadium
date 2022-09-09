@@ -89,6 +89,9 @@ target_sources(${TARGET} PRIVATE
   src/types/ui/PackageManagerUi.cpp
   include/${CASQADIUM_SHORT}/types/ui/PackageManagerUi.hpp
 
+  src/types/ui/PrefabManagerUi.cpp
+  include/${CASQADIUM_SHORT}/types/ui/PrefabManagerUi.hpp
+
   src/types/ui/ViewportManagerUi.cpp
   include/${CASQADIUM_SHORT}/types/ui/ViewportManagerUi.hpp
 
@@ -126,6 +129,9 @@ target_sources(${TARGET} PRIVATE
 
   src/types/PackageManager.cpp
   include/${CASQADIUM_SHORT}/types/PackageManager.hpp
+
+  src/types/PrefabManager.cpp
+  include/${CASQADIUM_SHORT}/types/PrefabManager.hpp
 
   include/${CASQADIUM_SHORT}/types/assets/AssetStatus.hpp
 

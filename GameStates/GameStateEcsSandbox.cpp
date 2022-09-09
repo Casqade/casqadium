@@ -37,6 +37,7 @@
 #include <cqde/types/ui/EntityManagerUi.hpp>
 #include <cqde/types/ui/InputManagerUi.hpp>
 #include <cqde/types/ui/PackageManagerUi.hpp>
+#include <cqde/types/ui/PrefabManagerUi.hpp>
 #include <cqde/types/ui/SystemManagerUi.hpp>
 #include <cqde/types/ui/ViewportManagerUi.hpp>
 
@@ -461,6 +462,7 @@ GameStateEcsSandbox::GameStateEcsSandbox(
     using cqde::ui::EntityManagerUi;
     using cqde::ui::InputManagerUi;
     using cqde::ui::PackageManagerUi;
+    using cqde::ui::PrefabManagerUi;
     using cqde::ui::SystemManagerUi;
     using cqde::ui::ViewportManagerUi;
 
@@ -617,6 +619,7 @@ GameStateEcsSandbox::GameStateEcsSandbox(
     registry.ctx().at <PackageManagerUi> ().ui_show(registry);
     registry.ctx().at <AssetManagerUi> ().ui_show(registry);
     registry.ctx().at <CallbackManagerUi> ().ui_show(registry);
+    registry.ctx().at <PrefabManagerUi> ().ui_show(registry);
     registry.ctx().at <EntityManagerUi> ().ui_show(registry);
     registry.ctx().at <InputManagerUi> ().ui_show(registry);
     registry.ctx().at <SystemManagerUi> ().ui_show(registry);

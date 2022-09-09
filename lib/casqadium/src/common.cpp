@@ -19,6 +19,7 @@
 #include <cqde/types/EntityManager.hpp>
 #include <cqde/types/input/InputManager.hpp>
 #include <cqde/types/PackageManager.hpp>
+#include <cqde/types/PrefabManager.hpp>
 #include <cqde/types/SystemManager.hpp>
 
 
@@ -35,6 +36,7 @@
 #include <cqde/types/ui/EntityManagerUi.hpp>
 #include <cqde/types/ui/InputManagerUi.hpp>
 #include <cqde/types/ui/PackageManagerUi.hpp>
+#include <cqde/types/ui/PrefabManagerUi.hpp>
 #include <cqde/types/ui/SystemManagerUi.hpp>
 #include <cqde/types/ui/ViewportManagerUi.hpp>
 
@@ -62,6 +64,7 @@ engineInit( entt::registry& registry )
   auto& entityManager = registry.ctx().emplace <EntityManager> ();
   auto& inputManager = registry.ctx().emplace <InputManager> ();
   auto& packageManager = registry.ctx().emplace <PackageManager> ();
+  auto& prefabManager = registry.ctx().emplace <PrefabManager> ();
   auto& systemManager = registry.ctx().emplace <SystemManager> ();
 
   registry.ctx().emplace <AssetManagerUi> ();
@@ -69,6 +72,7 @@ engineInit( entt::registry& registry )
   registry.ctx().emplace <EntityManagerUi> (&entityManager);
   registry.ctx().emplace <InputManagerUi> (&inputManager);
   registry.ctx().emplace <PackageManagerUi> (&packageManager);
+  registry.ctx().emplace <PrefabManagerUi> (&prefabManager);
   registry.ctx().emplace <SystemManagerUi> (&systemManager);
   registry.ctx().emplace <ViewportManagerUi> ();
 

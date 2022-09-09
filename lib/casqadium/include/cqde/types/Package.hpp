@@ -34,6 +34,7 @@ public:
   {
     Manifest,
     Entities,
+    Prefabs,
     Input,
     Fonts,
     Geometry,
