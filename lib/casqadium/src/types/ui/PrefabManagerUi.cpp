@@ -197,11 +197,14 @@ PrefabManagerUi::ui_show(
       continue;
     }
 
+    const auto flags =  ImGuiSelectableFlags_SpanAllColumns |
+                        ImGuiSelectableFlags_AllowItemOverlap;
+
     const bool selected = prefabId == mSelectedPrefabId.str();
 
     ImGui::SameLine();
 
-    if ( ImGui::Selectable(prefabId.c_str(), selected) )
+    if ( ImGui::Selectable(prefabId.c_str(), selected, flags) )
       mSelectedPrefabId = prefabId;
 
     if ( ImGui::IsItemHovered() )
