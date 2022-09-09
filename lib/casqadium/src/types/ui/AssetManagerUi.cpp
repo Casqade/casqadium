@@ -283,10 +283,10 @@ AssetManagerUi::ui_show_package_state(
 
     const auto assetDbPath = package->contentPath(mSelectedAssetType);
 
-    if ( fileExists(assetDbPath) == false )
-      return;
-
-    assetDb = fileParse(assetDbPath);
+    if ( fileExists(assetDbPath) == true )
+      assetDb = fileParse(assetDbPath);
+    else
+      assetDb = Json::objectValue;
 
     auto configIter = mHistoryBuffer.current();
     if ( mHistoryBuffer.isValid(configIter) == true )
