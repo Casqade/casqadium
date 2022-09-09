@@ -5,6 +5,8 @@
 
 #include <entt/fwd.hpp>
 
+#include <json/forwards.h>
+
 #include <vector>
 
 
@@ -39,9 +41,15 @@ public:
 
   void activate( const SystemId& );
   void deactivate( const SystemId& );
+  void deactivate();
 
   void execute( entt::registry&,
                 const Phase );
+
+  static void Validate( const Json::Value& );
+
+  void deserialize( const Json::Value& );
+  Json::Value serialize() const;
 
   std::vector <SystemId> systems() const;
   std::vector <SystemId> systemsActive( const Phase ) const;

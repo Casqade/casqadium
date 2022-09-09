@@ -1,10 +1,32 @@
 #include <cqde/types/SystemManager.hpp>
 
+#include <cqde/json_helpers.hpp>
+
 #include <cqde/util/logger.hpp>
+
+#include <json/value.h>
 
 
 namespace cqde::types
 {
+
+
+const static Json::Value systemsStateReference =
+[]
+{
+  using ValueType = Json::ValueType;
+  using namespace std::string_literals;
+
+  Json::Value reference = ValueType::arrayValue;
+  reference.setComment("// systems state JSON root must be an array"s,
+                       Json::CommentPlacement::commentBefore);
+
+  reference.append(ValueType::stringValue);
+  reference.begin()->setComment("// systems state element must be a JSON string"s,
+                                Json::CommentPlacement::commentBefore);
+
+  return reference;
+}();
 
 SystemManager::SystemsIterator
 SystemManager::systemIter(
@@ -72,6 +94,13 @@ SystemManager::deactivate(
 }
 
 void
+SystemManager::deactivate()
+{
+  for ( auto& system : mSystems )
+    system.active = false;
+}
+
+void
 SystemManager::Register(
   const SystemId& systemId,
   const Callback& callback,
@@ -83,6 +112,41 @@ SystemManager::Register(
   mSystems.insert(systemIter(systemId),
                   {callback, systemId,
                   phase, false} );
+}
+
+void
+SystemManager::Validate(
+  const Json::Value& systemsJson )
+{
+  jsonValidateObject(systemsJson, systemsStateReference);
+}
+
+void
+SystemManager::deserialize(
+  const Json::Value& systemsJson )
+{
+  LOG_DEBUG("Deserializing systems state");
+
+  deactivate();
+
+  for ( const auto& systemId : systemsJson )
+    activate(systemId.asString());
+}
+
+Json::Value
+SystemManager::serialize() const
+{
+  LOG_DEBUG("Serializing systems state");
+
+  Json::Value result {Json::arrayValue};
+
+  for ( const auto& systemId : systemsActive(Phase::Logic) )
+    result.append(systemId.str());
+
+  for ( const auto& systemId : systemsActive(Phase::Render) )
+    result.append(systemId.str());
+
+  return result;
 }
 
 std::vector <SystemId>
