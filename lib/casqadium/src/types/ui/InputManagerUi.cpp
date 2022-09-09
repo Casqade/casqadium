@@ -135,10 +135,11 @@ InputManagerUi::ui_show(
 
       const auto inputConfigPath = package->contentPath(ContentType::Input);
 
-      if ( fileExists(inputConfigPath) == false )
-        return ImGui::End(); // Input
+      if ( fileExists(inputConfigPath) == true )
+        mInputConfigs[selectedPackage] = fileParse(inputConfigPath);
 
-      mInputConfigs[selectedPackage] = fileParse(inputConfigPath);
+      else
+        mInputConfigs[selectedPackage] = Json::objectValue;
     }
     else
       mInputConfigs[selectedPackage] = mInputMgr->serialize();
