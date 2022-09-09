@@ -19,8 +19,6 @@ class Package
 
   path mManifestPath {};
 
-  entt::registry mRegistry {};
-
   std::set <PackageId> mDependencies {};
 
   std::string mTitle {};
@@ -31,8 +29,6 @@ class Package
 
 public:
   Package( const PackageId& );
-  Package( Package&& ) = default;
-  Package( const Package& ) = delete;
 
   enum class ContentType
   {

@@ -29,8 +29,6 @@ class PackageManager
 
 public:
   PackageManager() = default;
-  PackageManager( PackageManager&& ) = default;
-  PackageManager( const PackageManager& ) = delete;
 
   void load( const path& packagesRoot, entt::registry& );
   void unload();

@@ -301,7 +301,8 @@ AssetManagerUi::ui_show_package_state(
       CQDE_ASSERT_DEBUG(false, return);
   }
 
-  ImGui::BeginDisabled(assetDb.isMember(mNewAssetName) == true);
+  ImGui::BeginDisabled(mNewAssetName.empty() == true ||
+                       assetDb.isMember(mNewAssetName) == true);
 
   const bool newAssetInserted = ImGui::Button("+##assetAdd");
 
@@ -311,8 +312,7 @@ AssetManagerUi::ui_show_package_state(
   ImGui::InputTextWithHint("##newAssetId", "New asset ID", &mNewAssetName,
                            ImGuiInputTextFlags_AutoSelectAll);
 
-  if ( newAssetInserted == true &&
-       mNewAssetName.empty() == false )
+  if ( newAssetInserted == true )
   {
     Json::Value newAsset {};
 

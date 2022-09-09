@@ -100,7 +100,8 @@ InputManagerUi::ui_show(
 
   CQDE_ASSERT_DEBUG(mInputMgr != nullptr, return);
 
-  if ( ImGui::Begin("Input", NULL, ImGuiWindowFlags_MenuBar) == false )
+  if ( ImGui::Begin("Input", NULL,
+                    ImGuiWindowFlags_MenuBar) == false )
     return ImGui::End(); // Input
 
   if ( ImGui::CollapsingHeader("Filter", ImGuiTreeNodeFlags_DefaultOpen) )
@@ -164,18 +165,14 @@ InputManagerUi::ui_show(
   ImGui::BeginDisabled(disabled);
 
   ImGui::SameLine();
-  const bool newAxisInserted = ImGui::Button("+##axisAdd");
+  if ( ImGui::Button("+##axisAdd") )
+    inputConfig[mNewAxisName] = Json::objectValue;
 
   ImGui::EndDisabled();
 
   ImGui::SameLine();
   ImGui::InputTextWithHint("##newAxisId", "New axis ID", &mNewAxisName,
                            ImGuiInputTextFlags_AutoSelectAll);
-
-  if ( newAxisInserted == true &&
-       mNewAxisName.empty() == false &&
-       inputConfig.isMember(mNewAxisName) == false )
-    inputConfig[mNewAxisName] = Json::objectValue;
 
   ImGui::Separator();
 
@@ -262,7 +259,7 @@ InputManagerUi::ui_show(
             if ( mSelectedAxis == axisId )
               mSelectedAxis = mRenamedAxisId;
 
-            ImGui::EndPopup(); // ##axisRenamePopup
+            ImGui::EndPopup(); // axisRenamePopup
 
             if ( axisNodeOpened == true )
               ImGui::TreePop(); //axisId
@@ -272,7 +269,7 @@ InputManagerUi::ui_show(
           }
         }
 
-        ImGui::EndPopup(); // ##axisRenamePopup
+        ImGui::EndPopup(); // axisRenamePopup
       }
 
       if ( ImGui::BeginPopup("##axisContextMenu") )
@@ -290,7 +287,7 @@ InputManagerUi::ui_show(
 
         ImGui::EndDisabled();
 
-        ImGui::EndPopup();
+        ImGui::EndPopup(); // axisContextMenu
       }
 
       if ( axisNodeOpened == true )
