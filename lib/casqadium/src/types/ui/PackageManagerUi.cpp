@@ -6,6 +6,7 @@
 #include <cqde/types/UndoRedoQueue-inl.hpp>
 #include <cqde/types/input/InputManager.hpp>
 
+#include <cqde/types/assets/AudioAssetManager.hpp>
 #include <cqde/types/assets/FontAssetManager.hpp>
 #include <cqde/types/assets/GeometryAssetManager.hpp>
 #include <cqde/types/assets/TextStringAssetManager.hpp>
@@ -220,6 +221,7 @@ PackageManagerUi::ui_show_menu_bar(
   using types::EntityManager;
   using ContentType = types::Package::ContentType;
 
+  using types::AudioAssetManager;
   using types::FontAssetManager;
   using types::GeometryAssetManager;
   using types::TextStringAssetManager;
@@ -278,6 +280,7 @@ PackageManagerUi::ui_show_menu_bar(
       registry.ctx().at <InputManager> ().clear();
       registry.clear();
 
+      registry.ctx().at <AudioAssetManager> ().clear();
       registry.ctx().at <FontAssetManager> ().clear();
       registry.ctx().at <GeometryAssetManager> ().clear();
       registry.ctx().at <TextStringAssetManager> ().clear();

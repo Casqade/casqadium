@@ -68,6 +68,8 @@ public:
   int GetFontSize() const;
   std::string GetErrorMessage() const;
 
+  static std::string GetLibraryErrorMessage();
+
   static olc::rcode OLCPGE_EXPORT init();
   static olc::rcode OLCPGE_EXPORT deinit();
 

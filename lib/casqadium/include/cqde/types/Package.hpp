@@ -36,6 +36,7 @@ public:
     Entities,
     Prefabs,
     Input,
+    Audio,
     Fonts,
     Geometry,
     Textures,

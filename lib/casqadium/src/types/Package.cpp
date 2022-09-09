@@ -119,6 +119,9 @@ Package::load(
 
   parseManifest(mManifestPath);
 
+  auto& audio = registry.ctx().at <FontAssetManager> ();
+  audio.parseAssetDbFile(contentPath(ContentType::Audio));
+
   auto& fonts = registry.ctx().at <FontAssetManager> ();
   fonts.parseAssetDbFile(contentPath(ContentType::Fonts));
 
@@ -167,6 +170,10 @@ Package::save(
 
     case ContentType::Input:
       contentTypeName = "input config";
+      break;
+
+    case ContentType::Audio:
+      contentTypeName = "audio database";
       break;
 
     case ContentType::Fonts:
@@ -258,6 +265,9 @@ Package::ContentFileName(
 
     case ContentType::Prefabs:
       return "prefabs.json";
+
+    case ContentType::Audio:
+      return "audio.json";
 
     case ContentType::Input:
       return "input.json";

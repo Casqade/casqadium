@@ -139,8 +139,8 @@ target_sources(${TARGET} PRIVATE
   include/${CASQADIUM_SHORT}/types/assets/AssetManager.hpp
   include/${CASQADIUM_SHORT}/types/assets/AssetManager-inl.hpp
 
-#  src/types/assets/AudioAssetManager.cpp
-#  include/${CASQADIUM_SHORT}/types/assets/AudioAssetManager.hpp
+  src/types/assets/AudioAssetManager.cpp
+  include/${CASQADIUM_SHORT}/types/assets/AudioAssetManager.hpp
 
   src/types/assets/FontAssetManager.cpp
   include/${CASQADIUM_SHORT}/types/assets/FontAssetManager.hpp
@@ -301,7 +301,7 @@ FetchContent_Declare(soloud
   GIT_SHALLOW    TRUE
   SOURCE_SUBDIR  contrib
 )
-# FetchContent_MakeAvailable(soloud)
+FetchContent_MakeAvailable(soloud)
 
 
 if(${BUILD_SHARED_LIBS})
@@ -318,7 +318,7 @@ target_link_libraries(${TARGET} PUBLIC
   EnTT::EnTT
   olcPGE::olcPGE
   spdlog::spdlog
-#  soloud
+  soloud
 )
 
 if(${BUILD_SHARED_LIBS})
@@ -355,4 +355,3 @@ install(TARGETS ${TARGET}
 install(FILES ${CMAKE_BINARY_DIR}/exports/${CASQADIUM_SHORT}/${CASQADIUM_SHORT}_export.hpp
   DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${CASQADIUM_SHORT}"
 )
-
