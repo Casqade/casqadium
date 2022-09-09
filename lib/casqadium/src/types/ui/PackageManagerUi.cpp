@@ -231,12 +231,31 @@ PackageManagerUi::ui_show_menu_bar(
   using types::TextStringAssetManager;
   using types::TextureAssetManager;
 
-
   if ( ImGui::BeginMenuBar() == false )
     return;
 
   if ( ImGui::MenuItem("Save") )
   {
+    const auto& packages = mConfigState.root["load_order"];
+
+    for ( auto& packageId : packages.getMemberNames() )
+    {
+      const auto package = mPackageMgr->package(packageId);
+
+      if ( package == nullptr )
+      {
+        LOG_ERROR("Failed to write packages: Unknown package '{}'",
+                  packageId);
+
+        return ImGui::EndMenuBar();
+      }
+
+      if ( mConfigState.packages.isMember(packageId) == false )
+        continue;
+
+      package->save(ContentType::Manifest, mConfigState.packages[packageId]);
+    }
+
     const auto streamFlags = std::ios::out |
                              std::ios::trunc |
                              std::ios::binary;
@@ -244,45 +263,21 @@ PackageManagerUi::ui_show_menu_bar(
     auto fileStream = fileOpen(mPackageMgr->rootPath(), streamFlags);
     fileStream << Json::writeString(jsonWriter(), mConfigState.root);
     fileStream.close();
-
-    const auto& packages = mConfigState.root["load_order"];
-
-    for ( auto& package : packages )
-    {
-      const auto packageManifestPath =
-        mPackageMgr->rootPath().parent_path() /
-        package.asString() /
-        Package::ContentFileName(ContentType::Manifest);
-
-      try
-      {
-        fileStream = fileOpen(packageManifestPath, std::ios::in);
-      }
-      catch (...)
-      {
-        const auto streamFlags = std::ios::out |
-                                 std::ios::trunc |
-                                 std::ios::binary;
-
-        fileStream = fileOpen(packageManifestPath, streamFlags);
-        fileStream << Json::writeString(jsonWriter(), mConfigState.packages[package.asString()]);
-      }
-    }
   }
 
   if ( ImGui::BeginMenu("Load") )
   {
     if ( ImGui::MenuItem("Load all") )
     {
-      mConfigState.root = fileParse(mPackageMgr->mPackagesRoot);
-      PackageManager::Validate(mConfigState.root);
       mDraggedPackageIndex = -1u;
-
+      mConfigState.root.clear();
       mConfigState.packages.clear();
     }
 
     if ( ImGui::MenuItem("Load & apply") )
     {
+      mDraggedPackageIndex = -1u;
+
       mPackageMgr->mPackages.clear();
 
       registry.ctx().at <EntityManager> ().clear();
@@ -303,11 +298,10 @@ PackageManagerUi::ui_show_menu_bar(
         LOG_ERROR("{}", e.what());
       }
 
-      mConfigState.root = fileParse(mPackageMgr->mPackagesRoot);
-      PackageManager::Validate(mConfigState.root);
-      mDraggedPackageIndex = -1u;
-
       mConfigState.packages.clear();
+      mConfigState.root = fileParse(mPackageMgr->mPackagesRoot);
+
+      PackageManager::Validate(mConfigState.root);
     }
 
     ImGui::EndMenu();
