@@ -85,10 +85,4 @@ RegistryFilter::package() const
   return mFilterPackage.package();
 }
 
-bool
-RegistryFilter::componentExclusive() const
-{
-  return mFilterComponent.exclusive();
-}
-
 } // namespace cqde::ui

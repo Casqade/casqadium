@@ -25,8 +25,6 @@ public:
   bool query( const ComponentType ) const;
 
   PackageId package() const;
-
-  bool componentExclusive() const;
 };
 
 } // namespace cqde::ui

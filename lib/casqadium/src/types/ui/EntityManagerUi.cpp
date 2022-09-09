@@ -37,11 +37,6 @@ void
 EntityManagerUi::ui_show(
   entt::registry& registry )
 {
-  using fmt::format;
-  using compos::Tag;
-  using compos::SceneNode;
-  using compos::EntityMetaInfo;
-
   CQDE_ASSERT_DEBUG(mEntityMgr != nullptr, return);
 
   if ( ImGui::Begin("Registry view") == false )
@@ -50,253 +45,34 @@ EntityManagerUi::ui_show(
     return;
   }
 
-  if ( ImGui::CollapsingHeader("Filter", ImGuiTreeNodeFlags_DefaultOpen) )
-    mRegistryFilter.show(registry);
+  ui_show_filter_section(registry);
 
-  ImGui::Separator();
+  const auto tableFlags = ImGuiTableFlags_Resizable;
 
-  const auto tagType = mEntityMgr->componentType <Tag> ();
-
-  if ( ImGui::Button("+##entityAdd") )
-  {
-    if ( mNewEntityName.empty() == true ||
-         mNewEntityName == null_id.str() ||
-         mEntityMgr->get(mNewEntityName) != entt::null )
-      mNewEntityName = mEntityMgr->idGenerate(mNewEntityName).str();
-
-    const auto newEntity = mEntityMgr->entityCreate(mNewEntityName, registry);
-
-    auto& cEntityInfo = registry.emplace <EntityMetaInfo> (newEntity);
-    cEntityInfo.packageId = mRegistryFilter.package();
-  }
-
-  ImGui::SameLine();
-
-  ImGui::BeginDisabled(mClipboard["entities"].empty());
-
-  if ( ImGui::Button("Paste##entityPaste") )
-    entityPaste(registry);
-
-  ImGui::EndDisabled();
-
-  ImGui::SameLine();
-  ImGui::InputTextWithHint("##newEntityId", "New entity ID", &mNewEntityName,
-                           ImGuiInputTextFlags_AutoSelectAll);
-
-  ImGui::Separator();
-
-  const auto tableFlags = ImGuiTableFlags_ScrollX |
-                          ImGuiTableFlags_ScrollY;
-
-  if ( ImGui::BeginTable("EntitiesTable", 1, tableFlags) )
+  if ( ImGui::BeginTable("RegistryTable", 2, tableFlags,
+                         ImGui::GetContentRegionAvail()) )
   {
     ImGui::TableNextColumn();
+    ui_show_entities_table(registry);
 
-    registry.each(
-    [ this, &registry, tagType] ( const entt::entity entity )
-    {
-      const auto packageSelected = mRegistryFilter.package();
+    ImGui::TableNextColumn();
+    ui_show_nodes_table(registry);
 
-      if (  packageSelected.str().empty() == false &&
-            packageSelected != registry.get <EntityMetaInfo> (entity).packageId )
-        return;
-
-      const auto entityId = registry.get <Tag> (entity).id;
-
-      if ( mRegistryFilter.query(entityId) == false )
-        return;
-
-      bool componentFound = mRegistryFilter.componentExclusive();
-
-      each_component(entity, registry,
-      [this, &componentFound] ( const ComponentType component )
-      {
-        if ( mRegistryFilter.componentExclusive() == false )
-        {
-          componentFound = mRegistryFilter.query(component);
-
-          if ( componentFound == true )
-            return false;
-        }
-        else
-          componentFound &= mRegistryFilter.query(component);
-
-        return true;
-      });
-
-      if ( componentFound == false )
-        return;
-
-      ImGui::PushID(entityId.str().c_str());
-
-      if ( ImGui::SmallButton("-##entityRemove") )
-      {
-        mEntityMgr->removeLater(entity);
-
-        if ( entity == mSelectedEntity )
-          entityDeselect();
-      }
-
-      ImGui::PopID(); // entityId
-
-      auto nodeFlags =  ImGuiTreeNodeFlags_OpenOnArrow |
-                        ImGuiTreeNodeFlags_AllowItemOverlap |
-                        ImGuiTreeNodeFlags_OpenOnDoubleClick;
-
-      if ( entity == mSelectedEntity )
-        nodeFlags |= ImGuiTreeNodeFlags_Selected;
-
-      ImGui::SameLine();
-
-      const bool nodeOpened = ImGui::TreeNodeEx(entityId.str().c_str(), nodeFlags);
-
-      ImGui::PushID(entityId.str().c_str());
-
-      if ( ImGui::IsItemActivated() == true &&
-           ImGui::IsItemToggledOpen() == false )
-      {
-        if ( entity != mSelectedEntity )
-          mSelectedComponent = entt::null;
-
-        mSelectedEntity = entity;
-      }
-      else if ( ImGui::IsMouseClicked(ImGuiMouseButton_Right) &&
-                ImGui::IsItemHovered() )
-        ImGui::OpenPopup("##entityContextMenu");
-
-      if ( ImGui::BeginPopup("##entityContextMenu") )
-      {
-        if ( ImGui::Selectable(format("Copy##{}", entityId.str()).c_str()) )
-        {
-          mClipboard.clear();
-          if ( registry.all_of <SceneNode> (entity) == true )
-            SerializeChildNode(registry, mClipboard["entities"], entity);
-          else
-            mEntityMgr->entitySerialize(registry, mClipboard["entities"], entity);
-        }
-
-        ImGui::EndPopup();
-      }
-
-      ImGui::PopID(); // entityId
-
-      if ( nodeOpened == true )
-      {
-        each_component(entity, registry,
-        [ this, &registry, entity,
-          entityId, tagType] ( const ComponentType componentType )
-        {
-          ImGui::PushID(componentType);
-
-          ImGui::BeginDisabled(componentType == tagType);
-
-          if ( ImGui::SmallButton("-##componentRemove") )
-          {
-            if ( componentType == mEntityMgr->componentType <SceneNode> () )
-              RootifyChildNode(registry, entity);
-
-            mEntityMgr->removeLater(entity, componentType);
-
-            if ( mSelectedEntity == entity &&
-                 mSelectedComponent == componentType )
-              componentDeselect();
-          }
-
-          ImGui::EndDisabled();
-
-          auto flags = ImGuiTreeNodeFlags_Leaf |
-                       ImGuiTreeNodeFlags_AllowItemOverlap |
-                       ImGuiTreeNodeFlags_NoTreePushOnOpen;
-
-          if ( mSelectedEntity == entity &&
-               mSelectedComponent == componentType )
-            flags |= ImGuiTreeNodeFlags_Selected;
-
-          ImGui::SameLine();
-
-          const bool selected = mSelectedEntity == entity &&
-                                mSelectedComponent == componentType;
-
-          if ( ImGui::Selectable(component_name(componentType).c_str(), selected) )
-          {
-            mSelectedEntity = entity;
-            mSelectedComponent = componentType;
-          }
-
-          ImGui::PopID(); // componentType
-
-          return true;
-        });
-
-        ImGui::Spacing();
-
-        if ( ImGui::SmallButton("+##componentAdd") )
-          ImGui::OpenPopup("##componentAddPopup");
-
-        if ( ImGui::IsItemHovered() )
-          ImGui::SetTooltip("Add component");
-
-        ImGui::SameLine();
-
-        ImGui::BeginDisabled(mClipboard["components"].empty());
-
-        if ( ImGui::SmallButton("Paste##componentPaste") )
-          ;
-
-        ImGui::EndDisabled();
-
-        ImGui::Spacing();
-
-        if ( ImGui::BeginPopup("##componentAddPopup") )
-        {
-          if ( ImGui::IsWindowAppearing() )
-            ImGui::SetKeyboardFocusHere(2);
-
-          mNewComponentFilter.search({}, ImGuiInputTextFlags_AutoSelectAll);
-
-          bool componentsFound {};
-
-          for ( const auto& componentName : mEntityMgr->componentNames() )
-          {
-            if ( mNewComponentFilter.query(componentName) == false )
-              continue;
-
-            componentsFound = true;
-
-            if ( ImGui::Selectable(componentName.c_str(), false) )
-            {
-              mEntityMgr->componentAdd(mEntityMgr->componentType(componentName),
-                                       entity, registry);
-
-              ImGui::CloseCurrentPopup();
-              break;
-            }
-          }
-
-          if ( componentsFound == false )
-            ImGui::Text("No components matching filter");
-
-          ImGui::EndPopup(); // componentAddPopup
-        }
-
-        ImGui::TreePop(); // entityId
-      }
-    });
-
-    ImGui::EndTable(); // EntitiesTable
+    ImGui::EndTable(); // RegistryTable
   }
 
   ImGui::End(); // Registry view
 
   ui_show_component_window(registry);
-
-  ui_show_scene_graph_window(registry);
 }
 
 void
 EntityManagerUi::ui_show_component_window(
   entt::registry& registry )
 {
+  using fmt::format;
+  using namespace entt::literals;
+
   using compos::Tag;
 
   if ( ImGui::Begin("Component view") == false )
@@ -327,9 +103,6 @@ EntityManagerUi::ui_show_component_window(
     return;
   }
 
-  using fmt::format;
-  using namespace entt::literals;
-
   const auto componentName = component_name(mSelectedComponent);
 
   ImGui::BulletText("%s", format("{} -> {}", entityId.str(), componentName).c_str());
@@ -358,35 +131,26 @@ EntityManagerUi::ui_show_component_window(
 }
 
 void
-EntityManagerUi::ui_show_scene_graph_window(
+EntityManagerUi::ui_show_filter_section(
   entt::registry& registry )
 {
-  using fmt::format;
   using compos::Tag;
   using compos::SceneNode;
   using compos::EntityMetaInfo;
 
-  if ( ImGui::Begin("Scene graph view") == false )
-    return ImGui::End(); // SceneGraph view
-
-  mSceneGraphFilter.search();
+  if ( ImGui::CollapsingHeader("Filter", ImGuiTreeNodeFlags_DefaultOpen) )
+    mRegistryFilter.show(registry);
 
   ImGui::Separator();
 
-  if ( ImGui::Button("+##nodeAdd") )
+  if ( ImGui::Button("+##entityAdd") )
   {
-    if ( mNewNodeName.empty() == true ||
-         mNewNodeName == null_id.str() ||
-         mEntityMgr->get(mNewNodeName) != entt::null )
-      mNewNodeName = mEntityMgr->idGenerate(mNewNodeName).str();
+    if ( mNewEntityName.empty() == true ||
+         mNewEntityName == null_id.str() ||
+         mEntityMgr->get(mNewEntityName) != entt::null )
+      mNewEntityName = mEntityMgr->idGenerate(mNewEntityName).str();
 
-    const auto newEntity = mEntityMgr->entityCreate(mNewNodeName, registry);
-
-    registry.emplace <SceneNode> (newEntity);
-
-    if ( mSelectedEntity != entt::null &&
-         registry.all_of <Tag, SceneNode> (mSelectedEntity) )
-      AttachChildNode(registry, mSelectedEntity, newEntity);
+    const auto newEntity = mEntityMgr->entityCreate(mNewEntityName, registry);
 
     auto& cEntityInfo = registry.emplace <EntityMetaInfo> (newEntity);
     cEntityInfo.packageId = mRegistryFilter.package();
@@ -394,18 +158,242 @@ EntityManagerUi::ui_show_scene_graph_window(
 
   ImGui::SameLine();
 
-  ImGui::BeginDisabled(mClipboard["entities"].empty());
+  ImGui::BeginDisabled( mClipboard["type"] != "entities" ||
+                        mClipboard["payload"].empty() );
 
-  if ( ImGui::Button("Paste##nodePaste") )
-    entityPaste(registry);
+  if ( ImGui::Button("Paste##entityPaste") )
+    prefabDeserialize(registry, mClipboard["payload"]);
 
   ImGui::EndDisabled();
 
   ImGui::SameLine();
-  ImGui::InputTextWithHint("##newNodeId", "New entity ID", &mNewNodeName,
+  ImGui::InputTextWithHint("##newEntityId", "New entity ID", &mNewEntityName,
                            ImGuiInputTextFlags_AutoSelectAll);
 
   ImGui::Separator();
+}
+
+void
+EntityManagerUi::ui_show_entities_table(
+  entt::registry& registry )
+{
+  using fmt::format;
+  using compos::Tag;
+  using compos::SceneNode;
+  using compos::EntityMetaInfo;
+
+  const auto window = ImGui::GetCurrentWindow();
+
+  if ( ImGui::BeginDragDropTargetCustom(window->WorkRect, window->ID) )
+  {
+    const auto payload = ImGui::AcceptDragDropPayload("prefabPayload");
+
+    if ( payload != nullptr )
+    {
+      IM_ASSERT(payload->DataSize == sizeof(Json::Value));
+
+      const auto prefab = *(const Json::Value*) payload->Data;
+
+      prefabDeserialize(registry, prefab);
+    }
+    ImGui::EndDragDropTarget();
+  }
+
+  const auto tagType = mEntityMgr->componentType <Tag> ();
+
+  const auto tableFlags = ImGuiTableFlags_ScrollX |
+                          ImGuiTableFlags_ScrollY;
+
+  if ( ImGui::BeginTable("EntitiesTable", 1, tableFlags) == false )
+    return;
+
+  ImGui::TableNextColumn();
+
+  registry.sort <Tag> (
+  [] ( const Tag& lhs, const Tag& rhs )
+  {
+    return lhs.id < rhs.id;
+  });
+
+  registry.view <Tag> ().each(
+  [ this, &registry, tagType] ( const entt::entity entity,
+                                const Tag& cTag )
+  {
+    if ( mRegistryFilter.query(registry, entity) == false )
+      return;
+
+    const auto entityId = cTag.id.str();
+
+    ImGui::PushID(entityId.c_str());
+
+    if ( ImGui::SmallButton("-##entityRemove") )
+    {
+      mEntityMgr->removeLater(entity);
+
+      if ( entity == mSelectedEntity )
+        entityDeselect();
+    }
+
+    ImGui::PopID(); // entityId
+
+    auto nodeFlags =  ImGuiTreeNodeFlags_OpenOnArrow |
+                      ImGuiTreeNodeFlags_AllowItemOverlap |
+                      ImGuiTreeNodeFlags_OpenOnDoubleClick;
+
+    if ( entity == mSelectedEntity )
+      nodeFlags |= ImGuiTreeNodeFlags_Selected;
+
+    ImGui::SameLine();
+
+    const bool nodeOpened = ImGui::TreeNodeEx(entityId.c_str(), nodeFlags);
+
+    ImGui::PushID(entityId.c_str());
+
+    if ( ImGui::IsItemActivated() == true &&
+         ImGui::IsItemToggledOpen() == false )
+    {
+      if ( entity != mSelectedEntity )
+        mSelectedComponent = entt::null;
+
+      mSelectedEntity = entity;
+    }
+    else if ( ImGui::IsMouseClicked(ImGuiMouseButton_Right) &&
+              ImGui::IsItemHovered() )
+      ImGui::OpenPopup("##entityContextMenu");
+
+    if ( ImGui::BeginPopup("##entityContextMenu") )
+    {
+      if ( ImGui::Selectable(("Copy##" + entityId).c_str()) )
+      {
+        mClipboard.clear();
+        mClipboard["type"] = "entities";
+
+        if ( registry.all_of <SceneNode> (entity) == true )
+          SerializeChildNode(registry, mClipboard["payload"], entity);
+        else
+          mEntityMgr->entitySerialize(registry, mClipboard["payload"], entity);
+      }
+
+      ImGui::EndPopup();
+    }
+
+    ImGui::PopID(); // entityId
+
+    if ( nodeOpened == true )
+    {
+      each_component(entity, registry,
+      [ this, &registry, entity,
+        tagType] ( const ComponentType componentType )
+      {
+        ImGui::PushID(componentType);
+
+        ImGui::BeginDisabled(componentType == tagType);
+
+        if ( ImGui::SmallButton("-##componentRemove") )
+        {
+          if ( componentType == mEntityMgr->componentType <SceneNode> () )
+            RootifyChildNode(registry, entity);
+
+          mEntityMgr->removeLater(entity, componentType);
+
+          if ( mSelectedEntity == entity &&
+               mSelectedComponent == componentType )
+            componentDeselect();
+        }
+
+        ImGui::EndDisabled();
+
+        auto flags = ImGuiTreeNodeFlags_Leaf |
+                     ImGuiTreeNodeFlags_AllowItemOverlap |
+                     ImGuiTreeNodeFlags_NoTreePushOnOpen;
+
+        if ( mSelectedEntity == entity &&
+             mSelectedComponent == componentType )
+          flags |= ImGuiTreeNodeFlags_Selected;
+
+        ImGui::SameLine();
+
+        const bool selected = mSelectedEntity == entity &&
+                              mSelectedComponent == componentType;
+
+        if ( ImGui::Selectable(component_name(componentType).c_str(), selected) )
+        {
+          mSelectedEntity = entity;
+          mSelectedComponent = componentType;
+        }
+
+        ImGui::PopID(); // componentType
+
+        return true;
+      });
+
+      ImGui::Spacing();
+
+      if ( ImGui::SmallButton("+##componentAdd") )
+        ImGui::OpenPopup("##componentAddPopup");
+
+      if ( ImGui::IsItemHovered() )
+        ImGui::SetTooltip("Add component");
+
+      ImGui::SameLine();
+
+      ImGui::BeginDisabled( mClipboard["type"] != "component" ||
+                            mClipboard["payload"].empty() );
+
+      if ( ImGui::SmallButton("Paste##componentPaste") )
+        ;
+
+      ImGui::EndDisabled();
+
+      ImGui::Spacing();
+
+      if ( ImGui::BeginPopup("##componentAddPopup") )
+      {
+        if ( ImGui::IsWindowAppearing() )
+          ImGui::SetKeyboardFocusHere(2);
+
+        mNewComponentFilter.search({}, ImGuiInputTextFlags_AutoSelectAll);
+
+        bool componentsFound {};
+
+        for ( const auto& componentName : mEntityMgr->componentNames() )
+        {
+          if ( mNewComponentFilter.query(componentName) == false )
+            continue;
+
+          componentsFound = true;
+
+          if ( ImGui::Selectable(componentName.c_str(), false) )
+          {
+            mEntityMgr->componentAdd(mEntityMgr->componentType(componentName),
+                                     entity, registry);
+
+            ImGui::CloseCurrentPopup();
+            break;
+          }
+        }
+
+        if ( componentsFound == false )
+          ImGui::Text("No components matching filter");
+
+        ImGui::EndPopup(); // componentAddPopup
+      }
+
+      ImGui::TreePop(); // entityId
+    }
+  });
+
+  ImGui::EndTable(); // EntitiesTable
+}
+
+void
+EntityManagerUi::ui_show_nodes_table(
+  entt::registry& registry )
+{
+  using fmt::format;
+  using compos::Tag;
+  using compos::SceneNode;
+  using compos::EntityMetaInfo;
 
   std::pair <entt::entity, entt::entity> nodeToAttach {entt::null, entt::null};
   std::pair <entt::entity, entt::entity> nodeToDestroy {entt::null, entt::null};
@@ -414,16 +402,28 @@ EntityManagerUi::ui_show_scene_graph_window(
 
   if ( ImGui::BeginDragDropTargetCustom(window->WorkRect, window->ID) )
   {
-    auto payload = ImGui::AcceptDragDropPayload("sceneNodePayload");
+    const auto nodePayload = ImGui::AcceptDragDropPayload("sceneNodePayload");
 
-    if ( payload != nullptr )
+    if ( nodePayload != nullptr )
     {
-      IM_ASSERT(payload->DataSize == sizeof(entt::entity));
+      IM_ASSERT(nodePayload->DataSize == sizeof(entt::entity));
 
-      const auto eDragged = *(const entt::entity*) payload->Data;
+      const auto eDragged = *(const entt::entity*) nodePayload->Data;
 
       nodeToAttach = {entt::null, eDragged};
     }
+
+    const auto prefabPayload = ImGui::AcceptDragDropPayload("prefabPayload");
+
+    if ( prefabPayload != nullptr )
+    {
+      IM_ASSERT(prefabPayload->DataSize == sizeof(Json::Value));
+
+      const auto prefab = *(const Json::Value*) prefabPayload->Data;
+
+      prefabDeserialize(registry, prefab);
+    }
+
     ImGui::EndDragDropTarget();
   }
 
@@ -443,7 +443,7 @@ EntityManagerUi::ui_show_scene_graph_window(
 
     ImGui::PushID(nodeId.str().c_str());
 
-    if ( mSceneGraphFilter.query(nodeId.str()) == false )
+    if ( mRegistryFilter.query(registry, eParent) == false )
     {
       for ( const auto& childRef : cNode->children )
         each_node( mEntityMgr->get_if_valid(childRef.id, registry) );
@@ -516,7 +516,8 @@ EntityManagerUi::ui_show_scene_graph_window(
       if ( ImGui::Selectable(format("Copy##{}", nodeId.str()).c_str()) )
       {
         mClipboard.clear();
-        SerializeChildNode(registry, mClipboard["entities"], eParent);
+        mClipboard["type"] = "entities";
+        SerializeChildNode(registry, mClipboard["payload"], eParent);
       }
 
       ImGui::EndPopup();
@@ -558,39 +559,41 @@ EntityManagerUi::ui_show_scene_graph_window(
 
     DestroyChildNode(registry, nodeToDestroy.first, nodeToDestroy.second);
   }
-
-  ImGui::End(); // SceneGraph view
 }
 
 void
-EntityManagerUi::entityPaste(
-  entt::registry& registry )
+EntityManagerUi::prefabDeserialize(
+  entt::registry& registry,
+  const Json::Value& prefab )
 {
   using compos::EntityMetaInfo;
-
-  const auto& entitiesJson = mClipboard["entities"];
-
-  if ( entitiesJson.empty() == true )
-    return;
 
   std::unordered_map <EntityId, EntityId,
                       identifier_hash> idMap {};
 
-  for ( const auto& entityId : entitiesJson.getMemberNames() )
+  for ( const auto& entityId : prefab.getMemberNames() )
   {
     idMap[entityId] = mEntityMgr->idGenerate(entityId);
     mEntityMgr->idRegister(idMap[entityId], entt::null);
   }
 
-  for ( const auto& entityId : entitiesJson.getMemberNames() )
+  for ( const auto& entityId : prefab.getMemberNames() )
   {
     const auto entity
       = mEntityMgr->entityDeserialize(registry, entityId,
-                                      entitiesJson[entityId], idMap);
+                                      prefab[entityId], idMap);
 
     auto& cMetaInfo = registry.emplace_or_replace <EntityMetaInfo> (entity);
     cMetaInfo.packageId = mRegistryFilter.package();
   }
+}
+
+void
+EntityManagerUi::setClipboard(
+  const std::string& type,
+  const Json::Value& payload )
+{
+  mClipboard[type] = payload;
 }
 
 void

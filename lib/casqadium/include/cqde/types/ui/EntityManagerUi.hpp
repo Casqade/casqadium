@@ -21,13 +21,11 @@ namespace cqde::ui
 class EntityManagerUi
 {
   RegistryFilter mRegistryFilter {};
-  StringFilter mSceneGraphFilter {"Entity ID"};
 
   entt::entity  mSelectedEntity {};
   ComponentType mSelectedComponent {};
 
   std::string mNewEntityName {"NewEntity"};
-  std::string mNewNodeName {"NewSceneNode"};
 
   StringFilter mNewComponentFilter {"Component type"};
 
@@ -35,15 +33,22 @@ class EntityManagerUi
 
   types::EntityManager* mEntityMgr {};
 
-  void ui_show_component_window( entt::registry& );
-  void ui_show_scene_graph_window( entt::registry& );
 
-  void entityPaste( entt::registry& );
+  void ui_show_component_window( entt::registry& );
+
+  void ui_show_filter_section( entt::registry& );
+  void ui_show_entities_table( entt::registry& );
+  void ui_show_nodes_table( entt::registry& );
+
+  void prefabDeserialize( entt::registry&, const Json::Value& );
 
 public:
   EntityManagerUi( types::EntityManager* );
 
   void ui_show( entt::registry& );
+
+  void setClipboard( const std::string& type,
+                     const Json::Value& payload );
 
   void entitySelect( const entt::entity );
   void componentSelect( const ComponentType );
