@@ -22,14 +22,16 @@ class EntityManagerUi
 {
   RegistryFilter mRegistryFilter {};
 
-  entt::entity  mSelectedEntity {};
-  ComponentType mSelectedComponent {};
+  std::vector <entt::entity> mSelectedEntities {};
+  std::pair <entt::entity, ComponentType> mSelectedComponent {};
 
   std::string mNewEntityName {"NewEntity"};
 
   StringFilter mNewComponentFilter {"Component type"};
 
   Json::Value mClipboard {};
+
+  bool mEntitiesMultipleSelectionEnabled {};
 
   types::EntityManager* mEntityMgr {};
 
@@ -50,14 +52,22 @@ public:
   void setClipboard( const std::string& type,
                      const Json::Value& payload );
 
-  void entitySelect( const entt::entity );
-  void componentSelect( const ComponentType );
+  void setEntitiesMultipleSelection( const bool );
 
-  void entityDeselect();
+  void entitySelect( const entt::entity );
+  void componentSelect( const entt::entity,
+                        const ComponentType );
+
+  void entitiesDeselect();
+
+  void entityDeselect( const entt::entity );
   void componentDeselect();
 
-  entt::entity  selectedEntity() const;
-  ComponentType selectedComponent() const;
+  bool entitiesMultipleSelection() const;
+  bool entitySelected( const entt::entity ) const;
+
+  std::vector <entt::entity> selectedEntities() const;
+  std::pair <entt::entity, ComponentType> selectedComponent() const;
 };
 
 } // namespace cqde::types

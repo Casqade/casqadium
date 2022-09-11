@@ -408,6 +408,8 @@ GameStateEcsSandbox::GameStateEcsSandbox(
     if ( registry.all_of <SubscriberInput> (eCamera) == true )
       return;
 
+    const bool multipleSelectionEnabled = entityManagerUi.entitiesMultipleSelection();
+
     auto& cCamera = registry.get <Camera> (eCamera);
 
     for ( auto iter = cCamera.zBuffer.rbegin();
@@ -419,13 +421,54 @@ GameStateEcsSandbox::GameStateEcsSandbox(
       if ( pointInRect( cursorPos, boundingBox(vBuf.vertices) ) == false )
         continue;
 
-      if ( entityManagerUi.selectedEntity() == entity )
-        continue;
+      if ( multipleSelectionEnabled == false )
+      {
+        if ( entityManagerUi.entitySelected(entity) == true )
+          continue;
+
+        entityManagerUi.entitiesDeselect();
+        return entityManagerUi.entitySelect(entity);
+      }
+
+      if ( entityManagerUi.entitySelected(entity) == true )
+        return entityManagerUi.entityDeselect(entity);
 
       return entityManagerUi.entitySelect(entity);
     }
 
-    entityManagerUi.entitySelect(entt::null);
+    if ( multipleSelectionEnabled == false )
+      entityManagerUi.entitiesDeselect();
+  };
+
+  const auto editorEntityMultipleSelectionEnable =
+  [] (  entt::registry& registry,
+        const std::vector <std::any>& args )
+  {
+    using cqde::ui::EntityManagerUi;
+
+    registry.ctx().at <EntityManagerUi> ().setEntitiesMultipleSelection(true);
+  };
+
+  const auto editorEntityMultipleSelectionDisable =
+  [] (  entt::registry& registry,
+        const std::vector <std::any>& args )
+  {
+    using cqde::ui::EntityManagerUi;
+
+    registry.ctx().at <EntityManagerUi> ().setEntitiesMultipleSelection(false);
+  };
+
+  const auto editorEntityMultipleSelectionToggle =
+  [] (  entt::registry& registry,
+        const std::vector <std::any>& args )
+  {
+    using cqde::ui::EntityManagerUi;
+
+    auto& entityManagerUi = registry.ctx().at <EntityManagerUi> ();
+
+    const bool multipleSelectionEnabled = entityManagerUi.entitiesMultipleSelection();
+
+    entityManagerUi.setEntitiesMultipleSelection( !multipleSelectionEnabled );
   };
 
   const auto EditorEntityHighlightSystem =
@@ -438,20 +481,21 @@ GameStateEcsSandbox::GameStateEcsSandbox(
     const auto& entityManager   = registry.ctx().at <EntityManager> ();
     const auto& entityManagerUi = registry.ctx().at <EntityManagerUi> ();
 
-    const auto selectedEntity = entityManagerUi.selectedEntity();
+    for ( const auto selectedEntity : entityManagerUi.selectedEntities() )
+    {
+      if ( selectedEntity == entt::null )
+        return;
 
-    if ( selectedEntity == entt::null )
-      return;
+      const auto eCamera = entityManager.get("cqde_editor_camera");
+      if ( eCamera == entt::null )
+        return;
 
-    const auto eCamera = entityManager.get("cqde_editor_camera");
-    if ( eCamera == entt::null )
-      return;
+      const auto& cCamera = registry.get <Camera> (eCamera);
 
-    const auto& cCamera = registry.get <Camera> (eCamera);
-
-    for ( const auto& [vBuf, entity] : cCamera.zBuffer )
-      if ( entity == selectedEntity )
-        drawLines(vBuf.vertices, olc::YELLOW, LineRenderMode::Loop);
+      for ( const auto& [vBuf, entity] : cCamera.zBuffer )
+        if ( entity == selectedEntity )
+          drawLines(vBuf.vertices, olc::YELLOW, LineRenderMode::Loop);
+    }
   };
 
   const auto EditorSystem =
@@ -561,6 +605,9 @@ GameStateEcsSandbox::GameStateEcsSandbox(
       auto& iEntitySelect = cInputController.axes["EditorEntitySelect"];
       iEntitySelect.callbacks.insert("EditorEntitySelect");
 
+      auto& iEntityMultipleSelection = cInputController.axes["EditorEntityMultipleSelectionToggle"];
+      iEntityMultipleSelection.callbacks.insert("EditorEntityMultipleSelectionToggle");
+
       auto& iCursorPosX = cInputController.axes["CursorPosX"];
       auto& iCursorPosY = cInputController.axes["CursorPosY"];
 
@@ -580,6 +627,15 @@ GameStateEcsSandbox::GameStateEcsSandbox(
     {
       auto binding = std::make_shared <InputBindingRelative> ("-MouseButton_Left", 0.0f);
       inputManager.assignBinding("EditorEntitySelect", binding);
+    }
+
+    if ( inputManager.axisAssigned("EditorEntityMultipleSelectionToggle") == false )
+    {
+      auto binding = std::make_shared <InputBindingRelative> ("+Key_Ctrl", 0.0f);
+      inputManager.assignBinding("EditorEntityMultipleSelectionToggle", binding);
+
+      binding = std::make_shared <InputBindingRelative> ("-Key_Ctrl", 0.0f);
+      inputManager.assignBinding("EditorEntityMultipleSelectionToggle", binding);
     }
 
     if ( inputManager.axisAssigned("EditorCameraControlOn") == false )
@@ -637,6 +693,9 @@ GameStateEcsSandbox::GameStateEcsSandbox(
   callbackMgr.Register("ControlRollRelative", controlRollRelative);
 
   callbackMgr.Register("EditorEntitySelect", editorEntitySelect);
+  callbackMgr.Register("EditorEntityMultipleSelectionToggle", editorEntityMultipleSelectionToggle);
+  callbackMgr.Register("EditorEntityMultipleSelectionEnable", editorEntityMultipleSelectionEnable);
+  callbackMgr.Register("EditorEntityMultipleSelectionDisable", editorEntityMultipleSelectionDisable);
   callbackMgr.Register("EditorCameraControlOn", editorCameraControlOn);
   callbackMgr.Register("EditorCameraFovControl", editorCameraFovControl);
   callbackMgr.Register("EditorCameraZoomControl", editorCameraZoomControl);

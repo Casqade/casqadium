@@ -219,7 +219,7 @@ InputManagerUi::ui_show(
           mRenamedAxisId = axisId;
           ImGui::OpenPopup("##axisRenamePopup");
         }
-        else if ( ImGui::IsMouseClicked(ImGuiMouseButton_Right) )
+        else if ( ImGui::IsMouseReleased(ImGuiMouseButton_Right) )
           ImGui::OpenPopup("##axisContextMenu");
       }
 

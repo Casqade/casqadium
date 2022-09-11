@@ -309,7 +309,10 @@ ViewportManagerUi::ui_show_viewport_windows(
 
       auto& entityManagerUi = registry.ctx().at <EntityManagerUi> ();
 
-      const auto selectedEntity = entityManagerUi.selectedEntity();
+      const auto selectedEntities = entityManagerUi.selectedEntities();
+      const auto selectedEntity = selectedEntities.empty() == false
+                                ? *selectedEntities.begin()
+                                : entt::null ;
 
       bool viewCubeHovered {};
 

@@ -1,6 +1,7 @@
 #include <cqde/types/ui/PrefabManagerUi.hpp>
 #include <cqde/types/ui/EntityManagerUi.hpp>
 
+#include <cqde/types/EntityManager.hpp>
 #include <cqde/types/PackageManager.hpp>
 #include <cqde/types/PrefabManager.hpp>
 
@@ -97,6 +98,7 @@ PrefabManagerUi::ui_show(
   using fmt::format;
   using types::Package;
   using types::PackageManager;
+  using types::EntityManager;
   using ContentType = types::Package::ContentType;
 
   CQDE_ASSERT_DEBUG(mPrefabMgr != nullptr, return);
@@ -214,7 +216,7 @@ PrefabManagerUi::ui_show(
         mRenamedPrefabId = prefabId;
         ImGui::OpenPopup("##prefabRenamePopup");
       }
-      else if ( ImGui::IsMouseClicked(ImGuiMouseButton_Right) )
+      else if ( ImGui::IsMouseReleased(ImGuiMouseButton_Right) )
         ImGui::OpenPopup("##prefabContextMenu");
 
       ImGui::SetTooltip("%s", format("{} entities",
@@ -235,6 +237,20 @@ PrefabManagerUi::ui_show(
 
     if ( ImGui::BeginDragDropTarget() )
     {
+      const auto entitiesPayload = ImGui::AcceptDragDropPayload("entitiesPayload");
+
+      if ( entitiesPayload != nullptr )
+      {
+        IM_ASSERT(entitiesPayload->DataSize == sizeof(std::vector <entt::entity>));
+
+        const auto entities = *(const std::vector <entt::entity>*) entitiesPayload->Data;
+
+        const auto& entityManager = registry.ctx().at <EntityManager> ();
+
+        for ( const auto entity : entities )
+          entityManager.entitySerialize(registry, prefabsState[prefabId], entity);
+      }
+
       const auto nodePayload = ImGui::AcceptDragDropPayload("sceneNodePayload");
 
       if ( nodePayload != nullptr )

@@ -65,6 +65,7 @@ InputManager::InputManager()
     {Key::C, "Key_C"},
     {Key::Q, "Key_Q"},
     {Key::MENU, "Key_Alt"},
+    {Key::CTRL, "Key_Ctrl"},
     {Key::SHIFT, "Key_Shift"},
     {Key::SPACE, "Key_Space"},
     {Key::ENTER, "Key_Enter"},

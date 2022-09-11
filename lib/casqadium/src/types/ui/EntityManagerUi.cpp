@@ -28,8 +28,7 @@ namespace cqde::ui
 
 EntityManagerUi::EntityManagerUi(
   types::EntityManager* entityMgr )
-  : mSelectedEntity{entt::null}
-  , mSelectedComponent{entt::null}
+  : mSelectedComponent{entt::null, entt::null}
   , mEntityMgr{entityMgr}
 {}
 
@@ -81,9 +80,11 @@ EntityManagerUi::ui_show_component_window(
     return;
   }
 
-  if ( mSelectedEntity == entt::null ||
-       mSelectedComponent == entt::null ||
-       registry.valid(mSelectedEntity) == false )
+  const auto [selectedEntity, selectedComponent] = mSelectedComponent;
+
+  if ( selectedEntity == entt::null ||
+       selectedComponent == entt::null ||
+       registry.valid(selectedEntity) == false )
   {
     ImGui::Text("No component selected");
 
@@ -91,9 +92,9 @@ EntityManagerUi::ui_show_component_window(
     return;
   }
 
-  const auto entityId = registry.get <Tag> (mSelectedEntity).id;
+  const auto entityId = registry.get <Tag> (selectedEntity).id;
 
-  auto component = entt::resolve(mSelectedComponent);
+  auto component = entt::resolve(mSelectedComponent.second);
 
   if ( !component )
   {
@@ -103,7 +104,7 @@ EntityManagerUi::ui_show_component_window(
     return;
   }
 
-  const auto componentName = component_name(mSelectedComponent);
+  const auto componentName = component_name(mSelectedComponent.second);
 
   ImGui::BulletText("%s", format("{} -> {}", entityId.str(), componentName).c_str());
 
@@ -111,7 +112,7 @@ EntityManagerUi::ui_show_component_window(
   ImGui::Separator();
   ImGui::Spacing();
 
-  if ( component_is_empty(mSelectedComponent) == true )
+  if ( component_is_empty(mSelectedComponent.second) == true )
   {
     ImGui::Text("No data for this component");
     ImGui::End(); // Component view
@@ -119,12 +120,12 @@ EntityManagerUi::ui_show_component_window(
   }
 
   auto componentGet = component.func("get"_hs);
-  auto componentInstance = componentGet.invoke({}, entt::forward_as_meta(registry), mSelectedEntity);
+  auto componentInstance = componentGet.invoke({}, entt::forward_as_meta(registry), selectedEntity);
 
   if ( componentInstance )
   {
     auto componentUiShow = component.func("ui_edit_props"_hs);
-    componentUiShow.invoke(componentInstance, mSelectedEntity, entt::forward_as_meta(registry));
+    componentUiShow.invoke(componentInstance, selectedEntity, entt::forward_as_meta(registry));
   }
 
   ImGui::End(); // Component view
@@ -229,9 +230,7 @@ EntityManagerUi::ui_show_entities_table(
     if ( ImGui::SmallButton("-##entityRemove") )
     {
       mEntityMgr->removeLater(entity);
-
-      if ( entity == mSelectedEntity )
-        entityDeselect();
+      entityDeselect(entity);
     }
 
     ImGui::PopID(); // entityId
@@ -240,7 +239,7 @@ EntityManagerUi::ui_show_entities_table(
                       ImGuiTreeNodeFlags_AllowItemOverlap |
                       ImGuiTreeNodeFlags_OpenOnDoubleClick;
 
-    if ( entity == mSelectedEntity )
+    if ( entitySelected(entity) == true )
       nodeFlags |= ImGuiTreeNodeFlags_Selected;
 
     ImGui::SameLine();
@@ -249,17 +248,61 @@ EntityManagerUi::ui_show_entities_table(
 
     ImGui::PushID(entityId.c_str());
 
-    if ( ImGui::IsItemActivated() == true &&
-         ImGui::IsItemToggledOpen() == false )
+    if ( ImGui::IsMouseReleased(ImGuiMouseButton_Left) &&
+         ImGui::IsItemToggledOpen() == false &&
+         ImGui::IsItemHovered() )
     {
-      if ( entity != mSelectedEntity )
-        mSelectedComponent = entt::null;
-
-      mSelectedEntity = entity;
+      if ( entitiesMultipleSelection() == false )
+      {
+        entitiesDeselect();
+        entitySelect(entity);
+      }
+      else if ( entitySelected(entity) == true )
+        entityDeselect(entity);
+      else
+        entitySelect(entity);
     }
-    else if ( ImGui::IsMouseClicked(ImGuiMouseButton_Right) &&
+    else if ( ImGui::IsMouseReleased(ImGuiMouseButton_Right) &&
               ImGui::IsItemHovered() )
       ImGui::OpenPopup("##entityContextMenu");
+
+    if ( ImGui::BeginDragDropSource() )
+    {
+      ImGui::SetDragDropPayload("entitiesPayload",
+                                &mSelectedEntities,
+                                sizeof(mSelectedEntities));
+
+      ImGui::Text("%s", format("{} entities",
+                               mSelectedEntities.size()).c_str());
+
+      ImGui::EndDragDropSource();
+    }
+
+    if ( ImGui::BeginDragDropTarget() )
+    {
+      const auto componentPayload = ImGui::AcceptDragDropPayload("componentPayload");
+
+      if ( componentPayload != nullptr )
+      {
+        IM_ASSERT(componentPayload->DataSize == sizeof(mSelectedComponent));
+
+        const auto cDragged = *(const decltype(mSelectedComponent)*) componentPayload->Data;
+
+        const auto cDraggedName = component_name(cDragged.second);
+
+        Json::Value componentBuffer = Json::objectValue;
+
+        mEntityMgr->componentSerialize(registry, componentBuffer,
+                                       cDragged.first, cDragged.second);
+
+        mEntityMgr->componentRemove(cDragged.second, entity, registry);
+
+        mEntityMgr->componentDeserialize(registry, entity, cDraggedName,
+                                         componentBuffer[cDraggedName]);
+      }
+
+      ImGui::EndDragDropTarget();
+    }
 
     if ( ImGui::BeginPopup("##entityContextMenu") )
     {
@@ -268,13 +311,16 @@ EntityManagerUi::ui_show_entities_table(
         mClipboard.clear();
         mClipboard["type"] = "entities";
 
-        if ( registry.all_of <SceneNode> (entity) == true )
-          SerializeChildNode(registry, mClipboard["payload"], entity);
-        else
-          mEntityMgr->entitySerialize(registry, mClipboard["payload"], entity);
+        for ( const auto selectedEntity : mSelectedEntities )
+          if ( registry.all_of <SceneNode> (selectedEntity) == true )
+            SerializeChildNode(registry, mClipboard["payload"], selectedEntity);
+          else
+            mEntityMgr->entitySerialize(registry,
+                                        mClipboard["payload"],
+                                        selectedEntity);
       }
 
-      ImGui::EndPopup();
+      ImGui::EndPopup(); // entityContextMenu
     }
 
     ImGui::PopID(); // entityId
@@ -282,9 +328,11 @@ EntityManagerUi::ui_show_entities_table(
     if ( nodeOpened == true )
     {
       each_component(entity, registry,
-      [ this, &registry, entity,
+      [ this, &registry, entity, &entityId,
         tagType] ( const ComponentType componentType )
       {
+        const auto entityComponentPair = std::make_pair(entity, componentType);
+
         ImGui::PushID(componentType);
 
         ImGui::BeginDisabled(componentType == tagType);
@@ -296,8 +344,7 @@ EntityManagerUi::ui_show_entities_table(
 
           mEntityMgr->removeLater(entity, componentType);
 
-          if ( mSelectedEntity == entity &&
-               mSelectedComponent == componentType )
+          if ( mSelectedComponent == entityComponentPair )
             componentDeselect();
         }
 
@@ -307,19 +354,74 @@ EntityManagerUi::ui_show_entities_table(
                      ImGuiTreeNodeFlags_AllowItemOverlap |
                      ImGuiTreeNodeFlags_NoTreePushOnOpen;
 
-        if ( mSelectedEntity == entity &&
-             mSelectedComponent == componentType )
+        if ( mSelectedComponent == entityComponentPair )
           flags |= ImGuiTreeNodeFlags_Selected;
 
         ImGui::SameLine();
 
-        const bool selected = mSelectedEntity == entity &&
-                              mSelectedComponent == componentType;
+        const auto componentName = component_name(componentType);
 
-        if ( ImGui::Selectable(component_name(componentType).c_str(), selected) )
+        const bool selected = mSelectedComponent == entityComponentPair;
+
+        if ( ImGui::Selectable(componentName.c_str(), selected) )
+          mSelectedComponent = {entity, componentType};
+
+        if (  ImGui::IsMouseReleased(ImGuiMouseButton_Right) &&
+              ImGui::IsItemHovered() )
+          ImGui::OpenPopup("##componentContextMenu");
+
+        if (  componentType != mEntityMgr->componentType <Tag> () &&
+              componentType != mEntityMgr->componentType <SceneNode> () &&
+              ImGui::BeginDragDropSource() )
         {
-          mSelectedEntity = entity;
-          mSelectedComponent = componentType;
+          const auto cDragged = std::make_pair(entity, componentType);
+          ImGui::SetDragDropPayload("componentPayload",
+                                    &cDragged,
+                                    sizeof(cDragged));
+
+          ImGui::Text("%s", format("Component '{}'", componentName).c_str());
+
+          ImGui::EndDragDropSource();
+        }
+
+        if ( ImGui::BeginDragDropTarget() )
+        {
+          const auto componentPayload = ImGui::AcceptDragDropPayload("componentPayload");
+
+          if ( componentPayload != nullptr )
+          {
+            IM_ASSERT(componentPayload->DataSize == sizeof(mSelectedComponent));
+
+            const auto cDragged = *(const decltype(mSelectedComponent)*) componentPayload->Data;
+
+            const auto cDraggedName = component_name(cDragged.second);
+
+            Json::Value componentBuffer = Json::objectValue;
+
+            mEntityMgr->componentSerialize(registry, componentBuffer,
+                                           cDragged.first, cDragged.second);
+
+            mEntityMgr->componentRemove(cDragged.second, entity, registry);
+
+            mEntityMgr->componentDeserialize(registry, entity, cDraggedName,
+                                             componentBuffer[cDraggedName]);
+          }
+
+          ImGui::EndDragDropTarget();
+        }
+
+        if ( ImGui::BeginPopup("##componentContextMenu") )
+        {
+          if ( ImGui::Selectable(("Copy##" + componentName).c_str()) )
+          {
+            mClipboard.clear();
+            mClipboard["type"] = "component";
+
+            mEntityMgr->componentSerialize( registry, mClipboard["payload"],
+                                            entity, componentType);
+          }
+
+          ImGui::EndPopup(); // componentContextMenu
         }
 
         ImGui::PopID(); // componentType
@@ -341,7 +443,16 @@ EntityManagerUi::ui_show_entities_table(
                             mClipboard["payload"].empty() );
 
       if ( ImGui::SmallButton("Paste##componentPaste") )
-        ;
+      {
+        const auto componentName = mClipboard["payload"].begin().key().asString();
+        const auto componentType = mEntityMgr->componentType(componentName);
+
+        mEntityMgr->componentRemove(componentType, entity, registry);
+
+        mEntityMgr->componentDeserialize(registry, entity,
+                                         componentName,
+                                         mClipboard["payload"][componentName]);
+      }
 
       ImGui::EndDisabled();
 
@@ -466,28 +577,35 @@ EntityManagerUi::ui_show_nodes_table(
       flags |= ImGuiTreeNodeFlags_NoTreePushOnOpen;
     }
 
-    if ( mSelectedEntity == eParent )
+    if ( entitySelected(eParent) == true )
       flags |= ImGuiTreeNodeFlags_Selected;
 
     ImGui::SameLine();
     const bool nodeOpened = ImGui::TreeNodeEx(nodeId.str().c_str(), flags);
 
-    if ( ImGui::IsItemActivated() == true &&
-         ImGui::IsItemToggledOpen() == false )
+    if ( ImGui::IsMouseReleased(ImGuiMouseButton_Left) &&
+         ImGui::IsItemToggledOpen() == false &&
+         ImGui::IsItemHovered() )
     {
-      if ( eParent != mSelectedEntity )
-        componentDeselect();
-
-      mSelectedEntity = eParent;
+      if ( entitiesMultipleSelection() == false )
+      {
+        entitiesDeselect();
+        entitySelect(eParent);
+      }
+      else if ( entitySelected(eParent) == true )
+        entityDeselect(eParent);
+      else
+        entitySelect(eParent);
     }
-    else if ( ImGui::IsMouseClicked(ImGuiMouseButton_Right) &&
+    else if ( ImGui::IsMouseReleased(ImGuiMouseButton_Right) &&
               ImGui::IsItemHovered() )
       ImGui::OpenPopup("##nodeContextMenu");
 
     if ( ImGui::BeginDragDropSource() )
     {
       ImGui::SetDragDropPayload("sceneNodePayload",
-                                &eParent, sizeof(eParent));
+                                &eParent,
+                                sizeof(eParent));
       ImGui::EndDragDropSource();
     }
 
@@ -554,8 +672,8 @@ EntityManagerUi::ui_show_nodes_table(
 
   if ( nodeToDestroy.second != entt::null )
   {
-    if ( nodeToDestroy.second == mSelectedEntity )
-      entityDeselect();
+    if ( entitySelected(nodeToDestroy.second) == true )
+      entityDeselect(nodeToDestroy.second);
 
     DestroyChildNode(registry, nodeToDestroy.first, nodeToDestroy.second);
   }
@@ -597,40 +715,78 @@ EntityManagerUi::setClipboard(
 }
 
 void
+EntityManagerUi::setEntitiesMultipleSelection(
+  const bool entitiesMultipleSelection )
+{
+  mEntitiesMultipleSelectionEnabled = entitiesMultipleSelection;
+}
+
+void
 EntityManagerUi::entitySelect(
   const entt::entity entity )
 {
-  mSelectedEntity = entity;
-  mSelectedComponent = entt::null;
+  if ( entitySelected(entity) == false )
+    mSelectedEntities.push_back(entity);
 }
 
 void
 EntityManagerUi::componentSelect(
+  const entt::entity entity,
   const ComponentType component )
 {
-  mSelectedComponent = component;
+  mSelectedComponent = {entity, component};
 }
 
 void
-EntityManagerUi::entityDeselect()
+EntityManagerUi::entitiesDeselect()
 {
-  mSelectedEntity = entt::null;
-  mSelectedComponent = entt::null;
+  mSelectedEntities.clear();
+}
+
+void
+EntityManagerUi::entityDeselect(
+  const entt::entity entity )
+{
+  for ( auto iter = mSelectedEntities.begin();
+        iter != mSelectedEntities.end();
+        ++iter )
+    if ( *iter == entity )
+    {
+      mSelectedEntities.erase(iter);
+      return;
+    }
 }
 
 void
 EntityManagerUi::componentDeselect()
 {
-  mSelectedComponent = entt::null;
+  mSelectedComponent = {entt::null, entt::null};
 }
 
-entt::entity
-EntityManagerUi::selectedEntity() const
+bool
+EntityManagerUi::entitiesMultipleSelection() const
 {
-  return mSelectedEntity;
+  return mEntitiesMultipleSelectionEnabled;
 }
 
-ComponentType
+bool
+EntityManagerUi::entitySelected(
+  const entt::entity entity ) const
+{
+  for ( const auto selectedEntity : mSelectedEntities )
+    if ( selectedEntity == entity )
+      return true;
+
+  return false;
+}
+
+std::vector <entt::entity>
+EntityManagerUi::selectedEntities() const
+{
+  return mSelectedEntities;
+}
+
+std::pair <entt::entity, ComponentType>
 EntityManagerUi::selectedComponent() const
 {
   return mSelectedComponent;
