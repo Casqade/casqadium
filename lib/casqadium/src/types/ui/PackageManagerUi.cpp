@@ -234,22 +234,22 @@ PackageManagerUi::ui_show_menu_bar(
   {
     const auto& packages = mConfigState.root["load_order"];
 
-    for ( auto& packageId : packages.getMemberNames() )
+    for ( auto& packageId : packages )
     {
-      const auto package = mPackageMgr->package(packageId);
+      const auto package = mPackageMgr->package(packageId.asString());
 
       if ( package == nullptr )
       {
         LOG_ERROR("Failed to write packages: Unknown package '{}'",
-                  packageId);
+                  packageId.asString());
 
         return ImGui::EndMenuBar();
       }
 
-      if ( mConfigState.packages.isMember(packageId) == false )
+      if ( mConfigState.packages.isMember(packageId.asString()) == false )
         continue;
 
-      package->save(ContentType::Manifest, mConfigState.packages[packageId]);
+      package->save(ContentType::Manifest, mConfigState.packages[packageId.asString()]);
     }
 
     const auto streamFlags = std::ios::out |
