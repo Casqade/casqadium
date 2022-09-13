@@ -44,6 +44,12 @@ class ViewportManagerUi
 public:
   ViewportManagerUi() = default;
 
+  void setGizmoOperation( const ImGuizmo::OPERATION );
+  void setGizmoSpace( const ImGuizmo::MODE );
+
+  ImGuizmo::OPERATION gizmoOperation() const;
+  ImGuizmo::MODE gizmoCoordinateSpace() const;
+
   bool hasViewport( const EntityId& cameraId ) const;
   bool mouseOverViewport( const EntityId& cameraId ) const;
 

@@ -55,6 +55,32 @@ ViewportManagerUi::hasViewport(
   return false;
 }
 
+void
+ViewportManagerUi::setGizmoOperation(
+  ImGuizmo::OPERATION operation )
+{
+  mGizmoOperation = operation;
+}
+
+void
+ViewportManagerUi::setGizmoSpace(
+  ImGuizmo::MODE gizmoSpace )
+{
+  mGizmoSpace = gizmoSpace;
+}
+
+ImGuizmo::OPERATION
+ViewportManagerUi::gizmoOperation() const
+{
+  return mGizmoOperation;
+}
+
+ImGuizmo::MODE
+ViewportManagerUi::gizmoCoordinateSpace() const
+{
+  return mGizmoSpace;
+}
+
 bool
 ViewportManagerUi::mouseOverViewport(
   const EntityId& cameraId ) const
