@@ -25,4 +25,10 @@ SnapshotExcluded::deserialize(
   registry.emplace <SnapshotExcluded> (entity);
 }
 
+void
+SnapshotExcluded::ui_edit_props(
+  const entt::entity,
+  const entt::registry& )
+{}
+
 } // namespace cqde::compos

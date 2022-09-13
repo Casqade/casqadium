@@ -180,15 +180,12 @@ target_sources(${TARGET} PRIVATE
   include/${CASQADIUM_SHORT}/components/SequenceController.hpp
 
   src/components/SnapshotExcluded.cpp
-  src/components/SnapshotExcluded_ui_impl.cpp
   include/${CASQADIUM_SHORT}/components/SnapshotExcluded.hpp
 
   src/components/SubscriberInput.cpp
-  src/components/SubscriberInput_ui_impl.cpp
   include/${CASQADIUM_SHORT}/components/SubscriberInput.hpp
 
   src/components/SubscriberUpdate.cpp
-  src/components/SubscriberUpdate_ui_impl.cpp
   include/${CASQADIUM_SHORT}/components/SubscriberUpdate.hpp
 
   src/components/Tag.cpp
