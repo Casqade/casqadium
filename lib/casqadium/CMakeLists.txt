@@ -28,11 +28,17 @@ target_sources(${TARGET} PRIVATE
   src/render_helpers.cpp
   include/${CASQADIUM_SHORT}/render_helpers.hpp
 
+  src/callbacks.cpp
+  include/${CASQADIUM_SHORT}/callbacks.hpp
+
   src/common.cpp
   include/${CASQADIUM_SHORT}/common.hpp
 
   src/identifier.cpp
   include/${CASQADIUM_SHORT}/identifier.hpp
+
+  src/systems.cpp
+  include/${CASQADIUM_SHORT}/systems.hpp
 
   src/conversion/json_glm_vec.cpp
   include/${CASQADIUM_SHORT}/conversion/json_glm_vec.hpp
@@ -159,6 +165,9 @@ target_sources(${TARGET} PRIVATE
   src/components/Camera_ui_impl.cpp
   include/${CASQADIUM_SHORT}/components/Camera.hpp
 
+  src/components/CasqadiumEditorInternal.cpp
+  include/${CASQADIUM_SHORT}/components/CasqadiumEditorInternal.hpp
+
   src/components/EntityMetaInfo.cpp
   src/components/EntityMetaInfo_ui_impl.cpp
   include/${CASQADIUM_SHORT}/components/EntityMetaInfo.hpp
@@ -170,6 +179,10 @@ target_sources(${TARGET} PRIVATE
   src/components/InputController.cpp
   src/components/InputController_ui_impl.cpp
   include/${CASQADIUM_SHORT}/components/InputController.hpp
+
+  src/components/CasqadiumEntryPoint.cpp
+  src/components/CasqadiumEntryPoint_ui_impl.cpp
+  include/${CASQADIUM_SHORT}/components/CasqadiumEntryPoint.hpp
 
   src/components/SceneNode.cpp
   src/components/SceneNode_ui_impl.cpp
@@ -200,12 +213,6 @@ target_sources(${TARGET} PRIVATE
   src/components/Transform_ui_impl.cpp
   include/${CASQADIUM_SHORT}/components/Transform.hpp
 
-
-  src/systems/CullingSystem.cpp
-  include/${CASQADIUM_SHORT}/systems/CullingSystem.hpp
-
-  src/systems/RenderSystem.cpp
-  include/${CASQADIUM_SHORT}/systems/RenderSystem.hpp
 
   src/util/logger.cpp
   include/${CASQADIUM_SHORT}/util/logger.hpp

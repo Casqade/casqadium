@@ -51,7 +51,10 @@ public:
   void deserialize( const Json::Value& );
   Json::Value serialize() const;
 
+  bool isActive( const SystemId& ) const;
+
   std::vector <SystemId> systems() const;
+  std::vector <SystemId> systems( const Phase ) const;
   std::vector <SystemId> systemsActive( const Phase ) const;
 };
 

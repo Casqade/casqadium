@@ -1,8 +1,12 @@
 #include <cqde/common.hpp>
 
+#include <cqde/systems.hpp>
+#include <cqde/callbacks.hpp>
 #include <cqde/ecs_helpers.hpp>
 
 #include <cqde/components/Camera.hpp>
+#include <cqde/components/CasqadiumEntryPoint.hpp>
+#include <cqde/components/CasqadiumEditorInternal.hpp>
 #include <cqde/components/EntityMetaInfo.hpp>
 #include <cqde/components/GeometryBuffer.hpp>
 #include <cqde/components/InputController.hpp>
@@ -52,6 +56,8 @@ namespace cqde
 void
 engineInit( entt::registry& registry )
 {
+  using namespace callbacks;
+  using namespace systems;
   using namespace compos;
   using namespace types;
   using namespace ui;
@@ -86,6 +92,7 @@ engineInit( entt::registry& registry )
   registry.ctx().emplace <TextStringAssetManager> (tp);
 
   entityManager.registerComponent <Camera> ("Camera");
+  entityManager.registerComponent <CasqadiumEntryPoint> ("CasqadiumEntryPoint");
   entityManager.registerComponent <EntityMetaInfo> ("EntityMetaInfo");
   entityManager.registerComponent <GeometryBuffer> ("GeometryBuffer");
   entityManager.registerComponent <InputController> ("InputController");
@@ -95,10 +102,85 @@ engineInit( entt::registry& registry )
   entityManager.registerComponent <TextureBuffer> ("TextureBuffer");
   entityManager.registerComponent <Transform> ("Transform");
 
-//  Tags
+//  Components-tags
+  entityManager.registerEmptyComponent <CasqadiumEditorInternal> ("CasqadiumEditorInternal");
   entityManager.registerEmptyComponent <SnapshotExcluded> ("SnapshotExcluded");
   entityManager.registerEmptyComponent <SubscriberInput> ("SubscriberInput");
   entityManager.registerEmptyComponent <SubscriberUpdate> ("SubscriberUpdate");
+
+
+//  Callbacks
+  callbackManager.Register("MouseAutoCenterEnable", mouseAutoCenterEnable);
+  callbackManager.Register("MouseAutoCenterDisable", mouseAutoCenterDisable);
+  callbackManager.Register("MouseAutoCenterToggle", mouseAutoCenterToggle);
+
+  callbackManager.Register("MouseCursorHide", mouseCursorHide);
+  callbackManager.Register("MouseCursorShow", mouseCursorShow);
+  callbackManager.Register("MouseGrabToggle", mouseGrabToggle);
+
+
+  callbackManager.Register("EditorModeEnable", editorModeEnable);
+  callbackManager.Register("EditorModeDisable", editorModeDisable);
+  callbackManager.Register("EditorModeToggle", editorModeToggle);
+
+  callbackManager.Register("EditorGizmoSetModeTranslate", editorGizmoSetModeTranslate);
+  callbackManager.Register("EditorGizmoSetModeRotate", editorGizmoSetModeRotate);
+  callbackManager.Register("EditorGizmoSetModeScale", editorGizmoSetModeScale);
+
+  callbackManager.Register("EditorGizmoSetSpaceLocal", editorGizmoSetSpaceLocal);
+  callbackManager.Register("EditorGizmoSetSpaceWorld", editorGizmoSetSpaceWorld);
+
+  callbackManager.Register("EditorEntityMultipleSelectionEnable", editorEntityMultipleSelectionEnable);
+  callbackManager.Register("EditorEntityMultipleSelectionDisable", editorEntityMultipleSelectionDisable);
+  callbackManager.Register("EditorEntityMultipleSelectionToggle", editorEntityMultipleSelectionToggle);
+
+  callbackManager.Register("EditorCameraCreate", editorCameraCreate);
+  callbackManager.Register("EditorControllerCreate", editorControllerCreate);
+  callbackManager.Register("EditorBindingsAssign", editorBindingsAssign);
+
+  callbackManager.Register("EditorCameraControlOn", editorCameraControlOn);
+  callbackManager.Register("EditorCameraFovControl", editorCameraFovControl);
+  callbackManager.Register("EditorCameraZoomControl", editorCameraZoomControl);
+  callbackManager.Register("EditorEntitySelect", editorEntitySelect);
+
+
+  callbackManager.Register("EntityInputOn", entityInputOn);
+  callbackManager.Register("EntityInputOff", entityInputOff);
+  callbackManager.Register("EntityInputToggle", entityInputToggle);
+
+  callbackManager.Register("EntityUpdateOn", entityUpdateOn);
+  callbackManager.Register("EntityUpdateOff", entityUpdateOff);
+  callbackManager.Register("EntityUpdateToggle", entityUpdateToggle);
+
+  callbackManager.Register("ControlTranslateXRelative", controlTranslateXRelative);
+  callbackManager.Register("ControlTranslateYRelative", controlTranslateYRelative);
+  callbackManager.Register("ControlTranslateZRelative", controlTranslateZRelative);
+
+  callbackManager.Register("ControlPitchRelative", controlPitchRelative);
+  callbackManager.Register("ControlYawRelative", controlYawRelative);
+  callbackManager.Register("ControlRollRelative", controlRollRelative);
+
+  using Phase = System::Phase;
+
+  systemManager.Register("CasqadiumEditorSystem",
+                         EditorSystem,
+                         Phase{Phase::Logic | Phase::Editor});
+
+  systemManager.Register("CullingSystem",
+                         CullingSystem,
+                         Phase::Render);
+
+  systemManager.Register("RenderSystem",
+                         RenderSystem,
+                         Phase::Render);
+
+  systemManager.Register("CasqadiumEditorRenderSystem",
+                         RenderSystem,
+                         Phase{Phase::Render | Phase::Editor});
+
+  systemManager.Register("CasqadiumEditorEntityHighlightSystem",
+                         EditorEntityHighlightSystem,
+                         Phase{Phase::Render | Phase::Editor});
 }
 
 std::string

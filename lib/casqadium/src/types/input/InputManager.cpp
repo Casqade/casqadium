@@ -7,6 +7,7 @@
 
 #include <cqde/util/logger.hpp>
 
+#include <cqde/components/CasqadiumEditorInternal.hpp>
 #include <cqde/components/InputController.hpp>
 #include <cqde/components/SubscriberInput.hpp>
 
@@ -64,12 +65,18 @@ InputManager::InputManager()
     {Key::W, "Key_W"},
     {Key::C, "Key_C"},
     {Key::Q, "Key_Q"},
+    {Key::R, "Key_R"},
+    {Key::F, "Key_F"},
     {Key::MENU, "Key_Alt"},
     {Key::CTRL, "Key_Ctrl"},
     {Key::SHIFT, "Key_Shift"},
     {Key::SPACE, "Key_Space"},
     {Key::ENTER, "Key_Enter"},
     {Key::ESCAPE, "Key_Escape"},
+    {Key::K1, "Key_1"},
+    {Key::K2, "Key_2"},
+    {Key::K3, "Key_3"},
+    {Key::F12, "Key_F12"},
 
     {Key::LEFT, "Key_Left"},
     {Key::RIGHT, "Key_Right"},
@@ -253,6 +260,7 @@ InputManager::handleAxisInput(
 {
   using compos::InputController;
   using compos::SubscriberInput;
+  using compos::CasqadiumEditorInternal;
 
   if ( mHwControlMap.count(inputHwCode) == 0 )
     return;
@@ -264,14 +272,18 @@ InputManager::handleAxisInput(
 
   InputHwId inputId = prefix + mHwControlMap[inputHwCode].str();
 
-  InputEvent event {};
+  if ( registry.storage <CasqadiumEditorInternal> ().empty() == true )
+  {
+    InputEvent event {};
 
-  event.inputId = inputId;
-  event.amount = amount;
+    event.inputId = inputId;
+    event.amount = amount;
 
-  mInputHistory.push_back(event);
-  while ( mInputHistory.size() > mInputHistoryLength )
-    mInputHistory.pop_front();
+    mInputHistory.push_back(event);
+
+    while ( mInputHistory.size() > mInputHistoryLength )
+      mInputHistory.pop_front();
+  }
 
   auto& callbackMgr = registry.ctx().at <CallbackManager> ();
 
@@ -283,7 +295,10 @@ InputManager::handleAxisInput(
   {
     auto& [binding, axisId] = *iter;
 
-    for ( auto&& [entity, cController] : registry.view <InputController, SubscriberInput> ().each() )
+    const auto bindingInputHandler =
+    [&, binding = binding,
+        axisId = axisId] ( const auto entity, auto& cController )
+    {
       if ( const auto& iter = cController.axes.find(axisId);
            iter != cController.axes.end() )
       {
@@ -295,6 +310,12 @@ InputManager::handleAxisInput(
           callbackMgr.execute(callbackId, registry,
                               {entity, &cController});
       }
+    };
+
+    if ( registry.storage <CasqadiumEditorInternal> ().empty() == true )
+      registry.view <InputController, SubscriberInput> ().each(bindingInputHandler);
+    else
+      registry.view <InputController, SubscriberInput, CasqadiumEditorInternal> ().each(bindingInputHandler);
   }
 }
 

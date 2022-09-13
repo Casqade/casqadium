@@ -8,6 +8,7 @@
 #include <cqde/components/Tag.hpp>
 #include <cqde/components/SceneNode.hpp>
 #include <cqde/components/EntityMetaInfo.hpp>
+#include <cqde/components/CasqadiumEditorInternal.hpp>
 
 #include <cqde/common.hpp>
 #include <cqde/ecs_helpers.hpp>
@@ -38,7 +39,8 @@ EntityManagerUi::ui_show(
 {
   CQDE_ASSERT_DEBUG(mEntityMgr != nullptr, return);
 
-  if ( ImGui::Begin("Registry view") == false )
+  if ( ImGui::Begin("Registry view", NULL,
+                    ImGuiWindowFlags_MenuBar) == false )
   {
     ImGui::End(); // Registry view
     return;
@@ -59,6 +61,8 @@ EntityManagerUi::ui_show(
 
     ImGui::EndTable(); // RegistryTable
   }
+
+  ui_show_menu_bar(registry);
 
   ImGui::End(); // Registry view
 
@@ -182,6 +186,7 @@ EntityManagerUi::ui_show_entities_table(
   using compos::Tag;
   using compos::SceneNode;
   using compos::EntityMetaInfo;
+  using compos::CasqadiumEditorInternal;
 
   const auto window = ImGui::GetCurrentWindow();
 
@@ -200,7 +205,11 @@ EntityManagerUi::ui_show_entities_table(
     ImGui::EndDragDropTarget();
   }
 
-  const auto tagType = mEntityMgr->componentType <Tag> ();
+  std::set <ComponentType> protectedTypes
+  {
+    mEntityMgr->componentType <Tag> (),
+    mEntityMgr->componentType <CasqadiumEditorInternal> ()
+  };
 
   const auto tableFlags = ImGuiTableFlags_ScrollX |
                           ImGuiTableFlags_ScrollY;
@@ -217,8 +226,9 @@ EntityManagerUi::ui_show_entities_table(
   });
 
   registry.view <Tag> ().each(
-  [ this, &registry, tagType] ( const entt::entity entity,
-                                const Tag& cTag )
+  [ this, &registry,
+    protectedTypes] ( const entt::entity entity,
+                      const Tag& cTag )
   {
     if ( mRegistryFilter.query(registry, entity) == false )
       return;
@@ -329,13 +339,13 @@ EntityManagerUi::ui_show_entities_table(
     {
       each_component(entity, registry,
       [ this, &registry, entity, &entityId,
-        tagType] ( const ComponentType componentType )
+        protectedTypes] ( const ComponentType componentType )
       {
         const auto entityComponentPair = std::make_pair(entity, componentType);
 
         ImGui::PushID(componentType);
 
-        ImGui::BeginDisabled(componentType == tagType);
+        ImGui::BeginDisabled(protectedTypes.count(componentType) > 0);
 
         if ( ImGui::SmallButton("-##componentRemove") )
         {
@@ -412,6 +422,8 @@ EntityManagerUi::ui_show_entities_table(
 
         if ( ImGui::BeginPopup("##componentContextMenu") )
         {
+          ImGui::BeginDisabled(protectedTypes.count(componentType) > 0);
+
           if ( ImGui::Selectable(("Copy##" + componentName).c_str()) )
           {
             mClipboard.clear();
@@ -420,6 +432,8 @@ EntityManagerUi::ui_show_entities_table(
             mEntityMgr->componentSerialize( registry, mClipboard["payload"],
                                             entity, componentType);
           }
+
+          ImGui::EndDisabled();
 
           ImGui::EndPopup(); // componentContextMenu
         }
@@ -472,12 +486,16 @@ EntityManagerUi::ui_show_entities_table(
           if ( mNewComponentFilter.query(componentName) == false )
             continue;
 
+          const auto componentType = mEntityMgr->componentType(componentName);
+
+          if ( protectedTypes.count(componentType) )
+            continue;
+
           componentsFound = true;
 
           if ( ImGui::Selectable(componentName.c_str(), false) )
           {
-            mEntityMgr->componentAdd(mEntityMgr->componentType(componentName),
-                                     entity, registry);
+            mEntityMgr->componentAdd(componentType, entity, registry);
 
             ImGui::CloseCurrentPopup();
             break;
@@ -677,6 +695,103 @@ EntityManagerUi::ui_show_nodes_table(
 
     DestroyChildNode(registry, nodeToDestroy.first, nodeToDestroy.second);
   }
+}
+
+void
+EntityManagerUi::ui_show_menu_bar(
+  entt::registry& registry )
+{
+  using fmt::format;
+  using types::PackageManager;
+  using types::EntityManager;
+  using ContentType = types::Package::ContentType;
+
+  if ( ImGui::BeginMenuBar() == false )
+    return;
+
+  const auto& packageManager = registry.ctx().at <PackageManager> ();
+
+  const auto selectedPackage = mRegistryFilter.package();
+
+  if ( ImGui::MenuItem("Save") )
+  {
+    if (  selectedPackage.str().empty() == false &&
+          ImGui::MenuItem(format("Save '{}'", selectedPackage.str()).c_str()) )
+      entitiesSave(selectedPackage, registry);
+
+    if ( ImGui::MenuItem("Save all") )
+      for ( const auto& packageId : packageManager.packages() )
+        if ( packageId.str().empty() == false )
+          entitiesSave(packageId, registry);
+  }
+
+  if ( ImGui::MenuItem("Reload") )
+  {
+    entitiesDeselect();
+    componentDeselect();
+
+    registry.ctx().at <EntityManager> ().clear();
+    registry.clear();
+
+    try
+    {
+      for ( const auto& packageId : packageManager.packages() )
+      {
+        auto package = packageManager.package(packageId);
+
+        if ( package == nullptr )
+        {
+          LOG_ERROR("Failed to load package '{}' entity registry: "
+                    "No such package in PackageManager",
+                    packageId.str());
+          continue;
+        }
+
+        mEntityMgr->load(package->contentPath(ContentType::Entities),
+                         packageId, registry);
+      }
+    }
+    catch ( const std::exception& e )
+    {
+      LOG_ERROR("{}", e.what());
+    }
+  }
+
+  ImGui::EndMenuBar();
+}
+
+void
+EntityManagerUi::entitiesSave(
+  const PackageId& packageId,
+  entt::registry& registry ) const
+{
+  using compos::Tag;
+  using compos::EntityMetaInfo;
+  using compos::CasqadiumEditorInternal;
+
+  using types::PackageManager;
+  using ContentType = types::Package::ContentType;
+
+  const auto& packageManager = registry.ctx().at <PackageManager> ();
+
+  const auto package = packageManager.package(packageId);
+
+  if ( package == nullptr )
+  {
+    LOG_ERROR("Failed to write package '{}' entity registry: "
+              "No such package in PackageManager",
+              packageId.str());
+    return;
+  }
+
+  const auto entitiesJson = mEntityMgr->serialize(packageId, registry,
+  {
+    mEntityMgr->componentType <Tag> (),
+    mEntityMgr->componentType <EntityMetaInfo> (),
+    mEntityMgr->componentType <CasqadiumEditorInternal> (),
+  });
+
+  package->save(ContentType::Entities, entitiesJson);
 }
 
 void

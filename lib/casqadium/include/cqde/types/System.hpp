@@ -17,10 +17,12 @@ struct System
   Callback callback {};
   SystemId id {};
 
-  enum class Phase
+  enum Phase : uint32_t
   {
-    Logic,
-    Render,
+    Logic = 0x1,
+    Render = 0x2,
+
+    Editor = 0x4,
 
   } phase {};
 

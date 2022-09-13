@@ -2,6 +2,7 @@
 #include <cqde/types/SystemManager.hpp>
 
 #include <cqde/common.hpp>
+#include <cqde/callbacks.hpp>
 
 #include <imgui.h>
 
@@ -15,29 +16,98 @@ SystemManagerUi::SystemManagerUi(
 {}
 
 void
-SystemManagerUi::ui_show(
-  entt::registry& )
+SystemManagerUi::init(
+  const entt::registry& registry )
 {
   CQDE_ASSERT_DEBUG(mSystemMgr != nullptr, return);
 
-  if ( ImGui::Begin("Systems", NULL,
-                    ImGuiWindowFlags_HorizontalScrollbar) == false )
+  mSystemsStateBackup = mSystemMgr->serialize();
+  mSystemsStateCurrent = mSystemsStateBackup;
+}
+
+void
+SystemManagerUi::ui_show(
+  entt::registry& registry )
+{
+  CQDE_ASSERT_DEBUG(mSystemMgr != nullptr, return);
+
+  const auto flags = ImGuiWindowFlags_MenuBar |
+                     ImGuiWindowFlags_HorizontalScrollbar;
+
+  if ( ImGui::Begin("Systems", NULL, flags) == false )
   {
     ImGui::End(); // Systems
     return;
   }
 
+  if ( ImGui::BeginMenuBar() )
+  {
+    using Phase = types::System::Phase;
+
+    if ( ImGui::MenuItem("Apply") )
+    {
+      mSystemMgr->deserialize(mSystemsStateCurrent);
+
+      for ( const auto& systemId : mSystemMgr->systems(Phase::Editor) )
+        mSystemMgr->activate(systemId);
+    }
+
+    if ( ImGui::MenuItem("Apply & Run") )
+    {
+      mSystemMgr->deserialize(mSystemsStateCurrent);
+      callbacks::editorModeDisable(registry);
+    }
+
+    if ( ImGui::MenuItem("Reset") )
+    {
+      mSystemsStateCurrent = mSystemsStateBackup;
+      mSystemMgr->deserialize(mSystemsStateCurrent);
+
+      for ( const auto& systemId : mSystemMgr->systems(Phase::Editor) )
+        mSystemMgr->activate(systemId);
+    }
+
+    ImGui::EndMenuBar();
+  }
+
   using Phase = types::System::Phase;
 
-  if ( ImGui::CollapsingHeader("Logic", ImGuiTreeNodeFlags_DefaultOpen) )
+  const auto systemsShow =
+  [this] ( const Phase phase )
+  {
     for ( auto& system : mSystemMgr->mSystems )
-      if ( system.phase == Phase::Logic )
-        ImGui::Checkbox(system.id.str().c_str(), &system.active);
+    {
+      const auto systemIter =
+      [this] ( const SystemId& system )
+      {
+        for ( auto iter = mSystemsStateCurrent.begin();
+              iter != mSystemsStateCurrent.end();
+              ++iter )
+          if ( iter->asString() == system.str() )
+            return iter;
+
+        return mSystemsStateCurrent.end();
+
+      } (system.id);
+
+      bool systemActive = systemIter != mSystemsStateCurrent.end();
+
+      if ( system.phase == phase &&
+           ImGui::Checkbox(system.id.str().c_str(), &systemActive) )
+      {
+        if ( systemActive == true )
+          mSystemsStateCurrent.append(system.id.str());
+        else
+          mSystemsStateCurrent.removeIndex(systemIter.index(), nullptr);
+      }
+    }
+  };
+
+  if ( ImGui::CollapsingHeader("Logic", ImGuiTreeNodeFlags_DefaultOpen) )
+    systemsShow(Phase::Logic);
 
   if ( ImGui::CollapsingHeader("Render", ImGuiTreeNodeFlags_DefaultOpen) )
-    for ( auto& system : mSystemMgr->mSystems )
-      if ( system.phase == Phase::Render )
-        ImGui::Checkbox(system.id.str().c_str(), &system.active);
+    systemsShow(Phase::Render);
 
   ImGui::End(); //  Systems
 }

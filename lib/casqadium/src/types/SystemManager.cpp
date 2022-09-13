@@ -51,7 +51,7 @@ SystemManager::execute(
 {
   for ( const auto& system : mSystems )
     if ( system.active == true &&
-         system.phase == phase )
+         (system.phase & phase) == phase )
       system.callback(registry);
 }
 
@@ -149,6 +149,18 @@ SystemManager::serialize() const
   return result;
 }
 
+bool
+SystemManager::isActive(
+  const SystemId& systemId ) const
+{
+  for ( const auto& system : mSystems )
+    if ( system.id == systemId &&
+         system.active == true )
+      return true;
+
+  return false;
+}
+
 std::vector <SystemId>
 SystemManager::systems() const
 {
@@ -161,6 +173,19 @@ SystemManager::systems() const
 }
 
 std::vector <SystemId>
+SystemManager::systems(
+  const Phase phase ) const
+{
+  std::vector <SystemId> result {};
+
+  for ( const auto& system : mSystems )
+    if ( (system.phase & phase) == phase )
+      result.push_back(system.id);
+
+  return result;
+}
+
+std::vector <SystemId>
 SystemManager::systemsActive(
   const Phase phase ) const
 {
@@ -168,7 +193,7 @@ SystemManager::systemsActive(
 
   for ( const auto& system : mSystems )
     if ( system.active == true &&
-         system.phase == phase )
+         (system.phase & phase) == phase )
       result.push_back(system.id);
 
   return result;

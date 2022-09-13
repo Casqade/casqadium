@@ -1,10 +1,64 @@
 #include <cqde/render_helpers.hpp>
+#include <cqde/math_helpers.hpp>
 
 #include <olcPGE/olcPGEX_TTF.hpp>
+
+#include <glm/ext/matrix_projection.hpp>
 
 
 namespace cqde
 {
+
+types::VertexBuffer
+vertexShader(
+  const std::vector <glm::vec3>& vertices,
+  const glm::mat4& modelViewMatrix,
+  const glm::mat4& projectionMatrix,
+  const glm::vec4& viewport )
+{
+  using types::VertexBuffer;
+
+  if ( vertices.size() == 0 )
+    return {{}, -1.0f, {}};
+
+  VertexBuffer vb{};
+  vb.vertices.reserve(vertices.size());
+
+  for ( const glm::vec3& srcVert : vertices )
+  {
+    const glm::vec3 vertex =
+      glm::project( srcVert,
+                    modelViewMatrix,
+                    projectionMatrix,
+                    viewport );
+
+    if ( vertex.z < 0.0f || vertex.z > 1.0f )
+      return {{}, -1.0f, {}};
+
+    vb.vertices.push_back({ vertex.x, // converting y axis to top-left origin
+                            viewport.y * 2 + viewport.w - vertex.y });
+    vb.depth += vertex.z;
+  }
+
+  const Rect bb = boundingBox(vb.vertices);
+
+  const Rect vp
+  {
+    .left = viewport.x,
+    .right = viewport.x + viewport.z,
+    .top = viewport.y,
+    .bottom = viewport.y + viewport.w
+  };
+
+  if ( rectsIntersect(bb, vp) == false )
+    return {{}, -1.0f};
+
+  vb.depth /= vb.vertices.size();
+
+  vb.windingOrderUpdate();
+
+  return vb;
+}
 
 void drawLines(
   const std::vector <olc::vf2d>& vertices,

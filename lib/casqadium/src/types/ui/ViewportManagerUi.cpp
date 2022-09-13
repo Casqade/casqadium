@@ -7,11 +7,13 @@
 #include <cqde/components/Transform.hpp>
 #include <cqde/components/GeometryBuffer.hpp>
 
-#include <cqde/systems/CullingSystem.hpp>
+#include <cqde/systems.hpp>
 
 #include <cqde/types/assets/GeometryAssetManager.hpp>
 
 #include <cqde/math_helpers.hpp>
+#include <cqde/render_helpers.hpp>
+
 #include <cqde/util/logger.hpp>
 
 #include <glm/gtc/type_ptr.hpp>
@@ -296,7 +298,7 @@ ViewportManagerUi::ui_show_viewport_windows(
       viewportSize.x = std::min(viewportSize.x, viewportSize.x / viewportRatio * screenRatio);
       viewportSize.y = std::min(viewportSize.y, viewportSize.y * viewportRatio / screenRatio);
 
-      glm::vec4 camViewport
+      const glm::vec4 camViewport
       {
         viewportPos.x + viewportSize.x * cCamera.viewport.x,
         viewportPos.y + viewportSize.y * cCamera.viewport.y,
@@ -314,7 +316,7 @@ ViewportManagerUi::ui_show_viewport_windows(
 
         const glm::mat4 modelView = camView * GetWorldMatrix(registry, cTransform, cNode);
 
-        auto vBuffer = systems::vertexShader(
+        const auto vBuffer = vertexShader(
           *gBuffer,
           modelView,
           camProjection,

@@ -35,15 +35,6 @@ class EntityManagerUi
 
   types::EntityManager* mEntityMgr {};
 
-
-  void ui_show_component_window( entt::registry& );
-
-  void ui_show_filter_section( entt::registry& );
-  void ui_show_entities_table( entt::registry& );
-  void ui_show_nodes_table( entt::registry& );
-
-  void prefabDeserialize( entt::registry&, const Json::Value& );
-
 public:
   EntityManagerUi( types::EntityManager* );
 
@@ -68,6 +59,19 @@ public:
 
   std::vector <entt::entity> selectedEntities() const;
   std::pair <entt::entity, ComponentType> selectedComponent() const;
+
+private:
+  void ui_show_component_window( entt::registry& );
+
+  void ui_show_filter_section( entt::registry& );
+  void ui_show_entities_table( entt::registry& );
+  void ui_show_nodes_table( entt::registry& );
+
+  void ui_show_menu_bar( entt::registry& );
+
+  void entitiesSave( const PackageId&, entt::registry& ) const;
+
+  void prefabDeserialize( entt::registry&, const Json::Value& );
 };
 
 } // namespace cqde::types

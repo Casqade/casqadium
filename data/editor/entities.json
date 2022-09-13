@@ -71,55 +71,50 @@
     {
       "axes":
       {
+        "EditorModeToggle":
+        {
+          "callbacks": ["EditorModeToggle"],
+          "constraint": [0.0, 0.0],
+          "value": 0.0,
+        },
+        "EngineShutdown":
+        {
+          "callbacks": ["EngineShutdown"],
+          "constraint": [0.0, 0.0],
+          "value": 0.0,
+        },
         "TranslateX":
         {
-          "callbacks": [],
-          "constraint": [-1.0, 1.0],
+          "callbacks": ["ControlTranslateXRelative"],
+          "constraint": [1.0, 0.0],
           "value": 0.0,
         },
         "TranslateY":
         {
-          "callbacks": [],
-          "constraint": [-1.0, 1.0],
+          "callbacks": ["ControlTranslateYRelative"],
+          "constraint": [1.0, 0.0],
           "value": 0.0,
         },
         "TranslateZ":
         {
-          "callbacks": [],
-          "constraint": [-1.0, 1.0],
-          "value": 0.0,
-        },
-        "CameraLookOn":
-        {
-          "callbacks": ["MouseAutoCenterEnable", "MouseCursorHide"],
-          "constraint": [0.0, 1.0],
-          "value": 0.0,
-        },
-        "CameraLookOff":
-        {
-          "callbacks": ["MouseAutoCenterDisable", "MouseCursorShow"],
-          "constraint": [0.0, 1.0],
-          "value": 0.0,
-        },
-        "CameraLookToggle":
-        {
-          "callbacks": ["CameraLookToggle"],
-          "constraint": [0.0, 1.0],
+          "callbacks": ["ControlTranslateZRelative"],
+          "constraint": [1.0, 0.0],
           "value": 0.0,
         },
         "Pitch":
         {
-          "callbacks": [],
-          "constraint": [-90.0, 90.0],
+          "callbacks": ["ControlPitchRelative"],
+          "constraint": [1.0, 0.0],
           "value": 0.0,
         },
         "Yaw":
         {
-          "callbacks": ["CameraYawClamp"],
-          "constraint": [-3600.0, 3600.0],
+          "callbacks": ["ControlYawRelative"],
+          "constraint": [1.0, 0.0],
           "value": 0.0,
         },
       }
     },
+    "SubscriberInput": {},
   },
 }

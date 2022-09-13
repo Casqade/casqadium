@@ -44,6 +44,7 @@ public:
   };
 
   void parseManifest( const path& manifestPath );
+
   void load( entt::registry& );
 
   bool save( const ContentType,

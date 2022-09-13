@@ -2,6 +2,10 @@
 
 #include <olcPGE/olcPixelGameEngine.hpp>
 
+#include <cqde/types/VertexBuffer.hpp>
+
+#include <glm/fwd.hpp>
+
 
 namespace olc
 {
@@ -16,6 +20,14 @@ enum class LineRenderMode
   Strip,
   Loop,
 };
+
+
+types::VertexBuffer
+vertexShader(
+  const std::vector <glm::vec3>& vertices,
+  const glm::mat4& modelViewMatrix,
+  const glm::mat4& projectionMatrix,
+  const glm::vec4& viewport );
 
 void drawLines( const std::vector <olc::vf2d>&,
                 const olc::Pixel& color,
