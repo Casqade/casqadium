@@ -142,7 +142,7 @@ Package::load(
 
   auto& entityManager = registry.ctx().at <EntityManager> ();
   entityManager.load( contentPath(ContentType::Entities),
-                      mTitle, registry );
+                      mId, registry );
 }
 
 bool
