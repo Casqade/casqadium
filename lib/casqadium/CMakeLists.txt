@@ -10,6 +10,7 @@ add_library(${TARGET}::${TARGET} ALIAS ${TARGET})
 set(CASQADIUM_SHORT cqde)
 
 target_sources(${TARGET} PRIVATE
+
   include/${CASQADIUM_SHORT}/alias.hpp
   include/${CASQADIUM_SHORT}/fwd.hpp
 
@@ -40,6 +41,9 @@ target_sources(${TARGET} PRIVATE
   src/systems.cpp
   include/${CASQADIUM_SHORT}/systems.hpp
 
+  src/util/logger.cpp
+  include/${CASQADIUM_SHORT}/util/logger.hpp
+
   src/conversion/json_glm_vec.cpp
   include/${CASQADIUM_SHORT}/conversion/json_glm_vec.hpp
   include/${CASQADIUM_SHORT}/conversion/json_glm_vec1.hpp
@@ -48,8 +52,35 @@ target_sources(${TARGET} PRIVATE
   include/${CASQADIUM_SHORT}/conversion/json_glm_vec4.hpp
   include/${CASQADIUM_SHORT}/conversion/json_glm_quat.hpp
 
+  thirdparty/ctpl/ctpl_stl.h
+
+
+#  Classes & PODs
+  include/${CASQADIUM_SHORT}/types/FrameCurrent.hpp
+  include/${CASQADIUM_SHORT}/types/SequenceStep.hpp
+  include/${CASQADIUM_SHORT}/types/System.hpp
+  include/${CASQADIUM_SHORT}/types/TickCurrent.hpp
+
+  include/${CASQADIUM_SHORT}/types/UndoRedoQueue.hpp
+  include/${CASQADIUM_SHORT}/types/UndoRedoQueue-inl.hpp
+
+  src/types/UndoRedoQueue_types.cpp
+  include/${CASQADIUM_SHORT}/types/UndoRedoQueue_types.hpp
+
+  src/types/Package.cpp
+  src/types/Package_ui_impl.cpp
+  include/${CASQADIUM_SHORT}/types/Package.hpp
+
+  src/types/VertexBuffer.cpp
+  include/${CASQADIUM_SHORT}/types/VertexBuffer.hpp
+
+
+#  Managers
   src/types/CallbackManager.cpp
   include/${CASQADIUM_SHORT}/types/CallbackManager.hpp
+
+  src/types/ConfigManager.cpp
+  include/${CASQADIUM_SHORT}/types/ConfigManager.hpp
 
   src/types/EntityManager.cpp
   include/${CASQADIUM_SHORT}/types/EntityManager.hpp
@@ -57,9 +88,39 @@ target_sources(${TARGET} PRIVATE
   src/types/EntityReference.cpp
   include/${CASQADIUM_SHORT}/types/EntityReference.hpp
 
+  src/types/PackageManager.cpp
+  include/${CASQADIUM_SHORT}/types/PackageManager.hpp
+
+  src/types/PrefabManager.cpp
+  include/${CASQADIUM_SHORT}/types/PrefabManager.hpp
+
   src/types/SystemManager.cpp
   include/${CASQADIUM_SHORT}/types/SystemManager.hpp
 
+
+#  Assets
+  include/${CASQADIUM_SHORT}/types/assets/AssetStatus.hpp
+
+  include/${CASQADIUM_SHORT}/types/assets/AssetManager.hpp
+  include/${CASQADIUM_SHORT}/types/assets/AssetManager-inl.hpp
+
+  src/types/assets/AudioAssetManager.cpp
+  include/${CASQADIUM_SHORT}/types/assets/AudioAssetManager.hpp
+
+  src/types/assets/FontAssetManager.cpp
+  include/${CASQADIUM_SHORT}/types/assets/FontAssetManager.hpp
+
+  src/types/assets/GeometryAssetManager.cpp
+  include/${CASQADIUM_SHORT}/types/assets/GeometryAssetManager.hpp
+
+  src/types/assets/TextStringAssetManager.cpp
+  include/${CASQADIUM_SHORT}/types/assets/TextStringAssetManager.hpp
+
+  src/types/assets/TextureAssetManager.cpp
+  include/${CASQADIUM_SHORT}/types/assets/TextureAssetManager.hpp
+
+
+#  Input
   src/types/input/InputManager.cpp
   include/${CASQADIUM_SHORT}/types/input/InputManager.hpp
 
@@ -80,6 +141,8 @@ target_sources(${TARGET} PRIVATE
 
   include/${CASQADIUM_SHORT}/types/input/InputEvent.hpp
 
+
+#  UI implementation
   src/types/ui/AssetManagerUi.cpp
   include/${CASQADIUM_SHORT}/types/ui/AssetManagerUi.hpp
 
@@ -104,6 +167,7 @@ target_sources(${TARGET} PRIVATE
   src/types/ui/SystemManagerUi.cpp
   include/${CASQADIUM_SHORT}/types/ui/SystemManagerUi.hpp
 
+#  UI widgets
   src/types/ui/widgets/ToggleButton.cpp
   include/${CASQADIUM_SHORT}/types/ui/widgets/ToggleButton.hpp
 
@@ -116,51 +180,8 @@ target_sources(${TARGET} PRIVATE
   src/types/ui/widgets/RegistryFilter.cpp
   include/${CASQADIUM_SHORT}/types/ui/widgets/RegistryFilter.hpp
 
-  include/${CASQADIUM_SHORT}/types/FrameCurrent.hpp
-  include/${CASQADIUM_SHORT}/types/SequenceStep.hpp
-  include/${CASQADIUM_SHORT}/types/System.hpp
-  include/${CASQADIUM_SHORT}/types/TickCurrent.hpp
 
-  include/${CASQADIUM_SHORT}/types/UndoRedoQueue.hpp
-  include/${CASQADIUM_SHORT}/types/UndoRedoQueue-inl.hpp
-
-  src/types/UndoRedoQueue_types.cpp
-  include/${CASQADIUM_SHORT}/types/UndoRedoQueue_types.hpp
-
-  src/types/VertexBuffer.cpp
-  include/${CASQADIUM_SHORT}/types/VertexBuffer.hpp
-
-  src/types/Package.cpp
-  src/types/Package_ui_impl.cpp
-  include/${CASQADIUM_SHORT}/types/Package.hpp
-
-  src/types/PackageManager.cpp
-  include/${CASQADIUM_SHORT}/types/PackageManager.hpp
-
-  src/types/PrefabManager.cpp
-  include/${CASQADIUM_SHORT}/types/PrefabManager.hpp
-
-  include/${CASQADIUM_SHORT}/types/assets/AssetStatus.hpp
-
-  include/${CASQADIUM_SHORT}/types/assets/AssetManager.hpp
-  include/${CASQADIUM_SHORT}/types/assets/AssetManager-inl.hpp
-
-  src/types/assets/AudioAssetManager.cpp
-  include/${CASQADIUM_SHORT}/types/assets/AudioAssetManager.hpp
-
-  src/types/assets/FontAssetManager.cpp
-  include/${CASQADIUM_SHORT}/types/assets/FontAssetManager.hpp
-
-  src/types/assets/GeometryAssetManager.cpp
-  include/${CASQADIUM_SHORT}/types/assets/GeometryAssetManager.hpp
-
-  src/types/assets/TextStringAssetManager.cpp
-  include/${CASQADIUM_SHORT}/types/assets/TextStringAssetManager.hpp
-
-  src/types/assets/TextureAssetManager.cpp
-  include/${CASQADIUM_SHORT}/types/assets/TextureAssetManager.hpp
-
-
+#  Components
   src/components/Camera.cpp
   src/components/Camera_ui_impl.cpp
   include/${CASQADIUM_SHORT}/components/Camera.hpp
@@ -212,15 +233,6 @@ target_sources(${TARGET} PRIVATE
   src/components/Transform.cpp
   src/components/Transform_ui_impl.cpp
   include/${CASQADIUM_SHORT}/components/Transform.hpp
-
-
-  src/util/logger.cpp
-  include/${CASQADIUM_SHORT}/util/logger.hpp
-
-  src/types/ConfigManager.cpp
-  include/${CASQADIUM_SHORT}/types/ConfigManager.hpp
-
-  thirdparty/ctpl/ctpl_stl.h
 )
 
 if(${BUILD_SHARED_LIBS})
