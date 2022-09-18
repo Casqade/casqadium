@@ -209,13 +209,13 @@ Transform::ui_edit_props(
         auto front = glm::column(orientationMat, 2);
 
         if ( ImGui::BeginTable("##orientationMatrix", 4,
-                               ImGuiTableFlags_SizingStretchSame) )
+                               ImGuiTableFlags_Resizable |
+                               ImGuiTableFlags_SizingStretchProp) )
         {
-
-          ImGui::TableSetupColumn("##dimension");
-          ImGui::TableSetupColumn("Right");
-          ImGui::TableSetupColumn("Up");
-          ImGui::TableSetupColumn("Front");
+          ImGui::TableSetupColumn("##dimension", ImGuiTableColumnFlags_NoHeaderLabel);
+          ImGui::TableSetupColumn("Right", ImGuiTableColumnFlags_NoHeaderWidth);
+          ImGui::TableSetupColumn("Up", ImGuiTableColumnFlags_NoHeaderWidth);
+          ImGui::TableSetupColumn("Front", ImGuiTableColumnFlags_NoHeaderWidth);
 
           ImGui::TableHeadersRow();
 
@@ -225,12 +225,15 @@ Transform::ui_edit_props(
           ImGui::BeginDisabled(true);
 
           ImGui::TableNextColumn();
+          ImGui::SetNextItemWidth(-1.0f);
           ImGui::DragFloat("##orientationRightX", &right.x);
 
           ImGui::TableNextColumn();
+          ImGui::SetNextItemWidth(-1.0f);
           ImGui::DragFloat("##orientationUpX", &up.x);
 
           ImGui::TableNextColumn();
+          ImGui::SetNextItemWidth(-1.0f);
           ImGui::DragFloat("##orientationFrontX", &front.x);
 
           ImGui::EndDisabled();
@@ -241,10 +244,15 @@ Transform::ui_edit_props(
           ImGui::BeginDisabled(true);
 
           ImGui::TableNextColumn();
+          ImGui::SetNextItemWidth(-1.0f);
           ImGui::DragFloat("##orientationRightY", &right.y);
+
           ImGui::TableNextColumn();
+          ImGui::SetNextItemWidth(-1.0f);
           ImGui::DragFloat("##orientationUpY", &up.y);
+
           ImGui::TableNextColumn();
+          ImGui::SetNextItemWidth(-1.0f);
           ImGui::DragFloat("##orientationFrontY", &front.y);
 
           ImGui::EndDisabled();
@@ -255,10 +263,15 @@ Transform::ui_edit_props(
           ImGui::BeginDisabled(true);
 
           ImGui::TableNextColumn();
+          ImGui::SetNextItemWidth(-1.0f);
           ImGui::DragFloat("##orientationRightZ", &right.z);
+
           ImGui::TableNextColumn();
+          ImGui::SetNextItemWidth(-1.0f);
           ImGui::DragFloat("##orientationUpZ", &up.z);
+
           ImGui::TableNextColumn();
+          ImGui::SetNextItemWidth(-1.0f);
           ImGui::DragFloat("##orientationFrontZ", &front.z);
 
           ImGui::EndDisabled();
