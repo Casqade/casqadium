@@ -60,7 +60,7 @@ GameStateEcsSandbox::GameStateEcsSandbox(
 
   try
   {
-    packageManager.load("data/packages.json", mRegistry);
+    packageManager.load(mRegistry);
   }
   catch ( const std::exception& e )
   {

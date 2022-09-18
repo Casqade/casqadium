@@ -60,7 +60,7 @@ PackageManagerUi::ui_show(
 
   if ( mConfigState.root.empty() == true )
   {
-    mConfigState.root = fileParse(mPackageMgr->mPackagesRoot);
+    mConfigState.root = fileParse(mPackageMgr->manifestPath());
     PackageManager::Validate(mConfigState.root);
     mDraggedPackageIndex = -1u;
   }
@@ -185,7 +185,7 @@ PackageManagerUi::ui_show(
         auto configIter = mHistoryBuffer.current();
         if ( mHistoryBuffer.isValid(configIter) == true )
         {
-          auto manifestPath = mPackageMgr->mPackagesRoot.parent_path() /
+          auto manifestPath = mPackageMgr->rootPath() /
                               mEditedPackageId /
                               Package::ContentFileName(ContentType::Manifest);
           mConfigState.packages[mEditedPackageId] = fileParse(manifestPath);
@@ -256,7 +256,7 @@ PackageManagerUi::ui_show_menu_bar(
                              std::ios::trunc |
                              std::ios::binary;
 
-    auto fileStream = fileOpen(mPackageMgr->rootPath(), streamFlags);
+    auto fileStream = fileOpen(mPackageMgr->manifestPath(), streamFlags);
     fileStream << Json::writeString(jsonWriter(), mConfigState.root);
     fileStream.close();
   }
@@ -288,7 +288,7 @@ PackageManagerUi::ui_show_menu_bar(
 
       try
       {
-        mPackageMgr->load(mPackageMgr->rootPath(), registry);
+        mPackageMgr->load(registry);
       }
       catch ( const std::exception& e )
       {
@@ -296,7 +296,7 @@ PackageManagerUi::ui_show_menu_bar(
       }
 
       mConfigState.packages.clear();
-      mConfigState.root = fileParse(mPackageMgr->mPackagesRoot);
+      mConfigState.root = fileParse(mPackageMgr->manifestPath());
 
       PackageManager::Validate(mConfigState.root);
     }

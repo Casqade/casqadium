@@ -1,14 +1,10 @@
 #pragma once
 
+#include <cqde/fwd.hpp>
 #include <cqde/types/Package.hpp>
 
 #include <vector>
 
-
-namespace cqde::ui
-{
-class PackageManagerUi;
-}
 
 namespace cqde::types
 {
@@ -19,26 +15,30 @@ class PackageManager
 
   using path = std::filesystem::path;
 
-  path mPackagesRoot {};
+  path mPackagesRootPath {"data"};
 
   std::vector <Package> mPackages {};
 
   PackageId mEntryPoint {};
 
-  void parseRoot();
+  void parseManifest();
 
 public:
   PackageManager() = default;
 
-  void load( const path& packagesRoot, entt::registry& );
+  void setRootPath( const path& packagesRoot );
+
+  void load(entt::registry& );
   void unload();
 
-  static void Validate( const Json::Value& packagesRoot );
+  static void Validate( const Json::Value& packagesManifest );
 
   const Package* package( const PackageId& ) const;
 
   std::vector <PackageId> packages() const;
+
   path rootPath() const;
+  path manifestPath() const;
 };
 
 } // namespace cqde::types

@@ -70,20 +70,24 @@ Package::Package(
 {}
 
 void
-Package::parseManifest(
-  const path& manifestPath )
+Package::setRootPath(
+  const path& rootPath )
+{
+  mRootPath = rootPath;
+}
+
+void
+Package::parseManifest()
 {
   using fmt::format;
 
-  CQDE_ASSERT_DEBUG(manifestPath.empty() == false, {});
-
-  mManifestPath = manifestPath;
+  const auto manifestPath = contentPath(ContentType::Manifest);
 
   Json::Value manifest {};
 
   try
   {
-    manifest = fileParse(mManifestPath);
+    manifest = fileParse(manifestPath);
   }
   catch ( const std::exception& e )
   {
@@ -99,8 +103,8 @@ Package::parseManifest(
   catch ( const std::exception& e )
   {
     throw std::runtime_error(
-      format("Failed to validate package manifest '{}': {}",
-              mManifestPath.string(), e.what()));
+      format("Failed to validate package '{}' manifest '{}': {}",
+              mId.str(), manifestPath.string(), e.what()));
   }
 
   mTitle = manifest["title"].asString();
@@ -115,9 +119,9 @@ void
 Package::load(
   entt::registry& registry )
 {
-  LOG_DEBUG("Loading package '{}'", mManifestPath.string());
+  const auto manifestPath = contentPath(ContentType::Manifest);
 
-  parseManifest(mManifestPath);
+  LOG_DEBUG("Loading package '{}' ('{}')", mId.str(), manifestPath.string());
 
   auto& audio = registry.ctx().at <FontAssetManager> ();
   audio.parseAssetDbFile(contentPath(ContentType::Audio));
@@ -248,7 +252,7 @@ Package::path
 Package::contentPath(
   const ContentType type ) const
 {
-  return mManifestPath.parent_path() / ContentFileName(type);
+  return mRootPath / ContentFileName(type);
 }
 
 std::string

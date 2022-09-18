@@ -17,7 +17,7 @@ class Package
 {
   using path = std::filesystem::path;
 
-  path mManifestPath {};
+  path mRootPath {};
 
   std::set <PackageId> mDependencies {};
 
@@ -25,7 +25,7 @@ class Package
   std::string mDescription {};
   std::string mVersion {};
 
-  PackageId mId {};
+  PackageId mId;
 
 public:
   Package( const PackageId& );
@@ -43,7 +43,8 @@ public:
     Text,
   };
 
-  void parseManifest( const path& manifestPath );
+  void setRootPath( const path& );
+  void parseManifest();
 
   void load( entt::registry& );
 

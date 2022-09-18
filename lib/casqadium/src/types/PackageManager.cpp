@@ -11,7 +11,7 @@
 namespace cqde::types
 {
 
-const static Json::Value rootReference =
+const static Json::Value manifestReference =
 []
 {
   using ValueType = Json::ValueType;
@@ -38,42 +38,49 @@ const static Json::Value rootReference =
 
 void
 PackageManager::Validate(
-  const Json::Value& packagesRoot )
+  const Json::Value& packagesManifest )
 {
-  jsonValidateObject(packagesRoot, rootReference);
+  jsonValidateObject(packagesManifest, manifestReference);
 }
 
 void
-PackageManager::parseRoot()
+PackageManager::setRootPath(
+  const path& packagesRoot )
+{
+  mPackagesRootPath = packagesRoot;
+}
+
+void
+PackageManager::parseManifest()
 {
   using fmt::format;
 
-  Json::Value packages {};
+  Json::Value manifest {};
 
-  LOG_TRACE("Parsing packages root '{}'",
-            mPackagesRoot.string());
+  LOG_TRACE("Parsing packages manifest '{}'",
+            manifestPath().string());
 
   try
   {
-    packages = fileParse(mPackagesRoot);
+    manifest = fileParse(manifestPath());
   }
   catch ( const std::exception& e )
   {
     throw std::runtime_error(
-      format("Failed to parse packages root ({})",
+      format("Failed to parse packages manifest ({})",
               e.what()));
   }
 
-  LOG_TRACE("Validating packages root '{}'",
-            mPackagesRoot.string());
+  LOG_TRACE("Validating packages manifest '{}'",
+            manifestPath().string());
 
   std::set <PackageId> uniquePackages {};
 
   try
   {
-    Validate(packages);
+    Validate(manifest);
 
-    for ( const auto& packageId : packages["load_order"] )
+    for ( const auto& packageId : manifest["load_order"] )
     {
       if ( uniquePackages.insert(packageId.asString()).second == false )
         throw std::runtime_error(
@@ -84,43 +91,41 @@ PackageManager::parseRoot()
   catch ( const std::exception& e )
   {
     throw std::runtime_error(
-      format("Failed to validate packages root '{}': {}",
-              mPackagesRoot.string(), e.what()));
+      format("Failed to validate packages manifest '{}': {}",
+              manifestPath().string(), e.what()));
   }
 
-  mEntryPoint = packages["entry_point"].asString();
+  mEntryPoint = manifest["entry_point"].asString();
 
   mPackages.reserve(uniquePackages.size());
 
-  for ( const auto& packageId : packages["load_order"] )
+  for ( const auto& packageId : manifest["load_order"] )
     mPackages.push_back( {packageId.asString()} );
 }
 
 void
 PackageManager::load(
-  const path& packagesRoot,
   entt::registry& registry )
 {
   using fmt::format;
 
   mPackages.clear();
-  mPackagesRoot = packagesRoot;
 
   LOG_TRACE("Loading packages from '{}'",
-            mPackagesRoot.string());
+            manifestPath().string());
 
   try
   {
-    parseRoot();
+    parseManifest();
 
     std::set <PackageId> loadedPackages {};
 
     for ( auto& package : mPackages )
     {
       const auto packageId = package.id();
-      const auto packageManifest = mPackagesRoot.parent_path() / packageId.str() / "manifest.json";
 
-      package.parseManifest(packageManifest);
+      package.setRootPath(mPackagesRootPath / packageId.str());
+      package.parseManifest();
 
       for ( const auto& dependency : package.dependencies() )
         if ( loadedPackages.count(dependency) == 0 )
@@ -173,7 +178,13 @@ PackageManager::packages() const
 PackageManager::path
 PackageManager::rootPath() const
 {
-  return mPackagesRoot;
+  return mPackagesRootPath;
+}
+
+PackageManager::path
+PackageManager::manifestPath() const
+{
+  return mPackagesRootPath / "packages.json";
 }
 
 } // namespace cqde::types
