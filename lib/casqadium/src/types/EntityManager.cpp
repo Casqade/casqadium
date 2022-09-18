@@ -435,7 +435,8 @@ EntityManager::entities() const
   result.reserve(mEntitiesTags.size());
 
   for ( const auto& [id, entity] : mEntitiesTags )
-    result.push_back(id);
+    if ( id != null_id )
+      result.push_back(id);
 
   return result;
 }
