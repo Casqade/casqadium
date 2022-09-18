@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cqde/types/ui/widgets/StringFilter.hpp>
+
 #include <entt/fwd.hpp>
 
 #include <json/value.h>
@@ -16,8 +18,12 @@ namespace cqde::ui
 
 class SystemManagerUi
 {
-  Json::Value mSystemsStateBackup {Json::objectValue};
+  StringFilter mSystemFilter {"System ID"};
+
+  Json::Value mSystemsStateInitial {Json::objectValue};
   Json::Value mSystemsStateCurrent {Json::objectValue};
+
+  bool mStepRequested {};
 
   types::SystemManager* mSystemMgr {};
 

@@ -53,6 +53,8 @@ public:
 
   bool isActive( const SystemId& ) const;
 
+  Phase phase( const SystemId& );
+
   std::vector <SystemId> systems() const;
   std::vector <SystemId> systems( const Phase ) const;
   std::vector <SystemId> systemsActive( const Phase ) const;

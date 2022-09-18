@@ -161,6 +161,13 @@ SystemManager::isActive(
   return false;
 }
 
+System::Phase
+SystemManager::phase(
+  const SystemId& systemId )
+{
+  return systemIter(systemId)->phase;
+}
+
 std::vector <SystemId>
 SystemManager::systems() const
 {

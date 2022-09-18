@@ -21,20 +21,20 @@ SystemManagerUi::init(
 {
   CQDE_ASSERT_DEBUG(mSystemMgr != nullptr, return);
 
-  mSystemsStateBackup = mSystemMgr->serialize();
-  mSystemsStateCurrent = mSystemsStateBackup;
+  mSystemsStateInitial = mSystemMgr->serialize();
+  mSystemsStateCurrent = mSystemsStateInitial;
 }
 
 void
 SystemManagerUi::ui_show(
   entt::registry& registry )
 {
+  using Phase = types::System::Phase;
+
   CQDE_ASSERT_DEBUG(mSystemMgr != nullptr, return);
 
-  const auto flags = ImGuiWindowFlags_MenuBar |
-                     ImGuiWindowFlags_HorizontalScrollbar;
-
-  if ( ImGui::Begin("Systems", NULL, flags) == false )
+  if ( ImGui::Begin("Systems", NULL,
+                    ImGuiWindowFlags_MenuBar) == false )
   {
     ImGui::End(); // Systems
     return;
@@ -42,8 +42,6 @@ SystemManagerUi::ui_show(
 
   if ( ImGui::BeginMenuBar() )
   {
-    using Phase = types::System::Phase;
-
     if ( ImGui::MenuItem("Apply") )
     {
       mSystemMgr->deserialize(mSystemsStateCurrent);
@@ -52,62 +50,178 @@ SystemManagerUi::ui_show(
         mSystemMgr->activate(systemId);
     }
 
-    if ( ImGui::MenuItem("Apply & Run") )
-    {
-      mSystemMgr->deserialize(mSystemsStateCurrent);
-      callbacks::editorModeDisable(registry);
-    }
+    if ( ImGui::IsItemHovered() )
+      ImGui::SetTooltip("Apply current systems state");
 
     if ( ImGui::MenuItem("Reset") )
     {
-      mSystemsStateCurrent = mSystemsStateBackup;
+      mSystemsStateCurrent = mSystemsStateInitial;
       mSystemMgr->deserialize(mSystemsStateCurrent);
 
       for ( const auto& systemId : mSystemMgr->systems(Phase::Editor) )
         mSystemMgr->activate(systemId);
     }
 
+    if ( ImGui::IsItemHovered() )
+      ImGui::SetTooltip("Reset pre-editor systems state");
+
     ImGui::EndMenuBar();
   }
 
-  using Phase = types::System::Phase;
+  if ( mStepRequested == true )
+    ImGui::Button("||###stepToggle");
+  else
+    ImGui::Button(">###stepToggle");
+
+  if ( ImGui::IsItemActive() )
+    mStepRequested = true;
+
+  else if ( mStepRequested == true )
+  {
+    mStepRequested = false;
+    mSystemMgr->deserialize(mSystemsStateInitial);
+
+    for ( const auto& systemId : mSystemMgr->systems(Phase::Editor) )
+      mSystemMgr->activate(systemId);
+  }
+
+  if ( ImGui::IsItemHovered() )
+    ImGui::SetTooltip("Hold for repeated steps");
+
+  ImGui::SameLine();
+
+  if ( ImGui::Button("|>") )
+    mStepRequested = true;
+
+  if ( ImGui::IsItemHovered() )
+    ImGui::SetTooltip("Step with selected systems");
+
+  if ( mStepRequested == true )
+  {
+    mSystemMgr->deserialize(mSystemsStateCurrent);
+
+    for ( const auto& systemId : mSystemMgr->systems(Phase::Editor) )
+      mSystemMgr->activate(systemId);
+  }
+
+  ImGui::SameLine();
+
+  if ( ImGui::Button("o>") )
+  {
+    mSystemMgr->deserialize(mSystemsStateCurrent);
+    callbacks::editorModeDisable(registry);
+  }
+
+  if ( ImGui::IsItemHovered() )
+    ImGui::SetTooltip("Apply & Run");
+
+  ImGui::Separator();
 
   const auto systemsShow =
   [this] ( const Phase phase )
   {
-    for ( auto& system : mSystemMgr->mSystems )
+    ImGui::TableNextColumn();
+
+    ImGui::PushID(phase);
+
+    if ( ImGui::SmallButton("+##systemAdd") )
+      ImGui::OpenPopup("##systemAddPopup");
+
+    if ( ImGui::BeginPopup("##systemAddPopup") )
     {
-      const auto systemIter =
-      [this] ( const SystemId& system )
+      if ( ImGui::IsWindowAppearing() )
+        ImGui::SetKeyboardFocusHere(2);
+
+      mSystemFilter.search({}, ImGuiInputTextFlags_AutoSelectAll);
+
+      bool systemsFound {};
+
+      for ( const auto& system : mSystemMgr->mSystems )
       {
-        for ( auto iter = mSystemsStateCurrent.begin();
-              iter != mSystemsStateCurrent.end();
-              ++iter )
-          if ( iter->asString() == system.str() )
-            return iter;
+        if ( system.phase != phase )
+          continue;
 
-        return mSystemsStateCurrent.end();
+        if ( mSystemFilter.query(system.id.str()) == false )
+          continue;
 
-      } (system.id);
+        const auto predicate =
+        [systemId = system.id.str()] ( const Json::Value& value )
+        {
+          return value.asString() == systemId;
+        };
 
-      bool systemActive = systemIter != mSystemsStateCurrent.end();
+        if (  std::any_of(mSystemsStateCurrent.begin(),
+                          mSystemsStateCurrent.end(),
+                          predicate) == true )
+          continue;
 
-      if ( system.phase == phase &&
-           ImGui::Checkbox(system.id.str().c_str(), &systemActive) )
-      {
-        if ( systemActive == true )
+        systemsFound = true;
+
+        if ( ImGui::Selectable(system.id.str().c_str(), false) )
+        {
           mSystemsStateCurrent.append(system.id.str());
-        else
-          mSystemsStateCurrent.removeIndex(systemIter.index(), nullptr);
+          ImGui::CloseCurrentPopup();
+          break;
+        }
       }
+
+      if ( systemsFound == false )
+        ImGui::Text("No systems matching filter");
+
+      ImGui::EndPopup(); // systemAddPopup
     }
+
+    ImGui::Separator();
+
+    const auto tableFlags = ImGuiTableFlags_ScrollX |
+                            ImGuiTableFlags_ScrollY;
+
+    if ( ImGui::BeginTable("SystemsTable", 1, tableFlags) )
+    {
+      ImGui::TableNextColumn();
+
+      for ( size_t i = 0;
+            i < mSystemsStateCurrent.size();
+            ++i )
+      {
+        const auto& system = mSystemsStateCurrent[i];
+
+        if ( phase != mSystemMgr->phase(system.asString()) )
+          continue;
+
+        ImGui::PushID(system.asCString());
+
+        const bool deleteRequested = ImGui::SmallButton("-##systemDel");
+
+        ImGui::PopID(); // systemId
+
+        ImGui::SameLine();
+        ImGui::Selectable(system.asCString(), false,
+                          ImGuiSelectableFlags_AllowItemOverlap);
+
+        if ( deleteRequested == true )
+          mSystemsStateCurrent.removeIndex(i, nullptr);
+      }
+
+      ImGui::EndTable(); // SystemsTable
+    }
+
+    ImGui::PopID(); // phase
   };
 
-  if ( ImGui::CollapsingHeader("Logic", ImGuiTreeNodeFlags_DefaultOpen) )
-    systemsShow(Phase::Logic);
+  if ( ImGui::BeginTable("SystemsTable", 2,
+                         ImGuiTableFlags_Resizable,
+                         ImGui::GetContentRegionAvail()) )
+  {
+    ImGui::TableSetupColumn("Logic");
+    ImGui::TableSetupColumn("Render");
+    ImGui::TableHeadersRow();
 
-  if ( ImGui::CollapsingHeader("Render", ImGuiTreeNodeFlags_DefaultOpen) )
+    systemsShow(Phase::Logic);
     systemsShow(Phase::Render);
+
+    ImGui::EndTable(); // SystemsTable
+  }
 
   ImGui::End(); //  Systems
 }
