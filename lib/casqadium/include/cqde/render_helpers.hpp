@@ -22,6 +22,11 @@ enum class LineRenderMode
 };
 
 
+types::VertexBuffer::WindingOrder
+windingOrder(
+  const std::vector <olc::vf2d>&,
+  const bool yAxisUp = false );
+
 types::VertexBuffer
 vertexShader(
   const std::vector <glm::vec3>& vertices,
@@ -29,9 +34,10 @@ vertexShader(
   const glm::mat4& projectionMatrix,
   const glm::vec4& viewport );
 
-void drawLines( const std::vector <olc::vf2d>&,
-                const olc::Pixel& color,
-                const LineRenderMode );
+void drawLines(
+  const std::vector <olc::vf2d>&,
+  const olc::Pixel& color,
+  const LineRenderMode );
 
 std::shared_ptr <olc::Renderable> textureFromText(
   const std::string& text,

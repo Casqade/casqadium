@@ -10,24 +10,24 @@ namespace cqde::types
 
 struct VertexBuffer
 {
-  std::vector <olc::vf2d> vertices;
+  std::vector <olc::vf2d> vertices {};
 
-  float depth;
+  float depth {};
 
   enum class WindingOrder
   {
     CounterClockWise,
     ClockWise,
 
-  } windingOrder;
+  } windingOrder {};
 
 
   VertexBuffer() = default;
+};
 
-
-  bool operator > ( const VertexBuffer& other ) const;
-
-  void windingOrderUpdate( const bool yAxisUp = false );
+struct VertexBufferComparator
+{
+  bool operator () ( const VertexBuffer&, const VertexBuffer& ) const;
 };
 
 } // namespace cqde::types

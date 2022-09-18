@@ -9,6 +9,24 @@
 namespace cqde
 {
 
+types::VertexBuffer::WindingOrder
+windingOrder(
+  const std::vector <olc::vf2d>& vertices,
+  const bool yAxisUp )
+{
+  using WindingOrder = types::VertexBuffer::WindingOrder;
+
+  float area = {};
+
+  for ( size_t i = 0, iNext = 1;
+        i < vertices.size();
+        ++i, iNext = (i + 1) % vertices.size() )
+    area += (vertices[iNext].x - vertices[i].x)
+          * (vertices[iNext].y + vertices[i].y);
+
+  return WindingOrder{yAxisUp ? area > 0.0f : area < 0.0f};
+}
+
 types::VertexBuffer
 vertexShader(
   const std::vector <glm::vec3>& vertices,
@@ -55,7 +73,7 @@ vertexShader(
 
   vb.depth /= vb.vertices.size();
 
-  vb.windingOrderUpdate();
+  vb.windingOrder = windingOrder(vb.vertices);
 
   return vb;
 }

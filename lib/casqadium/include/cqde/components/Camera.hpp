@@ -49,7 +49,7 @@ struct Camera
   };
 
   std::multimap < types::VertexBuffer, entt::entity,
-                  std::greater <types::VertexBuffer>> zBuffer {};
+                  types::VertexBufferComparator> zBuffer {};
 
   glm::vec4 viewport {0.0, 0.0, 1.0, 1.0};
   std::pair <float, float> zRange {0.1f, 1000.0f};

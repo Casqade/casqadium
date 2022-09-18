@@ -5,24 +5,10 @@ namespace cqde::types
 {
 
 bool
-VertexBuffer::operator > ( const VertexBuffer& other ) const
+VertexBufferComparator::operator () (
+  const VertexBuffer& lhs, const VertexBuffer& rhs ) const
 {
-  return depth > other.depth;
-}
-
-void
-VertexBuffer::windingOrderUpdate(
-  const bool yAxisUp )
-{
-  float area = {};
-
-  for ( size_t i = 0, iNext = 1;
-        i < vertices.size();
-        ++i, iNext = (i + 1) % vertices.size() )
-    area += (vertices[iNext].x - vertices[i].x)
-          * (vertices[iNext].y + vertices[i].y);
-
-  windingOrder = WindingOrder(yAxisUp ? area > 0.0f : area < 0.0f);
+  return lhs.depth > rhs.depth;
 }
 
 } // namespace cqde::types
