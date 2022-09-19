@@ -37,12 +37,6 @@ class EntityManager
   std::unordered_map <entt::entity,
                       std::vector <ComponentType>> mComponentsToRemove {};
 
-
-  void deserialize(
-    const Json::Value& registryJson,
-    const PackageId&,
-    entt::registry& );
-
 public:
   EntityManager() = default;
 
@@ -57,6 +51,11 @@ public:
     const PackageId&,
     const entt::registry&,
     const std::unordered_set <ComponentType>& exclude = {} ) const;
+
+  void deserialize(
+    const Json::Value& registryJson,
+    const PackageId&,
+    entt::registry& );
 
 
   entt::entity entityCreate(
