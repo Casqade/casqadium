@@ -25,6 +25,7 @@
 #include <cqde/types/PackageManager.hpp>
 #include <cqde/types/PrefabManager.hpp>
 #include <cqde/types/SystemManager.hpp>
+#include <cqde/types/UserManager.hpp>
 
 
 #include <cqde/types/TickCurrent.hpp>
@@ -73,6 +74,7 @@ engineInit( entt::registry& registry )
   auto& packageManager = registry.ctx().emplace <PackageManager> ();
   auto& prefabManager = registry.ctx().emplace <PrefabManager> ();
   auto& systemManager = registry.ctx().emplace <SystemManager> ();
+  auto& userManager = registry.ctx().emplace <UserManager> ();
 
   registry.ctx().emplace <AssetManagerUi> ();
   registry.ctx().emplace <CallbackManagerUi> (&callbackManager);

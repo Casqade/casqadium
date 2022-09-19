@@ -20,6 +20,7 @@ using PackageId = identifier;
 using PrefabId = identifier;
 using StringId = identifier;
 using TextureId = identifier;
+using UserId = identifier;
 
 using InputHwCode = int32_t;
 

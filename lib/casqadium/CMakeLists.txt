@@ -97,6 +97,9 @@ target_sources(${TARGET} PRIVATE
   src/types/SystemManager.cpp
   include/${CASQADIUM_SHORT}/types/SystemManager.hpp
 
+  src/types/UserManager.cpp
+  include/${CASQADIUM_SHORT}/types/UserManager.hpp
+
 
 #  Assets
   include/${CASQADIUM_SHORT}/types/assets/AssetStatus.hpp
