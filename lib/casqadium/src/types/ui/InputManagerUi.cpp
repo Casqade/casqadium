@@ -5,14 +5,18 @@
 
 #include <cqde/common.hpp>
 #include <cqde/file_helpers.hpp>
+#include <cqde/json_helpers.hpp>
 #include <cqde/util/logger.hpp>
 
 #include <cqde/types/PackageManager.hpp>
+#include <cqde/types/UserManager.hpp>
 #include <cqde/types/UndoRedoQueue-inl.hpp>
 
 #include <olcPGE/olcMouseInputId.hpp>
 
 #include <entt/entity/registry.hpp>
+
+#include <json/writer.h>
 
 #include <imgui.h>
 #include <imgui_stdlib.h>
@@ -31,16 +35,18 @@ InputManagerUi::configApply(
   entt::registry& registry )
 {
   using types::PackageManager;
+  using types::UserManager;
   using ContentType = types::Package::ContentType;
 
   mInputConfigs.clear();
   mInputMgr->clear();
 
-  const auto& pkgMgr = registry.ctx().at <PackageManager> ();
+  const auto& packageManager = registry.ctx().at <PackageManager> ();
+  const auto& userManager = registry.ctx().at <UserManager> ();
 
-  for ( const auto& packageId : pkgMgr.packages() )
+  for ( const auto& packageId : packageManager.packages() )
   {
-    const auto package = pkgMgr.package(packageId);
+    const auto package = packageManager.package(packageId);
     CQDE_ASSERT_DEBUG(package != nullptr, continue);
 
     const auto inputConfigPath = package->contentPath(ContentType::Input);
@@ -50,6 +56,11 @@ InputManagerUi::configApply(
 
     mInputMgr->deserialize( fileParse(inputConfigPath) );
   }
+
+  const auto userInputPath = userManager.inputConfigPath();
+
+  if ( fileExists(userInputPath) == true )
+    mInputMgr->deserialize( fileParse(userInputPath) );
 }
 
 void
@@ -58,9 +69,37 @@ InputManagerUi::configSave(
   entt::registry& registry )
 {
   using types::PackageManager;
+  using types::UserManager;
   using ContentType = types::Package::ContentType;
 
-  CQDE_ASSERT_DEBUG(packageId.str().empty() == false, return);
+  if ( packageId.str().empty() == true )
+  {
+    LOG_TRACE("Writing user input config");
+
+    const auto& userManager = registry.ctx().at <UserManager> ();
+
+    const auto userInputPath = userManager.inputConfigPath();
+
+    const auto streamFlags = std::ios::out |
+                             std::ios::trunc |
+                             std::ios::binary;
+
+    try
+    {
+      auto fileStream = fileOpen(userInputPath, streamFlags);
+      fileStream << Json::writeString(jsonWriter(), mInputConfigs[packageId]);
+    }
+    catch ( const std::exception& e )
+    {
+      using fmt::format;
+
+      throw std::runtime_error(
+        format("Failed to write user input config to '{}': {}",
+               userInputPath.string(), e.what()));
+    }
+
+    return;
+  }
 
   LOG_TRACE("Writing package '{}' input config", packageId.str());
 
@@ -85,6 +124,7 @@ InputManagerUi::ui_show(
 {
   using fmt::format;
 
+  using types::UserManager;
   using types::PackageManager;
   using types::Package;
 
@@ -109,7 +149,7 @@ InputManagerUi::ui_show(
 
     if ( mPackageFilter.package().str().empty() == true &&
          ImGui::IsItemHovered() )
-      ImGui::SetTooltip("Live input state");
+      ImGui::SetTooltip("User input config");
 
     mAxisFilter.search();
   }
@@ -122,9 +162,9 @@ InputManagerUi::ui_show(
   {
     if ( selectedPackage.str().empty() == false )
     {
-      auto& pkgMgr = registry.ctx().at <PackageManager> ();
+      auto& packageManager = registry.ctx().at <PackageManager> ();
 
-      auto package = pkgMgr.package(selectedPackage);
+      auto package = packageManager.package(selectedPackage);
 
       if ( package == nullptr )
         return ImGui::End(); // Input
@@ -138,7 +178,17 @@ InputManagerUi::ui_show(
         mInputConfigs[selectedPackage] = Json::objectValue;
     }
     else
-      mInputConfigs[selectedPackage] = mInputMgr->serialize();
+    {
+      auto& userManager = registry.ctx().at <UserManager> ();
+
+      const auto inputConfigPath = userManager.inputConfigPath();
+
+      if ( fileExists(inputConfigPath) == true )
+        mInputConfigs[selectedPackage] = fileParse(inputConfigPath);
+
+      else
+        mInputConfigs[selectedPackage] = mInputMgr->serialize();
+    }
 
     auto configIter = mHistoryBuffer.current();
     if ( mHistoryBuffer.isValid(configIter) == true )
@@ -434,26 +484,28 @@ InputManagerUi::ui_show_menu_bar(
 
   if ( ImGui::BeginMenu("Save") )
   {
-    if (  selectedPackage.str().empty() == false &&
-          ImGui::MenuItem(format("Save '{}'", selectedPackage.str()).c_str()) )
+    const std::string menuItemLabel
+      = selectedPackage.str().empty()
+      ? "Save user input config"
+      : format("Save '{}'", selectedPackage.str());
+
+    if ( ImGui::MenuItem(menuItemLabel.c_str()) )
       configSave(selectedPackage, registry);
 
     if ( ImGui::MenuItem("Save all") )
       for ( const auto& [packageId, config] : mInputConfigs )
-        if ( packageId.str().empty() == false )
-          configSave(packageId, registry);
+        configSave(packageId, registry);
 
     if ( ImGui::MenuItem("Save all & apply") )
     {
       for ( const auto& [packageId, config] : mInputConfigs )
-        if ( packageId.str().empty() == false )
-          configSave(packageId, registry);
+        configSave(packageId, registry);
 
       configApply(registry);
     }
 
     if ( selectedPackage.str().empty() == true &&
-         ImGui::MenuItem("Apply live state") )
+         ImGui::MenuItem("Apply user input config") )
     {
       mInputMgr->clear();
       mInputMgr->deserialize(mInputConfigs[selectedPackage]);
@@ -464,8 +516,12 @@ InputManagerUi::ui_show_menu_bar(
 
   if ( ImGui::BeginMenu("Load") )
   {
-    if ( selectedPackage.str().empty() == false &&
-         ImGui::MenuItem(format("Load '{}'", selectedPackage.str()).c_str()) )
+    const std::string menuItemLabel
+      = selectedPackage.str().empty()
+      ? "Load user input config"
+      : format("Load '{}'", selectedPackage.str());
+
+    if ( ImGui::MenuItem(menuItemLabel.c_str()) )
       mInputConfigs.erase(selectedPackage);
 
     if ( ImGui::MenuItem("Load all") )
