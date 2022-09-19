@@ -25,10 +25,4 @@ SubscriberUpdate::deserialize(
   registry.emplace <SubscriberUpdate> (entity);
 }
 
-void
-SubscriberUpdate::ui_edit_props(
-  const entt::entity,
-  const entt::registry& )
-{}
-
 } // namespace cqde::compos

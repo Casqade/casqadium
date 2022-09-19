@@ -23,10 +23,4 @@ CasqadiumEditorInternal::deserialize(
                             identifier_hash>& idMap )
 {}
 
-void
-CasqadiumEditorInternal::ui_edit_props(
-  const entt::entity,
-  const entt::registry& )
-{}
-
 } // namespace cqde::compos

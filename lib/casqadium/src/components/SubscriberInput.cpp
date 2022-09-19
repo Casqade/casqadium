@@ -25,10 +25,4 @@ SubscriberInput::deserialize(
   registry.emplace <SubscriberInput> (entity);
 }
 
-void
-SubscriberInput::ui_edit_props(
-  const entt::entity,
-  const entt::registry& )
-{}
-
 } // namespace cqde::compos
