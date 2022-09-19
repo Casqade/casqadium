@@ -12,6 +12,7 @@
 #include <cqde/types/EntityManager.hpp>
 #include <cqde/types/PackageManager.hpp>
 #include <cqde/types/SystemManager.hpp>
+#include <cqde/types/SnapshotManager.hpp>
 
 #include <cqde/types/TickCurrent.hpp>
 #include <cqde/types/FrameCurrent.hpp>
@@ -92,22 +93,7 @@ GameStateEcsSandbox::GameStateEcsSandbox(
 
     mRunning = false;
 
-    const auto& entityManager = registry.ctx().at <EntityManager> ();
-
-    const auto snapshot = entityManager.serialize(
-      "editor",
-      registry,
-      {
-        entityManager.componentType <Tag> (),
-        entityManager.componentType <EntityMetaInfo> ()
-      });
-
-    const auto streamFlags = std::ios::out |
-                             std::ios::trunc |
-                             std::ios::binary;
-
-    auto fileStream = fileOpen("snapshot.json", streamFlags);
-    fileStream << Json::writeString(cqde::jsonWriter(), snapshot);
+    SnapshotManager::Write(registry, "quit.json");
   };
 
   auto& callbackMgr = mRegistry.ctx().at <CallbackManager> ();

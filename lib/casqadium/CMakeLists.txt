@@ -94,6 +94,9 @@ target_sources(${TARGET} PRIVATE
   src/types/PrefabManager.cpp
   include/${CASQADIUM_SHORT}/types/PrefabManager.hpp
 
+  src/types/SnapshotManager.cpp
+  include/${CASQADIUM_SHORT}/types/SnapshotManager.hpp
+
   src/types/SystemManager.cpp
   include/${CASQADIUM_SHORT}/types/SystemManager.hpp
 

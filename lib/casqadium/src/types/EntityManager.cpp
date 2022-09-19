@@ -121,8 +121,11 @@ EntityManager::deserialize(
     const auto entity = entityDeserialize(registry, entityId,
                                           registryJson[entityId]);
 
-    auto& metaInfo = registry.emplace_or_replace <EntityMetaInfo> (entity);
-    metaInfo.packageId = packageId;
+    if ( packageId.str().empty() == false )
+    {
+      auto& metaInfo = registry.emplace_or_replace <EntityMetaInfo> (entity);
+      metaInfo.packageId = packageId;
+    }
   }
 }
 
