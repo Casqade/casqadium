@@ -141,7 +141,7 @@ EntityManager::serialize(
   using compos::Tag;
   using compos::EntityMetaInfo;
 
-  Json::Value registryJson {};
+  Json::Value registryJson {Json::objectValue};
 
   if ( packageId.str().empty() == true )
     LOG_TRACE("Serializing global entity registry");
