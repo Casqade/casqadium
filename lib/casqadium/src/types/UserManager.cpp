@@ -32,6 +32,32 @@ UserManager::user() const
 }
 
 UserManager::path
+UserManager::usersRoot() const
+{
+  return mUsersRoot;
+}
+
+UserManager::path
+UserManager::userRoot(
+  const UserId& user ) const
+{
+  if ( user.str().empty() == true )
+    return mUsersRoot / mUser.str();
+
+  return mUsersRoot / user.str();
+}
+
+UserManager::path
+UserManager::snapshotsRoot(
+  const UserId& user ) const
+{
+  if ( user.str().empty() == true )
+    return mUsersRoot / mUser.str() / "snapshots";
+
+  return mUsersRoot / user.str() / "snapshots";
+}
+
+UserManager::path
 UserManager::inputConfigPath(
   const UserId& user ) const
 {
@@ -43,16 +69,6 @@ UserManager::inputConfigPath(
     return mUsersRoot / mUser.str() / "config" / inputFileName;
 
   return mUsersRoot / user.str() / "config" / inputFileName;
-}
-
-UserManager::path
-UserManager::snapshotsRoot(
-  const UserId& user ) const
-{
-  if ( user.str().empty() == true )
-    return mUsersRoot / mUser.str();
-
-  return mUsersRoot / user.str();
 }
 
 } // namespace cqde::types

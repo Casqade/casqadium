@@ -25,8 +25,11 @@ public:
 
   UserId user() const;
 
-  path inputConfigPath( const UserId& = "" ) const;
+  path usersRoot() const;
+  path userRoot( const UserId& = "" ) const;
+
   path snapshotsRoot( const UserId& = "" ) const;
+  path inputConfigPath( const UserId& = "" ) const;
 };
 
 } // namespace cqde::types
