@@ -36,6 +36,8 @@
 #include <olcPGE/olcMouseInputId.hpp>
 #include <olcPGE/olcPGEX_ImGui.hpp>
 
+#include <soloud.h>
+
 #include <glm/vec3.hpp>
 
 #include <json/value.h>
@@ -53,6 +55,18 @@ GameStateEcsSandbox::GameStateEcsSandbox(
   cqde::engineInit(mRegistry);
 
 //  entt::meta_ctx::bind(mRegistry.ctx().at <entt::meta_ctx> ());
+
+  auto& audioBackend = mRegistry.ctx().at <SoLoud::Soloud> ();
+
+  const auto audioInitResult = audioBackend.init();
+
+  if ( audioInitResult != SoLoud::SOLOUD_ERRORS::SO_NO_ERROR )
+  {
+    mRunning = false;
+    LOG_ERROR("Failed to initialize SoLoud: {}",
+              audioBackend.getErrorString(audioInitResult));
+    return;
+  }
 
   auto& fonts = mRegistry.ctx().at <FontAssetManager> ();
   auto& textures = mRegistry.ctx().at <TextureAssetManager> ();

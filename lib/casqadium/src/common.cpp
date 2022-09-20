@@ -68,6 +68,8 @@ engineInit( entt::registry& registry )
 
 //  entt::meta_ctx::bind(registry.ctx().emplace <entt::meta_ctx> ());
 
+  auto& audioBackend = registry.ctx().emplace <SoLoud::Soloud> ();
+
   registry.ctx().emplace <TickCurrent> ();
   registry.ctx().emplace <FrameCurrent> ();
 
