@@ -184,6 +184,7 @@ editorGizmoSetModeScale(
   using ui::ViewportManagerUi;
   auto& viewportManagerUi = registry.ctx().at <ViewportManagerUi> ();
   viewportManagerUi.setGizmoOperation(ImGuizmo::OPERATION::SCALE);
+  viewportManagerUi.setGizmoSpace(ImGuizmo::MODE::LOCAL);
 }
 
 void
