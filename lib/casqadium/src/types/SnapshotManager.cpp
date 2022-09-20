@@ -1,7 +1,10 @@
 #include <cqde/types/SnapshotManager.hpp>
 #include <cqde/types/EntityManager.hpp>
-#include <cqde/types/UserManager.hpp>
+#include <cqde/types/PackageManager.hpp>
 #include <cqde/types/SystemManager.hpp>
+#include <cqde/types/UserManager.hpp>
+
+#include <cqde/types/ui/EntityManagerUi.hpp>
 
 #include <cqde/common.hpp>
 #include <cqde/file_helpers.hpp>
@@ -139,6 +142,7 @@ SnapshotManager::Load(
   const path& snapshotPath )
 {
   using fmt::format;
+  using ui::EntityManagerUi;
 
   Json::Value snapshot {};
 
@@ -175,6 +179,47 @@ SnapshotManager::Load(
 
   auto& entityManager = registry.ctx().at <EntityManager> ();
   auto& systemManager = registry.ctx().at <SystemManager> ();
+
+  if ( registry.ctx().contains <EntityManagerUi> () == true )
+  {
+    auto& entityManagerUi = registry.ctx().at <EntityManagerUi> ();
+
+    entityManagerUi.entitiesDeselect();
+    entityManagerUi.componentDeselect();
+  }
+
+  registry.ctx().at <EntityManager> ().clear();
+  registry.clear();
+
+  LOG_TRACE("Loading snapshot '{}'",
+            snapshotPath.string());
+
+  try
+  {
+    const auto& packageManager = registry.ctx().at <PackageManager> ();
+
+    for ( const auto& packageId : packageManager.packages() )
+    {
+      auto package = packageManager.package(packageId);
+
+      if ( package == nullptr )
+        throw std::runtime_error(
+          format("Failed to load package '{}' entity registry: "
+                 "No such package in PackageManager",
+                 packageId.str()));
+
+      using ContentType = types::Package::ContentType;
+
+      entityManager.load( package->contentPath(ContentType::Entities),
+                          packageId, registry);
+    }
+  }
+  catch ( const std::exception& e )
+  {
+    throw std::runtime_error(
+      format("Failed to load snapshot '{}': {}",
+             snapshotPath.string(), e.what()));
+  }
 
   try
   {
