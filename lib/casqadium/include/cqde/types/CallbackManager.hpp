@@ -9,11 +9,6 @@
 #include <functional>
 
 
-namespace cqde::ui
-{
-class CallbackManagerUi;
-}
-
 namespace cqde::types
 {
 

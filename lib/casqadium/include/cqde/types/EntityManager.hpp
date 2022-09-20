@@ -14,11 +14,6 @@
 #include <unordered_set>
 
 
-namespace cqde::ui
-{
-class EntityManagerUi;
-}
-
 namespace cqde::types
 {
 
@@ -75,6 +70,7 @@ public:
     const std::unordered_map <EntityId, EntityId,
                               identifier_hash>& idMap = {} );
 
+
   void componentAdd(
     const ComponentType,
     const entt::entity,
@@ -99,11 +95,13 @@ public:
     const std::unordered_map <EntityId, EntityId,
                               identifier_hash>& idMap = {} );
 
+
   template <typename Component>
   void registerEmptyComponent( const std::string& name );
 
   template <typename Component>
   void registerComponent( const std::string& name );
+
 
   template <typename Component>
   std::string componentName() const;

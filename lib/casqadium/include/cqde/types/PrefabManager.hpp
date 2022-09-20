@@ -7,11 +7,6 @@
 #include <filesystem>
 
 
-namespace cqde::ui
-{
-class PrefabManagerUi;
-}
-
 namespace cqde::types
 {
 

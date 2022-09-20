@@ -10,11 +10,6 @@
 #include <vector>
 
 
-namespace cqde::ui
-{
-class SystemManagerUi;
-}
-
 namespace cqde::types
 {
 

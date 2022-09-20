@@ -485,7 +485,7 @@ InputManagerUi::ui_show_menu_bar(
   if ( ImGui::BeginMenu("Save") )
   {
     const std::string menuItemLabel
-      = selectedPackage.str().empty()
+      = selectedPackage.str().empty() == true
       ? "Save user input config"
       : format("Save '{}'", selectedPackage.str());
 
@@ -517,7 +517,7 @@ InputManagerUi::ui_show_menu_bar(
   if ( ImGui::BeginMenu("Load") )
   {
     const std::string menuItemLabel
-      = selectedPackage.str().empty()
+      = selectedPackage.str().empty() == true
       ? "Load user input config"
       : format("Load '{}'", selectedPackage.str());
 

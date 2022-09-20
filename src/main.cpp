@@ -16,7 +16,7 @@ main( int , char*[] )
   const std::string configFilename = "AnotherDayAtHospital.conf";
   const std::string logFilename = "AnotherDayAtHospital.log";
 
-  cqde::types::ConfigManager configManager (configFilename);
+  const cqde::types::ConfigManager configManager (configFilename);
 
   std::vector <std::shared_ptr <spdlog::sinks::sink>> sinks {};
 
