@@ -40,8 +40,7 @@ Tag::ui_edit_props(
   if ( idGenerated.empty() == false )
     idInputBuffer = idGenerated;
 
-  if ( ImGui::BeginPopup("##tag_exists_popup",
-                         ImGuiWindowFlags_NoSavedSettings) )
+  if ( ImGui::BeginPopup("##tag_exists_popup") )
   {
     ImGui::Text("%s", format("Entity '{}' already exists", idExisting).c_str());
     ImGui::EndPopup(); // tag_exists_popup
