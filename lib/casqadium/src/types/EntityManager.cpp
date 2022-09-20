@@ -492,7 +492,7 @@ EntityManager::delayedRemove(
   {
     mComponentsToRemove.erase(entity);
 
-    if ( valid(entity, registry) == true )
+    if ( entity_valid(entity, registry) == true )
     {
       const auto entityId = registry.get <Tag> (entity).id;
 
@@ -504,7 +504,7 @@ EntityManager::delayedRemove(
   }
 
   for ( const auto& [entity, componentList] : mComponentsToRemove )
-    if ( valid(entity, registry) == true )
+    if ( entity_valid(entity, registry) == true )
       for ( const auto component : componentList )
         if ( const auto iter = registry.storage(component);
              iter < registry.storage().end() )
@@ -512,22 +512,6 @@ EntityManager::delayedRemove(
 
   mEntitesToRemove.clear();
   mComponentsToRemove.clear();
-}
-
-bool
-EntityManager::valid(
-  const entt::entity    entity,
-  const entt::registry& registry ) const
-{
-  using entity_traits = entt::entt_traits <entt::entity>;
-
-  if ( registry.valid(entity) == false )
-    return false;
-
-  const auto versionCurrent = registry.current(entity);
-  const auto versionActual = entity_traits::to_version(entity);
-
-  return versionCurrent == versionActual;
 }
 
 entt::entity
@@ -551,7 +535,7 @@ EntityManager::get_if_valid(
 {
   const entt::entity entity = get(id);
 
-  if ( valid(entity, registry) == true )
+  if ( entity_valid(entity, registry) == true )
     return entity;
 
   return entt::null;

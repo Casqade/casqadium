@@ -8,6 +8,8 @@
 namespace cqde
 {
 
+bool entity_valid( const entt::entity, const entt::registry& );
+
 std::string component_name( const ComponentType );
 bool component_is_empty( const ComponentType );
 

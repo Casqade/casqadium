@@ -6,6 +6,22 @@
 namespace cqde
 {
 
+bool
+entity_valid(
+  const entt::entity entity,
+  const entt::registry& registry )
+{
+  using entity_traits = entt::entt_traits <entt::entity>;
+
+  if ( registry.valid(entity) == false )
+    return false;
+
+  const auto versionCurrent = registry.current(entity);
+  const auto versionActual = entity_traits::to_version(entity);
+
+  return versionCurrent == versionActual;
+}
+
 std::string
 component_name(
   const ComponentType component )
