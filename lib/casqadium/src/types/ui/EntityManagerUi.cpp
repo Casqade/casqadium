@@ -713,7 +713,7 @@ EntityManagerUi::ui_show_menu_bar(
 
   const auto selectedPackage = mRegistryFilter.package();
 
-  if ( ImGui::MenuItem("Save") )
+  if ( ImGui::BeginMenu("Save") )
   {
     if (  selectedPackage.str().empty() == false &&
           ImGui::MenuItem(format("Save '{}'", selectedPackage.str()).c_str()) )
@@ -723,6 +723,8 @@ EntityManagerUi::ui_show_menu_bar(
       for ( const auto& packageId : packageManager.packages() )
         if ( packageId.str().empty() == false )
           entitiesSave(packageId, registry);
+
+    ImGui::EndMenu(); // Save
   }
 
   if ( ImGui::MenuItem("Reload") )
