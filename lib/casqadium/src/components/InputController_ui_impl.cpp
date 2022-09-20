@@ -25,7 +25,7 @@ InputController::ui_edit_props(
 
   static auto selectedAxisId = null_id;
   static bool axisWindowOpened {};
-  static std::string newAxisId {};
+  static std::string newAxisId {"NewAxis"};
 
   static auto axisConfig = Json::objectValue;
 
