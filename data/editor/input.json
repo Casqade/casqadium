@@ -57,6 +57,22 @@
       "sensitivity" : 1.0
     }
   },
+  "EditorModeToggle" : 
+  {
+    "-Key_F12" : 
+    {
+      "absolute" : false,
+      "sensitivity" : 0.0
+    }
+  },
+  "EngineShutdown" : 
+  {
+    "-Key_Q" : 
+    {
+      "absolute" : false,
+      "sensitivity" : 0.0
+    }
+  },
   "Pitch" : 
   {
     "+MouseMove_Y" : 
@@ -78,6 +94,22 @@
     {
       "absolute" : false,
       "sensitivity" : 0.5
+    }
+  },
+  "QuickLoad" : 
+  {
+    "-Key_F2" : 
+    {
+      "absolute" : false,
+      "sensitivity" : 0.0
+    }
+  },
+  "QuickSave" : 
+  {
+    "-Key_F1" : 
+    {
+      "absolute" : false,
+      "sensitivity" : 0.0
     }
   },
   "TranslateX" : 
