@@ -534,6 +534,8 @@ editorCameraControlOn(
 
     mouseAutoCenterEnable(registry, args);
     mouseCursorHide(registry, args);
+
+    return;
   }
 };
 
