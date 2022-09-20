@@ -2,8 +2,11 @@
 
 #include <cqde/types/TickCurrent.hpp>
 
+#include <cqde/types/CallbackManager.hpp>
 #include <cqde/types/EntityManager.hpp>
 #include <cqde/types/SystemManager.hpp>
+#include <cqde/types/SnapshotManager.hpp>
+#include <cqde/types/UserManager.hpp>
 
 #include <cqde/types/input/InputManager.hpp>
 #include <cqde/types/input/InputBindingRelative.hpp>
@@ -25,6 +28,7 @@
 #include <cqde/file_helpers.hpp>
 #include <cqde/json_helpers.hpp>
 #include <cqde/math_helpers.hpp>
+#include <cqde/util/logger.hpp>
 
 #include <olcPGE/olcPixelGameEngine.hpp>
 
@@ -372,6 +376,12 @@ editorControllerCreate(
   auto& iCameraControlOn = cInputController.axes["EditorCameraControlOn"];
   iCameraControlOn.callbacks.insert("EditorCameraControlOn");
 
+  auto& iQuickSave = cInputController.axes["QuickSave"];
+  iQuickSave.callbacks.insert("QuickSave");
+
+  auto& iQuickLoad = cInputController.axes["QuickLoad"];
+  iQuickLoad.callbacks.insert("QuickLoad");
+
   auto& iEntitySelect = cInputController.axes["EditorEntitySelect"];
   iEntitySelect.callbacks.insert("EditorEntitySelect");
 
@@ -484,6 +494,18 @@ editorBindingsAssign(
     binding = std::make_shared <InputBindingRelative> ("-MouseWheel_Y");
     binding->sensitivity = 0.00001f;
     inputManager.assignBinding("EditorCameraZoom", binding);
+  }
+
+  if ( inputManager.axisAssigned("QuickSave") == false )
+  {
+    auto binding = std::make_shared <InputBindingRelative> ("-Key_F1", 0.0f);
+    inputManager.assignBinding("QuickSave", binding);
+  }
+
+  if ( inputManager.axisAssigned("QuickLoad") == false )
+  {
+    auto binding = std::make_shared <InputBindingRelative> ("-Key_F2", 0.0f);
+    inputManager.assignBinding("QuickLoad", binding);
   }
 }
 
@@ -615,6 +637,41 @@ editorEntitySelect(
     if ( multipleSelectionEnabled == false )
       entityManagerUi.entitiesDeselect();
   }
+};
+
+void
+quickSave(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using types::SnapshotManager;
+
+  SnapshotManager::Write(registry, "quick.json");
+};
+
+void
+quickLoad(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using types::CallbackManager;
+  using types::SnapshotManager;
+  using types::UserManager;
+
+  registry.ctx().at <CallbackManager> ().executeLater(
+  [] (  entt::registry& registry ,
+        const CallbackManager::CallbackArgs& )
+  {
+    try
+    {
+      const auto snapshotPath = registry.ctx().at <UserManager> ().snapshotsRoot();
+      SnapshotManager::Load(registry, snapshotPath / "quick.json");
+    }
+    catch ( const std::exception& e )
+    {
+      LOG_ERROR(e.what());
+    }
+  });
 };
 
 void

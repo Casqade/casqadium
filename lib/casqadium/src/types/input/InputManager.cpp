@@ -76,6 +76,8 @@ InputManager::InputManager()
     {Key::K1, "Key_1"},
     {Key::K2, "Key_2"},
     {Key::K3, "Key_3"},
+    {Key::F1, "Key_F1"},
+    {Key::F2, "Key_F2"},
     {Key::F12, "Key_F12"},
 
     {Key::LEFT, "Key_Left"},

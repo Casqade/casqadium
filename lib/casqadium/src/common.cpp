@@ -25,6 +25,7 @@
 #include <cqde/types/PackageManager.hpp>
 #include <cqde/types/PrefabManager.hpp>
 #include <cqde/types/SystemManager.hpp>
+#include <cqde/types/SnapshotManager.hpp>
 #include <cqde/types/UserManager.hpp>
 
 
@@ -74,6 +75,7 @@ engineInit( entt::registry& registry )
   auto& packageManager = registry.ctx().emplace <PackageManager> ();
   auto& prefabManager = registry.ctx().emplace <PrefabManager> ();
   auto& systemManager = registry.ctx().emplace <SystemManager> ();
+  auto& snapshotManager = registry.ctx().emplace <SnapshotManager> ();
   auto& userManager = registry.ctx().emplace <UserManager> ();
 
   registry.ctx().emplace <AssetManagerUi> ();
@@ -144,6 +146,10 @@ engineInit( entt::registry& registry )
   callbackManager.Register("EditorCameraFovControl", editorCameraFovControl);
   callbackManager.Register("EditorCameraZoomControl", editorCameraZoomControl);
   callbackManager.Register("EditorEntitySelect", editorEntitySelect);
+
+
+  callbackManager.Register("QuickSave", quickSave);
+  callbackManager.Register("QuickLoad", quickLoad);
 
 
   callbackManager.Register("EntityInputOn", entityInputOn);

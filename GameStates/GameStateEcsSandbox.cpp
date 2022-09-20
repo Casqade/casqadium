@@ -96,8 +96,6 @@ GameStateEcsSandbox::GameStateEcsSandbox(
     using entt::type_hash;
 
     mRunning = false;
-
-    SnapshotManager::Write(registry, "quit.json");
   };
 
   auto& callbackMgr = mRegistry.ctx().at <CallbackManager> ();
