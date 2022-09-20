@@ -118,7 +118,7 @@ void
 SystemManager::Validate(
   const Json::Value& systemsJson )
 {
-  jsonValidateObject(systemsJson, systemsStateReference);
+  jsonValidateArray(systemsJson, systemsStateReference);
 }
 
 void
