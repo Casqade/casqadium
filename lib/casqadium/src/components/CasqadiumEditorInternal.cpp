@@ -21,6 +21,8 @@ CasqadiumEditorInternal::deserialize(
   const Json::Value&,
   const std::unordered_map <EntityId, EntityId,
                             identifier_hash>& idMap )
-{}
+{
+  registry.emplace_or_replace <CasqadiumEditorInternal> (entity);
+}
 
 } // namespace cqde::compos

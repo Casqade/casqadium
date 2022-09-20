@@ -85,7 +85,7 @@ Transform::deserialize(
 {
   jsonValidateObject(json, transformJsonReference);
 
-  auto& comp = registry.emplace <Transform> (entity);
+  auto& comp = registry.emplace_or_replace <Transform> (entity);
 
   comp.translation << json["translation"];
   comp.orientation << json["orientation"];

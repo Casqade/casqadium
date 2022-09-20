@@ -70,7 +70,7 @@ SceneNode::deserialize(
 
   auto& entityManager = registry.ctx().at <EntityManager> ();
 
-  auto& comp = registry.emplace <SceneNode> (entity);
+  auto& comp = registry.emplace_or_replace <SceneNode> (entity);
 
   comp.parent = {json["parent"].asString()};
 

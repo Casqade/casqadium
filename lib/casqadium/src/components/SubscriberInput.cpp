@@ -22,7 +22,7 @@ SubscriberInput::deserialize(
   const std::unordered_map <EntityId, EntityId,
                             identifier_hash>& idMap )
 {
-  registry.emplace <SubscriberInput> (entity);
+  registry.emplace_or_replace <SubscriberInput> (entity);
 }
 
 } // namespace cqde::compos

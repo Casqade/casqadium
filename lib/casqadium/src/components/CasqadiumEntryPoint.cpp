@@ -85,7 +85,7 @@ CasqadiumEntryPoint::deserialize(
 {
   jsonValidateObject(json, casqadiumEntryPointJsonReference);
 
-  auto& comp = registry.emplace <CasqadiumEntryPoint> (entity);
+  auto& comp = registry.emplace_or_replace <CasqadiumEntryPoint> (entity);
 
   for ( const auto& systemId : json["systems"] )
     comp.systemsToEnable.insert(systemId.asString());

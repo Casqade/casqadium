@@ -154,7 +154,7 @@ Camera::deserialize(
     throw std::runtime_error(
       "'z-range' must contain 2 elements");
 
-  auto& comp = registry.emplace <Camera> (entity);
+  auto& comp = registry.emplace_or_replace <Camera> (entity);
 
   comp.projectionType = projection == "perspective"
                         ? Projection::Perspective

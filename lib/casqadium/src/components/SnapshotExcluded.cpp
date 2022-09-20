@@ -22,7 +22,7 @@ SnapshotExcluded::deserialize(
   const std::unordered_map <EntityId, EntityId,
                             identifier_hash>& idMap )
 {
-  registry.emplace <SnapshotExcluded> (entity);
+  registry.emplace_or_replace <SnapshotExcluded> (entity);
 }
 
 } // namespace cqde::compos

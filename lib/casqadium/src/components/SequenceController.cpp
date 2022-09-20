@@ -58,7 +58,7 @@ SequenceController::deserialize(
 
   jsonValidateObject(json, sequenceControllerJsonReference);
 
-  auto& comp = registry.emplace <SequenceController> (entity);
+  auto& comp = registry.emplace_or_replace <SequenceController> (entity);
 
   for ( const auto& step : json["steps"] )
     comp.steps.push_back(step.asString());

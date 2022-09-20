@@ -59,7 +59,7 @@ InputController::deserialize(
 
   jsonValidateObject(json, inputControllerJsonReference);
 
-  auto& comp = registry.emplace <InputController> (entity);
+  auto& comp = registry.emplace_or_replace <InputController> (entity);
 
   for ( const auto& axisId : json["axes"].getMemberNames() )
     comp.axes[axisId] = ControlAxis(json["axes"][axisId]);

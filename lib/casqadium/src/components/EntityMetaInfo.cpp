@@ -47,7 +47,7 @@ EntityMetaInfo::deserialize(
 {
   jsonValidateObject(json, entityMetaInfoJsonReference);
 
-  auto& comp = registry.emplace <EntityMetaInfo> (entity);
+  auto& comp = registry.emplace_or_replace <EntityMetaInfo> (entity);
 
   comp.packageId = json["packageId"].asString();
 }

@@ -47,7 +47,7 @@ GeometryBuffer::deserialize(
 {
   jsonValidateObject(json, geometryBufferJsonReference);
 
-  auto& comp = registry.emplace <GeometryBuffer> (entity);
+  auto& comp = registry.emplace_or_replace <GeometryBuffer> (entity);
 
   comp.buffer = json["buffer"].asString();
 }
