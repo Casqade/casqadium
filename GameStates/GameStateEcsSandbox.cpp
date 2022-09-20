@@ -13,6 +13,7 @@
 #include <cqde/types/PackageManager.hpp>
 #include <cqde/types/SystemManager.hpp>
 #include <cqde/types/SnapshotManager.hpp>
+#include <cqde/types/UserManager.hpp>
 
 #include <cqde/types/TickCurrent.hpp>
 #include <cqde/types/FrameCurrent.hpp>
@@ -54,10 +55,11 @@ GameStateEcsSandbox::GameStateEcsSandbox(
 //  entt::meta_ctx::bind(mRegistry.ctx().at <entt::meta_ctx> ());
 
   auto& fonts = mRegistry.ctx().at <FontAssetManager> ();
-  auto& geometry = mRegistry.ctx().at <GeometryAssetManager> ();
   auto& textures = mRegistry.ctx().at <TextureAssetManager> ();
 
   auto& packageManager = mRegistry.ctx().at <PackageManager> ();
+  auto& userManager = mRegistry.ctx().at <UserManager> ();
+  auto& inputManager = mRegistry.ctx().at <InputManager> ();
 
   try
   {
@@ -73,7 +75,9 @@ GameStateEcsSandbox::GameStateEcsSandbox(
 
   fonts.load({"munro"});
 
-  while (fonts.status("munro") != AssetStatus::Loaded)
+  inputManager.load(userManager.inputConfigPath());
+
+  while ( fonts.status("munro") != AssetStatus::Loaded )
     if ( fonts.status("munro") == AssetStatus::Error )
     {
       mRunning = false;
