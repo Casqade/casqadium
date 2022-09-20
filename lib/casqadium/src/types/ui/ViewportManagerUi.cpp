@@ -185,7 +185,7 @@ ViewportManagerUi::ui_show_viewport_windows(
 
   auto& geometry = registry.ctx().at <GeometryAssetManager> ();
 
-  int32_t windowToClose {-1};
+  std::vector <int32_t> windowsToClose {};
 
   for ( auto iter = mViewports.begin();
         iter < mViewports.end();
@@ -216,11 +216,14 @@ ViewportManagerUi::ui_show_viewport_windows(
     if ( eCamera == entt::null )
       cameraRef = null_id;
 
-    if (  ImGui::Begin( windowTitle.c_str(), &windowOpened,
-                        ImGuiWindowFlags_NoBackground) == false ||
-          windowOpened == false )
+    const bool viewportIsOpen = ImGui::Begin( windowTitle.c_str(), &windowOpened,
+                                              ImGuiWindowFlags_NoBackground);
+
+    if ( viewportIsOpen == false ||
+         windowOpened == false )
     {
-      windowToClose = viewportIndex;
+      if ( windowOpened == false )
+        windowsToClose.push_back(viewportIndex);
 
       if ( eCamera != entt::null )
         registry.get <Camera> (eCamera).zBuffer.clear();
@@ -591,7 +594,9 @@ ViewportManagerUi::ui_show_viewport_windows(
     ImGui::End(); // windowTitle
   }
 
-  if ( windowToClose != -1 )
+  std::reverse(windowsToClose.begin(), windowsToClose.end());
+
+  for ( const auto windowToClose : windowsToClose )
     mViewports.erase(mViewports.begin() + windowToClose);
 }
 
