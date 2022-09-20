@@ -239,6 +239,12 @@ target_sources(${TARGET} PRIVATE
   src/components/Transform.cpp
   src/components/Transform_ui_impl.cpp
   include/${CASQADIUM_SHORT}/components/Transform.hpp
+
+  src/components/WantsMouseCentered.cpp
+  include/${CASQADIUM_SHORT}/components/WantsMouseCentered.hpp
+
+  src/components/WantsMouseHidden.cpp
+  include/${CASQADIUM_SHORT}/components/WantsMouseHidden.hpp
 )
 
 if(${BUILD_SHARED_LIBS})

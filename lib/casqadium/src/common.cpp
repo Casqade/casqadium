@@ -18,6 +18,8 @@
 #include <cqde/components/Tag.hpp>
 #include <cqde/components/TextureBuffer.hpp>
 #include <cqde/components/Transform.hpp>
+#include <cqde/components/WantsMouseCentered.hpp>
+#include <cqde/components/WantsMouseHidden.hpp>
 
 #include <cqde/types/CallbackManager.hpp>
 #include <cqde/types/EntityManager.hpp>
@@ -111,6 +113,8 @@ engineInit( entt::registry& registry )
   entityManager.registerEmptyComponent <SnapshotExcluded> ("SnapshotExcluded");
   entityManager.registerEmptyComponent <SubscriberInput> ("SubscriberInput");
   entityManager.registerEmptyComponent <SubscriberUpdate> ("SubscriberUpdate");
+  entityManager.registerEmptyComponent <WantsMouseCentered> ("WantsMouseCentered");
+  entityManager.registerEmptyComponent <WantsMouseHidden> ("WantsMouseHidden");
 
 
 //  Callbacks
@@ -143,6 +147,7 @@ engineInit( entt::registry& registry )
   callbackManager.Register("EditorBindingsAssign", editorBindingsAssign);
 
   callbackManager.Register("EditorCameraControlOn", editorCameraControlOn);
+  callbackManager.Register("EditorCameraControlOff", editorCameraControlOff);
   callbackManager.Register("EditorCameraFovControl", editorCameraFovControl);
   callbackManager.Register("EditorCameraZoomControl", editorCameraZoomControl);
   callbackManager.Register("EditorEntitySelect", editorEntitySelect);
@@ -173,6 +178,22 @@ engineInit( entt::registry& registry )
   systemManager.Register("CasqadiumEditorSystem",
                          EditorSystem,
                          Phase{Phase::Logic | Phase::Editor});
+
+  systemManager.Register("CasqadiumEditorMouseCenteringSystem",
+                         MouseCenteringSystem,
+                         Phase{Phase::Logic | Phase::Editor});
+
+  systemManager.Register("CasqadiumEditorMouseHidingSystem",
+                         MouseHidingSystem,
+                         Phase{Phase::Logic | Phase::Editor});
+
+  systemManager.Register("MouseCenteringSystem",
+                         MouseCenteringSystem,
+                         Phase::Logic);
+
+  systemManager.Register("MouseHidingSystem",
+                         MouseHidingSystem,
+                         Phase::Logic);
 
   systemManager.Register("CullingSystem",
                          CullingSystem,

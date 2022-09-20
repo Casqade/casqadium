@@ -24,6 +24,8 @@
 #include <cqde/components/SubscriberUpdate.hpp>
 #include <cqde/components/InputController.hpp>
 #include <cqde/components/CasqadiumEditorInternal.hpp>
+#include <cqde/components/WantsMouseCentered.hpp>
+#include <cqde/components/WantsMouseHidden.hpp>
 
 #include <cqde/file_helpers.hpp>
 #include <cqde/json_helpers.hpp>
@@ -306,9 +308,7 @@ editorCameraCreate(
 
   auto& iCameraControlOff = cInputController.axes["EditorCameraControlOff"];
 
-  iCameraControlOff.callbacks.insert("EntityInputOff");
-  iCameraControlOff.callbacks.insert("MouseAutoCenterDisable");
-  iCameraControlOff.callbacks.insert("MouseCursorShow");
+  iCameraControlOff.callbacks.insert("EditorCameraControlOff");
 
   auto& iCameraFov = cInputController.axes["EditorCameraFov"];
   iCameraFov.value = cCamera.fov;
@@ -516,10 +516,7 @@ editorCameraControlOn(
 {
   using types::EntityManager;
   using ui::ViewportManagerUi;
-  using compos::Tag;
-  using compos::Camera;
-  using compos::SubscriberInput;
-  using compos::CasqadiumEditorInternal;
+  using namespace compos;
 
   for ( const auto&& [eCamera, cTag, cCamera]
           : registry.view <Tag, Camera, CasqadiumEditorInternal> ().each() )
@@ -532,11 +529,28 @@ editorCameraControlOn(
 
     entityInputOn(registry, {eCamera});
 
-    mouseAutoCenterEnable(registry, args);
-    mouseCursorHide(registry, args);
+    registry.emplace_or_replace <WantsMouseCentered> (eCamera);
+    registry.emplace_or_replace <WantsMouseHidden> (eCamera);
 
     return;
   }
+};
+
+void
+editorCameraControlOff(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using types::EntityManager;
+  using ui::ViewportManagerUi;
+  using namespace compos;
+
+  const auto eCamera = std::any_cast <entt::entity> (args.at(0));
+
+  entityInputOff(registry, args);
+
+  registry.remove <WantsMouseCentered> (eCamera);
+  registry.remove <WantsMouseHidden> (eCamera);
 };
 
 void

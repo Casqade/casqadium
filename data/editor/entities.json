@@ -1,120 +1,255 @@
 {
-  "eQuad":
+  "eCamera" : 
   {
-    "Transform":
+    "Camera" : 
     {
-      "translation": [0.0, 0.0, -10.0],
-      "orientation": [0.0, 0.0, 0.0, 1.0],
-      "scale": [1.0, 1.0, 1.0],
-      "scaleWorld": [1.0, 1.0, 1.0],
+      "fov" : 45.000001777515308,
+      "layer" : 0,
+      "projection" : "perspective",
+      "viewport" : 
+      [
+        0.0,
+        0.0,
+        1.0,
+        1.0
+      ],
+      "z-range" : 
+      [
+        0.10000000149011612,
+        1000.0
+      ]
     },
-    "SceneNode":
+    "InputController" : 
     {
-      "parent": "null",
-      "children": ["eQuad1"],
-    },
-    "GeometryBuffer":
-    {
-      "buffer": "quad",
-    },
-    "TextureBuffer":
-    {
-      "textures": ["map_height", "text_texture2"],
-    },
-  },
-  "eQuad1":
-  {
-    "Transform":
-    {
-      "translation": [0.0, 0.0, -10.0],
-      "orientation": [0.0, 0.0, 0.0, 1.0],
-      "scale": [1.0, 1.0, 1.0],
-      "scaleWorld": [1.0, 1.0, 1.0],
-    },
-    "SceneNode":
-    {
-      "parent": "eQuad",
-      "children": [],
-    },
-    "GeometryBuffer":
-    {
-      "buffer": "quad",
-    },
-    "TextureBuffer":
-    {
-      "textures": ["map_diffuse", "text_texture2"],
-    },
-  },
-  "eCamera":
-  {
-    "Camera":
-    {
-      "viewport": [0.0, 0.0, 1.0, 1.0],
-      "z-range": [0.1, 1000.0],
-      "fov": 45.0,
-      "layer": 0,
-      "projection": "perspective",
-    },
-    "Transform":
-    {
-      "translation": [0.0, 0.0, 0.0],
-      "orientation": [0.0, 0.0, 0.0, 1.0],
-      "scale": [1.0, 1.0, 1.0],
-      "scaleWorld": [1.0, 1.0, 1.0],
-    },
-    "SceneNode":
-    {
-      "parent": "null",
-      "children": [],
-    },
-    "InputController":
-    {
-      "axes":
+      "axes" : 
       {
-        "EditorModeToggle":
+        "EditorModeToggle" : 
         {
-          "callbacks": ["EditorModeToggle"],
-          "constraint": [0.0, 0.0],
-          "value": 0.0,
+          "callbacks" : 
+          [
+            "EditorModeToggle"
+          ],
+          "constraint" : 
+          [
+            0.0,
+            0.0
+          ],
+          "value" : 0.0
         },
-        "EngineShutdown":
+        "EngineShutdown" : 
         {
-          "callbacks": ["EngineShutdown"],
-          "constraint": [0.0, 0.0],
-          "value": 0.0,
+          "callbacks" : 
+          [
+            "EngineShutdown"
+          ],
+          "constraint" : 
+          [
+            0.0,
+            0.0
+          ],
+          "value" : 0.0
         },
-        "TranslateX":
+        "Pitch" : 
         {
-          "callbacks": ["ControlTranslateXRelative"],
-          "constraint": [1.0, 0.0],
-          "value": 0.0,
+          "callbacks" : 
+          [
+            "ControlPitchRelative"
+          ],
+          "constraint" : 
+          [
+            1.0,
+            0.0
+          ],
+          "value" : 0.0
         },
-        "TranslateY":
+        "TranslateX" : 
         {
-          "callbacks": ["ControlTranslateYRelative"],
-          "constraint": [1.0, 0.0],
-          "value": 0.0,
+          "callbacks" : 
+          [
+            "ControlTranslateXRelative"
+          ],
+          "constraint" : 
+          [
+            1.0,
+            0.0
+          ],
+          "value" : 0.0
         },
-        "TranslateZ":
+        "TranslateY" : 
         {
-          "callbacks": ["ControlTranslateZRelative"],
-          "constraint": [1.0, 0.0],
-          "value": 0.0,
+          "callbacks" : 
+          [
+            "ControlTranslateYRelative"
+          ],
+          "constraint" : 
+          [
+            1.0,
+            0.0
+          ],
+          "value" : 0.0
         },
-        "Pitch":
+        "TranslateZ" : 
         {
-          "callbacks": ["ControlPitchRelative"],
-          "constraint": [1.0, 0.0],
-          "value": 0.0,
+          "callbacks" : 
+          [
+            "ControlTranslateZRelative"
+          ],
+          "constraint" : 
+          [
+            1.0,
+            0.0
+          ],
+          "value" : 0.0
         },
-        "Yaw":
+        "Yaw" : 
         {
-          "callbacks": ["ControlYawRelative"],
-          "constraint": [1.0, 0.0],
-          "value": 0.0,
-        },
+          "callbacks" : 
+          [
+            "ControlYawRelative"
+          ],
+          "constraint" : 
+          [
+            1.0,
+            0.0
+          ],
+          "value" : 0.0
+        }
       }
     },
-    "SubscriberInput": {},
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "null"
+    },
+    "SubscriberInput" : {},
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "WantsMouseCentered" : {},
+    "WantsMouseHidden" : {}
   },
+  "eQuad" : 
+  {
+    "GeometryBuffer" : 
+    {
+      "buffer" : "quad"
+    },
+    "SceneNode" : 
+    {
+      "children" : 
+      [
+        "eQuad1"
+      ],
+      "parent" : "null"
+    },
+    "TextureBuffer" : 
+    {
+      "textures" : 
+      [
+        "map_height",
+        "text_texture2"
+      ]
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        0.0,
+        -10.0
+      ]
+    }
+  },
+  "eQuad1" : 
+  {
+    "GeometryBuffer" : 
+    {
+      "buffer" : "quad"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eQuad"
+    },
+    "TextureBuffer" : 
+    {
+      "textures" : 
+      [
+        "map_diffuse",
+        "text_texture2"
+      ]
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        0.0,
+        -10.0
+      ]
+    }
+  }
 }

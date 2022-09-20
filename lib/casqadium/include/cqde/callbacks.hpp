@@ -93,6 +93,10 @@ void editorCameraControlOn(
   entt::registry&,
   const std::vector <std::any>& args = {} );
 
+void editorCameraControlOff(
+  entt::registry&,
+  const std::vector <std::any>& args = {} );
+
 void editorCameraFovControl(
   entt::registry&,
   const std::vector <std::any>& args = {} );

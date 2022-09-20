@@ -31,6 +31,8 @@
 #include <cqde/components/SubscriberInput.hpp>
 #include <cqde/components/SubscriberUpdate.hpp>
 #include <cqde/components/CasqadiumEditorInternal.hpp>
+#include <cqde/components/WantsMouseCentered.hpp>
+#include <cqde/components/WantsMouseHidden.hpp>
 
 #include <entt/entity/registry.hpp>
 
@@ -93,6 +95,40 @@ EditorEntityHighlightSystem(
           drawLines(vBuf.vertices, olc::YELLOW, LineRenderMode::Loop);
   }
 };
+
+void
+MouseCenteringSystem(
+  entt::registry& registry )
+{
+  using namespace compos;
+
+  olc::platform->ptrPGE->SetKeepMouseCentered(false);
+
+  if ( registry.storage <CasqadiumEditorInternal> ().empty() == true )
+    for ( const auto&& [entity] : registry.view <SubscriberInput, WantsMouseCentered> ().each() )
+      return olc::platform->ptrPGE->SetKeepMouseCentered(true);
+
+  else
+    for ( const auto&& [entity] : registry.view <SubscriberInput, WantsMouseCentered, CasqadiumEditorInternal> ().each() )
+      return olc::platform->ptrPGE->SetKeepMouseCentered(true);
+}
+
+void
+MouseHidingSystem(
+  entt::registry& registry )
+{
+  using namespace compos;
+
+  olc::platform->ptrPGE->ResetMouseCursor();
+
+  if ( registry.storage <CasqadiumEditorInternal> ().empty() == true )
+    for ( const auto&& [entity] : registry.view <SubscriberInput, WantsMouseHidden> ().each() )
+      return olc::platform->ptrPGE->SetMouseCursor(olc::Mouse::Cursor{});
+
+  else
+    for ( const auto&& [entity] : registry.view <SubscriberInput, WantsMouseHidden, CasqadiumEditorInternal> ().each() )
+      return olc::platform->ptrPGE->SetMouseCursor(olc::Mouse::Cursor{});
+}
 
 void
 CullingSystem(
