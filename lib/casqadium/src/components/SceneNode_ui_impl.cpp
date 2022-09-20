@@ -70,6 +70,10 @@ SceneNode::ui_edit_props(
         }
       }
 
+      if (  entityFilter.query(null_id.str()) == true &&
+            ImGui::Selectable(null_id.str().c_str(), null_id == parent.id) )
+        AttachChildNode(registry, entt::null, entity);
+
       ImGui::EndCombo(); // parentIdCombo
     }
   }
