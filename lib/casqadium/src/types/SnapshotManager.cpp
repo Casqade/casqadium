@@ -87,7 +87,7 @@ SnapshotManager::Create(
   const std::unordered_set <ComponentType> excludedComponents
   {
     entityManager.componentType <Tag> (),
-    entityManager.componentType <EntityMetaInfo> (),
+    entityManager.componentType <SnapshotExcluded> (),
   };
 
   const auto registrySnapshot
