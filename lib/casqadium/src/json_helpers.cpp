@@ -92,6 +92,7 @@ jsonValidateArray(
     throw std::runtime_error(comment.substr(3));
   }
 
+//  todo: perform check only for first element ?
   for ( uint32_t i = 0;
         i < array.size();
         ++i )
