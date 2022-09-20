@@ -44,7 +44,9 @@ class InputManager;
 class Package;
 class PackageManager;
 class PrefabManager;
+class SnapshotManager;
 class SystemManager;
+class UserManager;
 
 } // namespace types
 
@@ -61,6 +63,7 @@ class CallbackManagerUi;
 class EntityManagerUi;
 class InputManagerUi;
 class PackageManagerUi;
+class PrefabManagerUi;
 class SystemManagerUi;
 class ViewportManagerUi;
 
