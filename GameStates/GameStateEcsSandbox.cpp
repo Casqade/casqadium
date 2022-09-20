@@ -191,13 +191,14 @@ bool
 GameStateEcsSandbox::update(  const uint32_t ticks,
                               const TimeUtils::Duration& interval )
 {
+  using cqde::types::CallbackManager;
   using cqde::types::EntityManager;
   using cqde::types::SystemManager;
   using cqde::types::TickCurrent;
   using cqde::types::System;
 
+  auto& callbackManager = mRegistry.ctx().at <CallbackManager> ();
   auto& entityManager = mRegistry.ctx().at <EntityManager> ();
-  entityManager.delayedRemove(mRegistry);
 
   auto& tick = mRegistry.ctx().at <TickCurrent> ();
 
@@ -205,8 +206,13 @@ GameStateEcsSandbox::update(  const uint32_t ticks,
   tick.tickInterval = interval;
 
   for ( uint32_t tick = 0; tick < ticks; ++tick )
+  {
     mRegistry.ctx().at <SystemManager> ().execute(mRegistry,
                                                   System::Phase::Logic);
+
+    callbackManager.delayedExecution(mRegistry);
+    entityManager.delayedRemove(mRegistry);
+  }
 
   tick.lastTickTimepoint = TimeUtils::Now();
 

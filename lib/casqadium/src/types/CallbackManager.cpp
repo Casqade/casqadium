@@ -21,6 +21,24 @@ CallbackManager::execute(
 }
 
 void
+CallbackManager::executeLater(
+  const CallbackFunc& callback,
+  const CallbackArgs& args )
+{
+  mDelayedCallbacks.push_back({callback, args});
+}
+
+void
+CallbackManager::delayedExecution(
+  entt::registry& registry )
+{
+  for ( const auto& [callback, args] : mDelayedCallbacks )
+    callback(registry, args);
+
+  mDelayedCallbacks.clear();
+}
+
+void
 CallbackManager::Register(
   const CallbackId&   callbackId,
   const CallbackFunc& callback )

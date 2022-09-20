@@ -22,18 +22,25 @@ class CallbackManager
   friend class ui::CallbackManagerUi;
 
 public:
+  using CallbackArgs = std::vector <std::any>;
   using CallbackFunc = std::function <void( entt::registry&,
-                                            const std::vector <std::any>&)>;
+                                            const CallbackArgs& )>;
 
 private:
   std::unordered_map <CallbackId, CallbackFunc,
                       identifier_hash> mCallbacks {};
 
+  std::vector <std::pair <CallbackFunc, CallbackArgs>> mDelayedCallbacks {};
+
 public:
   CallbackManager() = default;
 
   void execute( const CallbackId&, entt::registry&,
-                const std::vector <std::any>& args ) const;
+                const CallbackArgs& args ) const;
+
+  void executeLater( const CallbackFunc&, const CallbackArgs& = {} );
+
+  void delayedExecution( entt::registry& );
 
   void Register( const CallbackId&,
                  const CallbackFunc& );
