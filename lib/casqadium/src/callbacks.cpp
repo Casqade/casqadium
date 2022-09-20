@@ -255,11 +255,12 @@ editorCameraCreate(
 
   auto& entityManager = registry.ctx().at <EntityManager> ();
 
-  auto eCamera = registry.create();
-  auto& cTag = registry.emplace <Tag> (eCamera);
+  auto cameraId = "cqde_editor_camera"_id;
 
-  cTag.id = "cqde_editor_camera";
-  entityManager.idRegister(cTag.id, eCamera);
+  if ( entityManager.get(cameraId) != entt::null )
+    cameraId = entityManager.idGenerate(cameraId);
+
+  const auto eCamera = entityManager.entityCreate(cameraId, registry);
 
   registry.emplace <SubscriberUpdate> (eCamera);
   registry.emplace <CasqadiumEditorInternal> (eCamera);
@@ -332,19 +333,20 @@ editorControllerCreate(
 
   auto& entityManager = registry.ctx().at <EntityManager> ();
 
-  auto eEditorController = registry.create();
-  auto& cTag = registry.emplace <Tag> (eEditorController);
+  auto controllerId = "cqde_editor_controller"_id;
 
-  cTag.id = "cqde_editor_controller";
-  entityManager.idRegister(cTag.id, eEditorController);
+  if ( entityManager.get(controllerId) != entt::null )
+    controllerId = entityManager.idGenerate(controllerId);
 
-  auto& cMetaInfo = registry.emplace <EntityMetaInfo> (eEditorController);
+  const auto eController = entityManager.entityCreate(controllerId, registry);
+
+  auto& cMetaInfo = registry.emplace <EntityMetaInfo> (eController);
   cMetaInfo.packageId = "";
 
-  registry.emplace <SubscriberInput> (eEditorController);
-  registry.emplace <CasqadiumEditorInternal> (eEditorController);
+  registry.emplace <SubscriberInput> (eController);
+  registry.emplace <CasqadiumEditorInternal> (eController);
 
-  auto& cInputController = registry.emplace <InputController> (eEditorController);
+  auto& cInputController = registry.emplace <InputController> (eController);
 
   auto& iEngineShutdown = cInputController.axes["EngineShutdown"];
   iEngineShutdown.callbacks.insert("EngineShutdown");
