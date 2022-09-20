@@ -35,9 +35,14 @@ RegistryFilter::query(
 
   const auto packageSelected = package();
 
-  if (  package().str().empty() == false &&
-        package() != registry.get <EntityMetaInfo> (entity).packageId )
-    return false;
+  if ( packageSelected.str().empty() == false )
+  {
+    const auto cMetaInfo = registry.try_get <EntityMetaInfo> (entity);
+
+    if ( cMetaInfo == nullptr ||
+         packageSelected != cMetaInfo->packageId )
+      return false;
+  }
 
   const auto entityId = registry.get <Tag> (entity).id.str();
 
