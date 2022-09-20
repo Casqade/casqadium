@@ -265,8 +265,8 @@ EntityManager::entityDeserialize(
   {
     LOG_DEBUG("Patching entity '{}'", entityId.str());
 
-    idInvalidate(entityId);
     removeLater(get(entityId));
+    idInvalidate(entityId);
   }
 
   const auto entity = entityCreate(entityId, registry);
@@ -491,7 +491,11 @@ EntityManager::delayedRemove(
 
     if ( valid(entity, registry) == true )
     {
-      idInvalidate( registry.get <Tag> (entity).id );
+      const auto entityId = registry.get <Tag> (entity).id;
+
+      if ( get(entityId) == entity )
+        idInvalidate( registry.get <Tag> (entity).id );
+
       registry.destroy(entity);
     }
   }
