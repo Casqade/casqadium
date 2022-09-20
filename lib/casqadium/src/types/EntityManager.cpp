@@ -149,14 +149,17 @@ EntityManager::serialize(
     LOG_TRACE("Serializing package '{}' entity registry",
               packageId.str());
 
-  for ( const auto [eTag, cTag, cMetaInfo]
-          : registry.view <Tag, EntityMetaInfo> ().each() )
+  for ( const auto [entity, cTag]
+          : registry.view <Tag> ().each() )
   {
-    if (  packageId.str().empty() == false &&
-          cMetaInfo.packageId != packageId )
-      continue;
+    if ( packageId.str().empty() == false )
+    {
+      const auto cMetaInfo = registry.try_get <EntityMetaInfo> (entity);
 
-    const auto entity = eTag;
+      if ( cMetaInfo == nullptr ||
+           cMetaInfo->packageId != packageId )
+        continue;
+    }
 
     try
     {
