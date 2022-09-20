@@ -34,7 +34,7 @@ const static Json::Value inputConfigReference =
   using namespace std::string_literals;
 
   Json::Value reference = ValueType::objectValue;
-  reference.setComment("// input config JSON root must be an object"s,
+  reference.setComment("// input config root must be a JSON object"s,
                        Json::CommentPlacement::commentBefore);
 
   Json::Value& axis = reference["cqde_json_anykey"];

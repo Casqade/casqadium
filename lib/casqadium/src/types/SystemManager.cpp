@@ -18,7 +18,7 @@ const static Json::Value systemsStateReference =
   using namespace std::string_literals;
 
   Json::Value reference = ValueType::arrayValue;
-  reference.setComment("// systems state JSON root must be an array"s,
+  reference.setComment("// systems state root must be a JSON array"s,
                        Json::CommentPlacement::commentBefore);
 
   reference.append(ValueType::stringValue);

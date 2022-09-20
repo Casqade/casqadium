@@ -19,7 +19,7 @@ const static Json::Value InputBindingJsonReference =
   using namespace std::string_literals;
 
   Json::Value reference = ValueType::objectValue;
-  reference.setComment("// JSON root must be an object"s,
+  reference.setComment("// InputBinding root must be a JSON object"s,
                        Json::CommentPlacement::commentBefore);
 
   reference["absolute"] = ValueType::booleanValue;

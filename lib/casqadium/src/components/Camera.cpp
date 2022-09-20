@@ -68,7 +68,7 @@ const static Json::Value cameraJsonReference =
   using namespace std::string_literals;
 
   Json::Value root = ValueType::objectValue;
-  root.setComment("// JSON root must be an object"s,
+  root.setComment("// root must be a JSON object"s,
                   Json::CommentPlacement::commentBefore);
 
   root["viewport"] = ValueType::arrayValue;
@@ -167,10 +167,19 @@ Camera::deserialize(
 
   comp.layer = json["layer"].asInt();
 
-  comp.viewport << json["viewport"];
   comp.zRange.first = json["z-range"][0].asFloat();
   comp.zRange.second = json["z-range"][1].asFloat();
 
+  try
+  {
+    comp.viewport << json["viewport"];
+  }
+  catch ( const std::exception& e )
+  {
+    throw std::runtime_error(
+      format("'viewport' parse error: {}",
+              e.what()));
+  }
 
 //  todo: render, texture & lighting modes
 }

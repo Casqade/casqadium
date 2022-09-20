@@ -18,7 +18,7 @@ const static Json::Value InputBindingAbsoluteJsonReference =
   using namespace std::string_literals;
 
   Json::Value reference = ValueType::objectValue;
-  reference.setComment("// JSON root must be an object"s,
+  reference.setComment("// InputBindingAbsolute root must be a JSON object"s,
                        Json::CommentPlacement::commentBefore);
 
   reference["curve"] = ValueType::realValue;

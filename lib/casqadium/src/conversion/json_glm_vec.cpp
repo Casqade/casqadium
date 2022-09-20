@@ -33,7 +33,7 @@ operator << (
   using fmt::format;
 
   if ( json.isArray() == false )
-    throw std::runtime_error("json must be a JSON array");
+    throw std::runtime_error("value must be a JSON array");
 
   if ( json.size() != vec.length() )
     throw std::runtime_error(

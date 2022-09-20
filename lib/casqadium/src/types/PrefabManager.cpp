@@ -17,7 +17,7 @@ const static Json::Value prefabDbReference =
   using namespace std::string_literals;
 
   Json::Value reference = ValueType::objectValue;
-  reference.setComment("// prefab DB JSON root must be an object"s,
+  reference.setComment("// prefab DB root must be a JSON object"s,
                        Json::CommentPlacement::commentBefore);
 
   Json::Value& prefab = reference["cqde_json_anykey"];

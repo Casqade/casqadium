@@ -144,7 +144,7 @@ AssetManager <Asset>::parseAssetDbFile(
 
     if ( assetDb.isObject() == false )
       throw std::runtime_error(
-        format("JSON root in '{}' must be an object",
+        format("asset DB root in '{}' must be a JSON object",
                 dbPath.string()));
   }
   catch ( const std::exception& e )

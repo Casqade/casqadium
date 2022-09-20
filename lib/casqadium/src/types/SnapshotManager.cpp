@@ -28,16 +28,6 @@ const static Json::Value snapshotReference =
   reference.setComment("// snapshot root must be a JSON object"s,
                        Json::CommentPlacement::commentBefore);
 
-  Json::Value& registry = reference["registry"];
-  registry = ValueType::objectValue;
-  registry.setComment("// registry must be a JSON object"s,
-                  Json::CommentPlacement::commentBefore);
-
-  Json::Value& systems = reference["systems"];
-  systems = ValueType::objectValue;
-  systems.setComment("// systems must be a JSON object"s,
-                  Json::CommentPlacement::commentBefore);
-
   return reference;
 }();
 

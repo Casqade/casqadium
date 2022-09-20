@@ -21,7 +21,7 @@ const static Json::Value controlAxisJsonReference =
   using namespace std::string_literals;
 
   Json::Value root = ValueType::objectValue;
-  root.setComment("// JSON root must be an object"s,
+  root.setComment("// control axis root must be a JSON object"s,
                    Json::CommentPlacement::commentBefore);
 
   root["value"] = ValueType::realValue;
@@ -55,7 +55,7 @@ ControlAxis::ControlAxis( const Json::Value& json )
 
   if ( json["constraint"].size() != 2 )
     throw std::runtime_error(
-      format("'constraint' array size must be 2 elements"));
+      format("'constraint' array must contain 2 elements"));
 
   value = json["value"].asFloat();
 

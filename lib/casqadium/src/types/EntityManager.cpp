@@ -31,7 +31,7 @@ const static Json::Value registryReference =
   using namespace std::string_literals;
 
   Json::Value registry = ValueType::objectValue;
-  registry.setComment("// entity registry must be a JSON object"s,
+  registry.setComment("// entity registry root must be a JSON object"s,
                       Json::CommentPlacement::commentBefore);
 
   Json::Value& entity = registry["cqde_json_anykey"];

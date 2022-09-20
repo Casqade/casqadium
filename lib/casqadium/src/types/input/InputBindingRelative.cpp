@@ -9,14 +9,14 @@
 namespace cqde::types
 {
 
-const static Json::Value inputBindingJsonReference =
+const static Json::Value inputBindingRelativeJsonReference =
 []
 {
   using ValueType = Json::ValueType;
   using namespace std::string_literals;
 
   Json::Value binding = ValueType::objectValue;
-  binding.setComment("// input binding value root must be an object"s,
+  binding.setComment("// InputBindingRelative root must be a JSON object"s,
                      Json::CommentPlacement::commentBefore);
 
 

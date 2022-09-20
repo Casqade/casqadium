@@ -8,6 +8,8 @@
 
 #include <entt/entity/registry.hpp>
 
+#include <spdlog/fmt/bundled/format.h>
+
 #include <json/value.h>
 
 
@@ -56,7 +58,7 @@ const static Json::Value transformJsonReference =
   using namespace std::string_literals;
 
   Json::Value root = ValueType::objectValue;
-  root.setComment("// JSON root must be an object"s,
+  root.setComment("// root must be a JSON object"s,
                   Json::CommentPlacement::commentBefore);
 
   return root;
@@ -83,14 +85,54 @@ Transform::deserialize(
   const std::unordered_map <EntityId, EntityId,
                             identifier_hash>& idMap )
 {
+  using fmt::format;
   jsonValidateObject(json, transformJsonReference);
 
   auto& comp = registry.emplace_or_replace <Transform> (entity);
 
-  comp.translation << json["translation"];
-  comp.orientation << json["orientation"];
-  comp.scale << json["scale"];
-  comp.scaleWorld << json["scaleWorld"];
+  try
+  {
+    comp.translation << json["translation"];
+  }
+  catch ( const std::exception& e )
+  {
+    throw std::runtime_error(
+      format("'translation' parse error: {}",
+              e.what()));
+  }
+
+  try
+  {
+    comp.orientation << json["orientation"];
+  }
+  catch ( const std::exception& e )
+  {
+    throw std::runtime_error(
+      format("'orientation' parse error: {}",
+              e.what()));
+  }
+
+  try
+  {
+    comp.scale << json["scale"];
+  }
+  catch ( const std::exception& e )
+  {
+    throw std::runtime_error(
+      format("'scale' parse error: {}",
+              e.what()));
+  }
+
+  try
+  {
+    comp.scaleWorld << json["scaleWorld"];
+  }
+  catch ( const std::exception& e )
+  {
+    throw std::runtime_error(
+      format("'scaleWorld' parse error: {}",
+              e.what()));
+  }
 }
 
 } // namespace cqde::compos

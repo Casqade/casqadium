@@ -18,7 +18,7 @@ const static Json::Value manifestReference =
   using namespace std::string_literals;
 
   Json::Value root = ValueType::objectValue;
-  root.setComment("// JSON root must be an object"s,
+  root.setComment("// root must be a JSON object"s,
                    Json::CommentPlacement::commentBefore);
 
   root["entry_point"] = ValueType::stringValue;
