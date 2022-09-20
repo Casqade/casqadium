@@ -28,13 +28,14 @@ public:
 
   void setRootPath( const path& packagesRoot );
 
-  void load(entt::registry& );
+  void load( entt::registry& );
   void unload();
 
   static void Validate( const Json::Value& packagesManifest );
 
   const Package* package( const PackageId& ) const;
 
+  PackageId entryPoint() const;
   std::vector <PackageId> packages() const;
 
   path rootPath() const;

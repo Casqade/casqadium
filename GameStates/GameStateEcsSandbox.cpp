@@ -71,6 +71,7 @@ GameStateEcsSandbox::GameStateEcsSandbox(
   auto& fonts = mRegistry.ctx().at <FontAssetManager> ();
   auto& textures = mRegistry.ctx().at <TextureAssetManager> ();
 
+  auto& entityManager = mRegistry.ctx().at <EntityManager> ();
   auto& packageManager = mRegistry.ctx().at <PackageManager> ();
   auto& userManager = mRegistry.ctx().at <UserManager> ();
   auto& inputManager = mRegistry.ctx().at <InputManager> ();
@@ -87,9 +88,11 @@ GameStateEcsSandbox::GameStateEcsSandbox(
     return;
   }
 
-  fonts.load({"munro"});
-
   inputManager.load(userManager.inputConfigPath());
+
+  entityManager.entryPointExecute(mRegistry);
+
+  fonts.load({"munro"});
 
   while ( fonts.status("munro") != AssetStatus::Loaded )
     if ( fonts.status("munro") == AssetStatus::Error )

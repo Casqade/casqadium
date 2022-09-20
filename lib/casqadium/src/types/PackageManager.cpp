@@ -163,6 +163,12 @@ PackageManager::package(
   return nullptr;
 }
 
+PackageId
+PackageManager::entryPoint() const
+{
+  return mEntryPoint;
+}
+
 std::vector <PackageId>
 PackageManager::packages() const
 {

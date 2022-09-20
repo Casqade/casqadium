@@ -116,6 +116,8 @@ public:
 
   void clear();
 
+  void entryPointExecute( entt::registry& );
+
   void removeLater( const entt::entity );
   void removeLater( const entt::entity,
                     const ComponentType );

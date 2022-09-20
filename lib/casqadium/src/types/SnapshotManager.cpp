@@ -174,11 +174,7 @@ SnapshotManager::Load(
               snapshotPath.string(), e.what()));
   }
 
-  auto& registrySnapshot = snapshot["registry"];
-  auto& systemsSnapshot = snapshot["systems"];
-
   auto& entityManager = registry.ctx().at <EntityManager> ();
-  auto& systemManager = registry.ctx().at <SystemManager> ();
 
   if ( registry.ctx().contains <EntityManagerUi> () == true )
   {
@@ -188,7 +184,7 @@ SnapshotManager::Load(
     entityManagerUi.componentDeselect();
   }
 
-  registry.ctx().at <EntityManager> ().clear();
+  entityManager.clear();
   registry.clear();
 
   LOG_TRACE("Loading snapshot '{}'",
@@ -213,6 +209,8 @@ SnapshotManager::Load(
       entityManager.load( package->contentPath(ContentType::Entities),
                           packageId, registry);
     }
+
+    entityManager.entryPointExecute(registry);
   }
   catch ( const std::exception& e )
   {
@@ -220,6 +218,9 @@ SnapshotManager::Load(
       format("Failed to load snapshot '{}': {}",
              snapshotPath.string(), e.what()));
   }
+
+  auto& registrySnapshot = snapshot["registry"];
+  auto& systemsSnapshot = snapshot["systems"];
 
   try
   {
@@ -231,6 +232,8 @@ SnapshotManager::Load(
       format("Failed to deserialize snapshot '{}': {}",
               snapshotPath.string(), e.what()));
   }
+
+  auto& systemManager = registry.ctx().at <SystemManager> ();
 
   try
   {

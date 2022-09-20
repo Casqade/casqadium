@@ -1,14 +1,20 @@
 #include <cqde/types/EntityManager.hpp>
 
-#include <cqde/util/logger.hpp>
-
-#include <cqde/components/Tag.hpp>
-#include <cqde/components/EntityMetaInfo.hpp>
-
 #include <cqde/common.hpp>
 #include <cqde/ecs_helpers.hpp>
 #include <cqde/file_helpers.hpp>
 #include <cqde/json_helpers.hpp>
+
+#include <cqde/util/logger.hpp>
+
+#include <cqde/components/Tag.hpp>
+#include <cqde/components/EntityMetaInfo.hpp>
+#include <cqde/components/SubscriberInput.hpp>
+#include <cqde/components/SubscriberUpdate.hpp>
+#include <cqde/components/CasqadiumEntryPoint.hpp>
+
+#include <cqde/types/PackageManager.hpp>
+#include <cqde/types/SystemManager.hpp>
 
 #include <entt/entity/registry.hpp>
 
@@ -465,6 +471,54 @@ EntityManager::clear()
   mEntitiesTags = {{null_id, entt::null}};
   mEntitesToRemove.clear();
   mComponentsToRemove.clear();
+}
+
+void
+EntityManager::entryPointExecute(
+  entt::registry& registry )
+{
+  using compos::CasqadiumEntryPoint;
+  using compos::EntityMetaInfo;
+  using compos::SubscriberInput;
+  using compos::SubscriberUpdate;
+
+  const auto& packageManager = registry.ctx().at <PackageManager> ();
+
+  const auto entryPoint = packageManager.entryPoint();
+
+  for ( const auto&& [entity, cEntryPoint, cMetaInfo]
+          : registry.view <CasqadiumEntryPoint, EntityMetaInfo> ().each() )
+  {
+    if ( cMetaInfo.packageId != entryPoint )
+      continue;
+
+    for ( const auto& entityId : cEntryPoint.entitiesToEnableUpdate )
+    {
+      const auto entity = get_if_valid(entityId, registry);
+
+      if ( entity == entt::null )
+        continue;
+
+      registry.emplace_or_replace <SubscriberUpdate> (entity);
+    }
+
+    for ( const auto& entityId : cEntryPoint.entitiesToEnableInput )
+    {
+      const auto entity = get_if_valid(entityId, registry);
+
+      if ( entity == entt::null )
+        continue;
+
+      registry.emplace_or_replace <SubscriberInput> (entity);
+    }
+
+    auto& systemManager = registry.ctx().at <SystemManager> ();
+
+    for ( const auto& systemId : cEntryPoint.systemsToEnable )
+      systemManager.activate(systemId);
+
+    return;
+  }
 }
 
 void
