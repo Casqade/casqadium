@@ -104,11 +104,21 @@ MouseCenteringSystem(
 
   if ( registry.storage <CasqadiumEditorInternal> ().empty() == true )
     for ( const auto&& [entity] : registry.view <SubscriberInput, WantsMouseCentered> ().each() )
-      return olc::platform->ptrPGE->SetKeepMouseCentered(true);
+    {
+      if ( olc::platform->ptrPGE->GetKeepMouseCentered() == false )
+        olc::platform->ptrPGE->SetKeepMouseCentered(true);
+
+      return;
+    }
 
   else
     for ( const auto&& [entity] : registry.view <SubscriberInput, WantsMouseCentered, CasqadiumEditorInternal> ().each() )
-      return olc::platform->ptrPGE->SetKeepMouseCentered(true);
+    {
+      if ( olc::platform->ptrPGE->GetKeepMouseCentered() == false )
+        olc::platform->ptrPGE->SetKeepMouseCentered(true);
+
+      return;
+    }
 
   olc::platform->ptrPGE->SetKeepMouseCentered(false);
 }
