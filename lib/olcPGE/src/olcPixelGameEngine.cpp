@@ -738,7 +738,6 @@ void PixelGameEngine::SetKeepMouseCentered(const bool centered)
   bKeepMouseCentered = centered;
 }
 
-
 void PixelGameEngine::ResetMouseCursor()
 {
   bMouseCursor = Mouse::Cursor{};
@@ -1961,7 +1960,7 @@ void PixelGameEngine::olc_CoreUpdate()
   ScanHardware(pKeyboardState, pKeyOldState, pKeyNewState, 256);
   ScanHardware(pMouseState, pMouseOldState, pMouseNewState, nMouseButtons);
 
-  if (GetKeepMouseCentered()== true && IsFocused() == true)
+  if (GetKeepMouseCentered() == true && IsFocused() == true)
     platform->CenterMouseCursor();
 
   // Cache mouse coordinates so they remain consistent during frame
@@ -3822,6 +3821,11 @@ namespace olc
     virtual olc::rcode SetMouseCursorHidden(const bool hidden) override
     {
       using namespace X11;
+
+      if (hidden == bMouseCursorHidden)
+        return olc::OK;
+
+      bMouseCursorHidden = hidden;
 
       if (hidden == false)
       {

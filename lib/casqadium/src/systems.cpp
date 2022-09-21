@@ -102,8 +102,6 @@ MouseCenteringSystem(
 {
   using namespace compos;
 
-  olc::platform->ptrPGE->SetKeepMouseCentered(false);
-
   if ( registry.storage <CasqadiumEditorInternal> ().empty() == true )
     for ( const auto&& [entity] : registry.view <SubscriberInput, WantsMouseCentered> ().each() )
       return olc::platform->ptrPGE->SetKeepMouseCentered(true);
@@ -111,6 +109,8 @@ MouseCenteringSystem(
   else
     for ( const auto&& [entity] : registry.view <SubscriberInput, WantsMouseCentered, CasqadiumEditorInternal> ().each() )
       return olc::platform->ptrPGE->SetKeepMouseCentered(true);
+
+  olc::platform->ptrPGE->SetKeepMouseCentered(false);
 }
 
 void
@@ -119,8 +119,6 @@ MouseHidingSystem(
 {
   using namespace compos;
 
-  olc::platform->ptrPGE->ResetMouseCursor();
-
   if ( registry.storage <CasqadiumEditorInternal> ().empty() == true )
     for ( const auto&& [entity] : registry.view <SubscriberInput, WantsMouseHidden> ().each() )
       return olc::platform->ptrPGE->SetMouseCursor(olc::Mouse::Cursor{});
@@ -128,6 +126,8 @@ MouseHidingSystem(
   else
     for ( const auto&& [entity] : registry.view <SubscriberInput, WantsMouseHidden, CasqadiumEditorInternal> ().each() )
       return olc::platform->ptrPGE->SetMouseCursor(olc::Mouse::Cursor{});
+
+  olc::platform->ptrPGE->ResetMouseCursor();
 }
 
 void

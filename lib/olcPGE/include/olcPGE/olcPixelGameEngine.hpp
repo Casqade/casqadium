@@ -780,6 +780,9 @@ public:
 
 class OLCPGE_EXPORT Platform
 {
+protected:
+  bool bMouseCursorHidden {};
+
 public:
   virtual ~Platform() = default;
   virtual olc::rcode ApplicationStartUp() = 0;
