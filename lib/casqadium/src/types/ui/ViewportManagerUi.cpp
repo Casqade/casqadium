@@ -225,9 +225,6 @@ ViewportManagerUi::ui_show_viewport_windows(
       if ( windowOpened == false )
         windowsToClose.push_back(viewportIndex);
 
-      if ( eCamera != entt::null )
-        registry.get <Camera> (eCamera).zBuffer.clear();
-
       ImGui::End(); // windowTitle
       continue;
     }
@@ -273,9 +270,6 @@ ViewportManagerUi::ui_show_viewport_windows(
 
         if ( ImGui::Selectable(cTag.id.str().c_str(), selected) )
         {
-          if ( cameraRef.id != null_id )
-            registry.get <Camera> (eCamera).zBuffer.clear();
-
           *iter = cTag;
           eCamera = entity;
         }

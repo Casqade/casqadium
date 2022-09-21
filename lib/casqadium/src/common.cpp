@@ -177,6 +177,10 @@ engineInit( entt::registry& registry )
 
   using Phase = System::Phase;
 
+  systemManager.Register("CasqadiumEditorRenderBufferClearSystem",
+                         RenderBufferClearSystem,
+                         Phase{Phase::Logic | Phase::Editor});
+
   systemManager.Register("CasqadiumEditorSystem",
                          EditorSystem,
                          Phase{Phase::Logic | Phase::Editor});
@@ -196,6 +200,11 @@ engineInit( entt::registry& registry )
   systemManager.Register("MouseHidingSystem",
                          MouseHidingSystem,
                          Phase::Logic);
+
+
+  systemManager.Register("RenderBufferClearSystem",
+                         RenderBufferClearSystem,
+                         Phase::Render);
 
   systemManager.Register("CullingSystem",
                          CullingSystem,

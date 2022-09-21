@@ -235,4 +235,13 @@ RenderSystem( entt::registry& registry )
   }
 }
 
+void
+RenderBufferClearSystem( entt::registry& registry )
+{
+  using compos::Camera;
+
+  for ( const auto&& [eCamera, cCamera] : registry.view <Camera> ().each() )
+    cCamera.zBuffer.clear();
+}
+
 } // namespace cqde::systems

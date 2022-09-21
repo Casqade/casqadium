@@ -18,4 +18,6 @@ void CullingSystem( entt::registry& registry );
 
 void RenderSystem( entt::registry& registry );
 
+void RenderBufferClearSystem( entt::registry& registry );
+
 } // namespace cqde::systems
