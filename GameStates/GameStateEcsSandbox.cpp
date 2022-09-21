@@ -164,20 +164,24 @@ GameStateEcsSandbox::mouseMoveEvent( const olc::Event::MouseMoveEvent event )
   if ( event.dx != 0 )
   {
     inputManager.handleAxisInput( InputHwCode(MouseInputId::MoveX),
-                                  std::abs(event.dx), event.dx,
+                                  std::abs(event.dx),
+                                  std::clamp(event.dx, -1, 1),
                                   mRegistry );
     inputManager.handleAxisInput( InputHwCode(MouseInputId::PosX),
-                                  mPGE->GetMouseX(), event.dx,
+                                  mPGE->GetMouseX(),
+                                  std::clamp(event.dx, -1, 1),
                                   mRegistry );
   }
 
   if ( event.dy != 0 )
   {
     inputManager.handleAxisInput( InputHwCode(MouseInputId::MoveY),
-                                  std::abs(event.dy), event.dy,
+                                  std::abs(event.dy),
+                                  std::clamp(event.dy, -1, 1),
                                   mRegistry);
     inputManager.handleAxisInput( InputHwCode(MouseInputId::PosY),
-                                  mPGE->GetMouseY(), event.dy,
+                                  mPGE->GetMouseY(),
+                                  std::clamp(event.dy, -1, 1),
                                   mRegistry);
   }
 }
@@ -211,7 +215,8 @@ GameStateEcsSandbox::mouseWheelEvent( const olc::Event::MouseWheelScrollEvent ev
   auto& inputManager = mRegistry.ctx().at <InputManager> ();
 
   inputManager.handleAxisInput( InputHwCode(MouseInputId::Wheel),
-                                std::abs(event.delta), event.delta,
+                                std::abs(event.delta),
+                                std::clamp(event.delta, -1, 1),
                                 mRegistry );
 }
 
