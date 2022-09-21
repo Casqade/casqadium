@@ -3547,6 +3547,11 @@ namespace olc
 
     virtual olc::rcode SetMouseCursorHidden(const bool hidden) override
     {
+      if (hidden == bMouseCursorHidden)
+        return olc::OK;
+
+      bMouseCursorHidden = hidden;
+
       if (hidden == true)
         olc_hCursor = NULL;
       else
