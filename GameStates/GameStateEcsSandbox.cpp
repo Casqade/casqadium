@@ -8,6 +8,7 @@
 #include <cqde/file_helpers.hpp>
 #include <cqde/json_helpers.hpp>
 
+#include <cqde/types/ConfigManager.hpp>
 #include <cqde/types/CallbackManager.hpp>
 #include <cqde/types/EntityManager.hpp>
 #include <cqde/types/PackageManager.hpp>
@@ -45,7 +46,8 @@
 
 
 GameStateEcsSandbox::GameStateEcsSandbox(
-  GameStateController* const stateController )
+  GameStateController* const stateController,
+  const ConfigManager& configManager )
   : GameState(stateController)
 {
   using namespace entt::literals;
@@ -55,6 +57,8 @@ GameStateEcsSandbox::GameStateEcsSandbox(
   cqde::engineInit(mRegistry);
 
 //  entt::meta_ctx::bind(mRegistry.ctx().at <entt::meta_ctx> ());
+
+  mRegistry.ctx().emplace <ConfigManager> (configManager);
 
   auto& audioBackend = mRegistry.ctx().at <SoLoud::Soloud> ();
 
@@ -88,6 +92,7 @@ GameStateEcsSandbox::GameStateEcsSandbox(
     return;
   }
 
+  userManager.setUser(configManager.lastUser());
   inputManager.load(userManager.inputConfigPath());
 
   entityManager.entryPointExecute(mRegistry);

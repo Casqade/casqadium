@@ -1,7 +1,10 @@
 #pragma once
 
-#include <memory>
 #include <GameState.hpp>
+
+#include <cqde/fwd.hpp>
+
+#include <memory>
 
 
 namespace TimeUtils
@@ -23,7 +26,7 @@ public:
   GameStateController() = default;
 
   template <class NewState>
-  void setState();
+  void setState( const cqde::types::ConfigManager& );
 
   void clearState();
 

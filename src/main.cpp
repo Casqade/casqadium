@@ -50,8 +50,7 @@ main( int , char*[] )
                     configManager.logFlushLevel(),
                     sinks );
 
-  AnotherDayAtHospital game( configManager.tickRate(),
-                             configManager.frameRate() );
+  AnotherDayAtHospital game(configManager);
 
   const olc::rcode result = game.Construct(
     configManager.windowWidth(),

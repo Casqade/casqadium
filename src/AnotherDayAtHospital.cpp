@@ -8,10 +8,14 @@
 
 
 AnotherDayAtHospital::AnotherDayAtHospital(
-  const uint64_t tickRate,
-  const uint64_t frameRate )
-  : mTickInterval(tickRate > 0 ? 1.0 / tickRate : TimeUtils::Duration())
-  , mFrameInterval(frameRate > 0 ? 1.0 / frameRate : TimeUtils::Duration())
+  const ConfigManager& configManager )
+  : mConfigManager{configManager}
+  , mTickInterval(configManager.tickRate() > 0
+                  ? 1.0 / configManager.tickRate()
+                  : TimeUtils::Duration())
+  , mFrameInterval(configManager.frameRate() > 0
+                   ? 1.0 / configManager.frameRate()
+                   : TimeUtils::Duration())
 {
   sAppName = u8"Another Day At Hospital";
 }
@@ -52,7 +56,7 @@ AnotherDayAtHospital::OnUserCreate()
   EnableLayer(mGameLayer, true);
   SetDrawTarget(mGameLayer);
 
-  mGameStateController.setState <GameStateEcsSandbox> ();
+  mGameStateController.setState <GameStateEcsSandbox> (mConfigManager);
 
   return true;
 }

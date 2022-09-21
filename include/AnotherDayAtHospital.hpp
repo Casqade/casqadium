@@ -2,6 +2,8 @@
 
 #include <TimeUtils/Duration.hpp>
 
+#include <cqde/types/ConfigManager.hpp>
+
 #include <olcPGE/olcPixelGameEngine.hpp>
 #include <olcPGE/olcEventHandler.hpp>
 #include <olcPGE/olcPGEX_ImGui.hpp>
@@ -11,8 +13,12 @@
 
 class AnotherDayAtHospital : public olc::PixelGameEngine
 {
-  TimeUtils::Duration mTickInterval;
-  TimeUtils::Duration mFrameInterval;
+  using ConfigManager = cqde::types::ConfigManager;
+
+  ConfigManager mConfigManager {};
+
+  TimeUtils::Duration mTickInterval {};
+  TimeUtils::Duration mFrameInterval {};
 
   TimeUtils::Duration mTickPrevious {TimeUtils::Now()};
   TimeUtils::Duration mFramePrevious {TimeUtils::Now()};
@@ -29,8 +35,7 @@ class AnotherDayAtHospital : public olc::PixelGameEngine
 public:
   AnotherDayAtHospital() = delete;
   ~AnotherDayAtHospital();
-  AnotherDayAtHospital( const uint64_t tickRate,
-                        const uint64_t frameRate );
+  AnotherDayAtHospital( const ConfigManager& );
 
   bool OnUserCreate() override;
   bool OnUserUpdate( float ) override;

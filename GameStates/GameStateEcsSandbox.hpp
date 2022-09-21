@@ -10,6 +10,8 @@
 class GameStateEcsSandbox
   : public GameState
 {
+  using ConfigManager = cqde::types::ConfigManager;
+
   entt::registry mRegistry {};
 
   bool mRunning {true};
@@ -20,7 +22,8 @@ class GameStateEcsSandbox
   void mouseWheelEvent( const olc::Event::MouseWheelScrollEvent ) override;
 
 public:
-  GameStateEcsSandbox( GameStateController* const );
+  GameStateEcsSandbox( GameStateController* const,
+                       const ConfigManager& );
 
   bool update( const uint32_t ticks,
                const TimeUtils::Duration& interval ) override;

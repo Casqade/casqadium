@@ -1,9 +1,8 @@
 #include <GameStateController.hpp>
 
 #include <GameStateEcsSandbox.hpp>
-//#include <GameStateSandbox.hpp>
-//#include <GameStateForeword.hpp>
-//#include <GameStateTitle.hpp>
+
+#include <cqde/types/ConfigManager.hpp>
 
 #include <TimeUtils/Duration.hpp>
 
@@ -28,10 +27,11 @@ std::string getTypeName()
 
 template <class NewState>
 void
-GameStateController::setState()
+GameStateController::setState(
+  const cqde::types::ConfigManager& configManager )
 {
   LOG_TRACE("Changing state to {}", getTypeName <NewState> ());
-  mCurrentState = std::make_unique <NewState> ( this );
+  mCurrentState = std::make_unique <NewState> ( this, configManager );
 }
 
 void
@@ -62,18 +62,6 @@ GameStateController::render(
   mCurrentState->render(frames, interval);
 }
 
-//template
-//void
-//GameStateController::setState <GameStateForeword> ();
-
-//template
-//void
-//GameStateController::setState <GameStateTitle> ();
-
-//template
-//void
-//GameStateController::setState <GameStateSandbox> ();
-
 template
 void
-GameStateController::setState <GameStateEcsSandbox> ();
+GameStateController::setState <GameStateEcsSandbox> ( const cqde::types::ConfigManager& );
