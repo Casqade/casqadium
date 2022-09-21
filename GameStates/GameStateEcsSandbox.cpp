@@ -62,7 +62,11 @@ GameStateEcsSandbox::GameStateEcsSandbox(
 
   auto& audioBackend = mRegistry.ctx().at <SoLoud::Soloud> ();
 
-  const auto audioInitResult = audioBackend.init();
+  const auto audioInitResult = audioBackend.init(
+    configManager.audioFlags(),
+    configManager.audioBackend(),
+    configManager.audioSampleRate(),
+    configManager.audioBufferSize() );
 
   if ( audioInitResult != SoLoud::SOLOUD_ERRORS::SO_NO_ERROR )
   {

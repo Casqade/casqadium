@@ -1,8 +1,12 @@
 #pragma once
 
-#include <json/forwards.h>
+#include <cqde/alias.hpp>
+
+#include <soloud.h>
 
 #include <spdlog/common.h>
+
+#include <json/forwards.h>
 
 #include <string>
 #include <filesystem>
@@ -16,6 +20,9 @@ class ConfigManager
   using path = std::filesystem::path;
   using level = spdlog::level::level_enum;
   using level_enum = spdlog::level::level_enum;
+
+  using BACKEND = SoLoud::Soloud::BACKENDS;
+  using FLAGS = SoLoud::Soloud::FLAGS;
 
 //  [%Y-%m-%d %T.%e] [%^%l%$] [%s:%#] [thread %t] %v
   std::string mLogPattern {"[%T.%e] [%^%l%$] [%s:%#] [thread %t] %v"};
@@ -31,6 +38,16 @@ class ConfigManager
 
   uint64_t mTickRate {60};
   uint64_t mFrameRate {0};
+
+  BACKEND mAudioBackend {};
+
+  uint32_t mAudioBufferSize {};
+  uint32_t mAudioSampleRate {};
+
+  bool mAudioRoudoffClipping {true};
+  bool mAudioNoFpuChange {};
+
+  UserId mLastUser {"default"};
 
 public:
   ConfigManager() = default;
@@ -56,6 +73,17 @@ public:
 
   uint64_t tickRate() const;
   uint64_t frameRate() const;
+
+  BACKEND audioBackend() const;
+  int audioFlags() const;
+
+  uint32_t audioBufferSize() const;
+  uint32_t audioSampleRate() const;
+
+  bool audioRoundoffClipping() const;
+  bool audioNoFpuChange() const;
+
+  UserId lastUser() const;
 };
 
 } // namespace cqde
