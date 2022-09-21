@@ -180,7 +180,7 @@ SystemManagerUi::ui_show(
     {
       ImGui::TableNextColumn();
 
-      for ( size_t i = 0;
+      for ( Json::ArrayIndex i = 0;
             i < mSystemsStateCurrent.size();
             ++i )
       {
