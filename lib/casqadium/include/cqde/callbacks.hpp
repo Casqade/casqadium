@@ -153,6 +153,10 @@ void editorCameraTranslateZRelative(
   entt::registry&,
   const std::vector <std::any>& args = {} );
 
+void editorCameraSpeedControl(
+  entt::registry&,
+  const std::vector <std::any>& args = {} );
+
 void controlTranslateXRelative(
   entt::registry&,
   const std::vector <std::any>& args = {} );

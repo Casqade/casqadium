@@ -150,6 +150,8 @@ engineInit( entt::registry& registry )
   callbackManager.Register("EditorControllerCreate", editorControllerCreate);
   callbackManager.Register("EditorBindingsAssign", editorBindingsAssign);
 
+  callbackManager.Register("EditorCameraSpeedControl", editorCameraSpeedControl);
+
   callbackManager.Register("EditorCameraTranslateXRelative", editorCameraTranslateXRelative);
   callbackManager.Register("EditorCameraTranslateYRelative", editorCameraTranslateYRelative);
   callbackManager.Register("EditorCameraTranslateZRelative", editorCameraTranslateZRelative);

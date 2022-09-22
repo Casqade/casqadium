@@ -313,11 +313,9 @@ editorCameraCreate(
 
   iCameraControlOff.callbacks.insert("EditorCameraControlOff");
 
-  auto& iCameraFov = cInputController.axes["EditorCameraFov"];
-  iCameraFov.value = cCamera.fov;
-  iCameraFov.callbacks.insert("EditorCameraFovControl");
-  iCameraFov.constraint = { glm::epsilon <float> (),
-                            glm::pi <float> () - glm::epsilon <float> () };
+  auto& iCameraSpeed = cInputController.axes["EditorCameraSpeedControl"];
+  iCameraSpeed.constraint = {1.0f, 0.0f};
+  iCameraSpeed.callbacks.insert("EditorCameraSpeedControl");
 
   auto& iCameraZoom = cInputController.axes["EditorCameraZoom"];
   iCameraZoom.value = 0.01;
@@ -521,6 +519,15 @@ editorBindingsAssign(
   {
     auto binding = std::make_shared <InputBindingRelative> ("+Key_Escape", 0.0f);
     inputManager.assignBinding("EditorCameraControlOff", binding);
+  }
+
+  if ( inputManager.axisAssigned("EditorCameraSpeedControl") == false )
+  {
+    auto binding = std::make_shared <InputBindingRelative> ("+MouseWheel_Y", 1.0f);
+    inputManager.assignBinding("EditorCameraSpeedControl", binding);
+
+    binding = std::make_shared <InputBindingRelative> ("-MouseWheel_Y", -1.0f);
+    inputManager.assignBinding("EditorCameraSpeedControl", binding);
   }
 
   if ( inputManager.axisAssigned("EditorCameraFov") == false )
@@ -811,6 +818,30 @@ entityInputToggle(
   entityInputOn(registry, args);
 };
 
+void
+editorCameraSpeedControl(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using compos::Transform;
+  using compos::CasqadiumEditorCameraSettings;
+  using types::ControlAxis;
+  using types::TickCurrent;
+
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+  const auto axis = std::any_cast <ControlAxis*> (args.at(2));
+
+  const auto& tick = registry.ctx().at <TickCurrent> ();
+  const auto ticks = tick.ticksElapsed;
+  const auto elapsed = tick.tickInterval;
+
+  const float dt = ticks * static_cast <double> (elapsed);
+
+  auto& cSettings = registry.get <CasqadiumEditorCameraSettings> (entity);
+  cSettings.speed += axis->value * dt;
+
+  axis->value = 0.0f;
+};
 
 void
 editorCameraTranslateXRelative(
