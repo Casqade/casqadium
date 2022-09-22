@@ -45,6 +45,44 @@ SnapshotManager::Validate(
 }
 
 void
+SnapshotManager::Validate(
+  const path& snapshotPath )
+{
+  using fmt::format;
+  using ui::EntityManagerUi;
+
+  Json::Value snapshot {};
+
+  LOG_TRACE("Parsing snapshot '{}'",
+            snapshotPath.string());
+
+  try
+  {
+    snapshot = fileParse(snapshotPath);
+  }
+  catch ( const std::exception& e )
+  {
+    throw std::runtime_error(
+      format("Failed to parse snapshot ({})",
+              e.what()));
+  }
+
+  LOG_TRACE("Validating snapshot '{}'",
+            snapshotPath.string());
+
+  try
+  {
+    Validate(snapshot);
+  }
+  catch ( const std::exception& e )
+  {
+    throw std::runtime_error(
+      format("Failed to validate snapshot '{}': {}",
+              snapshotPath.string(), e.what()));
+  }
+}
+
+void
 SnapshotManager::readFromDisk(
   entt::registry& registry )
 {

@@ -37,6 +37,7 @@ public:
   std::vector <Snapshot> snapshots() const;
 
   static void Validate( const Json::Value& );
+  static void Validate( const path& );
 
   static Json::Value Create( const entt::registry& );
 
