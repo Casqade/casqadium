@@ -12,20 +12,21 @@ namespace cqde
 
 class identifier
 {
+  using hash_type = entt::hashed_string::hash_type;
+
   std::string mStr {"null"};
-  entt::hashed_string mHash {"null"};
+  hash_type mHash {};
 
 public:
   identifier() = default;
 
   identifier( const char* );
   identifier( const std::string& );
-  identifier( const entt::hashed_string& );
 
   void setId( const std::string& );
 
   std::string str() const;
-  entt::hashed_string hash() const;
+  hash_type hash() const;
 
   bool operator == ( const identifier& ) const;
   bool operator != ( const identifier& ) const;

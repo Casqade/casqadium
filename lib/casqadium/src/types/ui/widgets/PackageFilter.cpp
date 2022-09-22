@@ -26,7 +26,7 @@ PackageFilter::select(
   {
     for ( const auto& package : packages )
     {
-      ImGui::PushID(package.hash().value());
+      ImGui::PushID(package.hash());
 
       selected = (package == mPackageSelected);
 

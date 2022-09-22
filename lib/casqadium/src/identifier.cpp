@@ -8,26 +8,24 @@
 namespace cqde
 {
 
-identifier::identifier( const char* str )
+identifier::identifier(
+  const char* str )
   : mStr(str)
-  , mHash(mStr.data())
+  , mHash(entt::hashed_string{str})
 {}
 
-identifier::identifier( const std::string& str )
+identifier::identifier(
+  const std::string& str )
   : mStr(str)
-  , mHash(mStr.data())
-{}
-
-identifier::identifier( const entt::hashed_string& str )
-  : mStr(str.data())
-  , mHash(mStr.data())
+  , mHash(entt::hashed_string{str.c_str()})
 {}
 
 void
-identifier::setId( const std::string& str )
+identifier::setId(
+  const std::string& str )
 {
   mStr = str;
-  mHash = entt::hashed_string{mStr.data()};
+  mHash = entt::hashed_string{mStr.c_str()};
 }
 
 std::string
@@ -36,40 +34,45 @@ identifier::str() const
   return mStr;
 }
 
-entt::hashed_string
+identifier::hash_type
 identifier::hash() const
 {
   return mHash;
 }
 
 bool
-identifier::operator == ( const identifier& other ) const
+identifier::operator == (
+  const identifier& other ) const
 {
-  return this->mHash.value() == other.mHash.value();
+  return this->mHash == other.mHash;
 }
 
 bool
-identifier::operator != ( const identifier& other ) const
+identifier::operator != (
+  const identifier& other ) const
 {
   return !(*this == other);
 }
 
 bool
-identifier::operator < ( const identifier& other ) const
+identifier::operator < (
+  const identifier& other ) const
 {
-  return this->mHash.value() < other.mHash.value();
+  return this->mHash < other.mHash;
 }
 
 std::size_t
-identifier_hash::operator () ( const identifier& id ) const
+identifier_hash::operator () (
+  const identifier& id ) const
 {
-  return std::hash <entt::hashed_string::hash_type> ()(id.hash().value());
+  return std::hash <entt::hashed_string::hash_type> ()(id.hash());
 }
 
 std::size_t
-identifier_hash::operator () ( const types::EntityReference& reference ) const
+identifier_hash::operator () (
+  const types::EntityReference& reference ) const
 {
-  return std::hash <entt::hashed_string::hash_type> ()(reference.id.hash().value());
+  return std::hash <entt::hashed_string::hash_type> ()(reference.id.hash());
 }
 
 
