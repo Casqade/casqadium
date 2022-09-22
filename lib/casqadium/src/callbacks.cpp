@@ -24,6 +24,7 @@
 #include <cqde/components/SubscriberUpdate.hpp>
 #include <cqde/components/InputController.hpp>
 #include <cqde/components/CasqadiumEditorInternal.hpp>
+#include <cqde/components/CasqadiumEditorCameraSettings.hpp>
 #include <cqde/components/WantsMouseCentered.hpp>
 #include <cqde/components/WantsMouseHidden.hpp>
 
@@ -271,6 +272,7 @@ editorCameraCreate(
 
   registry.emplace <SubscriberUpdate> (eCamera);
   registry.emplace <CasqadiumEditorInternal> (eCamera);
+  registry.emplace <CasqadiumEditorCameraSettings> (eCamera).speed = 10.0f;
 
   auto& cMetaInfo = registry.emplace <EntityMetaInfo> (eCamera);
   cMetaInfo.packageId = "";
@@ -283,21 +285,21 @@ editorCameraCreate(
 
   auto& cInputController = registry.emplace <InputController> (eCamera);
 
-  auto& iTranslateX = cInputController.axes["TranslateX"];
-  auto& iTranslateY = cInputController.axes["TranslateY"];
-  auto& iTranslateZ = cInputController.axes["TranslateZ"];
+  auto& iTranslateX = cInputController.axes["EditorCameraTranslateX"];
+  auto& iTranslateY = cInputController.axes["EditorCameraTranslateY"];
+  auto& iTranslateZ = cInputController.axes["EditorCameraTranslateZ"];
 
   iTranslateX.constraint = {1.0f, 0.0f};
   iTranslateY.constraint = {1.0f, 0.0f};
   iTranslateZ.constraint = {1.0f, 0.0f};
 
-  iTranslateX.callbacks.insert("ControlTranslateXRelative");
-  iTranslateY.callbacks.insert("ControlTranslateYRelative");
-  iTranslateZ.callbacks.insert("ControlTranslateZRelative");
+  iTranslateX.callbacks.insert("EditorCameraTranslateXRelative");
+  iTranslateY.callbacks.insert("EditorCameraTranslateYRelative");
+  iTranslateZ.callbacks.insert("EditorCameraTranslateZRelative");
 
-  auto& iPitch = cInputController.axes["Pitch"];
-  auto& iYaw = cInputController.axes["Yaw"];
-  auto& iRoll = cInputController.axes["Roll"];
+  auto& iPitch = cInputController.axes["EditorCameraPitch"];
+  auto& iYaw = cInputController.axes["EditorCameraYaw"];
+  auto& iRoll = cInputController.axes["EditorCameraRoll"];
 
   iPitch.constraint = {1.0f, 0.0f};
   iYaw.constraint = {1.0f, 0.0f};
@@ -419,6 +421,51 @@ editorBindingsAssign(
     inputManager.assignBinding("EditorModeToggle", binding);
   }
 
+  if ( inputManager.axisAssigned("EditorCameraTranslateX") == false )
+  {
+    auto binding = std::make_shared <InputBindingRelative> ("~Key_A", -1.0f);
+    inputManager.assignBinding("EditorCameraTranslateX", binding);
+
+    binding = std::make_shared <InputBindingRelative> ("~Key_D", 1.0f);
+    inputManager.assignBinding("EditorCameraTranslateX", binding);
+  }
+
+  if ( inputManager.axisAssigned("EditorCameraTranslateY") == false )
+  {
+    auto binding = std::make_shared <InputBindingRelative> ("~Key_Shift", -1.0f);
+    inputManager.assignBinding("EditorCameraTranslateY", binding);
+
+    binding = std::make_shared <InputBindingRelative> ("~Key_Space", 1.0f);
+    inputManager.assignBinding("EditorCameraTranslateY", binding);
+  }
+
+  if ( inputManager.axisAssigned("EditorCameraTranslateZ") == false )
+  {
+    auto binding = std::make_shared <InputBindingRelative> ("~Key_S", -1.0f);
+    inputManager.assignBinding("EditorCameraTranslateZ", binding);
+
+    binding = std::make_shared <InputBindingRelative> ("~Key_W", 1.0f);
+    inputManager.assignBinding("EditorCameraTranslateZ", binding);
+  }
+
+  if ( inputManager.axisAssigned("EditorCameraPitch") == false )
+  {
+    auto binding = std::make_shared <InputBindingRelative> ("+MouseMove_Y", -10.0f);
+    inputManager.assignBinding("EditorCameraPitch", binding);
+
+    binding = std::make_shared <InputBindingRelative> ("-MouseMove_Y", 10.0f);
+    inputManager.assignBinding("EditorCameraPitch", binding);
+  }
+
+  if ( inputManager.axisAssigned("EditorCameraYaw") == false )
+  {
+    auto binding = std::make_shared <InputBindingRelative> ("+MouseMove_X", -10.0f);
+    inputManager.assignBinding("EditorCameraYaw", binding);
+
+    binding = std::make_shared <InputBindingRelative> ("-MouseMove_X", 10.0f);
+    inputManager.assignBinding("EditorCameraYaw", binding);
+  }
+
   if ( inputManager.axisAssigned("EditorGizmoModeTranslate") == false )
   {
     auto binding = std::make_shared <InputBindingRelative> ("-Key_1", 0.0f);
@@ -478,23 +525,19 @@ editorBindingsAssign(
 
   if ( inputManager.axisAssigned("EditorCameraFov") == false )
   {
-    auto binding = std::make_shared <InputBindingRelative> ("+MouseWheel_Y");
-    binding->sensitivity = -0.0005f;
+    auto binding = std::make_shared <InputBindingRelative> ("+MouseWheel_Y", -0.0005f);
     inputManager.assignBinding("EditorCameraFov", binding);
 
-    binding = std::make_shared <InputBindingRelative> ("-MouseWheel_Y");
-    binding->sensitivity = 0.0005f;
+    binding = std::make_shared <InputBindingRelative> ("-MouseWheel_Y", 0.0005f);
     inputManager.assignBinding("EditorCameraFov", binding);
   }
 
   if ( inputManager.axisAssigned("EditorCameraZoom") == false )
   {
-    auto binding = std::make_shared <InputBindingRelative> ("+MouseWheel_Y");
-    binding->sensitivity = -0.00001f;
+    auto binding = std::make_shared <InputBindingRelative> ("~Key_W", -0.0001f);
     inputManager.assignBinding("EditorCameraZoom", binding);
 
-    binding = std::make_shared <InputBindingRelative> ("-MouseWheel_Y");
-    binding->sensitivity = 0.00001f;
+    binding = std::make_shared <InputBindingRelative> ("~Key_S", 0.0001f);
     inputManager.assignBinding("EditorCameraZoom", binding);
   }
 
@@ -562,14 +605,15 @@ editorCameraFovControl(
 {
   using compos::Camera;
   using compos::InputController;
+  using types::ControlAxis;
 
   const auto eCamera = std::any_cast <entt::entity> (args.at(0));
-  const auto cController = std::any_cast <InputController*> (args.at(1));
+  const auto axis = std::any_cast <ControlAxis*> (args.at(2));
 
   auto& cCamera = registry.get <Camera> (eCamera);
 
   if ( cCamera.projectionType == Camera::Projection::Perspective )
-    cCamera.fov = cController->axes["EditorCameraFov"].value;
+    cCamera.fov = axis->value;
 };
 
 void
@@ -579,14 +623,15 @@ editorCameraZoomControl(
 {
   using compos::Camera;
   using compos::InputController;
+  using types::ControlAxis;
 
   const auto eCamera = std::any_cast <entt::entity> (args.at(0));
-  const auto cController = std::any_cast <InputController*> (args.at(1));
+  const auto axis = std::any_cast <ControlAxis*> (args.at(2));
 
   auto& cCamera = registry.get <Camera> (eCamera);
 
   if ( cCamera.projectionType == Camera::Projection::Orthographic )
-    cCamera.fov = cController->axes["EditorCameraZoom"].value;
+    cCamera.zoom = axis->value;
 };
 
 void
@@ -766,17 +811,98 @@ entityInputToggle(
   entityInputOn(registry, args);
 };
 
+
+void
+editorCameraTranslateXRelative(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using compos::Transform;
+  using compos::CasqadiumEditorCameraSettings;
+  using types::ControlAxis;
+  using types::TickCurrent;
+
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+  const auto axis = std::any_cast <ControlAxis*> (args.at(2));
+
+  const auto& tick = registry.ctx().at <TickCurrent> ();
+  const auto ticks = tick.ticksElapsed;
+  const auto elapsed = tick.tickInterval;
+
+  const float dt = ticks * static_cast <double> (elapsed);
+
+  auto&& [cTransform, cSettings] = registry.get <Transform, CasqadiumEditorCameraSettings> (entity);
+
+  cTransform.translation += cTransform.right() * axis->value * cSettings.speed * dt;
+
+  axis->value = 0.0f;
+};
+
+void
+editorCameraTranslateYRelative(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using compos::Transform;
+  using compos::CasqadiumEditorCameraSettings;
+  using types::ControlAxis;
+  using types::TickCurrent;
+
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+  const auto axis = std::any_cast <ControlAxis*> (args.at(2));
+
+  const auto& tick = registry.ctx().at <TickCurrent> ();
+  const auto ticks = tick.ticksElapsed;
+  const auto elapsed = tick.tickInterval;
+
+  const float dt = ticks * static_cast <double> (elapsed);
+
+  auto&& [cTransform, cSettings] = registry.get <Transform, CasqadiumEditorCameraSettings> (entity);
+
+  cTransform.translation += cTransform.up() * axis->value * cSettings.speed * dt;
+
+  axis->value = 0.0f;
+};
+
+void
+editorCameraTranslateZRelative(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using compos::Camera;
+  using compos::Transform;
+  using compos::CasqadiumEditorCameraSettings;
+  using types::ControlAxis;
+  using types::TickCurrent;
+
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+  const auto axis = std::any_cast <ControlAxis*> (args.at(2));
+
+  const auto& tick = registry.ctx().at <TickCurrent> ();
+  const auto ticks = tick.ticksElapsed;
+  const auto elapsed = tick.tickInterval;
+
+  const float dt = ticks * static_cast <double> (elapsed);
+
+  auto&& [cTransform, cCamera, cSettings] = registry.get <Transform, Camera, CasqadiumEditorCameraSettings> (entity);
+
+  if ( cCamera.projectionType == Camera::Projection::Perspective )
+    cTransform.translation += cTransform.front() * axis->value * cSettings.speed * dt;
+
+  axis->value = 0.0f;
+};
+
 void
 controlTranslateXRelative(
   entt::registry& registry,
   const std::vector <std::any>& args )
 {
-  using types::TickCurrent;
   using compos::Transform;
-  using compos::InputController;
+  using types::ControlAxis;
+  using types::TickCurrent;
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
-  auto cController = std::any_cast <InputController*> (args.at(1));
+  const auto axis = std::any_cast <ControlAxis*> (args.at(2));
 
   const auto& tick = registry.ctx().at <TickCurrent> ();
   const auto ticks = tick.ticksElapsed;
@@ -786,11 +912,9 @@ controlTranslateXRelative(
 
   auto& cTransform = registry.get <Transform> (entity);
 
-  auto& axisValue = cController->axes["TranslateX"].value;
+  cTransform.translation += cTransform.right() * axis->value * dt;
 
-  cTransform.translation += cTransform.right() * axisValue * dt;
-
-  axisValue = 0.0f;
+  axis->value = 0.0f;
 };
 
 void
@@ -798,12 +922,12 @@ controlTranslateYRelative(
   entt::registry& registry,
   const std::vector <std::any>& args )
 {
-  using types::TickCurrent;
   using compos::Transform;
-  using compos::InputController;
+  using types::ControlAxis;
+  using types::TickCurrent;
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
-  auto cController = std::any_cast <InputController*> (args.at(1));
+  const auto axis = std::any_cast <ControlAxis*> (args.at(2));
 
   const auto& tick = registry.ctx().at <TickCurrent> ();
   const auto ticks = tick.ticksElapsed;
@@ -813,11 +937,9 @@ controlTranslateYRelative(
 
   auto& cTransform = registry.get <Transform> (entity);
 
-  auto& axisValue = cController->axes["TranslateY"].value;
+  cTransform.translation += cTransform.up() * axis->value * dt;
 
-  cTransform.translation += cTransform.up() * axisValue * dt;
-
-  axisValue = 0.0f;
+  axis->value = 0.0f;
 };
 
 void
@@ -825,12 +947,12 @@ controlTranslateZRelative(
   entt::registry& registry,
   const std::vector <std::any>& args )
 {
-  using types::TickCurrent;
   using compos::Transform;
-  using compos::InputController;
+  using types::ControlAxis;
+  using types::TickCurrent;
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
-  auto cController = std::any_cast <InputController*> (args.at(1));
+  const auto axis = std::any_cast <ControlAxis*> (args.at(2));
 
   const auto& tick = registry.ctx().at <TickCurrent> ();
   const auto ticks = tick.ticksElapsed;
@@ -840,11 +962,9 @@ controlTranslateZRelative(
 
   auto& cTransform = registry.get <Transform> (entity);
 
-  auto& axisValue = cController->axes["TranslateZ"].value;
+  cTransform.translation += cTransform.front() * axis->value * dt;
 
-  cTransform.translation += cTransform.front() * axisValue * dt;
-
-  axisValue = 0.0f;
+  axis->value = 0.0f;
 };
 
 void
@@ -853,16 +973,21 @@ controlPitchRelative(
   const std::vector <std::any>& args )
 {
   using compos::Transform;
-  using compos::InputController;
+  using types::ControlAxis;
+  using types::TickCurrent;
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
-  auto cController = std::any_cast <InputController*> (args.at(1));
+  const auto axis = std::any_cast <ControlAxis*> (args.at(2));
+
+  const auto& tick = registry.ctx().at <TickCurrent> ();
+  const auto ticks = tick.ticksElapsed;
+  const auto elapsed = tick.tickInterval;
+
+  const float dt = ticks * static_cast <double> (elapsed);
 
   auto& cTransform = registry.get <Transform> (entity);
 
-  auto& axisValue = cController->axes["Pitch"].value;
-
-  const auto angle = glm::angleAxis(glm::radians(axisValue),
+  const auto angle = glm::angleAxis(glm::radians(axis->value * dt),
                                     glm::vec3 {1.0f, 0.0f, 0.0f});
 
   const auto orientationPrev = cTransform.orientation;
@@ -872,7 +997,7 @@ controlPitchRelative(
   if ( cTransform.up().y < 0.0f )
     cTransform.orientation = orientationPrev;
 
-  axisValue = 0.0f;
+  axis->value = 0.0f;
 };
 
 void
@@ -881,21 +1006,26 @@ controlYawRelative(
   const std::vector <std::any>& args )
 {
   using compos::Transform;
-  using compos::InputController;
+  using types::ControlAxis;
+  using types::TickCurrent;
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
-  auto cController = std::any_cast <InputController*> (args.at(1));
+  const auto axis = std::any_cast <ControlAxis*> (args.at(2));
+
+  const auto& tick = registry.ctx().at <TickCurrent> ();
+  const auto ticks = tick.ticksElapsed;
+  const auto elapsed = tick.tickInterval;
+
+  const float dt = ticks * static_cast <double> (elapsed);
 
   auto& cTransform = registry.get <Transform> (entity);
 
-  auto& axisValue = cController->axes["Yaw"].value;
-
-  const auto angle = glm::angleAxis(glm::radians(axisValue),
+  const auto angle = glm::angleAxis(glm::radians(axis->value * dt),
                                     glm::vec3 {0.0f, 1.0f, 0.0f});
 
   cTransform.orientation = glm::normalize(angle * cTransform.orientation);
 
-  axisValue = 0.0f;
+  axis->value = 0.0f;
 };
 
 void
@@ -904,21 +1034,26 @@ controlRollRelative(
   const std::vector <std::any>& args )
 {
   using compos::Transform;
-  using compos::InputController;
+  using types::ControlAxis;
+  using types::TickCurrent;
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
-  auto cController = std::any_cast <InputController*> (args.at(1));
+  const auto axis = std::any_cast <ControlAxis*> (args.at(2));
+
+  const auto& tick = registry.ctx().at <TickCurrent> ();
+  const auto ticks = tick.ticksElapsed;
+  const auto elapsed = tick.tickInterval;
+
+  const float dt = ticks * static_cast <double> (elapsed);
 
   auto& cTransform = registry.get <Transform> (entity);
 
-  auto& axisValue = cController->axes["Roll"].value;
-
-  const auto angle = glm::angleAxis(glm::radians(axisValue),
+  const auto angle = glm::angleAxis(glm::radians(axis->value * dt),
                                     glm::vec3 {0.0f, 0.0f, 1.0f});
 
   cTransform.orientation = glm::normalize(angle * cTransform.orientation);
 
-  axisValue = 0.0f;
+  axis->value = 0.0f;
 };
 
 } // namespace cqde::callbacks

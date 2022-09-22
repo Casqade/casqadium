@@ -195,6 +195,10 @@ target_sources(${TARGET} PRIVATE
   src/components/Camera_ui_impl.cpp
   include/${CASQADIUM_SHORT}/components/Camera.hpp
 
+  src/components/CasqadiumEditorCameraSettings.cpp
+  src/components/CasqadiumEditorCameraSettings_ui_impl.cpp
+  include/${CASQADIUM_SHORT}/components/CasqadiumEditorCameraSettings.hpp
+
   src/components/CasqadiumEditorInternal.cpp
   include/${CASQADIUM_SHORT}/components/CasqadiumEditorInternal.hpp
 

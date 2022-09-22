@@ -7,6 +7,7 @@
 #include <cqde/components/Camera.hpp>
 #include <cqde/components/CasqadiumEntryPoint.hpp>
 #include <cqde/components/CasqadiumEditorInternal.hpp>
+#include <cqde/components/CasqadiumEditorCameraSettings.hpp>
 #include <cqde/components/EntityMetaInfo.hpp>
 #include <cqde/components/GeometryBuffer.hpp>
 #include <cqde/components/InputController.hpp>
@@ -101,6 +102,7 @@ engineInit( entt::registry& registry )
 
   entityManager.registerComponent <Camera> ("Camera");
   entityManager.registerComponent <CasqadiumEntryPoint> ("CasqadiumEntryPoint");
+  entityManager.registerComponent <CasqadiumEditorCameraSettings> ("CasqadiumEditorCameraSettings");
   entityManager.registerComponent <EntityMetaInfo> ("EntityMetaInfo");
   entityManager.registerComponent <GeometryBuffer> ("GeometryBuffer");
   entityManager.registerComponent <InputController> ("InputController");
@@ -147,6 +149,10 @@ engineInit( entt::registry& registry )
   callbackManager.Register("EditorCameraCreate", editorCameraCreate);
   callbackManager.Register("EditorControllerCreate", editorControllerCreate);
   callbackManager.Register("EditorBindingsAssign", editorBindingsAssign);
+
+  callbackManager.Register("EditorCameraTranslateXRelative", editorCameraTranslateXRelative);
+  callbackManager.Register("EditorCameraTranslateYRelative", editorCameraTranslateYRelative);
+  callbackManager.Register("EditorCameraTranslateZRelative", editorCameraTranslateZRelative);
 
   callbackManager.Register("EditorCameraControlOn", editorCameraControlOn);
   callbackManager.Register("EditorCameraControlOff", editorCameraControlOff);

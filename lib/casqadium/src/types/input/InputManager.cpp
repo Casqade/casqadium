@@ -310,7 +310,7 @@ InputManager::handleAxisInput(
 
         for ( const auto& callbackId : axis.callbacks )
           callbackMgr.execute(callbackId, registry,
-                              {entity, &cController});
+                              {entity, &cController, &axis});
       }
     };
 

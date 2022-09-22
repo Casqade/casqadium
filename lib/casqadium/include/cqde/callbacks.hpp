@@ -141,6 +141,18 @@ void entityInputToggle(
   entt::registry&,
   const std::vector <std::any>& args = {} );
 
+void editorCameraTranslateXRelative(
+  entt::registry&,
+  const std::vector <std::any>& args = {} );
+
+void editorCameraTranslateYRelative(
+  entt::registry&,
+  const std::vector <std::any>& args = {} );
+
+void editorCameraTranslateZRelative(
+  entt::registry&,
+  const std::vector <std::any>& args = {} );
+
 void controlTranslateXRelative(
   entt::registry&,
   const std::vector <std::any>& args = {} );
