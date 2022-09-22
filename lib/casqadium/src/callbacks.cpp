@@ -253,6 +253,7 @@ editorCameraCreate(
   const std::vector <std::any>& args )
 {
   using namespace compos;
+  using namespace cqde::literals;
   using types::EntityManager;
 
   for ( const auto&& editorCamera
@@ -329,6 +330,7 @@ editorControllerCreate(
   const std::vector <std::any>& args )
 {
   using namespace compos;
+  using namespace cqde::literals;
   using types::EntityManager;
 
   for ( const auto&& editorController

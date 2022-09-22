@@ -64,6 +64,8 @@ template <>
 void
 AssetManager <olc::Renderable>::initPlaceholders()
 {
+  using namespace cqde::literals;
+
   auto textureNull = std::make_shared <olc::Renderable> ();
   textureNull->Create(16, 16);
 
@@ -147,6 +149,8 @@ std::shared_ptr <olc::Renderable>
 AssetManager <olc::Renderable>::try_get(
   const AssetId& id ) const
 {
+  using namespace cqde::literals;
+
   std::lock_guard guard(mAssetsMutex);
 
   switch (status(id))

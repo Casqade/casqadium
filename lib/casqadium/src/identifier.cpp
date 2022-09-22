@@ -72,11 +72,18 @@ identifier_hash::operator () ( const types::EntityReference& reference ) const
   return std::hash <entt::hashed_string::hash_type> ()(reference.id.hash().value());
 }
 
-} // namespace cqde
 
-cqde::identifier
-operator ""_id ( const char* str,
-                 const size_t size )
+namespace literals
+{
+
+identifier
+operator ""_id (
+  const char* str,
+  const size_t size )
 {
   return std::string{str, size};
 }
+
+} // namespace literals
+
+} // namespace cqde

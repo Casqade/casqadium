@@ -42,7 +42,11 @@ struct identifier_hash
 
 const identifier null_id {"null"};
 
-} // namespace cqde
+namespace literals
+{
 
-cqde::identifier operator ""_id ( const char*,
-                                  const size_t );
+identifier operator ""_id ( const char*, const size_t );
+
+} // namespace literals
+
+} // namespace cqde
