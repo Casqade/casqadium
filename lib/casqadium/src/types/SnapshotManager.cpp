@@ -83,7 +83,7 @@ SnapshotManager::Validate(
 }
 
 void
-SnapshotManager::readFromDisk(
+SnapshotManager::refreshSnapshotList(
   entt::registry& registry )
 {
   mSnapshots.clear();

@@ -32,7 +32,7 @@ class SnapshotManager
 public:
   SnapshotManager() = default;
 
-  void readFromDisk( entt::registry& );
+  void refreshSnapshotList( entt::registry& );
 
   std::vector <Snapshot> snapshots() const;
 
