@@ -50,8 +50,6 @@ GameStateEcsSandbox::GameStateEcsSandbox(
   const ConfigManager& configManager )
   : GameState(stateController)
 {
-  using namespace entt::literals;
-  using namespace cqde::compos;
   using namespace cqde::types;
 
   cqde::engineInit(mRegistry);
@@ -76,13 +74,7 @@ GameStateEcsSandbox::GameStateEcsSandbox(
     return;
   }
 
-  auto& fonts = mRegistry.ctx().at <FontAssetManager> ();
-  auto& textures = mRegistry.ctx().at <TextureAssetManager> ();
-
-  auto& entityManager = mRegistry.ctx().at <EntityManager> ();
   auto& packageManager = mRegistry.ctx().at <PackageManager> ();
-  auto& userManager = mRegistry.ctx().at <UserManager> ();
-  auto& inputManager = mRegistry.ctx().at <InputManager> ();
 
   try
   {
@@ -96,31 +88,37 @@ GameStateEcsSandbox::GameStateEcsSandbox(
     return;
   }
 
+  auto& userManager = mRegistry.ctx().at <UserManager> ();
   userManager.setUser(configManager.lastUser());
+
+  auto& inputManager = mRegistry.ctx().at <InputManager> ();
   inputManager.load(userManager.inputConfigPath());
 
+  auto& entityManager = mRegistry.ctx().at <EntityManager> ();
   entityManager.entryPointExecute(mRegistry);
 
-  fonts.load({"munro"});
+  const cqde::identifier fontId = "munro";
 
-  while ( fonts.status("munro") != AssetStatus::Loaded )
-    if ( fonts.status("munro") == AssetStatus::Error )
+  auto& fonts = mRegistry.ctx().at <FontAssetManager> ();
+  fonts.load({fontId});
+
+  while ( fonts.status(fontId) != AssetStatus::Loaded )
+    if ( fonts.status(fontId) == AssetStatus::Error )
     {
       mRunning = false;
       return;
     }
 
-  auto textRenderable = fonts.get("munro")->RenderStringToRenderable(U"T", olc::WHITE, false);
+  auto textRenderable = fonts.get(fontId)->RenderStringToRenderable(U"T", olc::WHITE, false);
   auto textTexture = std::make_shared <olc::Renderable> (std::move(textRenderable));
+
+  auto& textures = mRegistry.ctx().at <TextureAssetManager> ();
   textures.insert("text_texture", textTexture);
 
   const auto engineShutdown =
   [this] (  entt::registry& registry,
             const std::vector <std::any>& args )
   {
-    using cqde::fileOpen;
-    using entt::type_hash;
-
     mRunning = false;
   };
 
