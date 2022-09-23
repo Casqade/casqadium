@@ -133,7 +133,7 @@ AssetManager <SoLoud::AudioSource>::ui_show_preview(
     ImGui::SameLine();
     if ( ImGui::Button("Reload") )
     {
-      unload(audioId);
+      unload({audioId});
       load({audioId});
     }
   }

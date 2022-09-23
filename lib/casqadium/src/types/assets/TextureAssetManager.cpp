@@ -208,7 +208,7 @@ AssetManager <olc::Renderable>::ui_show_preview(
     ImGui::SameLine();
     if ( ImGui::Button("Reload") )
     {
-      unload(textureId);
+      unload({textureId});
       load({textureId});
     }
   }

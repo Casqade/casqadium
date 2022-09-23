@@ -8,7 +8,7 @@
 
 #include <filesystem>
 #include <mutex>
-#include <set>
+#include <unordered_set>
 
 
 namespace ctpl
@@ -68,8 +68,8 @@ public:
   void parseAssetDb(  const Json::Value& db,
                       const path& dbPath );
 
-  void load( const std::set <AssetId>& );
-  void unload( const AssetId& );
+  void load( const std::unordered_set <AssetId, identifier_hash>& );
+  void unload( const std::unordered_set <AssetId, identifier_hash>& );
 
   void insert( const AssetId&, const AssetHandle );
   void remove( const AssetId& );

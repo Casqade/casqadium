@@ -84,7 +84,7 @@ template <typename Asset>
 AssetManager <Asset>::~AssetManager()
 {
   for ( auto& [id, entry] : mAssets )
-    unload(id);
+    unload({id});
 }
 
 template <typename Asset>
@@ -160,7 +160,7 @@ AssetManager <Asset>::parseAssetDbFile(
 template <typename Asset>
 void
 AssetManager <Asset>::load(
-  const std::set <AssetId>& ids )
+  const std::unordered_set <AssetId, identifier_hash>& ids )
 {
   mThreadPool.push(
   [this, ids] ( const int32_t threadId )
@@ -227,19 +227,22 @@ AssetManager <Asset>::load(
 template <typename Asset>
 void
 AssetManager <Asset>::unload(
-  const AssetId& id )
+  const std::unordered_set <AssetId, identifier_hash>& ids )
 {
   std::lock_guard guard(mAssetsMutex);
 
-  CQDE_ASSERT_DEBUG(mAssets.count(id) > 0, return);
+  for ( const auto& id : ids )
+  {
+    CQDE_ASSERT_DEBUG(mAssets.count(id) > 0, continue);
 
-  const auto assetPath = mAssets.at(id).path;
+    const auto assetPath = mAssets.at(id).path;
 
-  LOG_DEBUG("Unloading asset '{}' ('{}')",
-            id.str(), assetPath.string());
+    LOG_DEBUG("Unloading asset '{}' ('{}')",
+              id.str(), assetPath.string());
 
-  unloadImpl(mAssets.at(id).handle);
-  mAssets.at(id).status = AssetStatus::Unloaded;
+    unloadImpl(mAssets.at(id).handle);
+    mAssets.at(id).status = AssetStatus::Unloaded;
+  }
 }
 
 template <typename Asset>
@@ -265,7 +268,7 @@ AssetManager <Asset>::remove(
   if ( mAssets.count(id) == 0 )
     return;
 
-  unload(id);
+  unload({id});
 
   mAssets.erase(id);
   mAssetsProperties.erase(id);
@@ -281,7 +284,7 @@ AssetManager <Asset>::clear(
   for ( const auto& [id, entry] : mAssets )
     if ( keepMemoryResidents == true &&
          entry.path != MemoryResidentPath )
-      unload(id);
+      unload({id});
 
   std::vector <std::pair <AssetId, AssetEntry>> assetsInMemory {};
 

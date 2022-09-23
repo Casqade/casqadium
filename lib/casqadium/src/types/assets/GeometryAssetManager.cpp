@@ -114,7 +114,7 @@ AssetManager <vertexBuffer>::parseAssetDb(
 template <>
 void
 AssetManager <vertexBuffer>::load(
-  const std::set <AssetId>& ids )
+  const std::unordered_set <AssetId, identifier_hash>& ids )
 {
   using fmt::format;
 

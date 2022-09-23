@@ -89,7 +89,7 @@ AssetManager <std::string>::parseAssetDb(
 template <>
 void
 AssetManager <std::string>::load(
-  const std::set <AssetId>& ids )
+  const std::unordered_set <AssetId, identifier_hash>& ids )
 {
   using fmt::format;
 
@@ -273,7 +273,7 @@ AssetManager <std::string>::ui_show_preview(
     ImGui::SameLine();
     if ( ImGui::Button("Reload") )
     {
-      unload(stringId);
+      unload({stringId});
       load({stringId});
     }
   }

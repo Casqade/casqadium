@@ -149,7 +149,7 @@ AssetManager <olc::Font>::ui_show_preview(
     ImGui::SameLine();
     if ( ImGui::Button("Reload") )
     {
-      unload(fontId);
+      unload({fontId});
       load({fontId});
     }
   }

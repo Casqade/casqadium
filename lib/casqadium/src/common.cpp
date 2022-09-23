@@ -22,6 +22,17 @@
 #include <cqde/components/WantsMouseCentered.hpp>
 #include <cqde/components/WantsMouseHidden.hpp>
 
+#include <cqde/components/assets/AudioAssetLoadList.hpp>
+#include <cqde/components/assets/AudioAssetUnloadList.hpp>
+#include <cqde/components/assets/FontAssetLoadList.hpp>
+#include <cqde/components/assets/FontAssetUnloadList.hpp>
+#include <cqde/components/assets/GeometryAssetLoadList.hpp>
+#include <cqde/components/assets/GeometryAssetUnloadList.hpp>
+#include <cqde/components/assets/TextStringAssetLoadList.hpp>
+#include <cqde/components/assets/TextStringAssetUnloadList.hpp>
+#include <cqde/components/assets/TextureAssetLoadList.hpp>
+#include <cqde/components/assets/TextureAssetUnloadList.hpp>
+
 #include <cqde/types/CallbackManager.hpp>
 #include <cqde/types/EntityManager.hpp>
 #include <cqde/types/input/InputManager.hpp>
@@ -30,7 +41,6 @@
 #include <cqde/types/SystemManager.hpp>
 #include <cqde/types/SnapshotManager.hpp>
 #include <cqde/types/UserManager.hpp>
-
 
 #include <cqde/types/TickCurrent.hpp>
 #include <cqde/types/FrameCurrent.hpp>
@@ -111,6 +121,17 @@ engineInit( entt::registry& registry )
   entityManager.registerComponent <Tag> ("Tag");
   entityManager.registerComponent <TextureBuffer> ("TextureBuffer");
   entityManager.registerComponent <Transform> ("Transform");
+
+  entityManager.registerComponent <AudioAssetLoadList> ("AudioAssetLoadList");
+  entityManager.registerComponent <AudioAssetUnloadList> ("AudioAssetUnloadList");
+  entityManager.registerComponent <FontAssetLoadList> ("FontAssetLoadList");
+  entityManager.registerComponent <FontAssetUnloadList> ("FontAssetUnloadList");
+  entityManager.registerComponent <GeometryAssetLoadList> ("GeometryAssetLoadList");
+  entityManager.registerComponent <GeometryAssetUnloadList> ("GeometryAssetUnloadList");
+  entityManager.registerComponent <TextStringAssetLoadList> ("TextStringAssetLoadList");
+  entityManager.registerComponent <TextStringAssetUnloadList> ("TextStringAssetUnloadList");
+  entityManager.registerComponent <TextureAssetLoadList> ("TextureAssetLoadList");
+  entityManager.registerComponent <TextureAssetUnloadList> ("TextureAssetUnloadList");
 
 //  Components-tags
   entityManager.registerEmptyComponent <CasqadiumEditorInternal> ("CasqadiumEditorInternal");
