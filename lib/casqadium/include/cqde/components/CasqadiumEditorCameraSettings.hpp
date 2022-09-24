@@ -12,7 +12,7 @@ namespace cqde::compos
 
 struct CasqadiumEditorCameraSettings
 {
-  float speed {1.0f};
+  float speed {10.0f};
 
   CasqadiumEditorCameraSettings() = default;
 
