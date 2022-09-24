@@ -20,8 +20,8 @@ class SystemManagerUi
 {
   StringFilter mSystemFilter {"System ID"};
 
-  Json::Value mSystemsStateInitial {Json::objectValue};
-  Json::Value mSystemsStateCurrent {Json::objectValue};
+  Json::Value mSystemsStateInitial {Json::arrayValue};
+  Json::Value mSystemsStateCurrent {Json::arrayValue};
 
   bool mStepRequested {};
 
