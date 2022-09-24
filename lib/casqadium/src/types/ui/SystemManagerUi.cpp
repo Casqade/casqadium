@@ -209,19 +209,22 @@ SystemManagerUi::ui_show(
     ImGui::PopID(); // phase
   };
 
-  if ( ImGui::BeginTable("SystemsTable", 2,
-                         ImGuiTableFlags_Resizable,
-                         ImGui::GetContentRegionAvail()) )
+  if ( ImGui::BeginTabBar("SystemManagerUiTabs") == false )
+    return;
+
+  if ( ImGui::BeginTabItem("Logic") )
   {
-    ImGui::TableSetupColumn("Logic");
-    ImGui::TableSetupColumn("Render");
-    ImGui::TableHeadersRow();
-
     systemsShow(Phase::Logic);
-    systemsShow(Phase::Render);
-
-    ImGui::EndTable(); // SystemsTable
+    ImGui::EndTabItem(); // Logic
   }
+
+  if ( ImGui::BeginTabItem("Render") )
+  {
+    systemsShow(Phase::Render);
+    ImGui::EndTabItem(); // Render
+  }
+
+  ImGui::EndTabBar(); // SystemManagerUiTabs
 
   ImGui::End(); //  Systems
 }
