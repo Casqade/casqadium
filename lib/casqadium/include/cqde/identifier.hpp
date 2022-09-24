@@ -15,7 +15,7 @@ class identifier
   using hash_type = entt::hashed_string::hash_type;
 
   std::string mStr {"null"};
-  hash_type mHash {};
+  hash_type mHash {entt::hashed_string{"null"}};
 
 public:
   identifier() = default;
