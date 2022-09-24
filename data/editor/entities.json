@@ -38,6 +38,7 @@
         "MouseHidingSystem",
         "RenderSystem",
         "RenderBufferClearSystem",
+        "LightingSystem",
         "CullingSystem"
       ]
     },
@@ -208,6 +209,18 @@
     {
       "buffer" : "quad"
     },
+    "LightSource" :
+    {
+      "attenuation":
+      {
+        "constant": 1.0,
+        "linear": 0.0,
+        "quadratic": 0.0
+      },
+      "color" : 4294967295,
+      "radius": 15.0,
+      "type": "ambient"
+    },
     "SceneNode" :
     {
       "children" :
@@ -259,6 +272,7 @@
     {
       "buffer" : "quad"
     },
+    "LightTarget" : {},
     "SceneNode" :
     {
       "children" : [],
@@ -271,6 +285,10 @@
         "map_diffuse",
         "text_texture2"
       ]
+    },
+    "TextureTint" :
+    {
+      "tint" : 4294967295
     },
     "Transform" :
     {

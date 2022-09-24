@@ -22,15 +22,18 @@
 
 #include <cqde/components/Tag.hpp>
 #include <cqde/components/Camera.hpp>
-#include <cqde/components/SceneNode.hpp>
-#include <cqde/components/Transform.hpp>
-#include <cqde/components/TextureBuffer.hpp>
-#include <cqde/components/GeometryBuffer.hpp>
+#include <cqde/components/CasqadiumEditorInternal.hpp>
 #include <cqde/components/EntityMetaInfo.hpp>
+#include <cqde/components/GeometryBuffer.hpp>
 #include <cqde/components/InputController.hpp>
+#include <cqde/components/LightSource.hpp>
+#include <cqde/components/LightTarget.hpp>
+#include <cqde/components/SceneNode.hpp>
 #include <cqde/components/SubscriberInput.hpp>
 #include <cqde/components/SubscriberUpdate.hpp>
-#include <cqde/components/CasqadiumEditorInternal.hpp>
+#include <cqde/components/Transform.hpp>
+#include <cqde/components/TextureTint.hpp>
+#include <cqde/components/TextureBuffer.hpp>
 #include <cqde/components/WantsMouseCentered.hpp>
 #include <cqde/components/WantsMouseHidden.hpp>
 
@@ -154,7 +157,7 @@ CullingSystem(
   {
     cCamera.zBuffer.clear();
 
-    const glm::mat4 camView = cCamera.viewMatrix(registry, cCameraNode, cCameraTransform);
+    const glm::mat4 camView = cCamera.viewMatrix(registry, eCamera, cCameraTransform);
     const glm::mat4 camProjection = cCamera.projMatrix();
     const glm::vec4 camViewport = cCamera.viewportScaled();
 
@@ -166,7 +169,7 @@ CullingSystem(
       if ( gBuffer == nullptr )
         continue;
 
-      const glm::mat4 modelView = camView * GetWorldMatrix(registry, cTransform, cNode);
+      const glm::mat4 modelView = camView * GetWorldMatrix(registry, eDrawable, cTransform);
 
       const auto vBuffer = vertexShader(
         *gBuffer,
@@ -183,7 +186,8 @@ CullingSystem(
 }
 
 std::array <olc::vf2d, 4>
-vec_to_array( const std::vector <olc::vf2d>& src )
+vec_to_array(
+  const std::vector <olc::vf2d>& src )
 {
   std::array <olc::vf2d, 4> dest;
   std::copy( src.begin(), src.begin() + 4, dest.begin() );
@@ -192,7 +196,8 @@ vec_to_array( const std::vector <olc::vf2d>& src )
 }
 
 void
-RenderSystem( entt::registry& registry )
+RenderSystem(
+  entt::registry& registry )
 {
   using namespace compos;
   using namespace types;
@@ -211,6 +216,9 @@ RenderSystem( entt::registry& registry )
 
       if ( cCamera.renderMode == Camera::RenderMode::Solid )
       {
+        olc::Decal* decal {};
+        auto tint = olc::WHITE;
+
         if ( cCamera.textureMode == Camera::TextureMode::Textured )
         {
           const TextureBuffer* textureBuffer = registry.try_get <TextureBuffer> (entity);
@@ -224,34 +232,158 @@ RenderSystem( entt::registry& registry )
               auto& textures  = registry.ctx().at <TextureAssetManager> ();
               const TextureId textureId = textureBuffer->textures.at((int) buffer.windingOrder);
 
-              const auto  texture = textures.get(textureId);
-              olc::Decal* decal = texture ?
-                                  texture->Decal() : nullptr;
+              const auto texture = textures.get(textureId);
+              decal = texture ? texture->Decal() : nullptr;
 
-              if ( decal != nullptr )
-              {
-                if ( buffer.windingOrder == VertexBuffer::WindingOrder::ClockWise )
-                  std::reverse(vertices.begin(), vertices.end());
-
-                olc::renderer->ptrPGE->DrawWarpedDecal( decal, vertices );
-              }
+              if (  decal != nullptr &&
+                    buffer.windingOrder == VertexBuffer::WindingOrder::ClockWise )
+                std::reverse(vertices.begin(), vertices.end());
             }
           }
         }
+
+        if (  cCamera.lightingMode == Camera::LightingMode::Diffuse &&
+              registry.all_of <LightTarget> (entity) == true )
+            tint = buffer.tint.front();
+
+        else if ( auto cTextureTint = registry.try_get <TextureTint> (entity);
+                  cTextureTint != nullptr )
+          tint = cTextureTint->tint;
+
+        olc::renderer->ptrPGE->DrawWarpedDecal( decal, vertices, tint );
+        continue;
       }
-      else
-        drawLines(buffer.vertices, olc::GREY, LineRenderMode::Loop);
+
+      drawLines(buffer.vertices, olc::GREY, LineRenderMode::Loop);
     }
   }
 }
 
 void
-RenderBufferClearSystem( entt::registry& registry )
+RenderBufferClearSystem(
+  entt::registry& registry )
 {
   using compos::Camera;
 
   for ( const auto&& [eCamera, cCamera] : registry.view <Camera> ().each() )
     cCamera.zBuffer.clear();
+}
+
+void
+LightingSystem(
+  entt::registry& registry )
+{
+  using compos::Camera;
+  using compos::LightSource;
+  using compos::LightTarget;
+  using compos::TextureTint;
+  using compos::Transform;
+
+  for ( auto&& [eCamera, cCamera]
+          : registry.view <Camera> ().each() )
+  {
+    if ( cCamera.lightingMode != Camera::LightingMode::Diffuse )
+      continue;
+
+    for ( auto iter = cCamera.zBuffer.begin();
+          iter != cCamera.zBuffer.end();
+          ++iter )
+    {
+      auto& [buffer, eLightTgt] = *iter;
+
+      if ( registry.all_of <LightTarget> (eLightTgt) == false )
+        continue;
+
+      const auto [cLightTgtTransform, cTextureTint] = registry.try_get <const Transform, TextureTint> (eLightTgt);
+
+      if ( cTextureTint == nullptr )
+        continue;
+
+      const auto lightTgtPos
+        = GetWorldMatrix(registry, eLightTgt, *cLightTgtTransform)[3];
+
+      olc::Pixel accumulatedLight {olc::BLACK};
+
+      for ( const auto&& [eLightSrc, cLightSrcTransform, cLightSrc]
+              : registry.view <Transform, LightSource> ().each() )
+      {
+        const auto lightSrcPos
+          = GetWorldMatrix(registry, eLightSrc, cLightSrcTransform)[3];
+
+        const auto distance = glm::length(lightTgtPos - lightSrcPos);
+
+        if ( distance >= cLightSrc.radius )
+          continue;
+
+        const float attenuation = 1.0f
+          / ( cLightSrc.attenuationConstant
+            + cLightSrc.attenuationLinear * distance
+            + cLightSrc.attenuationQuadratic * std::pow(distance, 2) );
+
+        glm::vec3 normal {};
+        glm::vec3 lightDir {};
+
+        if ( cLightSrc.type != LightSource::Type::Ambient )
+          normal = glm::rotate( ToWorldSpace( cLightTgtTransform->orientation, registry,
+                                              eLightTgt, *cLightTgtTransform),
+                                {0.0f, 0.0f, 1.0f});
+
+        switch (cLightSrc.type)
+        {
+          case LightSource::Type::Ambient:
+          {
+            accumulatedLight += cLightSrc.color * attenuation;
+            break;
+          }
+          case LightSource::Type::Positional:
+          {
+            lightDir = glm::normalize(lightSrcPos - lightTgtPos);
+
+            const float diffuse = glm::max(glm::dot(normal, lightDir), 0.0f);
+
+            accumulatedLight += cLightSrc.color * attenuation * diffuse;
+            break;
+          }
+          case LightSource::Type::Directional:
+          {
+            lightDir = glm::rotate( ToWorldSpace( cLightSrcTransform.orientation, registry,
+                                                  eLightTgt, cLightSrcTransform),
+                                    {0.0f, 0.0f, 1.0f});
+
+            const float diffuse = glm::max(glm::dot(normal, lightDir), 0.0f);
+
+            accumulatedLight += cLightSrc.color * attenuation * diffuse;
+            break;
+          }
+        }
+      }
+
+      const glm::vec3 resultLight
+      {
+        accumulatedLight.r / 255.0f,
+        accumulatedLight.g / 255.0f,
+        accumulatedLight.b / 255.0f,
+      };
+
+      glm::vec3 resultTint
+      {
+        cTextureTint->tint.r / 255.0f,
+        cTextureTint->tint.g / 255.0f,
+        cTextureTint->tint.b / 255.0f,
+      };
+
+      resultTint *= resultLight;
+
+      auto vb = buffer;
+
+      vb.tint.front() = olc::PixelF(resultTint.r, resultTint.g,
+                                    resultTint.b,
+                                    cTextureTint->tint.a / 255.0f);
+
+      cCamera.zBuffer.emplace(vb, eLightTgt);
+      iter = cCamera.zBuffer.erase(iter);
+    }
+  }
 }
 
 } // namespace cqde::systems

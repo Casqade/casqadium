@@ -202,6 +202,10 @@ target_sources(${TARGET} PRIVATE
   src/components/CasqadiumEditorInternal.cpp
   include/${CASQADIUM_SHORT}/components/CasqadiumEditorInternal.hpp
 
+  src/components/CasqadiumEntryPoint.cpp
+  src/components/CasqadiumEntryPoint_ui_impl.cpp
+  include/${CASQADIUM_SHORT}/components/CasqadiumEntryPoint.hpp
+
   src/components/EntityMetaInfo.cpp
   src/components/EntityMetaInfo_ui_impl.cpp
   include/${CASQADIUM_SHORT}/components/EntityMetaInfo.hpp
@@ -214,9 +218,13 @@ target_sources(${TARGET} PRIVATE
   src/components/InputController_ui_impl.cpp
   include/${CASQADIUM_SHORT}/components/InputController.hpp
 
-  src/components/CasqadiumEntryPoint.cpp
-  src/components/CasqadiumEntryPoint_ui_impl.cpp
-  include/${CASQADIUM_SHORT}/components/CasqadiumEntryPoint.hpp
+  src/components/LightSource.cpp
+  src/components/LightSource_ui_impl.cpp
+  include/${CASQADIUM_SHORT}/components/LightSource.hpp
+
+  src/components/LightTarget.cpp
+  src/components/LightTarget_ui_impl.cpp
+  include/${CASQADIUM_SHORT}/components/LightTarget.hpp
 
   src/components/SceneNode.cpp
   src/components/SceneNode_ui_impl.cpp
@@ -242,6 +250,10 @@ target_sources(${TARGET} PRIVATE
   src/components/TextureBuffer.cpp
   src/components/TextureBuffer_ui_impl.cpp
   include/${CASQADIUM_SHORT}/components/TextureBuffer.hpp
+
+  src/components/TextureTint.cpp
+  src/components/TextureTint_ui_impl.cpp
+  include/${CASQADIUM_SHORT}/components/TextureTint.hpp
 
   src/components/Transform.cpp
   src/components/Transform_ui_impl.cpp

@@ -14,6 +14,8 @@ struct VertexBuffer
 
   float depth {};
 
+  std::vector <olc::Pixel> tint {{olc::BLACK}};
+
   enum class WindingOrder
   {
     CounterClockWise,

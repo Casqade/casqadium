@@ -144,53 +144,48 @@ void
 SetTranslationWorld(
   const glm::vec3& origin,
   const entt::registry& registry,
-  compos::Transform& cTransform,
-  const compos::SceneNode& cSceneNode )
+  const entt::entity entity,
+  compos::Transform& cTransform )
 {
-  cTransform.translation = ToLocalSpace(origin,
-                                        registry,
-                                        cTransform,
-                                        cSceneNode );
+  cTransform.translation
+    = ToLocalSpace(origin, registry,
+                   entity, cTransform );
 }
 
 void
 SetOrientationWorld(
   const glm::quat& orientation,
   const entt::registry& registry,
-  compos::Transform& cTransform,
-  const compos::SceneNode& cSceneNode )
+  const entt::entity entity,
+  compos::Transform& cTransform )
 {
-  cTransform.orientation = ToLocalSpace(orientation,
-                                        registry,
-                                        cTransform,
-                                        cSceneNode );
+  cTransform.orientation
+    = ToLocalSpace(orientation, registry,
+                   entity, cTransform );
 }
 
 void
 SetScaleWorld(
   const glm::vec3& scale,
   const entt::registry& registry,
-  compos::Transform& cTransform,
-  const compos::SceneNode& cSceneNode )
+  const entt::entity entity,
+  compos::Transform& cTransform )
 {
-  cTransform.scale = (cTransform.modelLocal() *
-                      glm::inverse(GetWorldMatrix(registry,
-                                                  cTransform,
-                                                  cSceneNode)) *
-                      glm::translate(glm::mat4(1.0f), scale))[3];
+  cTransform.scale
+    = (cTransform.modelLocal()
+    * glm::inverse(GetWorldMatrix(registry, entity, cTransform))
+    * glm::translate(glm::mat4(1.0f), scale))[3];
 }
 
 glm::vec3
 ToLocalSpace(
   const glm::vec3& point,
   const entt::registry& registry,
-  const compos::Transform& cTransform,
-  const compos::SceneNode& cSceneNode )
+  const entt::entity entity,
+  const compos::Transform& cTransform )
 {
-  return glm::translate( cTransform.modelLocal() *
-                         glm::inverse(GetWorldMatrix(registry,
-                                                     cTransform,
-                                                     cSceneNode)),
+  return glm::translate( cTransform.modelLocal()
+                         * glm::inverse(GetWorldMatrix(registry, entity, cTransform)),
                          point )[3];
 }
 
@@ -198,13 +193,11 @@ glm::quat
 ToLocalSpace(
   const glm::quat& orientation,
   const entt::registry& registry,
-  const compos::Transform& cTransform,
-  const compos::SceneNode& cSceneNode )
+  const entt::entity entity,
+  const compos::Transform& cTransform )
 {
-  return glm::normalize( glm::quat(cTransform.modelLocal() *
-                                   glm::inverse(GetWorldMatrix(registry,
-                                                               cTransform,
-                                                               cSceneNode))) *
+  return glm::normalize( glm::quat(cTransform.modelLocal()
+                                   * glm::inverse(GetWorldMatrix(registry, entity, cTransform))) *
                          orientation );
 }
 
@@ -212,13 +205,11 @@ glm::mat4
 ToLocalSpace(
   const glm::mat4& matrix,
   const entt::registry& registry,
-  const compos::Transform& cTransform,
-  const compos::SceneNode& cSceneNode )
+  const entt::entity entity,
+  const compos::Transform& cTransform )
 {
   return  cTransform.modelLocal() *
-          glm::inverse(GetWorldMatrix(registry,
-                                      cTransform,
-                                      cSceneNode)) *
+          glm::inverse(GetWorldMatrix(registry, entity, cTransform)) *
           matrix;
 }
 
@@ -226,12 +217,10 @@ ToLocalSpace(
 glm::vec3 ToWorldSpace(
   const glm::vec3& point,
   const entt::registry& registry,
-  const compos::Transform& cTransform,
-  const compos::SceneNode& cSceneNode )
+  const entt::entity entity,
+  const compos::Transform& cTransform )
 {
-  return glm::translate( GetWorldMatrix(registry,
-                                        cTransform,
-                                        cSceneNode) *
+  return glm::translate( GetWorldMatrix(registry, entity, cTransform) *
                          glm::inverse(cTransform.modelLocal()),
                          point )[3];
 }
@@ -239,35 +228,31 @@ glm::vec3 ToWorldSpace(
 glm::quat ToWorldSpace(
   const glm::quat& orientation,
   const entt::registry& registry,
-  const compos::Transform& cTransform,
-  const compos::SceneNode& cSceneNode )
+  const entt::entity entity,
+  const compos::Transform& cTransform )
 {
-  return glm::normalize(  glm::quat(GetWorldMatrix( registry,
-                                                    cTransform,
-                                                    cSceneNode) *
-                                    glm::inverse(cTransform.modelLocal())) *
-                          orientation );
+  return glm::normalize(  glm::quat(GetWorldMatrix(registry, entity, cTransform)
+                                    * glm::inverse(cTransform.modelLocal()))
+                          * orientation );
 }
 
 glm::mat4
 ToWorldSpace(
   const glm::mat4& matrix,
   const entt::registry& registry,
-  const compos::Transform& cTransform,
-  const compos::SceneNode& cSceneNode )
+  const entt::entity entity,
+  const compos::Transform& cTransform )
 {
-  return  GetWorldMatrix( registry,
-                          cTransform,
-                          cSceneNode) *
-          glm::inverse(cTransform.modelLocal()) *
-          matrix;
+  return  GetWorldMatrix(registry, entity, cTransform)
+          * glm::inverse(cTransform.modelLocal())
+          * matrix;
 }
 
 glm::mat4
 GetWorldMatrix(
   const entt::registry& registry,
-  const compos::Transform& cTransform,
-  const compos::SceneNode& cSceneNode )
+  const entt::entity entity,
+  const compos::Transform& cTransform )
 {
   using compos::SceneNode;
   using compos::Transform;
@@ -295,7 +280,11 @@ GetWorldMatrix(
     };
   };
 
-  return parentModelWorld(cSceneNode) * cTransform.modelLocal();
+  const auto cSceneNode = registry.try_get <const SceneNode> (entity);
+
+  return cSceneNode != nullptr
+        ? parentModelWorld(*cSceneNode) * cTransform.modelLocal()
+        : cTransform.modelLocal();
 }
 
 } // namespace cqde

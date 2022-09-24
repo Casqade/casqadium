@@ -281,11 +281,11 @@ ViewportManagerUi::ui_show_viewport_windows(
     if ( eCamera != entt::null &&
          registry.all_of <Camera, Transform, SceneNode> (eCamera) == true )
     {
-      const auto& [cCamera, cCameraNode, cCameraTransform] = registry.get <Camera, SceneNode, Transform> (eCamera);
+      const auto& [cCamera, cCameraTransform] = registry.get <Camera, Transform> (eCamera);
 
       cCamera.zBuffer.clear();
 
-      glm::mat4 camView = cCamera.viewMatrix(registry, cCameraNode, cCameraTransform);
+      glm::mat4 camView = cCamera.viewMatrix(registry, eCamera, cCameraTransform);
       const glm::mat4 camProjection = cCamera.projMatrix();
 
       const auto screenSize = olc::renderer->ptrPGE->GetWindowSize();
@@ -303,15 +303,15 @@ ViewportManagerUi::ui_show_viewport_windows(
         viewportSize.y * cCamera.viewport.w,
       };
 
-      for ( const auto&& [eDrawable, cGeometryBuffer, cNode, cTransform]
-              : registry.view <GeometryBuffer, SceneNode, Transform>().each() )
+      for ( const auto&& [eDrawable, cGeometryBuffer, cTransform]
+              : registry.view <GeometryBuffer, Transform>().each() )
       {
         const auto gBuffer = geometry.get(cGeometryBuffer.buffer);
 
         if ( gBuffer == nullptr )
           continue;
 
-        const glm::mat4 modelView = camView * GetWorldMatrix(registry, cTransform, cNode);
+        const glm::mat4 modelView = camView * GetWorldMatrix(registry, eDrawable, cTransform);
 
         const auto vBuffer = vertexShader(
           *gBuffer,
@@ -347,13 +347,11 @@ ViewportManagerUi::ui_show_viewport_windows(
             mGizmoCubeUsingIndex == -1 ||
             ImGuizmo::IsUsing() == true) )
       {
-        auto [cTransform, cNode] = registry.try_get <Transform, SceneNode> (selectedEntity);
+        auto cTransform = registry.try_get <Transform> (selectedEntity);
 
         if ( cTransform != nullptr )
         {
-          auto matrixWorld = cNode == nullptr
-                         ? cTransform->modelLocal()
-                         : GetWorldMatrix(registry, *cTransform, *cNode);
+          auto matrixWorld = GetWorldMatrix(registry, selectedEntity, *cTransform);
 
           glm::mat4 matrixDelta {};
 
@@ -372,7 +370,7 @@ ViewportManagerUi::ui_show_viewport_windows(
                  entityPosRelative.z > -cCamera.zRange.second )
             {
               matrixWorld = ToLocalSpace(matrixWorld, registry,
-                                         *cTransform, *cNode);
+                                         selectedEntity, *cTransform);
 
               glm::vec3 nodeTranslation {};
               glm::quat nodeOrientation {};
@@ -453,12 +451,12 @@ ViewportManagerUi::ui_show_viewport_windows(
                        glm::all(glm::isfinite(glm::eulerAngles(camOrientation))) == true )
                   {
                     camOrientation = ToLocalSpace(camOrientation, registry,
-                                                  cCameraTransform, cCameraNode);
+                                                  eCamera, cCameraTransform);
 
                     if ( mViewCubeOrbitEnabled == true )
                     {
                       camTranslation = ToLocalSpace(camTranslation, registry,
-                                                    cCameraTransform, cCameraNode);
+                                                    eCamera, cCameraTransform);
                       cCameraTransform.translation = camTranslation;
                     }
 

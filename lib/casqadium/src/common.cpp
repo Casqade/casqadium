@@ -11,6 +11,8 @@
 #include <cqde/components/EntityMetaInfo.hpp>
 #include <cqde/components/GeometryBuffer.hpp>
 #include <cqde/components/InputController.hpp>
+#include <cqde/components/LightSource.hpp>
+#include <cqde/components/LightTarget.hpp>
 #include <cqde/components/SubscriberInput.hpp>
 #include <cqde/components/SceneNode.hpp>
 #include <cqde/components/SnapshotExcluded.hpp>
@@ -18,6 +20,7 @@
 #include <cqde/components/SequenceController.hpp>
 #include <cqde/components/Tag.hpp>
 #include <cqde/components/TextureBuffer.hpp>
+#include <cqde/components/TextureTint.hpp>
 #include <cqde/components/Transform.hpp>
 #include <cqde/components/WantsMouseCentered.hpp>
 #include <cqde/components/WantsMouseHidden.hpp>
@@ -116,10 +119,13 @@ engineInit( entt::registry& registry )
   entityManager.registerComponent <EntityMetaInfo> ("EntityMetaInfo");
   entityManager.registerComponent <GeometryBuffer> ("GeometryBuffer");
   entityManager.registerComponent <InputController> ("InputController");
+  entityManager.registerComponent <LightSource> ("LightSource");
+//  entityManager.registerComponent <LightTarget> ("LightTarget"); // todo: add material data
   entityManager.registerComponent <SceneNode> ("SceneNode");
   entityManager.registerComponent <SequenceController> ("SequenceController");
   entityManager.registerComponent <Tag> ("Tag");
   entityManager.registerComponent <TextureBuffer> ("TextureBuffer");
+  entityManager.registerComponent <TextureTint> ("TextureTint");
   entityManager.registerComponent <Transform> ("Transform");
 
   entityManager.registerComponent <AudioAssetLoadList> ("AudioAssetLoadList");
@@ -135,6 +141,7 @@ engineInit( entt::registry& registry )
 
 //  Components-tags
   entityManager.registerEmptyComponent <CasqadiumEditorInternal> ("CasqadiumEditorInternal");
+  entityManager.registerEmptyComponent <LightTarget> ("LightTarget"); // todo: make component non-empty
   entityManager.registerEmptyComponent <SnapshotExcluded> ("SnapshotExcluded");
   entityManager.registerEmptyComponent <SubscriberInput> ("SubscriberInput");
   entityManager.registerEmptyComponent <SubscriberUpdate> ("SubscriberUpdate");
@@ -239,9 +246,14 @@ engineInit( entt::registry& registry )
                          CullingSystem,
                          Phase::Render);
 
+  systemManager.Register("LightingSystem",
+                         LightingSystem,
+                         Phase::Render);
+
   systemManager.Register("RenderSystem",
                          RenderSystem,
                          Phase::Render);
+
 
   systemManager.Register("CasqadiumEditorRenderSystem",
                          RenderSystem,

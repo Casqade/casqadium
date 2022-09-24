@@ -20,4 +20,6 @@ void RenderSystem( entt::registry& registry );
 
 void RenderBufferClearSystem( entt::registry& registry );
 
+void LightingSystem( entt::registry& registry );
+
 } // namespace cqde::systems

@@ -28,9 +28,7 @@ Transform::ui_edit_props(
 
   static bool showInWorldSpace {};
 
-  const auto cNode = registry.try_get <SceneNode> (entity);
-
-  if ( cNode == nullptr )
+  if ( registry.all_of <SceneNode> (entity) == false )
     showInWorldSpace = false;
 
   else
@@ -53,9 +51,8 @@ Transform::ui_edit_props(
     auto translationBuffer = translation;
 
     if ( showInWorldSpace == true )
-      translationBuffer = ToWorldSpace(translation,
-                                       registry,
-                                       *this, *cNode);
+      translationBuffer = ToWorldSpace(translation, registry,
+                                       entity, *this);
 
     ImGui::AlignTextToFramePadding();
     ImGui::Text("X");
@@ -89,9 +86,8 @@ Transform::ui_edit_props(
       if ( showInWorldSpace == false )
         translation = translationBuffer;
       else
-        SetTranslationWorld(translationBuffer,
-                            registry,
-                            *this, *cNode);
+        SetTranslationWorld(translationBuffer, registry,
+                            entity, *this);
     }
   }
 
@@ -100,9 +96,8 @@ Transform::ui_edit_props(
     auto orientationBuffer = orientation;
 
     if ( showInWorldSpace == true )
-      orientationBuffer = ToWorldSpace(orientation,
-                                       registry,
-                                       *this, *cNode);
+      orientationBuffer = ToWorldSpace(orientation, registry,
+                                       entity, *this);
 
     if ( ImGui::RadioButton("Quaternion",
                             orientationMode == OrientationMode::Quat) )
@@ -293,7 +288,7 @@ Transform::ui_edit_props(
         orientation = glm::normalize(orientationBuffer);
       else
         SetOrientationWorld(orientationBuffer, registry,
-                            *this, *cNode);
+                            entity, *this);
     }
   }
 

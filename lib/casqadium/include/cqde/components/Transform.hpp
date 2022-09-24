@@ -55,61 +55,61 @@ struct Transform
 void SetTranslationWorld(
   const glm::vec3& origin,
   const entt::registry&,
-  compos::Transform&,
-  const compos::SceneNode& );
+  const entt::entity,
+  compos::Transform& );
 
 void SetOrientationWorld(
   const glm::quat& orientation,
   const entt::registry&,
-  compos::Transform&,
-  const compos::SceneNode& );
+  const entt::entity,
+  compos::Transform& );
 
 void SetScaleWorld(
   const glm::vec3& scale,
   const entt::registry&,
-  compos::Transform&,
-  const compos::SceneNode& );
+  const entt::entity,
+  compos::Transform& );
 
 
 glm::vec3 ToLocalSpace(
   const glm::vec3& point,
   const entt::registry&,
-  const compos::Transform&,
-  const compos::SceneNode& );
+  const entt::entity,
+  const compos::Transform& );
 
 glm::quat ToLocalSpace(
   const glm::quat& orientation,
   const entt::registry&,
-  const compos::Transform&,
-  const compos::SceneNode& );
+  const entt::entity,
+  const compos::Transform& );
 
 glm::mat4 ToLocalSpace(
   const glm::mat4& matrix,
   const entt::registry&,
-  const compos::Transform&,
-  const compos::SceneNode& );
+  const entt::entity,
+  const compos::Transform& );
 
 glm::vec3 ToWorldSpace(
   const glm::vec3& point,
   const entt::registry&,
-  const compos::Transform&,
-  const compos::SceneNode& );
+  const entt::entity,
+  const compos::Transform& );
 
 glm::quat ToWorldSpace(
   const glm::quat& orientation,
   const entt::registry&,
-  const compos::Transform&,
-  const compos::SceneNode& );
+  const entt::entity,
+  const compos::Transform& );
 
 glm::mat4 ToWorldSpace(
   const glm::mat4& matrix,
   const entt::registry&,
-  const compos::Transform&,
-  const compos::SceneNode& );
+  const entt::entity,
+  const compos::Transform& );
 
 glm::mat4 GetWorldMatrix(
   const entt::registry&,
-  const compos::Transform&,
-  const compos::SceneNode& );
+  const entt::entity,
+  const compos::Transform& );
 
 } // namespace cqde

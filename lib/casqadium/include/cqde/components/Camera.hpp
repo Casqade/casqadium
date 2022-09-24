@@ -74,9 +74,9 @@ struct Camera
   glm::vec4 viewportScaled() const;
 
   glm::mat4 projMatrix() const;
-  glm::mat4 viewMatrix( entt::registry&   registry,
-                        const SceneNode&  cSceneNode,
-                        const Transform&  cTransform ) const;
+  glm::mat4 viewMatrix( entt::registry&,
+                        const entt::entity,
+                        const Transform& ) const;
 
 
   static std::string ProjectionTypeToString( const Projection );
