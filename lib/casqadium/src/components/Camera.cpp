@@ -1,6 +1,7 @@
 #include <cqde/components/Camera.hpp>
 #include <cqde/components/Transform.hpp>
 
+#include <cqde/common.hpp>
 #include <cqde/json_helpers.hpp>
 
 #include <cqde/conversion/json_glm_vec4.hpp>
@@ -58,7 +59,146 @@ Camera::viewMatrix(
   const SceneNode&  cSceneNode,
   const Transform&  cTransform ) const
 {
-  return glm::inverse(GetWorldMatrix(registry, cTransform, cSceneNode));
+  return glm::inverse(GetWorldMatrix(registry, entity, cTransform));
+}
+
+
+std::string
+Camera::ProjectionTypeToString(
+  const Camera::Projection type )
+{
+  using ProjectionType = Camera::Projection;
+
+  switch (type)
+  {
+    case ProjectionType::Orthographic:
+      return "orthographic";
+
+    case ProjectionType::Perspective:
+      return "perspective";
+  }
+}
+
+Camera::Projection
+Camera::ProjectionTypeFromString(
+  const std::string& type )
+{
+  using fmt::format;
+  using ProjectionType = Camera::Projection;
+
+  if ( type == ProjectionTypeToString(ProjectionType::Orthographic) )
+    return ProjectionType::Orthographic;
+
+  if ( type == ProjectionTypeToString(ProjectionType::Perspective) )
+    return ProjectionType::Perspective;
+
+  throw std::runtime_error(
+    format("'{}' is not a valid camera projection type", type));
+}
+
+std::string
+Camera::RenderModeToString(
+  const Camera::RenderMode mode )
+{
+  using RenderMode = Camera::RenderMode;
+
+  switch (mode)
+  {
+    case RenderMode::Solid:
+      return "solid";
+
+    case RenderMode::Wireframe:
+      return "wireframe";
+  }
+
+  CQDE_ASSERT_DEBUG(false, return "");
+}
+
+Camera::RenderMode
+Camera::RenderModeFromString(
+  const std::string& mode )
+{
+  using fmt::format;
+  using RenderMode = Camera::RenderMode;
+
+  if ( mode == RenderModeToString(RenderMode::Solid) )
+    return RenderMode::Solid;
+
+  if ( mode == RenderModeToString(RenderMode::Wireframe) )
+    return RenderMode::Wireframe;
+
+  throw std::runtime_error(
+    format("'{}' is not a valid camera render mode", mode));
+}
+
+std::string
+Camera::TextureModeToString(
+  const Camera::TextureMode mode )
+{
+  using RenderMode = Camera::RenderMode;
+
+  switch (mode)
+  {
+    case TextureMode::Textured:
+      return "textured";
+
+    case TextureMode::NoTexture:
+      return "noTexture";
+  }
+
+  CQDE_ASSERT_DEBUG(false, return "");
+}
+
+Camera::TextureMode
+Camera::TextureModeFromString(
+  const std::string& mode )
+{
+  using fmt::format;
+  using RenderMode = Camera::RenderMode;
+
+  if ( mode == TextureModeToString(TextureMode::Textured) )
+    return TextureMode::Textured;
+
+  if ( mode == TextureModeToString(TextureMode::NoTexture) )
+    return TextureMode::NoTexture;
+
+  throw std::runtime_error(
+    format("'{}' is not a valid camera texture mode", mode));
+}
+
+std::string
+Camera::LightingModeToString(
+  const Camera::LightingMode type )
+{
+  using RenderMode = Camera::RenderMode;
+
+  switch (type)
+  {
+    case LightingMode::Diffuse:
+      return "diffuse";
+
+    case LightingMode::FullBright:
+      return "fullBright";
+  }
+
+  CQDE_ASSERT_DEBUG(false, return "");
+}
+
+Camera::LightingMode
+Camera::LightingModeFromString(
+  const std::string& mode )
+{
+  using fmt::format;
+  using RenderMode = Camera::RenderMode;
+
+  if ( mode == LightingModeToString(LightingMode::Diffuse) )
+    return LightingMode::Diffuse;
+
+  if ( mode == LightingModeToString(LightingMode::FullBright) )
+    return LightingMode::FullBright;
+
+  throw std::runtime_error(
+    format("'{}' is not a valid camera render mode", mode));
 }
 
 const static Json::Value cameraJsonReference =
@@ -99,7 +239,17 @@ const static Json::Value cameraJsonReference =
   root["projection"].setComment("// 'projection' must be a JSON string"s,
                                 Json::CommentPlacement::commentBefore);
 
-//  todo: render, texture & lighting modes
+  root["renderMode"] = ValueType::stringValue;
+  root["renderMode"].setComment("// 'renderMode' must be a JSON string"s,
+                                Json::CommentPlacement::commentBefore);
+
+  root["textureMode"] = ValueType::stringValue;
+  root["textureMode"].setComment("// 'textureMode' must be a JSON string"s,
+                                  Json::CommentPlacement::commentBefore);
+
+  root["lightingMode"] = ValueType::stringValue;
+  root["lightingMode"].setComment("// 'lightingMode' must be a JSON string"s,
+                                  Json::CommentPlacement::commentBefore);
 
   return root;
 }();
@@ -120,11 +270,10 @@ Camera::serialize() const
 
   json["layer"] = layer;
 
-  json["projection"] = projectionType == Projection::Perspective
-                       ? "perspective"
-                       : "orthographic";
-
-//  todo: render, texture & lighting modes
+  json["projection"] = ProjectionTypeToString(projectionType);
+  json["renderMode"] = RenderModeToString(renderMode);
+  json["textureMode"] = TextureModeToString(textureMode);
+  json["lightingMode"] = LightingModeToString(lightingMode);
 
   return json;
 }
@@ -141,24 +290,16 @@ Camera::deserialize(
 
   jsonValidateObject(json, cameraJsonReference);
 
-  const auto projection = json["projection"].asString();
-
-  if ( projection != "perspective" &&
-       projection != "orthographic" )
-    throw std::runtime_error(
-      format("'projection' value must be either "
-             "'{}' or '{}' (given '{}')",
-             "perspective", "orthographic", projection));
-
   if ( json["z-range"].size() != 2 )
     throw std::runtime_error(
       "'z-range' must contain 2 elements");
 
   auto& comp = registry.emplace_or_replace <Camera> (entity);
 
-  comp.projectionType = projection == "perspective"
-                        ? Projection::Perspective
-                        : Projection::Orthographic;
+  comp.projectionType = ProjectionTypeFromString( json["projection"].asString() );
+  comp.renderMode = RenderModeFromString( json["renderMode"].asString() );
+  comp.textureMode = TextureModeFromString( json["textureMode"].asString() );
+  comp.lightingMode = LightingModeFromString( json["lightingMode"].asString() );
 
   if ( comp.projectionType == Projection::Perspective )
     comp.fov = glm::radians(json["fov"].asFloat());

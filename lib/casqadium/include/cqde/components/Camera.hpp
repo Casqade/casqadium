@@ -31,21 +31,20 @@ struct Camera
 
   enum class RenderMode
   {
-    Wireframe,
     Solid,
+    Wireframe,
   };
 
   enum class TextureMode
   {
-    NoTexture,
-    Color,
     Textured,
+    NoTexture,
   };
 
   enum class LightingMode
   {
-    Ambient,
     Diffuse,
+    FullBright,
   };
 
   std::multimap < types::VertexBuffer, entt::entity,
@@ -78,6 +77,17 @@ struct Camera
   glm::mat4 viewMatrix( entt::registry&   registry,
                         const SceneNode&  cSceneNode,
                         const Transform&  cTransform ) const;
+
+
+  static std::string ProjectionTypeToString( const Projection );
+  static std::string RenderModeToString( const RenderMode );
+  static std::string TextureModeToString( const TextureMode );
+  static std::string LightingModeToString( const LightingMode );
+
+  static Projection ProjectionTypeFromString( const std::string& );
+  static RenderMode RenderModeFromString( const std::string& );
+  static TextureMode TextureModeFromString( const std::string& );
+  static LightingMode LightingModeFromString( const std::string& );
 
 
   void ui_edit_props( const entt::entity,

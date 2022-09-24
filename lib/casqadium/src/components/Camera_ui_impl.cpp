@@ -120,20 +120,46 @@ Camera::ui_edit_props(
 
   if ( ImGui::CollapsingHeader("Projection", ImGuiTreeNodeFlags_DefaultOpen) )
   {
-    if ( ImGui::RadioButton("Perspective", projectionType == Projection::Perspective) )
+    if ( ImGui::RadioButton(ProjectionTypeToString(Projection::Perspective).c_str(),
+                            projectionType == Projection::Perspective) )
       projectionType = Projection::Perspective;
 
-    if ( ImGui::RadioButton("Orthographic", projectionType == Projection::Orthographic) )
+    if ( ImGui::RadioButton(ProjectionTypeToString(Projection::Orthographic).c_str(),
+                            projectionType == Projection::Orthographic) )
       projectionType = Projection::Orthographic;
   }
 
   if ( ImGui::CollapsingHeader("Render mode", ImGuiTreeNodeFlags_DefaultOpen) )
   {
-    if ( ImGui::RadioButton("Wireframe", renderMode == RenderMode::Wireframe) )
+    if ( ImGui::RadioButton(RenderModeToString(RenderMode::Wireframe).c_str(),
+                            renderMode == RenderMode::Wireframe) )
       renderMode = RenderMode::Wireframe;
 
-    if ( ImGui::RadioButton("Solid", renderMode == RenderMode::Solid) )
+    if ( ImGui::RadioButton(RenderModeToString(RenderMode::Solid).c_str(),
+                            renderMode == RenderMode::Solid) )
       renderMode = RenderMode::Solid;
+  }
+
+  if ( ImGui::CollapsingHeader("Texture mode", ImGuiTreeNodeFlags_DefaultOpen) )
+  {
+    if ( ImGui::RadioButton(TextureModeToString(TextureMode::Textured).c_str(),
+                            textureMode == TextureMode::Textured) )
+      textureMode = TextureMode::Textured;
+
+    if ( ImGui::RadioButton(TextureModeToString(TextureMode::NoTexture).c_str(),
+                            textureMode == TextureMode::NoTexture) )
+      textureMode = TextureMode::NoTexture;
+  }
+
+  if ( ImGui::CollapsingHeader("Lighting mode", ImGuiTreeNodeFlags_DefaultOpen) )
+  {
+    if ( ImGui::RadioButton(LightingModeToString(LightingMode::Diffuse).c_str(),
+                            lightingMode == LightingMode::Diffuse) )
+      lightingMode = LightingMode::Diffuse;
+
+    if ( ImGui::RadioButton(LightingModeToString(LightingMode::FullBright).c_str(),
+                            lightingMode == LightingMode::FullBright) )
+      lightingMode = LightingMode::FullBright;
   }
 }
 

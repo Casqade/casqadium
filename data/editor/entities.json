@@ -6,6 +6,9 @@
       "fov" : 45.000001777515308,
       "layer" : 0,
       "projection" : "perspective",
+      "renderMode" : "solid",
+      "textureMode" : "textured",
+      "lightingMode" : "diffuse",
       "viewport" :
       [
         0.0,
