@@ -5,6 +5,7 @@
 #include <cqde/types/UserManager.hpp>
 
 #include <cqde/types/ui/EntityManagerUi.hpp>
+#include <cqde/types/ui/SystemManagerUi.hpp>
 
 #include <cqde/common.hpp>
 #include <cqde/file_helpers.hpp>
@@ -49,7 +50,6 @@ SnapshotManager::Validate(
   const path& snapshotPath )
 {
   using fmt::format;
-  using ui::EntityManagerUi;
 
   Json::Value snapshot {};
 
@@ -181,6 +181,7 @@ SnapshotManager::Load(
 {
   using fmt::format;
   using ui::EntityManagerUi;
+  using ui::SystemManagerUi;
 
   Json::Value snapshot {};
 
@@ -272,6 +273,7 @@ SnapshotManager::Load(
   }
 
   auto& systemManager = registry.ctx().at <SystemManager> ();
+  auto& systemManagerUi = registry.ctx().at <SystemManagerUi> ();
 
   try
   {
@@ -283,6 +285,8 @@ SnapshotManager::Load(
       format("Failed to deserialize snapshot '{}': {}",
               snapshotPath.string(), e.what()));
   }
+
+  systemManagerUi.init(registry);
 }
 
 } // namespace cqde::types
