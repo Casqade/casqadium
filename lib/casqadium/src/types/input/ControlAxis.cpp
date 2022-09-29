@@ -29,7 +29,7 @@ const static Json::Value controlAxisJsonReference =
                             Json::CommentPlacement::commentBefore);
 
   root["constraint"] = ValueType::arrayValue;
-  root["constraint"].setComment("// 'constraint' must be a JSON float"s,
+  root["constraint"].setComment("// 'constraint' must be a JSON array"s,
                                 Json::CommentPlacement::commentBefore);
 
   root["constraint"].append(ValueType::realValue);

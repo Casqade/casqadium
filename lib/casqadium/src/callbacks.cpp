@@ -295,8 +295,8 @@ editorCameraCreate(
   cMetaInfo.packageId = "";
 
   auto& cCamera = registry.emplace <Camera> (eCamera);
-  auto& cTransform = registry.emplace <Transform> (eCamera);
-  auto& cSceneNode = registry.emplace <SceneNode> (eCamera);
+  registry.emplace <Transform> (eCamera);
+  registry.emplace <SceneNode> (eCamera);
 
   cCamera.renderMode = Camera::RenderMode::Wireframe;
 
