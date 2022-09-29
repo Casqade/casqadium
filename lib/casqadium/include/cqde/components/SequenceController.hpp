@@ -2,6 +2,8 @@
 
 #include <cqde/alias.hpp>
 
+#include <cqde/types/sequences/SequenceStep.hpp>
+
 #include <entt/fwd.hpp>
 
 #include <json/forwards.h>
@@ -14,7 +16,9 @@ namespace cqde::compos
 
 struct SequenceController
 {
-  std::deque <CallbackId> steps {};
+  using SequenceStep = types::SequenceStep;
+
+  std::deque <std::shared_ptr <SequenceStep>> steps {};
 
 
   SequenceController() = default;

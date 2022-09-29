@@ -60,7 +60,6 @@ target_sources(${TARGET} PRIVATE
 
 #  Classes & PODs
   include/${CASQADIUM_SHORT}/types/FrameCurrent.hpp
-  include/${CASQADIUM_SHORT}/types/SequenceStep.hpp
   include/${CASQADIUM_SHORT}/types/System.hpp
   include/${CASQADIUM_SHORT}/types/TickCurrent.hpp
 
@@ -76,6 +75,22 @@ target_sources(${TARGET} PRIVATE
 
   src/types/VertexBuffer.cpp
   include/${CASQADIUM_SHORT}/types/VertexBuffer.hpp
+
+
+#  Sequences
+  src/types/sequences/SequenceStep.cpp
+  include/${CASQADIUM_SHORT}/types/sequences/SequenceStep.hpp
+
+  src/types/sequences/SequenceFactory.cpp
+  include/${CASQADIUM_SHORT}/types/sequences/SequenceFactory.hpp
+
+  src/types/sequences/Delay.cpp
+  src/types/sequences/Delay_ui_impl.cpp
+  include/${CASQADIUM_SHORT}/types/sequences/Delay.hpp
+
+  src/types/sequences/TransformInterpolated.cpp
+  src/types/sequences/TransformInterpolated_ui_impl.cpp
+  include/${CASQADIUM_SHORT}/types/sequences/TransformInterpolated.hpp
 
 
 #  Managers

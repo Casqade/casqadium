@@ -1,6 +1,8 @@
 #include <cqde/components/SequenceController.hpp>
 #include <cqde/types/CallbackManager.hpp>
 
+#include <cqde/types/sequences/SequenceFactory.hpp>
+
 #include <cqde/types/ui/widgets/StringFilter.hpp>
 
 #include <entt/entity/registry.hpp>
@@ -18,18 +20,22 @@ namespace cqde::compos
 
 void
 SequenceController::ui_edit_props(
-  const entt::entity,
+  const entt::entity entity,
   const entt::registry& registry )
 {
   using fmt::format;
-  using types::CallbackManager;
+  using types::SequenceStep;
+  using types::SequenceFactory;
 
   if ( ImGui::CollapsingHeader("Sequence steps", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
 
-  const auto callbackList = registry.ctx().at <CallbackManager> ().callbacks();
+  auto& sequenceFactory = registry.ctx().at <SequenceFactory> ();
 
-  static ui::StringFilter callbackFilter {"Callback ID"};
+  static ui::StringFilter sequenceFilter {"Sequence ID"};
+
+  static bool stepWindowOpened {};
+  static std::shared_ptr <SequenceStep> selectedStep {};
 
   if ( ImGui::SmallButton("+##stepAdd") )
     ImGui::OpenPopup("##stepAddPopup");
@@ -39,27 +45,27 @@ SequenceController::ui_edit_props(
     if ( ImGui::IsWindowAppearing() )
       ImGui::SetKeyboardFocusHere(2);
 
-    callbackFilter.search({}, ImGuiInputTextFlags_AutoSelectAll);
+    sequenceFilter.search({}, ImGuiInputTextFlags_AutoSelectAll);
 
-    bool callbacksFound {};
+    bool sequenceFound {};
 
-    for ( const auto& callbackId : callbackList )
+    for ( const auto& sequence : sequenceFactory.sequences() )
     {
-      if ( callbackFilter.query(callbackId.str()) == false )
+      if ( sequenceFilter.query(sequence.str()) == false )
         continue;
 
-      callbacksFound = true;
+      sequenceFound = true;
 
-      if ( ImGui::Selectable(callbackId.str().c_str(), false) )
+      if ( ImGui::Selectable(sequence.str().c_str(), false) )
       {
-        steps.push_back(callbackId);
+        steps.push_back(sequenceFactory.get(sequence));
         ImGui::CloseCurrentPopup();
         break;
       }
     }
 
-    if ( callbacksFound == false )
-      ImGui::Text("No callbacks matching filter");
+    if ( sequenceFound == false )
+      ImGui::Text("No sequences matching filter");
 
     ImGui::EndPopup(); // textureAddPopup
   }
@@ -81,7 +87,12 @@ SequenceController::ui_edit_props(
     ImGui::PushID(std::distance(steps.begin(), iter));
 
     if ( ImGui::SmallButton("-##stepDel") )
+    {
+      if ( selectedStep == *iter )
+        selectedStep = nullptr;
+
       iter = steps.erase(iter);
+    }
 
     if ( iter == steps.end() )
     {
@@ -89,12 +100,20 @@ SequenceController::ui_edit_props(
       break;
     }
 
+    const bool selected = *iter == selectedStep;
+
     const auto flags =  ImGuiSelectableFlags_SpanAllColumns |
                         ImGuiSelectableFlags_AllowItemOverlap;
 
     ImGui::SameLine();
-    ImGui::Selectable(format("{}###", iter->str()).c_str(),
-                      false, flags);
+    if ( ImGui::Selectable( format("{}###", iter->get()->name()).c_str(),
+                            selected, flags) )
+    {
+      selectedStep = *iter;
+
+      stepWindowOpened = true;
+      ImGui::SetWindowFocus("###stepEditWindow");
+    }
 
     static auto iter_dragged = steps.end();
 
@@ -118,7 +137,7 @@ SequenceController::ui_edit_props(
       }
     }
 
-    if ( iter_dragged != steps.end() &&
+    if ( iter_dragged < steps.end() &&
          ImGui::IsMouseReleased(ImGuiMouseButton_Left) == true )
       iter_dragged = steps.end();
 
@@ -126,6 +145,22 @@ SequenceController::ui_edit_props(
   }
 
   ImGui::EndTable(); // StepsList
+
+  if ( stepWindowOpened == false )
+    return;
+
+  if ( selectedStep == nullptr )
+    return;
+
+  const auto windowTitle = format("Step '{}'###stepEditWindow",
+                                  selectedStep->name());
+
+  if ( ImGui::Begin(windowTitle.c_str(),
+                    &stepWindowOpened,
+                    ImGuiWindowFlags_MenuBar) )
+    selectedStep->ui_show(registry);
+
+  ImGui::End(); // windowTitle
 }
 
 } // namespace cqde::compos

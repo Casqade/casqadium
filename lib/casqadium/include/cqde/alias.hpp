@@ -20,6 +20,7 @@ using InputAxisId = identifier;
 using InputHwId = identifier;
 using PackageId = identifier;
 using PrefabId = identifier;
+using SequenceId = identifier;
 using StringId = identifier;
 using TextureId = identifier;
 using UserId = identifier;

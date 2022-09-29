@@ -1,162 +1,162 @@
 {
-  "eCamera" :
+  "eCamera" : 
   {
-    "Camera" :
+    "Camera" : 
     {
       "fov" : 45.000001777515308,
       "layer" : 0,
+      "lightingMode" : "diffuse",
       "projection" : "perspective",
       "renderMode" : "solid",
       "textureMode" : "textured",
-      "lightingMode" : "diffuse",
-      "viewport" :
+      "viewport" : 
       [
         0.0,
         0.0,
         1.0,
         1.0
       ],
-      "z-range" :
+      "z-range" : 
       [
         0.10000000149011612,
         1000.0
       ]
     },
-    "CasqadiumEntryPoint" :
+    "CasqadiumEntryPoint" : 
     {
-      "entities-input" :
+      "entities-input" : 
       [
         "eCamera"
       ],
-      "entities-update" :
+      "entities-update" : 
       [
         "eCamera"
       ],
-      "systems" :
+      "systems" : 
       [
-        "MouseCenteringSystem",
-        "MouseHidingSystem",
-        "RenderSystem",
-        "RenderBufferClearSystem",
+        "CullingSystem",
         "LightingSystem",
-        "CullingSystem"
+        "RenderBufferClearSystem",
+        "RenderSystem",
+        "MouseHidingSystem",
+        "MouseCenteringSystem"
       ]
     },
-    "InputController" :
+    "InputController" : 
     {
-      "axes" :
+      "axes" : 
       {
-        "EditorModeToggle" :
+        "EditorModeToggle" : 
         {
-          "callbacks" :
+          "callbacks" : 
           [
             "EditorModeToggle"
           ],
-          "constraint" :
+          "constraint" : 
           [
             0.0,
             0.0
           ],
           "value" : 0.0
         },
-        "EngineShutdown" :
+        "EngineShutdown" : 
         {
-          "callbacks" :
+          "callbacks" : 
           [
             "EngineShutdown"
           ],
-          "constraint" :
+          "constraint" : 
           [
             0.0,
             0.0
           ],
           "value" : 0.0
         },
-        "Pitch" :
+        "Pitch" : 
         {
-          "callbacks" :
+          "callbacks" : 
           [
             "ControlPitchRelative"
           ],
-          "constraint" :
+          "constraint" : 
           [
             1.0,
             0.0
           ],
           "value" : 0.0
         },
-        "QuickLoad" :
+        "QuickLoad" : 
         {
-          "callbacks" :
+          "callbacks" : 
           [
             "QuickLoad"
           ],
-          "constraint" :
+          "constraint" : 
           [
             0.0,
             0.0
           ],
           "value" : 0.0
         },
-        "QuickSave" :
+        "QuickSave" : 
         {
-          "callbacks" :
+          "callbacks" : 
           [
             "QuickSave"
           ],
-          "constraint" :
+          "constraint" : 
           [
             0.0,
             0.0
           ],
           "value" : 0.0
         },
-        "TranslateX" :
+        "TranslateX" : 
         {
-          "callbacks" :
+          "callbacks" : 
           [
             "ControlTranslateXRelative"
           ],
-          "constraint" :
+          "constraint" : 
           [
             1.0,
             0.0
           ],
           "value" : 0.0
         },
-        "TranslateY" :
+        "TranslateY" : 
         {
-          "callbacks" :
+          "callbacks" : 
           [
             "ControlTranslateYRelative"
           ],
-          "constraint" :
+          "constraint" : 
           [
             1.0,
             0.0
           ],
           "value" : 0.0
         },
-        "TranslateZ" :
+        "TranslateZ" : 
         {
-          "callbacks" :
+          "callbacks" : 
           [
             "ControlTranslateZRelative"
           ],
-          "constraint" :
+          "constraint" : 
           [
             1.0,
             0.0
           ],
           "value" : 0.0
         },
-        "Yaw" :
+        "Yaw" : 
         {
-          "callbacks" :
+          "callbacks" : 
           [
             "ControlYawRelative"
           ],
-          "constraint" :
+          "constraint" : 
           [
             1.0,
             0.0
@@ -165,35 +165,170 @@
         }
       }
     },
-    "SceneNode" :
+    "SceneNode" : 
     {
       "children" : [],
       "parent" : "null"
     },
+    "SequenceController" : 
+    {
+      "steps" : 
+      [
+        {
+          "TransformInterpolated" : 
+          {
+            "timeElapsed" : 0.0,
+            "timeTotal" : 5.0,
+            "transformInitial" : 
+            [
+              [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ],
+            "transformTarget" : 
+            [
+              [
+                0.79950606822967529,
+                9.6857547760009766e-08,
+                0.60065805912017822,
+                0.0
+              ],
+              [
+                0.13655614852905273,
+                0.97381442785263062,
+                -0.18176327645778656,
+                0.0
+              ],
+              [
+                -0.58492946624755859,
+                0.22734437882900238,
+                0.77857053279876709,
+                0.0
+              ],
+              [
+                -7.6559004783630371,
+                3.2156500816345215,
+                -7.7782740592956543,
+                1.0
+              ]
+            ]
+          }
+        },
+        {
+          "Delay" : 
+          {
+            "timeElapsed" : 0.0,
+            "timeTotal" : 3.0
+          }
+        },
+        {
+          "TransformInterpolated" : 
+          {
+            "timeElapsed" : 0.0,
+            "timeTotal" : 4.0,
+            "transformInitial" : 
+            [
+              [
+                0.79950606822967529,
+                9.6857547760009766e-08,
+                0.60065805912017822,
+                0.0
+              ],
+              [
+                0.13655614852905273,
+                0.97381442785263062,
+                -0.18176327645778656,
+                0.0
+              ],
+              [
+                -0.58492946624755859,
+                0.22734437882900238,
+                0.77857053279876709,
+                0.0
+              ],
+              [
+                -7.6559004783630371,
+                3.2156500816345215,
+                -7.7782740592956543,
+                1.0
+              ]
+            ],
+            "transformTarget" : 
+            [
+              [
+                1.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                1.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ]
+          }
+        }
+      ]
+    },
     "SubscriberInput" : {},
     "SubscriberUpdate" : {},
-    "Transform" :
+    "Transform" : 
     {
-      "orientation" :
+      "orientation" : 
       [
         0.0,
         0.0,
         0.0,
         1.0
       ],
-      "scale" :
+      "scale" : 
       [
         1.0,
         1.0,
         1.0
       ],
-      "scaleWorld" :
+      "scaleWorld" : 
       [
         1.0,
         1.0,
         1.0
       ],
-      "translation" :
+      "translation" : 
       [
         0.0,
         0.0,
@@ -203,62 +338,62 @@
     "WantsMouseCentered" : {},
     "WantsMouseHidden" : {}
   },
-  "eQuad" :
+  "eQuad" : 
   {
-    "GeometryBuffer" :
+    "GeometryBuffer" : 
     {
       "buffer" : "quad"
     },
-    "LightSource" :
+    "LightSource" : 
     {
-      "attenuation":
+      "attenuation" : 
       {
-        "constant": 1.0,
-        "linear": 0.0,
-        "quadratic": 0.0
+        "constant" : 1.0,
+        "linear" : 0.0,
+        "quadratic" : 0.0
       },
       "color" : 4294967295,
-      "radius": 15.0,
-      "type": "ambient"
+      "radius" : 15.0,
+      "type" : "ambient"
     },
-    "SceneNode" :
+    "SceneNode" : 
     {
-      "children" :
+      "children" : 
       [
         "eQuad1"
       ],
       "parent" : "null"
     },
-    "TextureBuffer" :
+    "TextureBuffer" : 
     {
-      "textures" :
+      "textures" : 
       [
         "map_height",
         "text_texture2"
       ]
     },
-    "Transform" :
+    "Transform" : 
     {
-      "orientation" :
+      "orientation" : 
       [
         0.0,
         0.0,
         0.0,
         1.0
       ],
-      "scale" :
+      "scale" : 
       [
         1.0,
         1.0,
         1.0
       ],
-      "scaleWorld" :
+      "scaleWorld" : 
       [
         1.0,
         1.0,
         1.0
       ],
-      "translation" :
+      "translation" : 
       [
         0.0,
         0.0,
@@ -266,52 +401,52 @@
       ]
     }
   },
-  "eQuad1" :
+  "eQuad1" : 
   {
-    "GeometryBuffer" :
+    "GeometryBuffer" : 
     {
       "buffer" : "quad"
     },
     "LightTarget" : {},
-    "SceneNode" :
+    "SceneNode" : 
     {
       "children" : [],
       "parent" : "eQuad"
     },
-    "TextureBuffer" :
+    "TextureBuffer" : 
     {
-      "textures" :
+      "textures" : 
       [
         "map_diffuse",
         "text_texture2"
       ]
     },
-    "TextureTint" :
+    "TextureTint" : 
     {
       "tint" : 4294967295
     },
-    "Transform" :
+    "Transform" : 
     {
-      "orientation" :
+      "orientation" : 
       [
         0.0,
         0.0,
         0.0,
         1.0
       ],
-      "scale" :
+      "scale" : 
       [
         1.0,
         1.0,
         1.0
       ],
-      "scaleWorld" :
+      "scaleWorld" : 
       [
         1.0,
         1.0,
         1.0
       ],
-      "translation" :
+      "translation" : 
       [
         0.0,
         0.0,

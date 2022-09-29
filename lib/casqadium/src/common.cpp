@@ -45,6 +45,10 @@
 #include <cqde/types/SnapshotManager.hpp>
 #include <cqde/types/UserManager.hpp>
 
+#include <cqde/types/sequences/SequenceFactory.hpp>
+#include <cqde/types/sequences/Delay.hpp>
+#include <cqde/types/sequences/TransformInterpolated.hpp>
+
 #include <cqde/types/TickCurrent.hpp>
 #include <cqde/types/FrameCurrent.hpp>
 
@@ -93,6 +97,7 @@ engineInit( entt::registry& registry )
   auto& packageManager = registry.ctx().emplace <PackageManager> ();
   auto& prefabManager = registry.ctx().emplace <PrefabManager> ();
   auto& systemManager = registry.ctx().emplace <SystemManager> ();
+  auto& sequenceFactory = registry.ctx().emplace <SequenceFactory> ();
   auto& snapshotManager = registry.ctx().emplace <SnapshotManager> ();
   auto& userManager = registry.ctx().emplace <UserManager> ();
 
@@ -229,6 +234,10 @@ engineInit( entt::registry& registry )
                          MouseHidingSystem,
                          Phase{Phase::Logic | Phase::Editor});
 
+  systemManager.Register("SequenceSystem",
+                         SequenceSystem,
+                         Phase::Logic);
+
   systemManager.Register("MouseCenteringSystem",
                          MouseCenteringSystem,
                          Phase::Logic);
@@ -262,6 +271,11 @@ engineInit( entt::registry& registry )
   systemManager.Register("CasqadiumEditorEntityHighlightSystem",
                          EditorEntityHighlightSystem,
                          Phase{Phase::Render | Phase::Editor});
+
+  sequenceFactory.sequenceRegister("Delay",
+                                   std::make_shared <Delay> );
+  sequenceFactory.sequenceRegister("TransformInterpolated",
+                                   std::make_shared <TransformInterpolated> );
 }
 
 std::string

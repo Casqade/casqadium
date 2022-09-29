@@ -22,4 +22,6 @@ void RenderBufferClearSystem( entt::registry& registry );
 
 void LightingSystem( entt::registry& registry );
 
+void SequenceSystem( entt::registry& registry );
+
 } // namespace cqde::systems

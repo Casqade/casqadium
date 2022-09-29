@@ -29,6 +29,7 @@
 #include <cqde/components/LightSource.hpp>
 #include <cqde/components/LightTarget.hpp>
 #include <cqde/components/SceneNode.hpp>
+#include <cqde/components/SequenceController.hpp>
 #include <cqde/components/SubscriberInput.hpp>
 #include <cqde/components/SubscriberUpdate.hpp>
 #include <cqde/components/Transform.hpp>
@@ -382,6 +383,35 @@ LightingSystem(
 
       cCamera.zBuffer.emplace(vb, eLightTgt);
       iter = cCamera.zBuffer.erase(iter);
+    }
+  }
+}
+
+void
+SequenceSystem(
+  entt::registry& registry )
+{
+  using compos::SubscriberInput;
+  using compos::SequenceController;
+
+  for ( auto&& [entity, cSequenceController]
+          : registry.view <SequenceController, SubscriberInput> ().each() )
+  {
+    if ( cSequenceController.steps.empty() == true )
+      continue;
+
+    auto step = cSequenceController.steps.front();
+
+    if ( step->execute(registry, entity) == true )
+    {
+      cSequenceController.steps.pop_front();
+
+      if ( cSequenceController.steps.empty() == true )
+        continue;
+
+      step = cSequenceController.steps.front();
+
+      step->init(registry, entity);
     }
   }
 }
