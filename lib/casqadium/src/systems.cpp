@@ -400,7 +400,7 @@ SequenceSystem(
     if ( cSequenceController.steps.empty() == true )
       continue;
 
-    auto step = cSequenceController.steps.front();
+    auto step = cSequenceController.steps.front().get();
 
     if ( step->execute(registry, entity) == true )
     {
@@ -409,7 +409,7 @@ SequenceSystem(
       if ( cSequenceController.steps.empty() == true )
         continue;
 
-      step = cSequenceController.steps.front();
+      step = cSequenceController.steps.front().get();
 
       step->init(registry, entity);
     }
