@@ -8,6 +8,10 @@
 namespace cqde
 {
 
+glm::mat4 interpolate( const glm::mat4&,
+                       const glm::mat4&,
+                       const float delta );
+
 struct Rect
 {
   float left {};
