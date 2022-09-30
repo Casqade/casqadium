@@ -34,12 +34,13 @@
       ],
       "systems" : 
       [
-        "CullingSystem",
-        "LightingSystem",
-        "RenderBufferClearSystem",
-        "RenderSystem",
+        "SequenceSystem",
+        "MouseCenteringSystem",
         "MouseHidingSystem",
-        "MouseCenteringSystem"
+        "RenderSystem",
+        "RenderBufferClearSystem",
+        "LightingSystem",
+        "CullingSystem"
       ]
     },
     "InputController" : 
@@ -177,6 +178,13 @@
         {
           "TransformInterpolated" : 
           {
+            "bezierParams" : 
+            [
+              0.38999998569488525,
+              0.57499998807907104,
+              0.56499999761581421,
+              1.0
+            ],
             "timeElapsed" : 0.0,
             "timeTotal" : 5.0,
             "transformInitial" : 
@@ -245,6 +253,13 @@
         {
           "TransformInterpolated" : 
           {
+            "bezierParams" : 
+            [
+              0.64499998092651367,
+              0.045000001788139343,
+              0.35499998927116394,
+              1.0
+            ],
             "timeElapsed" : 0.0,
             "timeTotal" : 4.0,
             "transformInitial" : 

@@ -3,15 +3,16 @@
 #include <cqde/components/Tag.hpp>
 #include <cqde/components/Transform.hpp>
 
-#include <cqde/types/EntityManager.hpp>
 #include <cqde/types/ui/widgets/StringFilter.hpp>
 
 #include <entt/entity/registry.hpp>
 
 #include <glm/gtx/matrix_interpolation.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <imgui.h>
+#include <imgui_bezier.hpp>
 
 #include <optional>
 
@@ -29,6 +30,9 @@ TransformInterpolated::ui_show(
 
   Delay::ui_show(registry);
 
+  if ( ImGui::CollapsingHeader("Interpolation", ImGuiTreeNodeFlags_DefaultOpen) )
+    ImGui::Bezier("##interpolation", glm::value_ptr(mBezierParams));
+
   if ( ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
 
@@ -41,8 +45,6 @@ TransformInterpolated::ui_show(
     static StringFilter entityFilter {"Entity ID"};
 
     entityFilter.search({}, ImGuiInputTextFlags_AutoSelectAll);
-
-    auto& entityManager = registry.ctx().at <EntityManager> ();
 
     for ( const auto&& [entity, cTag, cTransform]
             : registry.view <Tag, Transform> ().each() )

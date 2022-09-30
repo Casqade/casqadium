@@ -35,7 +35,7 @@ SequenceController::ui_edit_props(
   static ui::StringFilter sequenceFilter {"Sequence ID"};
 
   static bool stepWindowOpened {};
-  static std::shared_ptr <SequenceStep> selectedStep {};
+  static int32_t selectedStep {-1};
 
   if ( ImGui::SmallButton("+##stepAdd") )
     ImGui::OpenPopup("##stepAddPopup");
@@ -84,12 +84,13 @@ SequenceController::ui_edit_props(
         iter < steps.end();
         ++iter )
   {
-    ImGui::PushID(std::distance(steps.begin(), iter));
+    const auto index = std::distance(steps.begin(), iter);
+    ImGui::PushID(index);
 
     if ( ImGui::SmallButton("-##stepDel") )
     {
-      if ( selectedStep == *iter )
-        selectedStep = nullptr;
+      if ( selectedStep >= index )
+        selectedStep -= 1;
 
       iter = steps.erase(iter);
     }
@@ -100,7 +101,7 @@ SequenceController::ui_edit_props(
       break;
     }
 
-    const bool selected = *iter == selectedStep;
+    const bool selected = index == selectedStep;
 
     const auto flags =  ImGuiSelectableFlags_SpanAllColumns |
                         ImGuiSelectableFlags_AllowItemOverlap;
@@ -109,7 +110,7 @@ SequenceController::ui_edit_props(
     if ( ImGui::Selectable( format("{}###", iter->get()->name()).c_str(),
                             selected, flags) )
     {
-      selectedStep = *iter;
+      selectedStep = index;
 
       stepWindowOpened = true;
       ImGui::SetWindowFocus("###stepEditWindow");
@@ -149,16 +150,17 @@ SequenceController::ui_edit_props(
   if ( stepWindowOpened == false )
     return;
 
-  if ( selectedStep == nullptr )
+  if ( selectedStep < 0 ||
+       selectedStep >= steps.size() )
     return;
 
   const auto windowTitle = format("Step '{}'###stepEditWindow",
-                                  selectedStep->name());
+                                  steps.at(selectedStep)->name());
 
   if ( ImGui::Begin(windowTitle.c_str(),
                     &stepWindowOpened,
                     ImGuiWindowFlags_MenuBar) )
-    selectedStep->ui_show(registry);
+    steps.at(selectedStep)->ui_show(registry);
 
   ImGui::End(); // windowTitle
 }

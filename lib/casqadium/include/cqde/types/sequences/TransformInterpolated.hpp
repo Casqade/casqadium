@@ -16,6 +16,8 @@ class TransformInterpolated : public Delay
 {
   std::pair <glm::mat4, glm::mat4> mTransform {1.0f, 1.0f};
 
+  glm::vec4 mBezierParams {0.0f, 0.0f, 1.0f, 1.0f};
+
 public:
   TransformInterpolated() = default;
 

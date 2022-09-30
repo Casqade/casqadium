@@ -12,10 +12,13 @@
 
 #include <glm/gtx/matrix_interpolation.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 #include <spdlog/fmt/bundled/format.h>
 
 #include <json/value.h>
+
+#include <imgui_bezier.hpp>
 
 
 namespace cqde::types
@@ -50,12 +53,15 @@ TransformInterpolated::execute(
   if ( Delay::execute(registry, entity) == true )
     return true;
 
+  float dt = static_cast <double> (mTime.first)
+          / static_cast <double> (mTime.second);
+
+  dt = ImGui::BezierValue(dt, glm::value_ptr(mBezierParams));
+
   auto transform
     = glm::interpolate( mTransform.first,
                         mTransform.second,
-                        static_cast <float> (
-                          static_cast <double> (mTime.first)
-                        / static_cast <double> (mTime.second)));
+                        dt);
 
   auto& cTransform = registry.get <Transform> (entity);
 
@@ -88,6 +94,8 @@ TransformInterpolated::toJson() const
   json["transformTarget"][1] << mTransform.second[1];
   json["transformTarget"][2] << mTransform.second[2];
   json["transformTarget"][3] << mTransform.second[3];
+
+  json["bezierParams"] << mBezierParams;
 
   return json;
 }
@@ -125,6 +133,17 @@ TransformInterpolated::fromJson(
   {
     throw std::runtime_error(
       format("'transformTarget' parse error: {}",
+             e.what()));
+  }
+
+  try
+  {
+    mBezierParams << json["bezierParams"];
+  }
+  catch ( const std::exception& e )
+  {
+    throw std::runtime_error(
+      format("'bezierParams' parse error: {}",
              e.what()));
   }
 }
