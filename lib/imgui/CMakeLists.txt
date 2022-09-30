@@ -8,7 +8,8 @@ set(SOURCE_FILES
   imgui_demo.cpp
   imgui_tables.cpp
   imgui_widgets.cpp
-  misc/cpp/imgui_stdlib.cpp)
+  misc/cpp/imgui_stdlib.cpp
+  misc/curve/imgui_bezier.cpp)
 
 option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 
@@ -43,6 +44,7 @@ target_include_directories(imgui PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/backends>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/misc/cpp>
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/misc/curve>
   $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/misc/single_file>
 )
 
