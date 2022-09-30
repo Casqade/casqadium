@@ -7,10 +7,10 @@
 #include <cqde/types/TickCurrent.hpp>
 
 #include <cqde/json_helpers.hpp>
+#include <cqde/math_helpers.hpp>
 
 #include <entt/entity/registry.hpp>
 
-#include <glm/gtx/matrix_interpolation.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
@@ -59,7 +59,7 @@ TransformInterpolated::execute(
   dt = ImGui::BezierValue(dt, glm::value_ptr(mBezierParams));
 
   auto transform
-    = glm::interpolate( mTransform.first,
+    = cqde::interpolate(mTransform.first,
                         mTransform.second,
                         dt);
 
