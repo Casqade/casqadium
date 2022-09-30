@@ -391,11 +391,11 @@ void
 SequenceSystem(
   entt::registry& registry )
 {
-  using compos::SubscriberInput;
+  using compos::SubscriberUpdate;
   using compos::SequenceController;
 
   for ( auto&& [entity, cSequenceController]
-          : registry.view <SequenceController, SubscriberInput> ().each() )
+          : registry.view <SequenceController, SubscriberUpdate> ().each() )
   {
     if ( cSequenceController.steps.empty() == true )
       continue;
