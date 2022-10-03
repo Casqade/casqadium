@@ -107,6 +107,11 @@ glm::mat4 ToWorldSpace(
   const entt::entity,
   const compos::Transform& );
 
+glm::mat4 GetParentMatrix(
+  const entt::registry&,
+  const entt::entity,
+  const compos::Transform& );
+
 glm::mat4 GetWorldMatrix(
   const entt::registry&,
   const entt::entity,
