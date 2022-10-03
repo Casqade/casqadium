@@ -911,6 +911,7 @@ public: // CONFIGURATION ROUTINES
 
 
 public: // DRAWING ROUTINES
+  void NewFrame();
   // Draws a single Pixel
   virtual bool Draw(int32_t x, int32_t y, Pixel p = olc::WHITE);
   bool Draw(const olc::vi2d& pos, Pixel p = olc::WHITE);
@@ -1017,6 +1018,7 @@ private: // Inner mysterious workings
   bool		bHasMouseFocus = false;
   bool		bKeepMouseCentered = false;
   Mouse::Cursor bMouseCursor {};
+  bool    bNewFrame = false;
   bool		bEnableVSYNC = false;
   float		fFrameTimer = 1.0f;
   float		fLastElapsed = 0.0f;

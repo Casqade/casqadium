@@ -264,9 +264,8 @@ GameStateEcsSandbox::render(
   frame.framesElapsed = frames;
   frame.frameInterval = interval;
 
-  for ( uint32_t frame = 0; frame < frames; ++frame )
-    mRegistry.ctx().at <SystemManager> ().execute(mRegistry,
-                                                  System::Phase::Render);
+  mRegistry.ctx().at <SystemManager> ().execute(mRegistry,
+                                                System::Phase::Render);
 
   frame.lastFrameTimepoint = TimeUtils::Now();
 }

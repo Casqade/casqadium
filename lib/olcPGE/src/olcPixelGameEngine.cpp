@@ -777,6 +777,9 @@ std::string PixelGameEngine::GetFontData()
 }
 
 
+void PixelGameEngine::NewFrame()
+{bNewFrame = true;}
+
 bool PixelGameEngine::Draw(const olc::vi2d& pos, Pixel p)
 { return Draw(pos.x, pos.y, p); }
 
@@ -1979,6 +1982,11 @@ void PixelGameEngine::olc_CoreUpdate()
     DrawDecal(vMousePos - bMouseCursor.hotspot, bMouseCursor.bitmap->Decal());
 
   for (auto& ext : vExtensions) ext->OnAfterUserUpdate(fElapsedTime);
+
+  if (bNewFrame == false)
+    return;
+
+  bNewFrame = false;
 
   // Display Frame
   renderer->UpdateViewport(vViewPos, vViewSize);

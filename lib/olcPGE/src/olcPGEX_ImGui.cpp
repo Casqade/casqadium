@@ -253,12 +253,25 @@ void PGE_ImGUI::ImGui_ImplPGE_SetScrollSensitivity(float val)
 
 void PGE_ImGUI::ImGui_ImplPGE_Render(void)
 {
-  //This finishes the Dear ImGui and renders it to the screen
-  ImGui::Render();
+  const auto context = ImGui::GetCurrentContext();
+
+  static int32_t frameCountPrev {};
+  const auto frameCount = ImGui::GetFrameCount();
+
+  if (frameCountPrev != frameCount)
+    ImGui::Render();
+
+  frameCountPrev = frameCount;
+
+  const auto drawData = ImGui::GetDrawData();
+
+  if (drawData == nullptr)
+    return;
+
 #ifdef OLC_GFX_OPENGL33
-  ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+  ImGui_ImplOpenGL3_RenderDrawData(drawData);
 #else
-  ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
+  ImGui_ImplOpenGL2_RenderDrawData(drawData);
 #endif
 }
 
@@ -281,11 +294,7 @@ void PGE_ImGUI::OnAfterUserCreate()
 
 //Before the OnUserUpdate runs, do the pre-frame ImGui intialization
 void PGE_ImGUI::OnBeforeUserUpdate(float& fElapsedTime)
-{
-  ImGui_ImplPGE_NewFrame();
-  ImGui::NewFrame();
-  ImGuizmo::BeginFrame();
-}
+{}
 
 //There is currently no "after update" logic to run for ImGui
 void PGE_ImGUI::OnAfterUserUpdate(float fElapsedTime)

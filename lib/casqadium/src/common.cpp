@@ -247,9 +247,17 @@ engineInit( entt::registry& registry )
                          RenderBufferClearSystem,
                          Phase::Render);
 
+  systemManager.Register("CasqadiumEditorRenderBufferClearSystem",
+                         RenderBufferClearSystem,
+                         Phase{Phase::Render | Phase::Editor});
+
   systemManager.Register("CullingSystem",
                          CullingSystem,
                          Phase::Render);
+
+  systemManager.Register("CasqadiumEditorCullingSystem",
+                         EditorCullingSystem,
+                         Phase{Phase::Render | Phase::Editor});
 
   systemManager.Register("LightingSystem",
                          LightingSystem,
@@ -259,14 +267,6 @@ engineInit( entt::registry& registry )
                          RenderSystem,
                          Phase::Render);
 
-
-  systemManager.Register("CasqadiumEditorRenderBufferClearSystem",
-                         RenderBufferClearSystem,
-                         Phase{Phase::Render | Phase::Editor});
-
-  systemManager.Register("CasqadiumEditorCullingSystem",
-                         EditorCullingSystem,
-                         Phase{Phase::Render | Phase::Editor});
 
   systemManager.Register("CasqadiumEditorRenderSystem",
                          RenderSystem,

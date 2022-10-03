@@ -2,9 +2,13 @@
 
 #include <GameStateEcsSandbox.hpp>
 
+#include <cqde/util/logger.hpp>
+
 #include <olcPGE/olcPGEX_TTF.hpp>
 
-#include <cqde/util/logger.hpp>
+#include <imgui.h>
+#include <ImGuizmo.h>
+
 
 
 AnotherDayAtHospital::AnotherDayAtHospital(
@@ -38,7 +42,14 @@ AnotherDayAtHospital::update(
   while ( mEventHandler.pollEvent(event) )
     mGameStateController.handleEvent( event );
 
-  return mGameStateController.update( ticks, tickInterval );
+  ImGui::NewFrame();
+  ImGuizmo::BeginFrame();
+
+  auto result = mGameStateController.update( ticks, tickInterval );
+
+  ImGui::EndFrame();
+
+  return result;
 }
 
 bool
@@ -86,6 +97,8 @@ AnotherDayAtHospital::OnUserUpdate( float )
     mTickPrevious = currentTime;
   }
 
+  mImGui.ImGui_ImplPGE_NewFrame();
+
   if ( ticks != 0 )
     running = update( ticks, mTickInterval );
 
@@ -104,7 +117,7 @@ AnotherDayAtHospital::OnUserUpdate( float )
 
   if ( frames != 0 )
   {
-    SetDrawTarget(mGameLayer); // Dear ImGui compatibility
+    NewFrame();
     mGameStateController.render(frames, mFrameInterval);
   }
 

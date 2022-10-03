@@ -56,6 +56,14 @@ EditorSystem(
   using types::EntityManager;
   using types::InputBindingRelative;
 
+  static int32_t frameCountPrev {};
+  const auto frameCount = ImGui::GetFrameCount();
+
+  if ( frameCountPrev == frameCount )
+    return;
+
+  frameCountPrev = frameCount;
+
   ImGui::PushStyleColor(ImGuiCol_WindowBg, 0);
   ImGui::DockSpaceOverViewport(NULL, ImGuiDockNodeFlags_PassthruCentralNode);
   ImGui::PopStyleColor();

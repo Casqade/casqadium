@@ -27,7 +27,7 @@ class AnotherDayAtHospital : public olc::PixelGameEngine
   olc::EventHandler   mEventHandler {this};
   olc::imgui::PGE_ImGUI mImGui {true};
 
-  uint32_t mGameLayer {};
+  uint8_t mGameLayer {};
 
   bool update( const uint32_t,
                const TimeUtils::Duration );
