@@ -38,7 +38,7 @@ ViewportManagerUi::viewportIndex(
   for ( auto iter = mViewports.begin();
         iter != mViewports.end();
         ++iter )
-    if ( iter->id == cameraId )
+    if ( iter->camera.id == cameraId )
       return std::distance( mViewports.begin(), iter );
 
   return -1;
@@ -51,7 +51,7 @@ ViewportManagerUi::hasViewport(
   for ( auto iter = mViewports.begin();
         iter != mViewports.end();
         ++iter )
-    if ( iter->id == cameraId )
+    if ( iter->camera.id == cameraId )
       return true;
 
   return false;
@@ -69,6 +69,12 @@ ViewportManagerUi::setGizmoSpace(
   ImGuizmo::MODE gizmoSpace )
 {
   mGizmoSpace = gizmoSpace;
+}
+
+std::vector <Viewport>
+ViewportManagerUi::viewports() const
+{
+  return mViewports;
 }
 
 ImGuizmo::OPERATION
@@ -160,7 +166,7 @@ ViewportManagerUi::ui_show(
         ImGui::SetWindowFocus(("Viewport " + std::to_string(index) + "##viewport").c_str());
 
       if ( ImGui::IsItemHovered() )
-        ImGui::SetTooltip("%s", iter->id.str().c_str());
+        ImGui::SetTooltip("%s", iter->camera.id.str().c_str());
     }
 
     ImGui::EndTable(); // ViewportsList
@@ -180,10 +186,6 @@ ViewportManagerUi::ui_show_viewport_windows(
   using compos::Camera;
   using compos::SceneNode;
   using compos::Transform;
-  using compos::GeometryBuffer;
-  using types::GeometryAssetManager;
-
-  auto& geometry = registry.ctx().at <GeometryAssetManager> ();
 
   std::vector <int32_t> windowsToClose {};
 
@@ -191,7 +193,7 @@ ViewportManagerUi::ui_show_viewport_windows(
         iter < mViewports.end();
         ++iter )
   {
-    auto& cameraRef = *iter;
+    auto& cameraRef = iter->camera;
     const auto viewportIndex = std::distance(mViewports.begin(), iter);
 
     auto* pge = olc::renderer->ptrPGE;
@@ -270,7 +272,7 @@ ViewportManagerUi::ui_show_viewport_windows(
 
         if ( ImGui::Selectable(cTag.id.str().c_str(), selected) )
         {
-          *iter = cTag;
+          cameraRef = cTag;
           eCamera = entity;
         }
       }
@@ -285,8 +287,8 @@ ViewportManagerUi::ui_show_viewport_windows(
 
       cCamera.zBuffer.clear();
 
-      glm::mat4 camView = cCamera.viewMatrix(registry, eCamera, cCameraTransform);
-      const glm::mat4 camProjection = cCamera.projMatrix();
+      auto camView = cCamera.viewMatrix(registry, eCamera, cCameraTransform);
+      const auto camProjection = cCamera.projMatrix();
 
       const auto screenSize = olc::renderer->ptrPGE->GetWindowSize();
       const auto screenRatio = float(screenSize.x) / screenSize.y;
@@ -303,27 +305,7 @@ ViewportManagerUi::ui_show_viewport_windows(
         viewportSize.y * cCamera.viewport.w,
       };
 
-      for ( const auto&& [eDrawable, cGeometryBuffer, cTransform]
-              : registry.view <GeometryBuffer, Transform>().each() )
-      {
-        const auto gBuffer = geometry.get(cGeometryBuffer.buffer);
-
-        if ( gBuffer == nullptr )
-          continue;
-
-        const glm::mat4 modelView = camView * GetWorldMatrix(registry, eDrawable, cTransform);
-
-        const auto vBuffer = vertexShader(
-          *gBuffer,
-          modelView,
-          camProjection,
-          camViewport );
-
-        if ( vBuffer.depth < 0.0f )
-          continue;
-
-        cCamera.zBuffer.emplace( vBuffer, eDrawable );
-      }
+      iter->viewport = camViewport;
 
       ImGuizmo::SetID(viewportIndex);
 
@@ -332,7 +314,7 @@ ViewportManagerUi::ui_show_viewport_windows(
 
       ImGuizmo::SetOrthographic(cCamera.projectionType == Camera::Projection::Orthographic);
 
-      auto& entityManagerUi = registry.ctx().at <EntityManagerUi> ();
+      const auto& entityManagerUi = registry.ctx().at <EntityManagerUi> ();
 
       const auto selectedEntities = entityManagerUi.selectedEntities();
       const auto selectedEntity = selectedEntities.empty() == false
@@ -396,12 +378,6 @@ ViewportManagerUi::ui_show_viewport_windows(
           }
         }
       }
-
-      const uint32_t colorViewport = ImGui::GetColorU32(ImGuiCol_FrameBg);
-
-      pge->DrawRectDecal({camViewport.x, camViewport.y},
-                         {camViewport.z, camViewport.w},
-                         colorViewport);
 
       ImGui::Text("%s", format("Z-buffer depth: {}", cCamera.zBuffer.size()).c_str());
 
@@ -574,14 +550,8 @@ ViewportManagerUi::ui_show_viewport_windows(
       }
     }
 
-    const uint32_t colorWindow = ImGui::GetColorU32(ImGuiCol_Border, 0.75f);
-
-    const auto windowPos = ImGui::GetWindowPos();
-    const auto windowSize = ImGui::GetWindowSize();
-
-    pge->DrawRectDecal({windowPos.x, windowPos.y},
-                       {windowSize.x, windowSize.y},
-                       colorWindow);
+    iter->window.pos = ImGui::GetWindowPos();
+    iter->window.size = ImGui::GetWindowSize();
 
     ImGui::End(); // windowTitle
   }

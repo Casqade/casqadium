@@ -8,6 +8,7 @@
 #include <entt/fwd.hpp>
 
 #include <glm/vec3.hpp>
+#include <glm/vec4.hpp>
 
 #include <imgui.h>
 #include <ImGuizmo.h>
@@ -18,11 +19,28 @@
 namespace cqde::ui
 {
 
+struct Viewport
+{
+  types::EntityReference camera {};
+
+  glm::vec4 viewport {};
+
+  struct
+  {
+    ImVec2 pos {};
+    ImVec2 size {};
+
+  } window;
+
+
+  Viewport() = default;
+};
+
 class ViewportManagerUi
 {
   using EntityReference = types::EntityReference;
 
-  std::vector <types::EntityReference> mViewports {};
+  std::vector <Viewport> mViewports {};
 
   StringFilter mCameraFilter {"Camera entity ID"};
 
@@ -46,6 +64,8 @@ public:
 
   void setGizmoOperation( const ImGuizmo::OPERATION );
   void setGizmoSpace( const ImGuizmo::MODE );
+
+  std::vector <Viewport> viewports() const;
 
   ImGuizmo::OPERATION gizmoOperation() const;
   ImGuizmo::MODE gizmoCoordinateSpace() const;

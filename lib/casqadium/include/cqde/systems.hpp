@@ -8,6 +8,8 @@ namespace cqde::systems
 
 void EditorSystem( entt::registry& registry );
 
+void EditorCullingSystem( entt::registry& registry );
+
 void EditorEntityHighlightSystem( entt::registry& registry );
 
 void MouseCenteringSystem( entt::registry& registry );

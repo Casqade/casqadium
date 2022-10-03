@@ -77,6 +77,79 @@ EditorSystem(
 }
 
 void
+EditorCullingSystem(
+  entt::registry& registry )
+{
+  using compos::Camera;
+  using compos::Transform;
+  using compos::GeometryBuffer;
+  using types::GeometryAssetManager;
+  using ui::ViewportManagerUi;
+
+  auto* pge = olc::renderer->ptrPGE;
+
+  auto& geometry = registry.ctx().at <GeometryAssetManager> ();
+  auto& viewportManagerUi = registry.ctx().at <ViewportManagerUi> ();
+
+  for ( const auto& viewport : viewportManagerUi.viewports() )
+  {
+    const auto eCamera = viewport.camera.get_if_valid(registry);
+
+    if ( eCamera == entt::null )
+      continue;
+
+    const auto [cCamera, cCameraTransform] = registry.try_get <Camera, Transform> (eCamera);
+
+    if ( cCamera == nullptr ||
+         cCameraTransform == nullptr )
+      continue;
+
+    cCamera->zBuffer.clear();
+
+    const auto camView = cCamera->viewMatrix(registry, eCamera, *cCameraTransform);
+    const auto camProjection = cCamera->projMatrix();
+
+    const auto camViewport = viewport.viewport;
+
+    for ( const auto&& [eDrawable, cGeometryBuffer, cTransform]
+            : registry.view <GeometryBuffer, Transform>().each() )
+    {
+      const auto gBuffer = geometry.get(cGeometryBuffer.buffer);
+
+      if ( gBuffer == nullptr )
+        continue;
+
+      const glm::mat4 modelView = camView * GetWorldMatrix(registry, eDrawable, cTransform);
+
+      const auto vBuffer = vertexShader(
+        *gBuffer,
+        modelView,
+        camProjection,
+        camViewport );
+
+      if ( vBuffer.depth < 0.0f )
+        continue;
+
+      cCamera->zBuffer.emplace( vBuffer, eDrawable );
+    }
+
+    const uint32_t colorViewport = ImGui::GetColorU32(ImGuiCol_FrameBg);
+    const uint32_t colorWindow = ImGui::GetColorU32(ImGuiCol_Border, 0.75f);
+
+    pge->DrawRectDecal({camViewport.x, camViewport.y},
+                       {camViewport.z, camViewport.w},
+                       colorViewport);
+
+    const auto windowPos = viewport.window.pos;
+    const auto windowSize = viewport.window.size;
+
+    pge->DrawRectDecal({windowPos.x, windowPos.y},
+                       {windowSize.x, windowSize.y},
+                       colorWindow);
+  }
+};
+
+void
 EditorEntityHighlightSystem(
   entt::registry& registry )
 {
