@@ -99,6 +99,9 @@ EditorCullingSystem(
   auto& geometry = registry.ctx().at <GeometryAssetManager> ();
   auto& viewportManagerUi = registry.ctx().at <ViewportManagerUi> ();
 
+  for ( const auto&& [eCamera, cCamera] : registry.view <Camera> ().each() )
+    cCamera.zBuffer.clear();
+
   for ( const auto& viewport : viewportManagerUi.viewports() )
   {
     const auto eCamera = viewport.camera.get_if_valid(registry);
@@ -111,8 +114,6 @@ EditorCullingSystem(
     if ( cCamera == nullptr ||
          cCameraTransform == nullptr )
       continue;
-
-    cCamera->zBuffer.clear();
 
     const auto camView = cCamera->viewMatrix(registry, eCamera, *cCameraTransform);
     const auto camProjection = cCamera->projMatrix();
