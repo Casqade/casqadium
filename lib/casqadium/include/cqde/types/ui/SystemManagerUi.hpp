@@ -23,7 +23,8 @@ class SystemManagerUi
   Json::Value mSystemsStateInitial {Json::arrayValue};
   Json::Value mSystemsStateCurrent {Json::arrayValue};
 
-  bool mStepRequested {};
+  bool mRunning {};
+  bool mPauseRequested {};
 
   types::SystemManager* mSystemMgr {};
 

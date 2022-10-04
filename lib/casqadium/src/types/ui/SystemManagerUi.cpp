@@ -23,6 +23,9 @@ SystemManagerUi::init(
 
   mSystemsStateInitial = mSystemMgr->serialize();
   mSystemsStateCurrent = mSystemsStateInitial;
+
+  mRunning = false;
+  mPauseRequested = false;
 }
 
 void
@@ -40,18 +43,24 @@ SystemManagerUi::ui_show(
     return;
   }
 
+  const bool wasRunning = mRunning;
+
+  if ( mPauseRequested == true )
+  {
+    mRunning = false;
+    mPauseRequested = false;
+  }
+
   if ( ImGui::BeginMenuBar() )
   {
-    if ( ImGui::MenuItem("Apply") )
+    if ( ImGui::MenuItem("Apply & Play") )
     {
       mSystemMgr->deserialize(mSystemsStateCurrent);
-
-      for ( const auto& systemId : mSystemMgr->systems(Phase::Editor) )
-        mSystemMgr->activate(systemId);
+      callbacks::editorModeDisable(registry);
     }
 
     if ( ImGui::IsItemHovered() )
-      ImGui::SetTooltip("Apply current systems state");
+      ImGui::SetTooltip("Activate selected systems & exit editor mode");
 
     if ( ImGui::MenuItem("Reset") )
     {
@@ -68,52 +77,64 @@ SystemManagerUi::ui_show(
     ImGui::EndMenuBar();
   }
 
-  if ( mStepRequested == true )
-    ImGui::Button("||###stepToggle");
+  if ( mRunning == true )
+  {
+    if ( ImGui::Button("||##stepPause") )
+      mRunning = false;
+
+    if ( ImGui::IsItemHovered() )
+      ImGui::SetTooltip("Deactivate selected systems");
+  }
   else
-    ImGui::Button(">###stepToggle");
+  {
+    if ( ImGui::Button(">##stepPlay") )
+      mRunning = true;
+
+    if ( ImGui::IsItemHovered() )
+      ImGui::SetTooltip("Activate selected systems");
+  }
+
+  ImGui::SameLine();
+
+  ImGui::Button("|>##stepRepeat");
 
   if ( ImGui::IsItemActive() )
-    mStepRequested = true;
+    mRunning = true;
 
-  else if ( mStepRequested == true )
-  {
-    mStepRequested = false;
-    mSystemMgr->deserialize(mSystemsStateInitial);
-
-    for ( const auto& systemId : mSystemMgr->systems(Phase::Editor) )
-      mSystemMgr->activate(systemId);
-  }
+  if ( ImGui::IsItemDeactivated() )
+    mRunning = false;
 
   if ( ImGui::IsItemHovered() )
     ImGui::SetTooltip("Hold for repeated steps");
 
   ImGui::SameLine();
 
-  if ( ImGui::Button("|>") )
-    mStepRequested = true;
+  if ( ImGui::Button("||>##stepSingle") )
+  {
+    mRunning = true;
+    mPauseRequested = true;
+  }
 
   if ( ImGui::IsItemHovered() )
     ImGui::SetTooltip("Step with selected systems");
 
-  if ( mStepRequested == true )
+  if ( mRunning != wasRunning )
   {
-    mSystemMgr->deserialize(mSystemsStateCurrent);
+    if ( mRunning == true )
+    {
+      mSystemMgr->deserialize(mSystemsStateCurrent);
 
-    for ( const auto& systemId : mSystemMgr->systems(Phase::Editor) )
-      mSystemMgr->activate(systemId);
+      for ( const auto& systemId : mSystemMgr->systems(Phase::Editor) )
+        mSystemMgr->activate(systemId);
+    }
+    else
+    {
+      mSystemMgr->deactivate();
+
+      for ( const auto& systemId : mSystemMgr->systems(Phase::Editor) )
+        mSystemMgr->activate(systemId);
+    }
   }
-
-  ImGui::SameLine();
-
-  if ( ImGui::Button("o>") )
-  {
-    mSystemMgr->deserialize(mSystemsStateCurrent);
-    callbacks::editorModeDisable(registry);
-  }
-
-  if ( ImGui::IsItemHovered() )
-    ImGui::SetTooltip("Apply & Run");
 
   ImGui::Separator();
 
