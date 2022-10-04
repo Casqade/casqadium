@@ -86,7 +86,7 @@ engineInit( entt::registry& registry )
 
 //  entt::meta_ctx::bind(registry.ctx().emplace <entt::meta_ctx> ());
 
-  auto& audioBackend = registry.ctx().emplace <SoLoud::Soloud> ();
+  registry.ctx().emplace <SoLoud::Soloud> ();
 
   registry.ctx().emplace <TickCurrent> ();
   registry.ctx().emplace <FrameCurrent> ();
@@ -275,6 +275,7 @@ engineInit( entt::registry& registry )
   systemManager.Register("CasqadiumEditorEntityHighlightSystem",
                          EditorEntityHighlightSystem,
                          Phase{Phase::Render | Phase::Editor});
+
 
   sequenceFactory.sequenceRegister("Delay",
                                    std::make_shared <Delay> );

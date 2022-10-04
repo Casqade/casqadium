@@ -50,8 +50,8 @@ void
 EditorSystem(
   entt::registry& registry )
 {
+  using namespace ui;
   using namespace compos;
-  using namespace cqde::ui;
   using types::InputManager;
   using types::EntityManager;
   using types::InputBindingRelative;
@@ -67,8 +67,6 @@ EditorSystem(
   ImGui::PushStyleColor(ImGuiCol_WindowBg, 0);
   ImGui::DockSpaceOverViewport(NULL, ImGuiDockNodeFlags_PassthruCentralNode);
   ImGui::PopStyleColor();
-
-  auto& entityManager = registry.ctx().at <EntityManager> ();
 
   callbacks::editorBindingsAssign(registry);
   callbacks::editorCameraCreate(registry);
@@ -235,8 +233,8 @@ CullingSystem(
 
   auto& geometry = registry.ctx().at <GeometryAssetManager> ();
 
-  for ( const auto&& [eCamera, cCamera, cCameraNode, cCameraTransform]
-          : registry.view <Camera, SceneNode, Transform> ().each() )
+  for ( const auto&& [eCamera, cCamera, cCameraTransform]
+          : registry.view <Camera, Transform> ().each() )
   {
     cCamera.zBuffer.clear();
 
@@ -244,8 +242,8 @@ CullingSystem(
     const glm::mat4 camProjection = cCamera.projMatrix();
     const glm::vec4 camViewport = cCamera.viewportScaled();
 
-    for ( const auto&& [eDrawable, cGeometryBuffer, cNode, cTransform]
-            : registry.view <GeometryBuffer, SceneNode, Transform>().each() )
+    for ( const auto&& [eDrawable, cGeometryBuffer, cTransform]
+            : registry.view <GeometryBuffer, Transform>().each() )
     {
       const auto gBuffer = geometry.get(cGeometryBuffer.buffer);
 

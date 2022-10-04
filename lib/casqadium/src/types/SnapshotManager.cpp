@@ -273,7 +273,6 @@ SnapshotManager::Load(
   }
 
   auto& systemManager = registry.ctx().at <SystemManager> ();
-  auto& systemManagerUi = registry.ctx().at <SystemManagerUi> ();
 
   try
   {
@@ -286,7 +285,7 @@ SnapshotManager::Load(
               snapshotPath.string(), e.what()));
   }
 
-  systemManagerUi.init(registry);
+  registry.ctx().at <SystemManagerUi> ().init(registry);
 }
 
 } // namespace cqde::types

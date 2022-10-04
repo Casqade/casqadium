@@ -86,9 +86,8 @@ AnotherDayAtHospital::OnUserUpdate( float )
   uint32_t ticks = 0;
 
   if ( tickRateLimited )
-    for ( ;
-          currentTime >= mTickPrevious + mTickInterval;
-          mTickPrevious += mTickInterval )
+    for ( ; currentTime >= mTickPrevious + mTickInterval;
+            mTickPrevious += mTickInterval )
       ++ticks;
   else
   {
@@ -108,9 +107,8 @@ AnotherDayAtHospital::OnUserUpdate( float )
   uint32_t frames = 0;
 
   if ( frameRateLimited )
-    for ( ;
-          currentTime >= mFramePrevious + mFrameInterval;
-          mFramePrevious += mFrameInterval )
+    for ( ; currentTime >= mFramePrevious + mFrameInterval;
+            mFramePrevious += mFrameInterval )
       ++frames;
   else
     frames = 1;
