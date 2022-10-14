@@ -51,6 +51,7 @@ target_sources(${TARGET} PRIVATE
   include/${CASQADIUM_SHORT}/conversion/json_glm_vec3.hpp
   include/${CASQADIUM_SHORT}/conversion/json_glm_vec4.hpp
   include/${CASQADIUM_SHORT}/conversion/json_glm_quat.hpp
+  include/${CASQADIUM_SHORT}/conversion/json_glm_bvec3.hpp
 
   src/conversion/SoLoudBackendStringConverter.cpp
   include/${CASQADIUM_SHORT}/conversion/SoLoudBackendStringConverter.hpp

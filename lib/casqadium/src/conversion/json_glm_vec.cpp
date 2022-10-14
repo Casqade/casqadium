@@ -65,6 +65,9 @@ template
 void operator << ( Json::Value&, const glm::quat& );
 
 template
+void operator << ( Json::Value&, const glm::bvec3& );
+
+template
 void operator << ( glm::vec1&, const Json::Value& );
 
 template
@@ -78,5 +81,8 @@ void operator << ( glm::vec4&, const Json::Value& );
 
 template
 void operator << ( glm::quat&, const Json::Value& );
+
+template
+void operator << ( glm::bvec3&, const Json::Value& );
 
 } // namespace cqde
