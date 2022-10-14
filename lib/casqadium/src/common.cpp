@@ -278,9 +278,9 @@ engineInit( entt::registry& registry )
 
 
   sequenceFactory.sequenceRegister("Delay",
-                                   std::make_shared <Delay> );
+                                   std::make_shared <Delay>);
   sequenceFactory.sequenceRegister("TransformInterpolated",
-                                   std::make_shared <TransformInterpolated> );
+                                   std::make_shared <TransformInterpolated>);
 }
 
 std::string

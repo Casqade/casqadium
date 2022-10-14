@@ -19,7 +19,8 @@ Camera::ui_edit_props(
 
   const float width = ImGui::GetContentRegionAvail().x / 2;
 
-  const auto flags = ImGuiSliderFlags_AlwaysClamp | ImGuiSliderFlags_NoRoundToFormat;
+  const auto flags = ImGuiSliderFlags_AlwaysClamp |
+                     ImGuiSliderFlags_NoRoundToFormat;
 
   if ( ImGui::CollapsingHeader("Viewport", ImGuiTreeNodeFlags_DefaultOpen) )
   {
