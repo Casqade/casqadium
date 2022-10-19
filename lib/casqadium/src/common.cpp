@@ -58,15 +58,6 @@
 #include <cqde/types/assets/TextureAssetManager.hpp>
 #include <cqde/types/assets/TextStringAssetManager.hpp>
 
-#include <cqde/types/ui/AssetManagerUi.hpp>
-#include <cqde/types/ui/CallbackManagerUi.hpp>
-#include <cqde/types/ui/EntityManagerUi.hpp>
-#include <cqde/types/ui/InputManagerUi.hpp>
-#include <cqde/types/ui/PackageManagerUi.hpp>
-#include <cqde/types/ui/PrefabManagerUi.hpp>
-#include <cqde/types/ui/SystemManagerUi.hpp>
-#include <cqde/types/ui/ViewportManagerUi.hpp>
-
 #include <entt/entity/registry.hpp>
 
 #include <thirdparty/ctpl/ctpl_stl.h>
@@ -100,15 +91,6 @@ engineInit( entt::registry& registry )
   auto& sequenceFactory = registry.ctx().emplace <SequenceFactory> ();
   auto& snapshotManager = registry.ctx().emplace <SnapshotManager> ();
   auto& userManager = registry.ctx().emplace <UserManager> ();
-
-  registry.ctx().emplace <AssetManagerUi> ();
-  registry.ctx().emplace <CallbackManagerUi> (&callbackManager);
-  registry.ctx().emplace <EntityManagerUi> (&entityManager);
-  registry.ctx().emplace <InputManagerUi> (&inputManager);
-  registry.ctx().emplace <PackageManagerUi> (&packageManager);
-  registry.ctx().emplace <PrefabManagerUi> (&prefabManager);
-  registry.ctx().emplace <SystemManagerUi> (&systemManager);
-  registry.ctx().emplace <ViewportManagerUi> ();
 
   auto& tp = registry.ctx().emplace <ctpl::thread_pool> (std::thread::hardware_concurrency() | 1);
 
