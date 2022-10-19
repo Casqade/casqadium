@@ -83,7 +83,7 @@ SequenceController::deserialize(
 
     try
     {
-      const auto step = sequenceFactory.get(stepName);
+      const auto step = sequenceFactory.create(stepName);
 
       if ( step == nullptr )
         throw std::runtime_error(

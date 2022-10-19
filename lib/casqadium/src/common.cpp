@@ -259,10 +259,8 @@ engineInit( entt::registry& registry )
                          Phase{Phase::Render | Phase::Editor});
 
 
-  sequenceFactory.sequenceRegister("Delay",
-                                   std::make_shared <Delay>);
-  sequenceFactory.sequenceRegister("TransformInterpolated",
-                                   std::make_shared <TransformInterpolated>);
+  sequenceFactory.registerSequence <Delay> ("Delay");
+  sequenceFactory.registerSequence <TransformInterpolated> ("TransformInterpolated");
 }
 
 std::string

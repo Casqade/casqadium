@@ -4,17 +4,9 @@
 namespace cqde::types
 {
 
-void
-SequenceFactory::sequenceRegister(
-  const SequenceId& id,
-  const InstanceGetter& getter )
-{
-  mSequences[id] = getter;
-}
-
 std::shared_ptr <types::SequenceStep>
-SequenceFactory::get(
-  const SequenceId& id ) const
+SequenceFactory::create(
+  const std::string& id ) const
 {
   if ( mSequences.count(id) > 0 )
     return mSequences.at(id)();
@@ -22,12 +14,12 @@ SequenceFactory::get(
   return {};
 }
 
-std::vector <SequenceId>
+std::vector <std::string>
 SequenceFactory::sequences() const
 {
-  std::vector <SequenceId> sequences {};
+  std::vector <std::string> sequences {};
 
-  for ( const auto& [id, getter] : mSequences )
+  for ( const auto& [id, creator] : mSequences )
     sequences.push_back(id);
 
   return sequences;

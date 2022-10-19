@@ -14,18 +14,29 @@ namespace cqde::types
 
 class SequenceFactory
 {
-  using InstanceGetter = std::function <std::shared_ptr <types::SequenceStep> ()>;
+  using SequenceStep = types::SequenceStep;
 
-  std::unordered_map <SequenceId, InstanceGetter,
-                      identifier_hash> mSequences;
+  using SequenceCreator = std::function <std::shared_ptr <SequenceStep> ()>;
+
+  std::unordered_map <std::string, SequenceCreator> mSequences {};
 
 public:
-  void sequenceRegister( const SequenceId&,
-                         const InstanceGetter& );
+  SequenceFactory() = default;
 
-  std::shared_ptr <types::SequenceStep> get( const SequenceId& ) const;
+  template <class T>
+  void registerSequence( const std::string& id );
 
-  std::vector <SequenceId> sequences() const;
+  std::shared_ptr <SequenceStep> create( const std::string& id ) const;
+
+  std::vector <std::string> sequences() const;
 };
+
+template <class T>
+void
+SequenceFactory::registerSequence(
+  const std::string& id )
+{
+  mSequences[id] = std::make_shared <T>;
+}
 
 } // namespace cqde::types

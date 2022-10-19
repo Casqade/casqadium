@@ -51,14 +51,14 @@ SequenceController::ui_edit_props(
 
     for ( const auto& sequence : sequenceFactory.sequences() )
     {
-      if ( sequenceFilter.query(sequence.str()) == false )
+      if ( sequenceFilter.query(sequence) == false )
         continue;
 
       sequenceFound = true;
 
-      if ( ImGui::Selectable(sequence.str().c_str(), false) )
+      if ( ImGui::Selectable(sequence.c_str(), false) )
       {
-        steps.push_back(sequenceFactory.get(sequence));
+        steps.push_back(sequenceFactory.create(sequence));
         ImGui::CloseCurrentPopup();
         break;
       }
