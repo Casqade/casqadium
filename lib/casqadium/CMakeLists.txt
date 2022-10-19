@@ -171,9 +171,6 @@ target_sources(${TARGET} PRIVATE
   src/types/ui/AssetManagerUi.cpp
   include/${CASQADIUM_SHORT}/types/ui/AssetManagerUi.hpp
 
-  src/types/ui/CallbackManagerUi.cpp
-  include/${CASQADIUM_SHORT}/types/ui/CallbackManagerUi.hpp
-
   src/types/ui/EntityManagerUi.cpp
   include/${CASQADIUM_SHORT}/types/ui/EntityManagerUi.hpp
 
