@@ -38,6 +38,10 @@ struct SceneNode
 namespace cqde
 {
 
+size_t ChildNodeDepth(
+  const entt::registry&,
+  const compos::SceneNode* );
+
 bool CanAddChildNode(
   const entt::registry&,
   const entt::entity parent,

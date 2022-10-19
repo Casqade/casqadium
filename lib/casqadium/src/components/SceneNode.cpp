@@ -103,6 +103,26 @@ SceneNode::deserialize(
 namespace cqde
 {
 
+size_t
+ChildNodeDepth(
+  const entt::registry& registry,
+  const compos::SceneNode* node )
+{
+  using compos::SceneNode;
+
+  if ( node == nullptr )
+    return 0;
+
+  const auto eParent = node->parent.get_if_valid(registry);
+
+  if ( eParent == entt::null )
+    return 1;
+
+  const auto cParent = registry.try_get <SceneNode> (eParent);
+
+  return ChildNodeDepth(registry, cParent) + 1;
+}
+
 bool
 CanAddChildNode(
   const entt::registry& registry,
