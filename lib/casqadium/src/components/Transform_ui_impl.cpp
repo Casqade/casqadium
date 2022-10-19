@@ -46,7 +46,10 @@ Transform::ui_edit_props(
   const auto flags = ImGuiSliderFlags_NoRoundToFormat |
                      ImGuiSliderFlags_AlwaysClamp;
 
-  if ( ImGui::CollapsingHeader("Translation", ImGuiTreeNodeFlags_DefaultOpen) )
+  if ( ImGui::BeginTabBar("Transform") == false )
+    return;
+
+  if ( ImGui::BeginTabItem("Translation") )
   {
     auto translationBuffer = translation;
 
@@ -89,9 +92,11 @@ Transform::ui_edit_props(
         SetTranslationWorld(translationBuffer, registry,
                             entity, *this);
     }
+
+    ImGui::EndTabItem(); // Translation
   }
 
-  if ( ImGui::CollapsingHeader("Orientation", ImGuiTreeNodeFlags_DefaultOpen) )
+  if ( ImGui::BeginTabItem("Orientation") )
   {
     auto orientationBuffer = orientation;
 
@@ -290,10 +295,14 @@ Transform::ui_edit_props(
         SetOrientationWorld(orientationBuffer, registry,
                             entity, *this);
     }
+
+    ImGui::EndTabItem(); // Orientation
   }
 
-  if ( ImGui::CollapsingHeader("Scale", ImGuiTreeNodeFlags_DefaultOpen) )
+  if ( ImGui::BeginTabItem("Scale") )
   {
+    ImGui::Text("Local");
+
     ImGui::AlignTextToFramePadding();
     ImGui::Text("X");
 
@@ -320,10 +329,11 @@ Transform::ui_edit_props(
 
     if ( ImGui::Button("Reset##scaleReset") )
       scale = glm::vec3{1.0f};
-  }
 
-  if ( ImGui::CollapsingHeader("Scale (world)", ImGuiTreeNodeFlags_DefaultOpen) )
-  {
+    ImGui::Spacing();
+
+    ImGui::Text("World");
+
     ImGui::AlignTextToFramePadding();
     ImGui::Text("X");
 
@@ -350,7 +360,11 @@ Transform::ui_edit_props(
 
     if ( ImGui::Button("Reset##scaleWorldReset") )
       scaleWorld = glm::vec3{1.0f};
+
+    ImGui::EndTabItem(); // Scale
   }
+
+  ImGui::EndTabBar(); // Transform
 }
 
 } // namespace cqde
