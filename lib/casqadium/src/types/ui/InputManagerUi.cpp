@@ -337,36 +337,6 @@ InputManagerUi::ui_show(
 
       if ( axisNodeOpened == true )
       {
-        for ( const auto& bindingId : inputConfig[axisId].getMemberNames() )
-        {
-          if ( inputConfig[axisId].isMember(bindingId) == false )
-            continue; // handle bindings removed during loop
-
-          ImGui::PushID(bindingId.c_str());
-
-          if ( ImGui::SmallButton("-##bindingRemove") )
-          {
-            if ( bindingId == mSelectedBinding.str() )
-              mSelectedBinding = null_id;
-
-            inputConfig[axisId].removeMember(bindingId);
-          }
-
-          const bool selected = mSelectedAxis == axisId &&
-                                mSelectedBinding == bindingId;
-
-          ImGui::SameLine();
-          if ( ImGui::Selectable(bindingId.c_str(), selected) )
-          {
-            mSelectedAxis = axisId;
-            mSelectedBinding = bindingId;
-
-            mBindingWindowOpened = true;
-            ImGui::SetWindowFocus("InputBinding");
-          }
-          ImGui::PopID(); // bindingId
-        }
-
         if ( ImGui::SmallButton("+##bindingAdd") )
           ImGui::OpenPopup("##bindingAddPopup");
 
@@ -451,6 +421,38 @@ InputManagerUi::ui_show(
             ImGui::CloseCurrentPopup();
 
           ImGui::EndPopup(); // bindingAddPopup
+        }
+
+        ImGui::Spacing();
+
+        for ( const auto& bindingId : inputConfig[axisId].getMemberNames() )
+        {
+          if ( inputConfig[axisId].isMember(bindingId) == false )
+            continue; // handle bindings removed during loop
+
+          ImGui::PushID(bindingId.c_str());
+
+          if ( ImGui::SmallButton("-##bindingRemove") )
+          {
+            if ( bindingId == mSelectedBinding.str() )
+              mSelectedBinding = null_id;
+
+            inputConfig[axisId].removeMember(bindingId);
+          }
+
+          const bool selected = mSelectedAxis == axisId &&
+                                mSelectedBinding == bindingId;
+
+          ImGui::SameLine();
+          if ( ImGui::Selectable(bindingId.c_str(), selected) )
+          {
+            mSelectedAxis = axisId;
+            mSelectedBinding = bindingId;
+
+            mBindingWindowOpened = true;
+            ImGui::SetWindowFocus("InputBinding");
+          }
+          ImGui::PopID(); // bindingId
         }
 
         ImGui::TreePop();
