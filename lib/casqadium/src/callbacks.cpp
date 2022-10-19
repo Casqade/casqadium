@@ -358,9 +358,9 @@ editorCameraCreate(
   iTranslateY.constraint = {1.0f, 0.0f};
   iTranslateZ.constraint = {1.0f, 0.0f};
 
-  iTranslateX.callbacks.insert("EditorCameraTranslateXRelative");
-  iTranslateY.callbacks.insert("EditorCameraTranslateYRelative");
-  iTranslateZ.callbacks.insert("EditorCameraTranslateZRelative");
+  iTranslateX.callbacks.push_back("EditorCameraTranslateXRelative");
+  iTranslateY.callbacks.push_back("EditorCameraTranslateYRelative");
+  iTranslateZ.callbacks.push_back("EditorCameraTranslateZRelative");
 
   auto& iPitch = cInputController.axes["EditorCameraPitch"];
   auto& iYaw = cInputController.axes["EditorCameraYaw"];
@@ -370,21 +370,21 @@ editorCameraCreate(
   iYaw.constraint = {1.0f, 0.0f};
   iRoll.constraint = {1.0f, 0.0f};
 
-  iPitch.callbacks.insert("ControlPitchRelative");
-  iYaw.callbacks.insert("ControlYawRelative");
-  iRoll.callbacks.insert("ControlRollRelative");
+  iPitch.callbacks.push_back("ControlPitchRelative");
+  iYaw.callbacks.push_back("ControlYawRelative");
+  iRoll.callbacks.push_back("ControlRollRelative");
 
   auto& iCameraControlOff = cInputController.axes["EditorCameraControlOff"];
 
-  iCameraControlOff.callbacks.insert("EditorCameraControlOff");
+  iCameraControlOff.callbacks.push_back("EditorCameraControlOff");
 
   auto& iCameraSpeed = cInputController.axes["EditorCameraSpeedControl"];
   iCameraSpeed.constraint = {1.0f, 0.0f};
-  iCameraSpeed.callbacks.insert("EditorCameraSpeedControl");
+  iCameraSpeed.callbacks.push_back("EditorCameraSpeedControl");
 
   auto& iCameraZoom = cInputController.axes["EditorCameraZoom"];
   iCameraZoom.value = 0.01;
-  iCameraZoom.callbacks.insert("EditorCameraZoomControl");
+  iCameraZoom.callbacks.push_back("EditorCameraZoomControl");
   iCameraZoom.constraint = {  std::numeric_limits <float>::min(),
                               std::numeric_limits <float>::max() };
 }
@@ -420,40 +420,40 @@ editorControllerCreate(
   auto& cInputController = registry.emplace <InputController> (eController);
 
   auto& iEngineShutdown = cInputController.axes["EngineShutdown"];
-  iEngineShutdown.callbacks.insert("EngineShutdown");
+  iEngineShutdown.callbacks.push_back("EngineShutdown");
 
   auto& iEditorModeToggle = cInputController.axes["EditorModeToggle"];
-  iEditorModeToggle.callbacks.insert("EditorModeToggle");
+  iEditorModeToggle.callbacks.push_back("EditorModeToggle");
 
   auto& iEditorGizmoModeTranslate = cInputController.axes["EditorGizmoModeTranslate"];
-  iEditorGizmoModeTranslate.callbacks.insert("EditorGizmoSetModeTranslate");
+  iEditorGizmoModeTranslate.callbacks.push_back("EditorGizmoSetModeTranslate");
 
   auto& iEditorGizmoModeRotate = cInputController.axes["EditorGizmoModeRotate"];
-  iEditorGizmoModeRotate.callbacks.insert("EditorGizmoSetModeRotate");
+  iEditorGizmoModeRotate.callbacks.push_back("EditorGizmoSetModeRotate");
 
   auto& iEditorGizmoModeScale = cInputController.axes["EditorGizmoModeScale"];
-  iEditorGizmoModeScale.callbacks.insert("EditorGizmoSetModeScale");
+  iEditorGizmoModeScale.callbacks.push_back("EditorGizmoSetModeScale");
 
   auto& iEditorGizmoSpaceLocal = cInputController.axes["EditorGizmoSpaceLocal"];
-  iEditorGizmoSpaceLocal.callbacks.insert("EditorGizmoSetSpaceLocal");
+  iEditorGizmoSpaceLocal.callbacks.push_back("EditorGizmoSetSpaceLocal");
 
   auto& iEditorGizmoSpaceWorld = cInputController.axes["EditorGizmoSpaceWorld"];
-  iEditorGizmoSpaceWorld.callbacks.insert("EditorGizmoSetSpaceWorld");
+  iEditorGizmoSpaceWorld.callbacks.push_back("EditorGizmoSetSpaceWorld");
 
   auto& iCameraControlOn = cInputController.axes["EditorCameraControlOn"];
-  iCameraControlOn.callbacks.insert("EditorCameraControlOn");
+  iCameraControlOn.callbacks.push_back("EditorCameraControlOn");
 
   auto& iQuickSave = cInputController.axes["QuickSave"];
-  iQuickSave.callbacks.insert("QuickSave");
+  iQuickSave.callbacks.push_back("QuickSave");
 
   auto& iQuickLoad = cInputController.axes["QuickLoad"];
-  iQuickLoad.callbacks.insert("QuickLoad");
+  iQuickLoad.callbacks.push_back("QuickLoad");
 
   auto& iEntitySelect = cInputController.axes["EditorEntitySelect"];
-  iEntitySelect.callbacks.insert("EditorEntitySelect");
+  iEntitySelect.callbacks.push_back("EditorEntitySelect");
 
   auto& iEntityMultipleSelection = cInputController.axes["EditorEntityMultipleSelectionToggle"];
-  iEntityMultipleSelection.callbacks.insert("EditorEntityMultipleSelectionToggle");
+  iEntityMultipleSelection.callbacks.push_back("EditorEntityMultipleSelectionToggle");
 
   auto& iCursorPosX = cInputController.axes["CursorPosX"];
   auto& iCursorPosY = cInputController.axes["CursorPosY"];

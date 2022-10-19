@@ -63,7 +63,7 @@ ControlAxis::ControlAxis( const Json::Value& json )
   constraint.second = json["constraint"][1].asFloat();
 
   for ( const auto& callback : json["callbacks"] )
-    callbacks.insert(callback.asString());
+    callbacks.push_back(callback.asString());
 }
 
 bool

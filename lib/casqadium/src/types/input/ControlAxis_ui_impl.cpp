@@ -5,6 +5,8 @@
 
 #include <entt/entity/registry.hpp>
 
+#include <spdlog/fmt/bundled/format.h>
+
 #include <imgui.h>
 
 #include <json/value.h>
@@ -17,6 +19,8 @@ void
 ControlAxis::ui_show(
   const entt::registry& registry )
 {
+  using fmt::format;
+
   static Json::Value axisConfig = Json::objectValue;
 
   const float width = ImGui::GetContentRegionAvail().x;
@@ -75,29 +79,8 @@ ControlAxis::ui_show(
 
   if ( ImGui::CollapsingHeader("Callbacks", ImGuiTreeNodeFlags_DefaultOpen) )
   {
-    std::vector <CallbackId> callbacksToRemove {};
-
-    for ( const auto& callbackId : callbacks )
-    {
-      ImGui::PushID(callbackId.str().c_str());
-
-      ImGui::BulletText("%s", callbackId.str().c_str());
-
-      ImGui::SameLine();
-
-      if ( ImGui::SmallButton("-##callbackRemove") )
-        callbacksToRemove.push_back(callbackId);
-
-      ImGui::PopID(); // callbackId
-    }
-
-    for ( const auto& callbackId : callbacksToRemove )
-      callbacks.erase(callbackId);
-
     if ( ImGui::SmallButton("+##callbackAdd") )
       ImGui::OpenPopup("##callbackAddPopup");
-
-    ImGui::Spacing();
 
     if ( ImGui::BeginPopup("##callbackAddPopup") )
     {
@@ -112,21 +95,71 @@ ControlAxis::ui_show(
 
       for ( const auto& callbackId : callbackManager.callbacks() )
       {
-        if ( callbacks.count(callbackId) > 0 )
-          continue;
-
         if ( callbackFilter.query(callbackId.str()) == false )
           continue;
 
         if ( ImGui::Selectable(callbackId.str().c_str(), false) )
         {
-          callbacks.insert(callbackId);
+          callbacks.push_back(callbackId);
           ImGui::CloseCurrentPopup();
           break;
         }
       }
 
       ImGui::EndPopup(); // callbackAddPopup
+    }
+
+    ImGui::Separator();
+
+    for ( auto iter = callbacks.begin();
+          iter < callbacks.end();
+          ++iter )
+    {
+      ImGui::PushID(std::distance(callbacks.begin(), iter));
+
+      if ( ImGui::SmallButton("-##callbackDel") )
+        iter = callbacks.erase(iter);
+
+      if ( iter == callbacks.end() )
+      {
+        ImGui::PopID();
+        break;
+      }
+
+      const auto flags =  ImGuiSelectableFlags_SpanAllColumns |
+                          ImGuiSelectableFlags_AllowItemOverlap;
+
+      ImGui::SameLine();
+      ImGui::Selectable(format("{}###", iter->str()).c_str(),
+                        false, flags);
+
+      static auto iter_dragged = callbacks.end();
+
+      if ( ImGui::IsItemHovered() == true )
+        ImGui::SetTooltip("Drag to reorder");
+
+      if ( ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem) == true &&
+           ImGui::IsMouseDown(ImGuiMouseButton_Left) == true )
+      {
+        auto mouseClickPos = ImGui::GetIO().MouseClickedPos[ImGuiMouseButton_Left];
+
+        if (  mouseClickPos.x > ImGui::GetItemRectMin().x &&
+              mouseClickPos.x < ImGui::GetItemRectMax().x )
+        {
+          if ( iter_dragged != iter &&
+               iter_dragged >= callbacks.begin() &&
+               iter_dragged < callbacks.end() )
+            std::swap(*iter, *iter_dragged);
+
+          iter_dragged = iter;
+        }
+      }
+
+      if ( iter_dragged != callbacks.end() &&
+           ImGui::IsMouseReleased(ImGuiMouseButton_Left) == true )
+        iter_dragged = callbacks.end();
+
+      ImGui::PopID();
     }
   }
 }

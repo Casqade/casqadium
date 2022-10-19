@@ -18,7 +18,7 @@ struct ControlAxis
   std::pair <float, float> constraint {};
 //          second < first to disable limits
 
-  std::unordered_set <CallbackId, identifier_hash> callbacks {};
+  std::vector <CallbackId> callbacks {};
 
 
   ControlAxis() = default;
