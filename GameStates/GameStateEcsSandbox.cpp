@@ -119,6 +119,7 @@ GameStateEcsSandbox::GameStateEcsSandbox(
   [this] (  entt::registry& registry,
             const std::vector <std::any>& args )
   {
+    registry.clear();
     mRunning = false;
   };
 
@@ -126,6 +127,11 @@ GameStateEcsSandbox::GameStateEcsSandbox(
   callbackMgr.Register("EngineShutdown", engineShutdown);
 
   cqde::callbacks::editorModeEnable(mRegistry);
+}
+
+GameStateEcsSandbox::~GameStateEcsSandbox()
+{
+  mRegistry.clear();
 }
 
 void

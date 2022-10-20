@@ -24,6 +24,7 @@ class GameStateEcsSandbox
 public:
   GameStateEcsSandbox( GameStateController* const,
                        const ConfigManager& );
+  ~GameStateEcsSandbox();
 
   bool update( const uint32_t ticks,
                const TimeUtils::Duration& interval ) override;
