@@ -232,7 +232,7 @@ CullingSystem(
   auto& geometry = registry.ctx().at <GeometryAssetManager> ();
 
   for ( const auto&& [eCamera, cCamera, cCameraTransform]
-          : registry.view <Camera, Transform> ().each() )
+          : registry.view <Camera, Transform, SubscriberUpdate> ().each() )
   {
     cCamera.zBuffer.clear();
 
@@ -357,9 +357,10 @@ LightingSystem(
   using compos::LightTarget;
   using compos::TextureTint;
   using compos::Transform;
+  using compos::SubscriberUpdate;
 
   for ( auto&& [eCamera, cCamera]
-          : registry.view <Camera> ().each() )
+          : registry.view <Camera, SubscriberUpdate> ().each() )
   {
     if ( cCamera.lightingMode != Camera::LightingMode::Diffuse )
       continue;
@@ -384,7 +385,7 @@ LightingSystem(
       olc::Pixel accumulatedLight {olc::BLACK};
 
       for ( const auto&& [eLightSrc, cLightSrcTransform, cLightSrc]
-              : registry.view <Transform, LightSource> ().each() )
+              : registry.view <Transform, LightSource, SubscriberUpdate> ().each() )
       {
         const auto lightSrcPos
           = GetWorldMatrix(registry, eLightSrc, cLightSrcTransform)[3];
