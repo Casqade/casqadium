@@ -105,7 +105,8 @@ EditorCullingSystem(
     if ( eCamera == entt::null )
       continue;
 
-    const auto [cCamera, cCameraTransform] = registry.try_get <Camera, Transform> (eCamera);
+    const auto [cCamera, cCameraTransform]
+      = registry.try_get <Camera, Transform> (eCamera);
 
     if ( cCamera == nullptr ||
          cCameraTransform == nullptr )
@@ -113,7 +114,6 @@ EditorCullingSystem(
 
     const auto camView = cCamera->viewMatrix(registry, eCamera, *cCameraTransform);
     const auto camProjection = cCamera->projMatrix();
-
     const auto camViewport = viewport.viewport;
 
     for ( const auto&& [eDrawable, cGeometryBuffer, cTransform]
@@ -160,8 +160,8 @@ EditorEntityHighlightSystem(
 {
   using compos::Camera;
   using compos::CasqadiumEditorInternal;
-  using ui::EntityManagerUi;
   using types::EntityManager;
+  using ui::EntityManagerUi;
 
   const auto& entityManager   = registry.ctx().at <EntityManager> ();
   const auto& entityManagerUi = registry.ctx().at <EntityManagerUi> ();
@@ -171,7 +171,8 @@ EditorEntityHighlightSystem(
     if ( selectedEntity == entt::null )
       return;
 
-    for ( const auto&& [eCamera, cCamera] : registry.view <Camera, CasqadiumEditorInternal> ().each() )
+    for ( const auto&& [eCamera, cCamera]
+            : registry.view <Camera, CasqadiumEditorInternal> ().each() )
       for ( const auto& [vBuf, entity] : cCamera.zBuffer )
         if ( entity == selectedEntity )
           drawLines(vBuf.vertices, olc::YELLOW, LineRenderMode::Loop);
@@ -287,7 +288,8 @@ RenderSystem(
     return lhs.layer > rhs.layer;
   });
 
-  for ( const auto&& [eCamera, cCamera] : registry.view <Camera> ().each() )
+  for ( const auto&& [eCamera, cCamera]
+          : registry.view <Camera> ().each() )
   {
     for ( const auto& [buffer, entity] : cCamera.zBuffer )
     {
@@ -344,7 +346,8 @@ RenderBufferClearSystem(
 {
   using compos::Camera;
 
-  for ( const auto&& [eCamera, cCamera] : registry.view <Camera> ().each() )
+  for ( const auto&& [eCamera, cCamera]
+          : registry.view <Camera> ().each() )
     cCamera.zBuffer.clear();
 }
 
@@ -374,7 +377,8 @@ LightingSystem(
       if ( registry.all_of <LightTarget> (eLightTgt) == false )
         continue;
 
-      const auto [cLightTgtTransform, cTextureTint] = registry.try_get <const Transform, TextureTint> (eLightTgt);
+      const auto [cLightTgtTransform, cTextureTint]
+        = registry.try_get <const Transform, TextureTint> (eLightTgt);
 
       if ( cTextureTint == nullptr )
         continue;

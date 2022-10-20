@@ -67,7 +67,8 @@ namespace cqde
 {
 
 void
-engineInit( entt::registry& registry )
+engineInit(
+  entt::registry& registry )
 {
   using namespace callbacks;
   using namespace systems;
