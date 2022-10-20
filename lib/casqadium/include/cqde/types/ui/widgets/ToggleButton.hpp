@@ -18,6 +18,9 @@ public:
                 const std::string& labelOff );
 
   bool isDown();
+
+  void setValue( const bool );
+  bool value() const;
 };
 
 } // namespace cqde::ui

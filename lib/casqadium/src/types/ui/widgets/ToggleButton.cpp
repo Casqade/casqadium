@@ -35,12 +35,24 @@ ToggleButton::isDown()
 
   const std::string label = mValue ? mLabels.second : mLabels.first;
 
-  const bool result = ImGui::Button(label.c_str());
-  ImGui::PopStyleColor(3);
-
-  if ( result != false )
+  if ( ImGui::Button(label.c_str()) )
     mValue = !mValue;
 
+  ImGui::PopStyleColor(3);
+
+  return mValue;
+}
+
+void
+ToggleButton::setValue(
+  const bool value )
+{
+  mValue = value;
+}
+
+bool
+ToggleButton::value() const
+{
   return mValue;
 }
 
