@@ -83,6 +83,7 @@ if(WIN32)
     find_package(glew REQUIRED)
 
     target_compile_definitions(${TARGET} PUBLIC OLC_GFX_OPENGL33)
+    target_link_libraries(${TARGET} PUBLIC imgui_backend_opengl3)
 
     if(${BUILD_SHARED_LIBS})
      target_link_libraries(${TARGET} PUBLIC GLEW::glew)
