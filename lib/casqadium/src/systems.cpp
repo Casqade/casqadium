@@ -2,11 +2,14 @@
 
 #include <cqde/callbacks.hpp>
 #include <cqde/render_helpers.hpp>
+#include <cqde/conversion/rp3d_glm.hpp>
 
 #include <cqde/types/assets/TextureAssetManager.hpp>
 #include <cqde/types/assets/GeometryAssetManager.hpp>
 
+#include <cqde/types/TickCurrent.hpp>
 #include <cqde/types/EntityManager.hpp>
+#include <cqde/types/PhysicsManager.hpp>
 #include <cqde/types/input/InputManager.hpp>
 
 #include <cqde/types/input/InputBindingRelative.hpp>
@@ -37,7 +40,12 @@
 #include <cqde/components/WantsMouseCentered.hpp>
 #include <cqde/components/WantsMouseHidden.hpp>
 
+#include <cqde/components/physics/CollisionBody.hpp>
+
 #include <entt/entity/registry.hpp>
+
+#include <glm/gtx/compatibility.hpp>
+#include <glm/gtx/matrix_decompose.hpp>
 
 #include <imgui.h>
 
@@ -151,6 +159,102 @@ EditorCullingSystem(
     pge->DrawRectDecal({windowPos.x, windowPos.y},
                        {windowSize.x, windowSize.y},
                        colorWindow);
+  }
+};
+
+void
+EditorPhysicsDebugRenderSystem(
+  entt::registry& registry )
+{
+  using compos::Camera;
+  using compos::Transform;
+  using types::GeometryAssetManager;
+  using types::PhysicsManager;
+  using ui::ViewportManagerUi;
+  using DebugItem = rp3d::DebugRenderer::DebugItem;
+
+  auto& physicsManager = registry.ctx().at <PhysicsManager> ();
+  auto& viewportManagerUi = registry.ctx().at <ViewportManagerUi> ();
+
+  const auto world = physicsManager.world();
+  auto& debugRenderer = world->getDebugRenderer();
+
+  world->setIsDebugRenderingEnabled(true);
+  debugRenderer.setIsDebugItemDisplayed(DebugItem::COLLIDER_AABB, true);
+  debugRenderer.setIsDebugItemDisplayed(DebugItem::COLLIDER_BROADPHASE_AABB, true);
+  debugRenderer.setIsDebugItemDisplayed(DebugItem::COLLISION_SHAPE, true);
+  debugRenderer.setIsDebugItemDisplayed(DebugItem::CONTACT_POINT, true); // eats fps
+  debugRenderer.setIsDebugItemDisplayed(DebugItem::CONTACT_NORMAL, true);
+
+  const auto& lines = debugRenderer.getLines();
+  const auto& triangles = debugRenderer.getTriangles();
+
+  if ( lines.size() == 0 &&
+       triangles.size() == 0 )
+    return;
+
+  for ( const auto& viewport : viewportManagerUi.viewports() )
+  {
+    const auto eCamera = viewport.camera.get_if_valid(registry);
+
+    if ( eCamera == entt::null )
+      continue;
+
+    const auto [cCamera, cCameraTransform]
+      = registry.try_get <Camera, Transform> (eCamera);
+
+    if ( cCamera == nullptr ||
+         cCameraTransform == nullptr )
+      continue;
+
+    const auto camView = cCamera->viewMatrix(registry, eCamera, *cCameraTransform);
+    const auto camProjection = cCamera->projMatrix();
+    const auto camViewport = viewport.viewport;
+
+    for ( const auto& line : lines )
+    {
+      std::vector <glm::vec3> buffer
+      {
+        rp3dToGlm(line.point1),
+        rp3dToGlm(line.point2),
+      };
+
+      const auto vBuffer = vertexShader(
+        buffer,
+        camView,
+        camProjection,
+        camViewport );
+
+      if ( vBuffer.depth < 0.0f )
+        continue;
+
+      olc::Pixel color = line.color1;
+      color.a = 255;
+      drawLines(vBuffer.vertices, color, LineRenderMode::Strip);
+    }
+
+    for ( const auto& triangle : triangles )
+    {
+      std::vector <glm::vec3> buffer
+      {
+        rp3dToGlm(triangle.point1),
+        rp3dToGlm(triangle.point2),
+        rp3dToGlm(triangle.point3),
+      };
+
+      const auto vBuffer = vertexShader(
+        buffer,
+        camView,
+        camProjection,
+        camViewport );
+
+      if ( vBuffer.depth < 0.0f )
+        continue;
+
+      olc::Pixel color = triangle.color1;
+      color.a = 255;
+      drawLines(vBuffer.vertices, color, LineRenderMode::Loop);
+    }
   }
 };
 
@@ -495,6 +599,150 @@ SequenceSystem(
       step = cSequenceController.steps.front().get();
 
       step->init(registry, entity);
+    }
+  }
+}
+
+void
+PhysicsSystem(
+  entt::registry& registry )
+{
+  using compos::Transform;
+  using compos::RigidBody;
+  using compos::CollisionBody;
+  using compos::SubscriberUpdate;
+  using types::TickCurrent;
+  using types::PhysicsManager;
+
+  for ( auto&& [eBody, cBody]
+          : registry.view <CollisionBody, SubscriberUpdate> ().each() )
+    cBody.enable(registry);
+
+  for ( auto&& [eBody, cBody]
+          : registry.view <CollisionBody> (entt::exclude <SubscriberUpdate>).each() )
+    cBody.disable();
+
+  for ( auto&& [eBody, cTransform, cBody]
+          : registry.view <Transform, CollisionBody, SubscriberUpdate> ().each() )
+    cBody.body->setTransform(glmToRp3d(GetWorldMatrix(registry, eBody, cTransform)));
+
+  const auto& tick = registry.ctx().at <TickCurrent> ();
+  const auto elapsed = tick.tickInterval;
+
+  auto& physicsManager = registry.ctx().at <PhysicsManager> ();
+
+  physicsManager.world()->update(static_cast <rp3d::decimal> (elapsed));
+
+//  todo: sort transform by sceneNode depth ?
+
+  for ( auto&& [eBody, cTransform, cBody]
+          : registry.view <Transform, RigidBody, SubscriberUpdate> ().each() )
+  {
+    const auto matrixWorld = rp3dToGlm(cBody.body->getTransform());
+    cBody.transformPrevious = matrixWorld;
+
+    glm::vec3 nodeTranslation {};
+    glm::quat nodeOrientation {};
+    glm::vec3 nodeScale {};
+    glm::vec3 skew {};
+    glm::vec4 perspective {};
+
+    glm::decompose( matrixWorld,
+                    nodeScale,
+                    nodeOrientation,
+                    nodeTranslation,
+                    skew, perspective );
+
+    if ( glm::all(glm::isfinite(nodeTranslation)) == true &&
+         glm::all(glm::isfinite(glm::eulerAngles(nodeOrientation))) == true &&
+         glm::all(glm::isfinite(nodeScale)) == true )
+    {
+      cTransform.translation = nodeTranslation;
+      cTransform.orientation = nodeOrientation;
+      cTransform.scale = nodeScale;
+    }
+  }
+}
+
+void
+PhysicsDebugRenderSystem(
+  entt::registry& registry )
+{
+  using compos::Camera;
+  using compos::Transform;
+  using compos::SubscriberUpdate;
+  using types::PhysicsManager;
+  using DebugItem = rp3d::DebugRenderer::DebugItem;
+
+  auto& physicsManager = registry.ctx().at <PhysicsManager> ();
+
+  const auto world = physicsManager.world();
+  auto& debugRenderer = world->getDebugRenderer();
+
+  world->setIsDebugRenderingEnabled(true);
+  debugRenderer.setIsDebugItemDisplayed(DebugItem::COLLIDER_AABB, true);
+  debugRenderer.setIsDebugItemDisplayed(DebugItem::COLLIDER_BROADPHASE_AABB, true);
+  debugRenderer.setIsDebugItemDisplayed(DebugItem::COLLISION_SHAPE, true);
+  debugRenderer.setIsDebugItemDisplayed(DebugItem::CONTACT_POINT, true); // eats fps
+  debugRenderer.setIsDebugItemDisplayed(DebugItem::CONTACT_NORMAL, true);
+
+  const auto& lines = debugRenderer.getLines();
+  const auto& triangles = debugRenderer.getTriangles();
+
+  if ( lines.size() == 0 &&
+       triangles.size() == 0 )
+    return;
+
+  for ( const auto&& [eCamera, cCamera, cCameraTransform]
+          : registry.view <Camera, Transform, SubscriberUpdate> ().each() )
+  {
+    const glm::mat4 camView = cCamera.viewMatrix(registry, eCamera, cCameraTransform);
+    const glm::mat4 camProjection = cCamera.projMatrix();
+    const glm::vec4 camViewport = cCamera.viewportScaled();
+
+    for ( const auto& line : lines )
+    {
+      std::vector <glm::vec3> buffer
+      {
+        rp3dToGlm(line.point1),
+        rp3dToGlm(line.point2),
+      };
+
+      const auto vBuffer = vertexShader(
+        buffer,
+        camView,
+        camProjection,
+        camViewport );
+
+      if ( vBuffer.depth < 0.0f )
+        continue;
+
+      olc::Pixel color = line.color1;
+      color.a = 255;
+      drawLines(vBuffer.vertices, color, LineRenderMode::Strip);
+    }
+
+    for ( const auto& triangle : triangles )
+    {
+      std::vector <glm::vec3> buffer
+      {
+        rp3dToGlm(triangle.point1),
+        rp3dToGlm(triangle.point2),
+        rp3dToGlm(triangle.point3),
+      };
+
+      const auto vBuffer = vertexShader(
+        buffer,
+        camView,
+        camProjection,
+        camViewport );
+
+      if ( vBuffer.depth < 0.0f )
+        continue;
+
+      olc::Pixel color = triangle.color1;
+      color.a = 255;
+      drawLines(vBuffer.vertices, color, LineRenderMode::Loop);
     }
   }
 }

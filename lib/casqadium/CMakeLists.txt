@@ -13,6 +13,7 @@ target_sources(${TARGET} PRIVATE
 
   include/${CASQADIUM_SHORT}/alias.hpp
   include/${CASQADIUM_SHORT}/fwd.hpp
+  include/${CASQADIUM_SHORT}/rp3d_fwd.hpp
 
   src/ecs_helpers.cpp
   include/${CASQADIUM_SHORT}/ecs_helpers.hpp
@@ -44,7 +45,11 @@ target_sources(${TARGET} PRIVATE
   src/util/logger.cpp
   include/${CASQADIUM_SHORT}/util/logger.hpp
 
+  src/util/logger_rp3d.cpp
+  include/${CASQADIUM_SHORT}/util/logger_rp3d.hpp
+
   src/conversion/json_glm_vec.cpp
+  src/conversion/rp3d_glm.cpp
   include/${CASQADIUM_SHORT}/conversion/json_glm_vec.hpp
   include/${CASQADIUM_SHORT}/conversion/json_glm_vec1.hpp
   include/${CASQADIUM_SHORT}/conversion/json_glm_vec2.hpp
@@ -52,6 +57,7 @@ target_sources(${TARGET} PRIVATE
   include/${CASQADIUM_SHORT}/conversion/json_glm_vec4.hpp
   include/${CASQADIUM_SHORT}/conversion/json_glm_quat.hpp
   include/${CASQADIUM_SHORT}/conversion/json_glm_bvec3.hpp
+  include/${CASQADIUM_SHORT}/conversion/rp3d_glm.hpp
 
   src/conversion/SoLoudBackendStringConverter.cpp
   include/${CASQADIUM_SHORT}/conversion/SoLoudBackendStringConverter.hpp
@@ -76,6 +82,17 @@ target_sources(${TARGET} PRIVATE
 
   src/types/VertexBuffer.cpp
   include/${CASQADIUM_SHORT}/types/VertexBuffer.hpp
+
+  src/types/physics/ColliderFactory.cpp
+  include/${CASQADIUM_SHORT}/types/physics/ColliderFactory.hpp
+
+  src/types/physics/colliders/Collider.cpp
+  src/types/physics/colliders/Collider_ui_impl.cpp
+  include/${CASQADIUM_SHORT}/types/physics/colliders/Collider.hpp
+
+  src/types/physics/colliders/ColliderBox.cpp
+  src/types/physics/colliders/ColliderBox_ui_impl.cpp
+  include/${CASQADIUM_SHORT}/types/physics/colliders/ColliderBox.hpp
 
 
 #  Sequences
@@ -109,6 +126,9 @@ target_sources(${TARGET} PRIVATE
 
   src/types/PackageManager.cpp
   include/${CASQADIUM_SHORT}/types/PackageManager.hpp
+
+  src/types/PhysicsManager.cpp
+  include/${CASQADIUM_SHORT}/types/PhysicsManager.hpp
 
   src/types/PrefabManager.cpp
   include/${CASQADIUM_SHORT}/types/PrefabManager.hpp
@@ -318,6 +338,11 @@ target_sources(${TARGET} PRIVATE
   src/components/assets/TextureAssetUnloadList.cpp
   src/components/assets/TextureAssetUnloadList_ui_impl.cpp
   include/${CASQADIUM_SHORT}/components/assets/TextureAssetUnloadList.hpp
+
+
+  src/components/physics/CollisionBody.cpp
+  src/components/physics/CollisionBody_ui_impl.cpp
+  include/${CASQADIUM_SHORT}/components/physics/CollisionBody.hpp
 )
 
 if(${BUILD_SHARED_LIBS})
@@ -347,6 +372,8 @@ set(JSONCPP_WITH_PKGCONFIG_SUPPORT OFF CACHE BOOL "" FORCE)
 
 set(SPDLOG_NO_ATOMIC_LEVELS ON CACHE BOOL "" FORCE)
 set(SPDLOG_DISABLE_DEFAULT_LOGGER ON CACHE BOOL "" FORCE)
+
+set(RP3D_DOUBLE_PRECISION_ENABLED OFF CACHE BOOL "" FORCE) # ReactPhysics3D
 
 
 include(FetchContent)
@@ -396,6 +423,14 @@ FetchContent_Declare(spdlog
 FetchContent_MakeAvailable(spdlog)
 
 
+FetchContent_Declare(ReactPhysics3D
+  GIT_REPOSITORY https://github.com/DanielChappuis/reactphysics3d
+  GIT_TAG        v0.9.0
+  GIT_SHALLOW    TRUE
+)
+FetchContent_MakeAvailable(ReactPhysics3D)
+
+
 FetchContent_Declare(soloud
   GIT_REPOSITORY https://github.com/Casqade/soloud
   GIT_TAG        master
@@ -419,6 +454,7 @@ target_link_libraries(${TARGET} PUBLIC
   EnTT::EnTT
   olcPGE::olcPGE
   spdlog::spdlog
+  ReactPhysics3D::reactphysics3d
   soloud
 )
 

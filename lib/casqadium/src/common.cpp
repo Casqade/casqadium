@@ -36,14 +36,20 @@
 #include <cqde/components/assets/TextureAssetLoadList.hpp>
 #include <cqde/components/assets/TextureAssetUnloadList.hpp>
 
+#include <cqde/components/physics/CollisionBody.hpp>
+
 #include <cqde/types/CallbackManager.hpp>
 #include <cqde/types/EntityManager.hpp>
 #include <cqde/types/input/InputManager.hpp>
 #include <cqde/types/PackageManager.hpp>
+#include <cqde/types/PhysicsManager.hpp>
 #include <cqde/types/PrefabManager.hpp>
 #include <cqde/types/SystemManager.hpp>
 #include <cqde/types/SnapshotManager.hpp>
 #include <cqde/types/UserManager.hpp>
+
+#include <cqde/types/physics/ColliderFactory.hpp>
+#include <cqde/types/physics/colliders/ColliderBox.hpp>
 
 #include <cqde/types/sequences/SequenceFactory.hpp>
 #include <cqde/types/sequences/Delay.hpp>
@@ -87,6 +93,8 @@ engineInit(
   auto& entityManager = registry.ctx().emplace <EntityManager> ();
   auto& inputManager = registry.ctx().emplace <InputManager> ();
   auto& packageManager = registry.ctx().emplace <PackageManager> ();
+  auto& physicsManager = registry.ctx().emplace <PhysicsManager> (registry);
+  auto& colliderShapeFactory = registry.ctx().emplace <ColliderFactory> ();
   auto& prefabManager = registry.ctx().emplace <PrefabManager> ();
   auto& systemManager = registry.ctx().emplace <SystemManager> ();
   auto& sequenceFactory = registry.ctx().emplace <SequenceFactory> ();
@@ -126,6 +134,8 @@ engineInit(
   entityManager.registerComponent <TextStringAssetUnloadList> ("TextStringAssetUnloadList");
   entityManager.registerComponent <TextureAssetLoadList> ("TextureAssetLoadList");
   entityManager.registerComponent <TextureAssetUnloadList> ("TextureAssetUnloadList");
+
+  entityManager.registerComponent <CollisionBody> ("CollisionBody");
 
 //  Components-tags
   entityManager.registerEmptyComponent <CasqadiumEditorInternal> ("CasqadiumEditorInternal");
@@ -213,6 +223,10 @@ engineInit(
                          MouseHidingSystem,
                          Phase{Phase::Logic | Phase::Editor});
 
+  systemManager.Register("PhysicsSystem",
+                         PhysicsSystem,
+                         Phase::Logic);
+
   systemManager.Register("SequenceSystem",
                          SequenceSystem,
                          Phase::Logic);
@@ -250,6 +264,10 @@ engineInit(
                          RenderSystem,
                          Phase::Render);
 
+  systemManager.Register("PhysicsDebugRenderSystem",
+                         PhysicsDebugRenderSystem,
+                         Phase::Render);
+
 
   systemManager.Register("CasqadiumEditorRenderSystem",
                          RenderSystem,
@@ -258,6 +276,13 @@ engineInit(
   systemManager.Register("CasqadiumEditorEntityHighlightSystem",
                          EditorEntityHighlightSystem,
                          Phase{Phase::Render | Phase::Editor});
+
+  systemManager.Register("EditorPhysicsDebugRenderSystem",
+                         EditorPhysicsDebugRenderSystem,
+                         Phase::Render);
+
+
+  colliderShapeFactory.registerCollider <ColliderBox> ("BoxShape");
 
 
   sequenceFactory.registerSequence <Delay> ("Delay");

@@ -355,6 +355,82 @@
   },
   "eQuad" : 
   {
+    "CollisionBody" : 
+    {
+      "body" : 
+      {
+        "active" : true
+      },
+      "colliders" : 
+      [
+        {
+          "callbacks" : 
+          {
+            "onEnter" : 
+            [
+              "OnContactEnter"
+            ],
+            "onLeave" : 
+            [
+              "OnContactLeave"
+            ],
+            "onStay" : 
+            [
+              "OnContactStay"
+            ]
+          },
+          "collision" : 
+          {
+            "group" : 1,
+            "mask" : 1
+          },
+          "isTrigger" : false,
+          "material" : 
+          {
+            "bounciness" : 0.5,
+            "density" : 1.0,
+            "friction" : 0.30000001192092896
+          },
+          "shape" : 
+          {
+            "halfExtents" : 
+            [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          "transform" : 
+          [
+            [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "type" : "BoxShape"
+        }
+      ]
+    },
     "GeometryBuffer" : 
     {
       "buffer" : "quad"
@@ -418,6 +494,73 @@
   },
   "eQuad1" : 
   {
+    "CollisionBody" : 
+    {
+      "body" : 
+      {
+        "active" : true
+      },
+      "colliders" : 
+      [
+        {
+          "callbacks" : 
+          {
+            "onEnter" : [],
+            "onLeave" : [],
+            "onStay" : []
+          },
+          "collision" : 
+          {
+            "group" : 1,
+            "mask" : 1
+          },
+          "isTrigger" : false,
+          "material" : 
+          {
+            "bounciness" : 0.5,
+            "density" : 1.0,
+            "friction" : 0.29999999999999999
+          },
+          "shape" : 
+          {
+            "halfExtents" : 
+            [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          "transform" : 
+          [
+            [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "type" : "BoxShape"
+        }
+      ]
+    },
     "GeometryBuffer" : 
     {
       "buffer" : "quad"
