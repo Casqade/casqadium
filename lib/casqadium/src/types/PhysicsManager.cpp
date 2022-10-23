@@ -1,13 +1,12 @@
 #include <cqde/types/PhysicsManager.hpp>
 
-#include <cqde/components/physics/CollisionBody.hpp>
-
 
 namespace cqde::types
 {
 
 PhysicsManager::PhysicsManager(
   entt::registry& registry )
+  : mEventListener{registry}
 {
   mCommon.setLogger(&mLogger);
 
@@ -20,6 +19,7 @@ PhysicsManager::PhysicsManager(
   settings.cosAngleSimilarContactManifold = 0.95;
 
   mWorld = mCommon.createPhysicsWorld(settings);
+  mWorld->setEventListener(&mEventListener);
 }
 
 PhysicsManager::PhysicsWorld*

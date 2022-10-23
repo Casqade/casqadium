@@ -83,6 +83,9 @@ target_sources(${TARGET} PRIVATE
   src/types/VertexBuffer.cpp
   include/${CASQADIUM_SHORT}/types/VertexBuffer.hpp
 
+  src/types/physics/PhysicsEventListener.cpp
+  include/${CASQADIUM_SHORT}/types/physics/PhysicsEventListener.hpp
+
   src/types/physics/ColliderFactory.cpp
   include/${CASQADIUM_SHORT}/types/physics/ColliderFactory.hpp
 
