@@ -97,7 +97,7 @@ SequenceController::ui_edit_props(
 
     if ( iter == steps.end() )
     {
-      ImGui::PopID();
+      ImGui::PopID(); // index
       break;
     }
 
@@ -142,7 +142,7 @@ SequenceController::ui_edit_props(
          ImGui::IsMouseReleased(ImGuiMouseButton_Left) == true )
       iter_dragged = steps.end();
 
-    ImGui::PopID();
+    ImGui::PopID(); // index
   }
 
   ImGui::EndTable(); // StepsList

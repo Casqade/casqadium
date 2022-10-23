@@ -3,11 +3,9 @@
 #include <cqde/common.hpp>
 #include <cqde/json_helpers.hpp>
 
-#include <cqde/types/EntityReference.hpp>
 #include <cqde/types/PhysicsManager.hpp>
 #include <cqde/types/physics/ColliderFactory.hpp>
 
-#include <entt/entity/helper.hpp>
 #include <entt/entity/registry.hpp>
 
 #include <reactphysics3d/engine/PhysicsWorld.h>
@@ -35,6 +33,12 @@ const static Json::Value collisionBodyJsonReference =
   jsonBody = ValueType::objectValue;
   jsonBody.setComment("// 'body' must be a JSON object"s,
                       Json::CommentPlacement::commentBefore);
+
+  auto& jsonBodyActive = jsonBody["active"];
+  jsonBodyActive = ValueType::booleanValue;
+  jsonBodyActive.setComment("// body 'active' must be a JSON boolean"s,
+                            Json::CommentPlacement::commentBefore);
+
 
   auto& jsonColliders = root["colliders"];
   jsonColliders = Json::arrayValue;
@@ -117,12 +121,12 @@ CollisionBody::serialize() const
 {
   Json::Value json {};
 
-  auto& jsonBodyState = json["body"];
+  auto& jsonBody = json["body"];
 
   if ( body != nullptr )
-    jsonBodyState["active"] = body->isActive();
+    jsonBody["active"] = body->isActive();
   else
-    jsonBodyState = bodyState;
+    jsonBody = bodyState;
 
 
   auto& jsonColliders = json["colliders"];

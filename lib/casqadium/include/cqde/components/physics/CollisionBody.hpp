@@ -5,7 +5,6 @@
 #include <cqde/types/physics/colliders/Collider.hpp>
 
 #include <entt/fwd.hpp>
-#include <entt/entity/entity.hpp>
 
 #include <json/value.h>
 
@@ -17,9 +16,9 @@ struct CollisionBody
 {
   using Collider = types::Collider;
 
-  std::vector <std::shared_ptr <Collider>> colliders {};
-
   Json::Value bodyState {Json::objectValue};
+
+  std::vector <std::shared_ptr <Collider>> colliders {};
 
   rp3d::PhysicsWorld* world {};
   rp3d::CollisionBody* body {};
