@@ -481,7 +481,10 @@ EntityManagerUi::ui_show_entities_table(
 
         bool componentsFound {};
 
-        for ( const auto& componentName : mEntityMgr->componentNames() )
+        auto componentNames = mEntityMgr->componentNames();
+        std::sort(componentNames.begin(), componentNames.end());
+
+        for ( const auto& componentName : componentNames )
         {
           if ( mNewComponentFilter.query(componentName) == false )
             continue;
