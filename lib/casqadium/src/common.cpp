@@ -61,6 +61,7 @@
 #include <cqde/types/assets/AudioAssetManager.hpp>
 #include <cqde/types/assets/FontAssetManager.hpp>
 #include <cqde/types/assets/GeometryAssetManager.hpp>
+#include <cqde/types/assets/TerrainAssetManager.hpp>
 #include <cqde/types/assets/TextureAssetManager.hpp>
 #include <cqde/types/assets/TextStringAssetManager.hpp>
 
@@ -106,6 +107,7 @@ engineInit(
   registry.ctx().emplace <AudioAssetManager> (tp);
   registry.ctx().emplace <FontAssetManager> (tp);
   registry.ctx().emplace <GeometryAssetManager> (tp);
+  registry.ctx().emplace <TerrainAssetManager> (tp);
   registry.ctx().emplace <TextureAssetManager> (tp);
   registry.ctx().emplace <TextStringAssetManager> (tp);
 

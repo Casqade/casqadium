@@ -5,6 +5,7 @@
 #include <cqde/types/assets/FontAssetManager.hpp>
 #include <cqde/types/assets/GeometryAssetManager.hpp>
 #include <cqde/types/assets/TextStringAssetManager.hpp>
+#include <cqde/types/assets/TerrainAssetManager.hpp>
 #include <cqde/types/assets/TextureAssetManager.hpp>
 
 #include <cqde/common.hpp>
@@ -27,6 +28,7 @@ AssetManagerUi::AssetManagerUi()
     {ContentType::Audio, "Audio"},
     {ContentType::Fonts, "Fonts"},
     {ContentType::Geometry, "Geometry"},
+    {ContentType::Terrain, "Terrain"},
     {ContentType::Text, "Text"},
     {ContentType::Textures, "Textures"},
   };
@@ -36,6 +38,7 @@ AssetManagerUi::AssetManagerUi()
     {ContentType::Audio, {}},
     {ContentType::Fonts, {}},
     {ContentType::Geometry, {}},
+    {ContentType::Terrain, {}},
     {ContentType::Text, {}},
     {ContentType::Textures, {}},
   };
@@ -50,6 +53,7 @@ AssetManagerUi::stateApply(
   using AudioAssetManager = types::AudioAssetManager;
   using FontAssetManager = types::FontAssetManager;
   using GeometryAssetManager = types::GeometryAssetManager;
+  using TerrainAssetManager = types::TerrainAssetManager;
   using TextStringAssetManager = types::TextStringAssetManager;
   using TextureAssetManager = types::TextureAssetManager;
 
@@ -59,6 +63,7 @@ AssetManagerUi::stateApply(
   auto& audioMgr = registry.ctx().at <AudioAssetManager> ();
   auto& fontMgr = registry.ctx().at <FontAssetManager> ();
   auto& geometryMgr = registry.ctx().at <GeometryAssetManager> ();
+  auto& terrainMgr = registry.ctx().at <TerrainAssetManager> ();
   auto& textMgr = registry.ctx().at <TextStringAssetManager> ();
   auto& textureMgr = registry.ctx().at <TextureAssetManager> ();
 
@@ -67,6 +72,7 @@ AssetManagerUi::stateApply(
   fontMgr.clear();
   geometryMgr.clear();
   textMgr.clear();
+  terrainMgr.clear();
   textureMgr.clear();
 
   const auto& pkgMgr = registry.ctx().at <PackageManager> ();
@@ -79,12 +85,14 @@ AssetManagerUi::stateApply(
     const auto audioPath = package->contentPath(ContentType::Audio);
     const auto fontsPath = package->contentPath(ContentType::Fonts);
     const auto geometryPath = package->contentPath(ContentType::Geometry);
+    const auto terrainPath = package->contentPath(ContentType::Terrain);
     const auto textPath = package->contentPath(ContentType::Text);
     const auto texturesPath = package->contentPath(ContentType::Textures);
 
     audioMgr.parseAssetDbFile(audioPath);
     fontMgr.parseAssetDbFile(fontsPath);
     geometryMgr.parseAssetDbFile(geometryPath);
+    terrainMgr.parseAssetDbFile(terrainPath);
     textMgr.parseAssetDbFile(textPath);
     textureMgr.parseAssetDbFile(texturesPath);
   }
@@ -117,6 +125,7 @@ AssetManagerUi::stateSave(
   const auto& audioDb = mAssetsState[packageId][mAssetTypeNames.at(ContentType::Audio)];
   const auto& fontsDb = mAssetsState[packageId][mAssetTypeNames.at(ContentType::Fonts)];
   const auto& geometryDb = mAssetsState[packageId][mAssetTypeNames.at(ContentType::Geometry)];
+  const auto& terrainDb = mAssetsState[packageId][mAssetTypeNames.at(ContentType::Terrain)];
   const auto& textDb = mAssetsState[packageId][mAssetTypeNames.at(ContentType::Text)];
   const auto& texturesDb = mAssetsState[packageId][mAssetTypeNames.at(ContentType::Textures)];
 
@@ -128,6 +137,9 @@ AssetManagerUi::stateSave(
 
   if ( geometryDb.isNull() == false )
     package->save(ContentType::Geometry, geometryDb);
+
+  if ( terrainDb.isNull() == false )
+    package->save(ContentType::Terrain, terrainDb);
 
   if ( textDb.isNull() == false )
     package->save(ContentType::Text, textDb);
@@ -143,6 +155,7 @@ AssetManagerUi::ui_show(
   using AudioAssetManager = types::FontAssetManager;
   using FontAssetManager = types::FontAssetManager;
   using GeometryAssetManager = types::GeometryAssetManager;
+  using TerrainAssetManager = types::TerrainAssetManager;
   using TextStringAssetManager = types::TextStringAssetManager;
   using TextureAssetManager = types::TextureAssetManager;
 
@@ -238,6 +251,11 @@ AssetManagerUi::ui_show_live_state(
       ui_show_live_geometry(registry);
       break;
     }
+    case ContentType::Terrain:
+    {
+      ui_show_live_terrain(registry);
+      break;
+    }
     case ContentType::Text:
     {
       ui_show_live_text(registry);
@@ -266,6 +284,7 @@ AssetManagerUi::ui_show_package_state(
   using AudioAssetManager = types::AudioAssetManager;
   using FontAssetManager = types::FontAssetManager;
   using GeometryAssetManager = types::GeometryAssetManager;
+  using TerrainAssetManager = types::TerrainAssetManager;
   using TextStringAssetManager = types::TextStringAssetManager;
   using TextureAssetManager = types::TextureAssetManager;
 
@@ -310,6 +329,11 @@ AssetManagerUi::ui_show_package_state(
       GeometryAssetManager::Validate(assetDb);
       break;
     }
+    case ContentType::Terrain:
+    {
+      TerrainAssetManager::Validate(assetDb);
+      break;
+    }
     case ContentType::Text:
     {
       TextStringAssetManager::Validate(assetDb);
@@ -351,6 +375,10 @@ AssetManagerUi::ui_show_package_state(
 
       case ContentType::Geometry:
         newAsset = GeometryAssetManager::AssetJsonDbEntryReference();
+        break;
+
+      case ContentType::Terrain:
+        newAsset = TextureAssetManager::AssetJsonDbEntryReference();
         break;
 
       case ContentType::Text:
@@ -543,6 +571,7 @@ AssetManagerUi::ui_show_asset_window(
   using AudioAssetManager = types::AudioAssetManager;
   using FontAssetManager = types::FontAssetManager;
   using GeometryAssetManager = types::GeometryAssetManager;
+  using TerrainAssetManager = types::TerrainAssetManager;
   using TextStringAssetManager = types::TextStringAssetManager;
   using TextureAssetManager = types::TextureAssetManager;
 
@@ -585,6 +614,11 @@ AssetManagerUi::ui_show_asset_window(
     case ContentType::Geometry:
     {
       registry.ctx().at <GeometryAssetManager> ().ui_show(assetEntry);
+      break;
+    }
+    case ContentType::Terrain:
+    {
+      registry.ctx().at <TerrainAssetManager> ().ui_show(assetEntry);
       break;
     }
     case ContentType::Text:
@@ -763,6 +797,59 @@ AssetManagerUi::ui_show_live_geometry(
       geometryMgr.load({selectedGeometryId});
 
     geometryMgr.ui_show_preview(selectedGeometryId);
+  }
+
+  ImGui::End(); // windowTitle
+}
+
+void
+AssetManagerUi::ui_show_live_terrain(
+  entt::registry& registry )
+{
+  using fmt::format;
+  using TerrainAssetManager = types::TerrainAssetManager;
+
+  auto& terrainMgr = registry.ctx().at <TerrainAssetManager> ();
+  auto assets = terrainMgr.assetIdList();
+
+  for ( const auto& asset : assets )
+  {
+    if ( mAssetIdFilter.query(asset.str()) == false )
+      continue;
+
+    const bool selected = asset.str() == mSelectedAssetIds[mSelectedAssetType];
+
+    const auto flags =  ImGuiSelectableFlags_SpanAllColumns |
+                        ImGuiSelectableFlags_AllowItemOverlap;
+
+    if ( ImGui::Selectable( asset.str().c_str(),
+                            selected, flags ) )
+    {
+      mSelectedAssetIds[mSelectedAssetType] = asset.str();
+
+      mAssetWindowOpened = true;
+      ImGui::SetWindowFocus("###assetEditWindow");
+    }
+  }
+
+  if ( mAssetWindowOpened == false )
+    return;
+
+  const auto& selectedTerrainId = mSelectedAssetIds[mSelectedAssetType];
+
+  if ( selectedTerrainId.empty() == true )
+    return;
+
+  const auto windowTitle = format("Terrain '{}'###assetEditWindow",
+                                  mSelectedAssetIds[mSelectedAssetType]);
+
+  if ( ImGui::Begin(windowTitle.c_str(), &mAssetWindowOpened,
+                    ImGuiWindowFlags_HorizontalScrollbar) == true )
+  {
+    if ( terrainMgr.status(selectedTerrainId) != AssetStatus::Undefined )
+      terrainMgr.load({selectedTerrainId});
+
+    terrainMgr.ui_show_preview(selectedTerrainId);
   }
 
   ImGui::End(); // windowTitle

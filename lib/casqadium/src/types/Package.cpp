@@ -8,6 +8,7 @@
 
 #include <cqde/types/assets/FontAssetManager.hpp>
 #include <cqde/types/assets/GeometryAssetManager.hpp>
+#include <cqde/types/assets/TerrainAssetManager.hpp>
 #include <cqde/types/assets/TextureAssetManager.hpp>
 #include <cqde/types/assets/TextStringAssetManager.hpp>
 
@@ -132,6 +133,9 @@ Package::load(
   auto& geometry = registry.ctx().at <GeometryAssetManager> ();
   geometry.parseAssetDbFile(contentPath(ContentType::Geometry));
 
+  auto& terrain = registry.ctx().at <TerrainAssetManager> ();
+  terrain.parseAssetDbFile(contentPath(ContentType::Terrain));
+
   auto& textures = registry.ctx().at <TextureAssetManager> ();
   textures.parseAssetDbFile(contentPath(ContentType::Textures));
 
@@ -186,6 +190,10 @@ Package::save(
 
     case ContentType::Geometry:
       contentTypeName = "geometry database";
+      break;
+
+    case ContentType::Terrain:
+      contentTypeName = "terrain database";
       break;
 
     case ContentType::Textures:
@@ -281,6 +289,9 @@ Package::ContentFileName(
 
     case ContentType::Geometry:
       return "geometry.json";
+
+    case ContentType::Terrain:
+      return "terrain.json";
 
     case ContentType::Textures:
       return "textures.json";

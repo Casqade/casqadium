@@ -68,6 +68,7 @@ target_sources(${TARGET} PRIVATE
 #  Classes & PODs
   include/${CASQADIUM_SHORT}/types/FrameCurrent.hpp
   include/${CASQADIUM_SHORT}/types/System.hpp
+  include/${CASQADIUM_SHORT}/types/Terrain.hpp
   include/${CASQADIUM_SHORT}/types/TickCurrent.hpp
 
   include/${CASQADIUM_SHORT}/types/UndoRedoQueue.hpp
@@ -163,6 +164,9 @@ target_sources(${TARGET} PRIVATE
 
   src/types/assets/TextStringAssetManager.cpp
   include/${CASQADIUM_SHORT}/types/assets/TextStringAssetManager.hpp
+
+  src/types/assets/TerrainAssetManager.cpp
+  include/${CASQADIUM_SHORT}/types/assets/TerrainAssetManager.hpp
 
   src/types/assets/TextureAssetManager.cpp
   include/${CASQADIUM_SHORT}/types/assets/TextureAssetManager.hpp
@@ -427,8 +431,8 @@ FetchContent_MakeAvailable(spdlog)
 
 
 FetchContent_Declare(ReactPhysics3D
-  GIT_REPOSITORY https://github.com/DanielChappuis/reactphysics3d
-  GIT_TAG        v0.9.0
+  GIT_REPOSITORY https://github.com/Casqade/reactphysics3d
+  GIT_TAG        master
   GIT_SHALLOW    TRUE
 )
 FetchContent_MakeAvailable(ReactPhysics3D)

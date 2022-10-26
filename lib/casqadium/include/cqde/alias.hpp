@@ -21,6 +21,7 @@ using InputHwId = identifier;
 using PackageId = identifier;
 using PrefabId = identifier;
 using StringId = identifier;
+using TerrainId = identifier;
 using TextureId = identifier;
 using UserId = identifier;
 

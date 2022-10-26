@@ -39,6 +39,7 @@ public:
     Audio,
     Fonts,
     Geometry,
+    Terrain,
     Textures,
     Text,
   };
