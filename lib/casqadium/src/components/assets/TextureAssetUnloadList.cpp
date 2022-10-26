@@ -10,7 +10,7 @@
 namespace cqde::compos
 {
 
-const static Json::Value textureAssetLoadListJsonReference =
+const static Json::Value textureAssetUnloadListJsonReference =
 []
 {
   using ValueType = Json::ValueType;
@@ -54,7 +54,7 @@ TextureAssetUnloadList::deserialize(
   const std::unordered_map <EntityId, EntityId,
                             identifier_hash>& idMap )
 {
-  jsonValidateObject(json, textureAssetLoadListJsonReference);
+  jsonValidateObject(json, textureAssetUnloadListJsonReference);
 
   auto& comp = registry.emplace_or_replace <TextureAssetUnloadList> (entity);
 

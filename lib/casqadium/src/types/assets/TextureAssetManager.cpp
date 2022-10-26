@@ -66,7 +66,7 @@ AssetManager <olc::Renderable>::initPlaceholders()
 {
   using namespace cqde::literals;
 
-  auto textureNull = std::make_shared <olc::Renderable> ();
+  const auto textureNull = std::make_shared <olc::Renderable> ();
   textureNull->Create(16, 16);
 
   for ( int32_t px = 0;
@@ -82,7 +82,7 @@ AssetManager <olc::Renderable>::initPlaceholders()
 
   insert(null_id, textureNull);
 
-  auto textureError = textureFromText("ERROR", olc::RED, true);
+  const auto textureError = textureFromText("ERROR", olc::RED, true);
   insert("error"_id, textureError);
 }
 

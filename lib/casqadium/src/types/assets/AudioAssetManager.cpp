@@ -5,8 +5,6 @@
 
 #include <cqde/util/logger.hpp>
 
-#include <olcPGE/olcPixelGameEngine.hpp>
-
 #include <json/value.h>
 
 #include <soloud.h>
@@ -96,7 +94,7 @@ AssetManager <SoLoud::AudioSource>::loadImpl(
 {
   LOG_INFO("Loading audio '{}'", path.string());
 
-  auto audio = std::make_shared <SoLoud::AudioSource> ();
+  const auto audio = std::make_shared <SoLoud::AudioSource> ();
 
 //  todo: impl
 

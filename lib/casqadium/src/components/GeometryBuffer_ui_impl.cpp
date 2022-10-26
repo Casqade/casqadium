@@ -19,7 +19,7 @@ GeometryBuffer::ui_edit_props(
   using ui::StringFilter;
   using types::GeometryAssetManager;
 
-  if ( ImGui::CollapsingHeader("Buffer ID", ImGuiTreeNodeFlags_DefaultOpen) == false )
+  if ( ImGui::CollapsingHeader("Geometry ID", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
 
   static StringFilter geometryFilter {"Geometry ID"};

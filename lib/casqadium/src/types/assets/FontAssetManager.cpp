@@ -92,7 +92,7 @@ AssetManager <olc::Font>::loadImpl(
   LOG_INFO("Loading font '{}' (size {})",
            path.string(), fontSize);
 
-  auto font = std::make_shared <olc::Font> ();
+  const auto font = std::make_shared <olc::Font> ();
   if ( font->LoadFromFile(path.string(), fontSize) == olc::rcode::OK )
     return font;
 

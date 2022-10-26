@@ -10,7 +10,7 @@
 namespace cqde::compos
 {
 
-const static Json::Value textStringAssetLoadListJsonReference =
+const static Json::Value textStringAssetUnloadListJsonReference =
 []
 {
   using ValueType = Json::ValueType;
@@ -54,7 +54,7 @@ TextStringAssetUnloadList::deserialize(
   const std::unordered_map <EntityId, EntityId,
                             identifier_hash>& idMap )
 {
-  jsonValidateObject(json, textStringAssetLoadListJsonReference);
+  jsonValidateObject(json, textStringAssetUnloadListJsonReference);
 
   auto& comp = registry.emplace_or_replace <TextStringAssetUnloadList> (entity);
 
