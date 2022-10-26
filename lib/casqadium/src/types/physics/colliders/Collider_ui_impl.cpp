@@ -142,24 +142,12 @@ Collider::ui_show(
   {
     glm::mat4 transform {1.0f};
 
-    bool isTrigger {};
-
-    decltype(callbacks) callbacks {};
-
     struct
     {
       std::bitset <16> group {};
       std::bitset <16> mask {};
 
     } collision {};
-
-    struct
-    {
-      float bounciness {};
-      float density {};
-      float friction {};
-
-    } material {};
 
   } state {}, statePrev {};
 
@@ -168,17 +156,7 @@ Collider::ui_show(
 
   if ( ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen) )
   {
-    if ( mCollider == nullptr )
-    {
-      auto& jsonTransform = mState["transform"];
-
-      state.transform[0] << jsonTransform[0];
-      state.transform[1] << jsonTransform[1];
-      state.transform[2] << jsonTransform[2];
-      state.transform[3] << jsonTransform[3];
-    }
-    else
-      state.transform = rp3dToGlm(mCollider->getLocalToBodyTransform());
+    state.transform  = rp3dToGlm(mCollider->getLocalToBodyTransform());
 
     statePrev.transform = state.transform;
 
@@ -188,29 +166,21 @@ Collider::ui_show(
       {
         auto translation = state.transform[3];
 
-        ImGui::AlignTextToFramePadding();
-        ImGui::Text("X");
+        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
 
-        ImGui::SameLine();
-        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
         ImGui::DragFloat("##translationX", &translation.x,
-                         0.01f, 0.0f, 0.0f, "%.3f", flags);
+                         0.01f, 0.0f, 0.0f,
+                         "X: %.3f", flags);
 
-        ImGui::AlignTextToFramePadding();
-        ImGui::Text("Y");
-
-        ImGui::SameLine();
-        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
         ImGui::DragFloat("##translationY", &translation.y,
-                         0.01f, 0.0f, 0.0f, "%.3f", flags);
+                         0.01f, 0.0f, 0.0f,
+                         "Y: %.3f", flags);
 
-        ImGui::AlignTextToFramePadding();
-        ImGui::Text("Z");
-
-        ImGui::SameLine();
-        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
         ImGui::DragFloat("##translationZ", &translation.z,
-                         0.01f, 0.0f, 0.0f, "%.3f", flags);
+                         0.01f, 0.0f, 0.0f,
+                         "Z: %.3f", flags);
+
+        ImGui::PopItemWidth();
 
         if ( ImGui::Button("Reset##translationReset") )
           translation = {glm::vec3{}, 1.0f};
@@ -227,29 +197,21 @@ Collider::ui_show(
 
         auto orientationEuler = glm::degrees(glm::eulerAngles(orientation));
 
-        ImGui::AlignTextToFramePadding();
-        ImGui::Text("X");
+        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
 
-        ImGui::SameLine();
-        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
         ImGui::DragFloat( "##orientationX", &orientationEuler.x,
-                          0.1f, -180.0f, 180.0f, "%.1f°", flags );
+                          0.1f, -180.0f, 180.0f,
+                          "X: %.1f°", flags );
 
-        ImGui::AlignTextToFramePadding();
-        ImGui::Text("Y");
-
-        ImGui::SameLine();
-        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
         ImGui::DragFloat( "##orientationY", &orientationEuler.y,
-                          0.1f, -180.0f, 180.0f, "%.1f°", flags );
+                          0.1f, -180.0f, 180.0f,
+                          "Y: %.1f°", flags );
 
-        ImGui::AlignTextToFramePadding();
-        ImGui::Text("Z");
-
-        ImGui::SameLine();
-        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
         ImGui::DragFloat( "##orientationZ", &orientationEuler.z,
-                          0.1f, -180.0f, 180.0f, "%.1f°", flags );
+                          0.1f, -180.0f, 180.0f,
+                          "Z: %.1f°", flags );
+
+        ImGui::PopItemWidth();
 
         orientation = glm::radians(orientationEuler);
 
@@ -268,21 +230,7 @@ Collider::ui_show(
       }
 
       if ( state.transform != statePrev.transform )
-      {
-        if ( mCollider == nullptr )
-        {
-          auto& jsonTransform = mState["transform"];
-
-          jsonTransform.clear();
-          jsonTransform[0] << state.transform[0];
-          jsonTransform[1] << state.transform[1];
-          jsonTransform[2] << state.transform[2];
-          jsonTransform[3] << state.transform[3];
-
-        }
-        else
-          mCollider->setLocalToBodyTransform(glmToRp3d(state.transform));
-      }
+        mCollider->setLocalToBodyTransform(glmToRp3d(state.transform));
 
       ImGui::EndTabBar(); // Transform
     }
@@ -290,105 +238,32 @@ Collider::ui_show(
 
   if ( ImGui::CollapsingHeader("Trigger", ImGuiTreeNodeFlags_DefaultOpen) )
   {
-    if ( mCollider == nullptr )
-      state.isTrigger = mState["isTrigger"].asBool();
-    else
-      state.isTrigger = mCollider->getIsTrigger();
+    bool isTrigger = mCollider->getIsTrigger();
 
-    statePrev.isTrigger = state.isTrigger;
-
-    ImGui::Checkbox("Is trigger", &state.isTrigger);
-
-    if ( state.isTrigger != statePrev.isTrigger )
-    {
-      if ( mCollider == nullptr )
-        mState["isTrigger"] = state.isTrigger;
-      else
-        mCollider->setIsTrigger(state.isTrigger);
-    }
+    if ( ImGui::Checkbox("Is trigger", &isTrigger) )
+      mCollider->setIsTrigger(isTrigger);
   }
 
   if ( ImGui::CollapsingHeader("Callbacks", ImGuiTreeNodeFlags_DefaultOpen) )
   {
     if ( ImGui::BeginTabBar("Callbacks") )
     {
-      if ( mCollider == nullptr )
-      {
-        auto& jsonCallbacks = mState["callbacks"];
-
-        for ( const auto& callback : jsonCallbacks["onEnter"] )
-          state.callbacks.onEnter.push_back(callback.asString());
-
-        for ( const auto& callback : jsonCallbacks["onStay"] )
-          state.callbacks.onStay.push_back(callback.asString());
-
-        for ( const auto& callback : jsonCallbacks["onLeave"] )
-          state.callbacks.onLeave.push_back(callback.asString());
-      }
-      else
-        state.callbacks = callbacks;
-
-      statePrev.callbacks = state.callbacks;
-
       if ( ImGui::BeginTabItem("onEnter") )
       {
-        callbacksShow(state.callbacks.onEnter);
+        callbacksShow(mCallbacks.onEnter);
         ImGui::EndTabItem(); // onEnter
       }
 
       if ( ImGui::BeginTabItem("onStay") )
       {
-        callbacksShow(state.callbacks.onStay);
+        callbacksShow(mCallbacks.onStay);
         ImGui::EndTabItem(); // onStay
       }
 
       if ( ImGui::BeginTabItem("onLeave") )
       {
-        callbacksShow(state.callbacks.onLeave);
+        callbacksShow(mCallbacks.onLeave);
         ImGui::EndTabItem(); // onLeave
-      }
-
-      if ( mCollider == nullptr )
-      {
-        auto& jsonCallbacks = mState["callbacks"];
-
-        if ( state.callbacks.onEnter != statePrev.callbacks.onEnter )
-        {
-          auto& jsonCallbacksOnEnter = jsonCallbacks["onEnter"];
-          jsonCallbacksOnEnter = Json::arrayValue;
-
-          for ( const auto& callback : state.callbacks.onEnter )
-            jsonCallbacksOnEnter.append(callback.str());
-        }
-
-        if ( state.callbacks.onStay != statePrev.callbacks.onStay )
-        {
-          auto& jsonCallbacksOnStay = jsonCallbacks["onStay"];
-          jsonCallbacksOnStay = Json::arrayValue;
-
-          for ( const auto& callback : state.callbacks.onStay )
-            jsonCallbacksOnStay.append(callback.str());
-        }
-
-        if ( state.callbacks.onLeave != statePrev.callbacks.onLeave )
-        {
-          auto& jsonCallbacksOnLeave = jsonCallbacks["onLeave"];
-          jsonCallbacksOnLeave = Json::arrayValue;
-
-          for ( const auto& callback : state.callbacks.onLeave )
-            jsonCallbacksOnLeave.append(callback.str());
-        }
-      }
-      else
-      {
-        if ( state.callbacks.onEnter != statePrev.callbacks.onEnter )
-          callbacks.onEnter = state.callbacks.onEnter;
-
-        if ( state.callbacks.onStay != statePrev.callbacks.onStay )
-          callbacks.onStay = state.callbacks.onStay;
-
-        if ( state.callbacks.onLeave != statePrev.callbacks.onLeave )
-          callbacks.onLeave = state.callbacks.onLeave;
       }
 
       ImGui::EndTabBar(); // Callbacks
@@ -396,7 +271,7 @@ Collider::ui_show(
   }
 
   static std::array <ToggleButton, 16> buttonsCategory
-  { // todo: names categories from PhysicsManager ?
+  { // todo: category names from PhysicsManager ?
     ToggleButton{"0"},
     ToggleButton{"1"},
     ToggleButton{"2"},
@@ -420,18 +295,8 @@ Collider::ui_show(
   {
     if ( ImGui::BeginTabBar("Collision") )
     {
-      if ( mCollider == nullptr )
-      {
-        auto& jsonCollision = mState["collision"];
-
-        state.collision.group = jsonCollision["group"].asUInt();
-        state.collision.mask = jsonCollision["mask"].asUInt();
-      }
-      else
-      {
-        state.collision.group = mCollider->getCollisionCategoryBits();
-        state.collision.mask = mCollider->getCollideWithMaskBits();
-      }
+      state.collision.group = mCollider->getCollisionCategoryBits();
+      state.collision.mask = mCollider->getCollideWithMaskBits();
 
       statePrev.collision = state.collision;
 
@@ -448,26 +313,10 @@ Collider::ui_show(
       }
 
       if ( state.collision.group != statePrev.collision.group )
-      {
-        if ( mCollider == nullptr )
-        {
-          auto& jsonGroup = mState["collision"]["group"];
-          jsonGroup = static_cast <uint32_t> (state.collision.group.to_ulong());
-        }
-        else
-          mCollider->setCollisionCategoryBits(state.collision.group.to_ulong());
-      }
+        mCollider->setCollisionCategoryBits(state.collision.group.to_ulong());
 
       if ( state.collision.mask != statePrev.collision.mask )
-      {
-        if ( mCollider == nullptr )
-        {
-          auto& jsonMask = mState["collision"]["mask"];
-          jsonMask = static_cast <uint32_t> (state.collision.mask.to_ulong());
-        }
-        else
-          mCollider->setCollisionCategoryBits(state.collision.mask.to_ulong());
-      }
+        mCollider->setCollisionCategoryBits(state.collision.mask.to_ulong());
 
       ImGui::EndTabBar(); // Collision
     }
@@ -475,74 +324,31 @@ Collider::ui_show(
 
   if ( ImGui::CollapsingHeader("Material", ImGuiTreeNodeFlags_DefaultOpen) )
   {
-    if ( mCollider == nullptr )
-    {
-      auto& jsonMaterial = mState["material"];
+    auto& colliderMaterial = mCollider->getMaterial();
 
-      state.material.bounciness = jsonMaterial["bounciness"].asFloat();
-      state.material.density = jsonMaterial["density"].asFloat();
-      state.material.friction = jsonMaterial["friction"].asFloat();
-    }
-    else
-    {
-      auto& colliderMaterial = mCollider->getMaterial();
+    float bounciness = colliderMaterial.getBounciness();
+    float density = colliderMaterial.getMassDensity();
+    float friction = colliderMaterial.getFrictionCoefficient();
 
-      state.material.bounciness = colliderMaterial.getBounciness();
-      state.material.density = colliderMaterial.getMassDensity();
-      state.material.friction = colliderMaterial.getFrictionCoefficient();
-    }
+    ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
 
-    statePrev.material = state.material;
+    if (  ImGui::DragFloat( "##bounciness", &bounciness,
+                            0.01f, 0.0f, 1.0f,
+                            "Bounciness: %.2f") )
+      colliderMaterial.setBounciness(bounciness);
 
-    auto& jsonMaterial = mState["material"];
+    if (  ImGui::DragFloat("##density", &density,
+                            0.05f, 0.0f,
+                           std::numeric_limits <float>::max(),
+                           "Mass density: %.2f") )
+      colliderMaterial.setMassDensity(density);
 
-    ImGui::Text("Bounciness");
-    ImGui::SameLine();
+    if (  ImGui::DragFloat("##friction", &friction,
+                            0.01f, 0.0f, 1.0f,
+                           "Friction: %.2f") )
+      colliderMaterial.setFrictionCoefficient(friction);
 
-    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-    ImGui::DragFloat("##bounciness", &state.material.bounciness,
-                      0.01f, 0.0f, 1.0f);
-
-    ImGui::Text("Mass density");
-    ImGui::SameLine();
-
-    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-    ImGui::DragFloat("##density", &state.material.density,
-                     0.05f, 0.0f, std::numeric_limits <float>::max());
-
-    ImGui::Text("Friction");
-    ImGui::SameLine();
-
-    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
-    ImGui::DragFloat("##friction", &state.material.friction,
-                     0.01f, 0.0f, 1.0f);
-
-    if ( mCollider == nullptr )
-    {
-      auto& jsonMaterial = mState["material"];
-
-      if ( state.material.bounciness != statePrev.material.bounciness )
-        jsonMaterial["bounciness"] = state.material.bounciness;
-
-      if ( state.material.density != statePrev.material.density )
-        jsonMaterial["density"] = state.material.density;
-
-      if ( state.material.friction != statePrev.material.friction )
-        jsonMaterial["friction"] = state.material.friction;
-    }
-    else
-    {
-      auto& colliderMaterial = mCollider->getMaterial();
-
-      if ( state.material.bounciness != statePrev.material.bounciness )
-        colliderMaterial.setBounciness(state.material.bounciness);
-
-      if ( state.material.density != statePrev.material.density )
-        colliderMaterial.setMassDensity(state.material.density);
-
-      if ( state.material.friction != statePrev.material.friction )
-        colliderMaterial.setFrictionCoefficient(state.material.friction);
-    }
+    ImGui::PopItemWidth();
   }
 }
 

@@ -19,32 +19,17 @@ namespace cqde::compos
 void
 CollisionBody::ui_edit_props(
   const entt::entity entity,
-  const entt::registry& registry )
+  entt::registry& registry )
 {
   using fmt::format;
   using types::ColliderFactory;
 
   if ( ImGui::CollapsingHeader("State", ImGuiTreeNodeFlags_DefaultOpen) )
   {
-    bool active {};
-    bool activePrev {};
+    bool active = body->isActive();
 
-    if ( body == nullptr )
-      active = bodyState["active"].asBool();
-    else
-      active = body->isActive();
-
-    activePrev = active;
-
-    ImGui::Checkbox("Is active", &active);
-
-    if ( active != activePrev )
-    {
-      if ( body == nullptr )
-        bodyState["active"] = active;
-      else
-        body->setIsActive(active);
-    }
+    if ( ImGui::Checkbox("Is active", &active) )
+      body->setIsActive(active);
   }
 
   if ( ImGui::CollapsingHeader("Colliders", ImGuiTreeNodeFlags_DefaultOpen) == false )
@@ -74,7 +59,10 @@ CollisionBody::ui_edit_props(
 
       if ( ImGui::Selectable(shapeId.c_str(), false) )
       {
-        colliders.push_back(colliderFactory.create(shapeId));
+        const auto collider = colliderFactory.create(shapeId);
+        collider->init(registry, body);
+        colliders.push_back(collider);
+
         ImGui::CloseCurrentPopup();
         break;
       }

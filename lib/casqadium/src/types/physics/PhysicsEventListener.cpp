@@ -1,5 +1,4 @@
 #include <cqde/types/physics/PhysicsEventListener.hpp>
-#include <cqde/types/CallbackManager.hpp>
 
 #include <cqde/components/physics/CollisionBody.hpp>
 #include <cqde/components/physics/RigidBody.hpp>
@@ -61,32 +60,20 @@ PhysicsEventListener::onContact(
     {
       case EventType::ContactStart:
       {
-        for ( const auto& callback : collider1->callbacks.onEnter )
-          callbackManager.execute(callback, mRegistry, {eBody1, eBody2});
-
-        for ( const auto& callback : collider2->callbacks.onEnter )
-          callbackManager.execute(callback, mRegistry, {eBody2, eBody1});
-
+        collider1->onEnter(mRegistry, eBody1, eBody2);
+        collider2->onEnter(mRegistry, eBody2, eBody1);
         break;
       }
       case EventType::ContactStay:
       {
-        for ( const auto& callback : collider1->callbacks.onStay )
-          callbackManager.execute(callback, mRegistry, {eBody1, eBody2});
-
-        for ( const auto& callback : collider2->callbacks.onStay )
-          callbackManager.execute(callback, mRegistry, {eBody2, eBody1});
-
+        collider1->onStay(mRegistry, eBody1, eBody2);
+        collider2->onStay(mRegistry, eBody2, eBody1);
         break;
       }
       case EventType::ContactExit:
       {
-        for ( const auto& callback : collider1->callbacks.onLeave )
-          callbackManager.execute(callback, mRegistry, {eBody1, eBody2});
-
-        for ( const auto& callback : collider2->callbacks.onLeave )
-          callbackManager.execute(callback, mRegistry, {eBody2, eBody1});
-
+        collider1->onLeave(mRegistry, eBody1, eBody2);
+        collider2->onLeave(mRegistry, eBody2, eBody1);
         break;
       }
     }
@@ -115,31 +102,21 @@ PhysicsEventListener::onTrigger(
     {
       case EventType::OverlapStart:
       {
-        for ( const auto& callback : collider1->callbacks.onEnter )
-          callbackManager.execute(callback, mRegistry, {eBody1, eBody2});
-
-        for ( const auto& callback : collider2->callbacks.onEnter )
-          callbackManager.execute(callback, mRegistry, {eBody2, eBody1});
-
+        collider1->onEnter(mRegistry, eBody1, eBody2);
+        collider2->onEnter(mRegistry, eBody2, eBody1);
         break;
       }
       case EventType::OverlapStay:
       {
-        for ( const auto& callback : collider1->callbacks.onStay )
-          callbackManager.execute(callback, mRegistry, {eBody1, eBody2});
-
-        for ( const auto& callback : collider2->callbacks.onStay )
-          callbackManager.execute(callback, mRegistry, {eBody2, eBody1});
+        collider1->onStay(mRegistry, eBody1, eBody2);
+        collider2->onStay(mRegistry, eBody2, eBody1);
 
         break;
       }
       case EventType::OverlapExit:
       {
-        for ( const auto& callback : collider1->callbacks.onLeave )
-          callbackManager.execute(callback, mRegistry, {eBody1, eBody2});
-
-        for ( const auto& callback : collider2->callbacks.onLeave )
-          callbackManager.execute(callback, mRegistry, {eBody2, eBody1});
+        collider1->onLeave(mRegistry, eBody1, eBody2);
+        collider2->onLeave(mRegistry, eBody2, eBody1);
 
         break;
       }

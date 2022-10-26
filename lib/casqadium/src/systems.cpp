@@ -616,11 +616,11 @@ PhysicsSystem(
 
   for ( auto&& [eBody, cBody]
           : registry.view <CollisionBody, SubscriberUpdate> ().each() )
-    cBody.enable(registry);
+    cBody.body->setIsActive(true);
 
   for ( auto&& [eBody, cBody]
           : registry.view <CollisionBody> (entt::exclude <SubscriberUpdate>).each() )
-    cBody.disable();
+    cBody.body->setIsActive(false);
 
   for ( auto&& [eBody, cTransform, cBody]
           : registry.view <Transform, CollisionBody, SubscriberUpdate> ().each() )

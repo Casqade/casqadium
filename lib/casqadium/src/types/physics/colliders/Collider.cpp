@@ -7,6 +7,7 @@
 #include <cqde/conversion/json_glm_vec4.hpp>
 
 #include <cqde/types/PhysicsManager.hpp>
+#include <cqde/types/CallbackManager.hpp>
 
 #include <reactphysics3d/collision/Collider.h>
 #include <reactphysics3d/engine/EventListener.h>
@@ -99,7 +100,7 @@ const static Json::Value colliderJsonReference =
   auto& jsonMaterialBounciness = jsonMaterial["bounciness"];
   jsonMaterialBounciness = ValueType::realValue;
   jsonMaterialBounciness.setComment("// material 'bounciness' must be a JSON float"s,
-                                Json::CommentPlacement::commentBefore);
+                                    Json::CommentPlacement::commentBefore);
 
   auto& jsonMaterialDensity = jsonMaterial["density"];
   jsonMaterialDensity = ValueType::realValue;
@@ -114,71 +115,37 @@ const static Json::Value colliderJsonReference =
   return root;
 }();
 
-Collider::Collider()
-{
-  mState["type"] = Collider::type();
-  mState["isTrigger"] = false;
-
-  auto& jsonTransform = mState["transform"];
-  glm::mat4 transform {1.0f};
-
-  jsonTransform[0] << transform[0];
-  jsonTransform[1] << transform[1];
-  jsonTransform[2] << transform[2];
-  jsonTransform[3] << transform[3];
-
-  auto& jsonCollision = mState["collision"];
-  jsonCollision["group"] = Json::uintValue;
-  jsonCollision["mask"] = Json::uintValue;
-
-  auto& jsonMaterial = mState["material"];
-  jsonMaterial["bounciness"] = 0.5;
-  jsonMaterial["density"] = 1.0;
-  jsonMaterial["friction"] = 0.3;
-}
-
 Collider::~Collider()
 {
   destroy();
 }
 
 void
-Collider::enable(
+Collider::init(
   entt::registry& registry,
   rp3d::CollisionBody* body )
 {
-  CQDE_ASSERT_DEBUG(body != nullptr, return);
+  CQDE_ASSERT_DEBUG(mCommon == nullptr, return);
+  CQDE_ASSERT_DEBUG(mCollider == nullptr, return);
 
-  if ( mCommon == nullptr )
-  {
-    auto& physicsManager = registry.ctx().at <PhysicsManager> ();
-    mCommon = &physicsManager.common();
-  }
+  auto& physicsManager = registry.ctx().at <PhysicsManager> ();
+  mCommon = &physicsManager.common();
 
-  shapeEnable();
+  shapeInit(registry);
 
-  if ( mCollider != nullptr )
-    return;
+  const bool active = body->isActive();
+  body->setIsActive(true);
 
   mCollider = body->addCollider(shape(), {});
   mCollider->setUserData(static_cast <Collider*> (this));
 
-  stateApply();
+  body->setIsActive(active);
 }
 
 void
-Collider::disable()
-{
-  mState = serialize();
-
-  callbacks.onEnter.clear();
-  callbacks.onStay.clear();
-  callbacks.onLeave.clear();
-
-  destroy();
-
-  shapeDisable();
-}
+Collider::shapeInit(
+  entt::registry& )
+{}
 
 void
 Collider::destroy()
@@ -186,33 +153,61 @@ Collider::destroy()
   if ( mCollider == nullptr )
     return;
 
-  mCollider->getBody()->removeCollider(mCollider);
+  const auto body = mCollider->getBody();
+  if ( body != nullptr )
+    body->removeCollider(mCollider);
+
   mCollider = nullptr;
 }
 
 void
-Collider::shapeEnable()
+Collider::shapeDestroy()
 {}
 
 void
-Collider::shapeDisable()
-{}
-
-void
-Collider::deserialize(
-  const Json::Value& state )
+Collider::onEnter(
+  entt::registry& registry,
+  const entt::entity body1,
+  const entt::entity body2 )
 {
-  mState = state;
-  stateValidate();
+  const auto& callbackManager = registry.ctx().at <CallbackManager> ();
+
+  for ( const auto& callback : mCallbacks.onEnter )
+    callbackManager.execute(callback, registry, {body1, body2});
+}
+
+void
+Collider::onStay(
+  entt::registry& registry,
+  const entt::entity body1,
+  const entt::entity body2 )
+{
+  const auto& callbackManager = registry.ctx().at <CallbackManager> ();
+
+  for ( const auto& callback : mCallbacks.onStay )
+    callbackManager.execute(callback, registry, {body1, body2});
+}
+
+void
+Collider::onLeave(
+  entt::registry& registry,
+  const entt::entity body1,
+  const entt::entity body2 )
+{
+  const auto& callbackManager = registry.ctx().at <CallbackManager> ();
+
+  for ( const auto& callback : mCallbacks.onLeave )
+    callbackManager.execute(callback, registry, {body1, body2});
 }
 
 Json::Value
 Collider::serialize() const
 {
-  auto json {mState};
+  CQDE_ASSERT_DEBUG(mCollider != nullptr, return Json::objectValue);
 
-  if ( mCollider == nullptr )
-    return json;
+  Json::Value json {};
+
+  json["type"] = type();
 
   auto& jsonCallbacks = json["callbacks"];
   jsonCallbacks.clear();
@@ -220,19 +215,19 @@ Collider::serialize() const
   auto& jsonCallbacksOnEnter = jsonCallbacks["onEnter"];
   jsonCallbacksOnEnter = Json::arrayValue;
 
-  for ( const auto& callback : callbacks.onEnter )
+  for ( const auto& callback : mCallbacks.onEnter )
     jsonCallbacksOnEnter.append(callback.str());
 
   auto& jsonCallbacksOnStay = jsonCallbacks["onStay"];
   jsonCallbacksOnStay = Json::arrayValue;
 
-  for ( const auto& callback : callbacks.onStay )
+  for ( const auto& callback : mCallbacks.onStay )
     jsonCallbacksOnStay.append(callback.str());
 
   auto& jsonCallbacksOnLeave = jsonCallbacks["onLeave"];
   jsonCallbacksOnLeave = Json::arrayValue;
 
-  for ( const auto& callback : callbacks.onLeave )
+  for ( const auto& callback : mCallbacks.onLeave )
     jsonCallbacksOnLeave.append(callback.str());
 
   json["isTrigger"] = mCollider->getIsTrigger();
@@ -257,70 +252,55 @@ Collider::serialize() const
   jsonMaterial["density"] = material.getMassDensity();
   jsonMaterial["friction"] = material.getFrictionCoefficient();
 
+  json["shape"] = shapeSerialize();
+
   return json;
 }
 
-void
-Collider::stateApply()
+Json::Value
+Collider::shapeSerialize() const
 {
-  if ( mCollider == nullptr )
-    return;
-
-  const auto& jsonCallbacks = mState["callbacks"];
-  const auto& jsonCollision = mState["collision"];
-  const auto& jsonMaterial = mState["material"];
-  const auto& jsonTransform = mState["transform"];
-  const auto& jsonTrigger = mState["isTrigger"];
-
-  callbacks.onEnter.clear();
-  for ( const auto& callback : jsonCallbacks["onEnter"] )
-    callbacks.onEnter.push_back(callback.asString());
-
-  callbacks.onStay.clear();
-  for ( const auto& callback : jsonCallbacks["onStay"] )
-    callbacks.onStay.push_back(callback.asString());
-
-  callbacks.onLeave.clear();
-  for ( const auto& callback : jsonCallbacks["onLeave"] )
-    callbacks.onLeave.push_back(callback.asString());
-
-  glm::mat4 transform {1.0f};
-  transform[0] << jsonTransform[0];
-  transform[1] << jsonTransform[1];
-  transform[2] << jsonTransform[2];
-  transform[3] << jsonTransform[3];
-
-  mCollider->setIsTrigger(jsonTrigger.asBool());
-
-  mCollider->setLocalToBodyTransform(glmToRp3d(transform));
-
-  mCollider->setCollisionCategoryBits(jsonCollision["group"].asUInt());
-  mCollider->setCollideWithMaskBits(jsonCollision["mask"].asUInt());
-
-  auto& material = mCollider->getMaterial();
-  material.setBounciness(jsonMaterial["bounciness"].asFloat());
-  material.setMassDensity(jsonMaterial["density"].asFloat());
-  material.setFrictionCoefficient(jsonMaterial["friction"].asFloat());
-
-  shapeStateApply();
-
-  mState.clear();
+  return Json::objectValue;
 }
 
 void
-Collider::stateValidate()
+Collider::deserialize(
+  entt::registry& registry,
+  rp3d::CollisionBody* body,
+  const Json::Value& json )
 {
   using fmt::format;
 
-  jsonValidateObject(mState, colliderJsonReference);
+  CQDE_ASSERT_DEBUG(mCollider == nullptr, return);
+
+  jsonValidateObject(json, colliderJsonReference);
+
+  const auto& jsonCallbacks = json["callbacks"];
+  const auto& jsonCollision = json["collision"];
+  const auto& jsonMaterial = json["material"];
+  const auto& jsonTransform = json["transform"];
+  const auto& jsonTrigger = json["isTrigger"];
+
+  mCallbacks.onEnter.clear();
+  for ( const auto& callback : jsonCallbacks["onEnter"] )
+    mCallbacks.onEnter.push_back(callback.asString());
+
+  mCallbacks.onStay.clear();
+  for ( const auto& callback : jsonCallbacks["onStay"] )
+    mCallbacks.onStay.push_back(callback.asString());
+
+  mCallbacks.onLeave.clear();
+  for ( const auto& callback : jsonCallbacks["onLeave"] )
+    mCallbacks.onLeave.push_back(callback.asString());
+
+  glm::mat4 transform {1.0f};
 
   try
   {
-    glm::mat4 transform {1.0f};
-    transform[0] << mState["transform"][0];
-    transform[1] << mState["transform"][1];
-    transform[2] << mState["transform"][2];
-    transform[3] << mState["transform"][3];
+    transform[0] << jsonTransform[0];
+    transform[1] << jsonTransform[1];
+    transform[2] << jsonTransform[2];
+    transform[3] << jsonTransform[3];
   }
   catch ( const std::exception& e )
   {
@@ -329,15 +309,27 @@ Collider::stateValidate()
               e.what()));
   }
 
-  shapeStateValidate();
+  init(registry, body);
+
+  shapeDeserialize(registry, json["shape"]);
+
+  mCollider->setLocalToBodyTransform(glmToRp3d(transform));
+
+  mCollider->setIsTrigger(jsonTrigger.asBool());
+
+  mCollider->setCollisionCategoryBits(jsonCollision["group"].asUInt());
+  mCollider->setCollideWithMaskBits(jsonCollision["mask"].asUInt());
+
+  auto& material = mCollider->getMaterial();
+  material.setBounciness(jsonMaterial["bounciness"].asFloat());
+  material.setMassDensity(jsonMaterial["density"].asFloat());
+  material.setFrictionCoefficient(jsonMaterial["friction"].asFloat());
 }
 
 void
-Collider::shapeStateApply()
-{}
-
-void
-Collider::shapeStateValidate()
+Collider::shapeDeserialize(
+  entt::registry&,
+  const Json::Value& )
 {}
 
 rp3d::Collider*

@@ -27,72 +27,69 @@ const static Json::Value colliderBoxJsonReference =
   root.setComment("// root must be a JSON object"s,
                   Json::CommentPlacement::commentBefore);
 
-  auto& jsonShape = root["shape"];
-  jsonShape = ValueType::objectValue;
-  jsonShape.setComment("// 'shape' must be a JSON object"s,
-                        Json::CommentPlacement::commentBefore);
+  auto& jsonHalfExtents = root["halfExtents"];
+  jsonHalfExtents = ValueType::arrayValue;
+  jsonHalfExtents.setComment("// 'halfExtents' must be a JSON array"s,
+                              Json::CommentPlacement::commentBefore);
 
   return root;
 }();
 
-ColliderBox::ColliderBox()
-{
-  mState["type"] = ColliderBox::type();
-  mState["shape"]["halfExtents"] << glm::vec3{1.0f};
-}
-
 ColliderBox::~ColliderBox()
 {
   destroy();
-  ColliderBox::shapeDisable();
+  ColliderBox::shapeDestroy();
 }
 
 void
-ColliderBox::shapeEnable()
+ColliderBox::shapeInit(
+  entt::registry& )
 {
-  if ( mShape != nullptr )
-    return;
-
-  CQDE_ASSERT_DEBUG(mCommon != nullptr, return);
+  CQDE_ASSERT_DEBUG(mShape == nullptr, return);
   mShape = mCommon->createBoxShape(glmToRp3d(glm::vec3{1.0f}));
 }
 
 void
-ColliderBox::shapeDisable()
+ColliderBox::shapeDestroy()
 {
   if ( mShape == nullptr )
     return;
-
-  CQDE_ASSERT_DEBUG(mCommon != nullptr, return);
 
   mCommon->destroyBoxShape(mShape);
   mShape = nullptr;
 }
 
-void
-ColliderBox::shapeStateApply()
+Json::Value
+ColliderBox::shapeSerialize() const
 {
-  if ( mShape == nullptr )
-    return;
+  CQDE_ASSERT_DEBUG(mShape != nullptr, return Json::objectValue);
 
-  glm::vec3 halfExtents {};
+  Json::Value json {};
 
-  halfExtents << mState["shape"]["halfExtents"];
+  auto& jsonHalfExtents = json["halfExtents"];
 
-  mShape->setHalfExtents(glmToRp3d(halfExtents));
+  jsonHalfExtents.clear();
+  jsonHalfExtents << rp3dToGlm(mShape->getHalfExtents());
+
+  return json;
 }
 
 void
-ColliderBox::shapeStateValidate()
+ColliderBox::shapeDeserialize(
+  entt::registry&,
+  const Json::Value& json )
 {
   using fmt::format;
 
-  jsonValidateObject(mState, colliderBoxJsonReference);
+  CQDE_ASSERT_DEBUG(mShape != nullptr, return);
+
+  jsonValidateObject(json, colliderBoxJsonReference);
+
+  glm::vec3 halfExtents {};
 
   try
   {
-    glm::vec3 halfExtents {};
-    halfExtents << mState["shape"]["halfExtents"];
+    halfExtents << json["halfExtents"];
   }
   catch ( const std::exception& e )
   {
@@ -100,22 +97,8 @@ ColliderBox::shapeStateValidate()
       format("'halfExtents' parse error: {}",
               e.what()));
   }
-}
 
-Json::Value
-ColliderBox::serialize() const
-{
-  auto json = Collider::serialize();
-
-  if ( mShape == nullptr )
-    return json;
-
-  auto& jsonHalfExtents = json["shape"]["halfExtents"];
-
-  jsonHalfExtents.clear();
-  jsonHalfExtents << rp3dToGlm(mShape->getHalfExtents());
-
-  return json;
+  mShape->setHalfExtents(glmToRp3d(halfExtents));
 }
 
 rp3d::CollisionShape*

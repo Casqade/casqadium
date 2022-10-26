@@ -8,21 +8,20 @@ namespace cqde::types
 
 class ColliderBox : public Collider
 {
+protected:
   rp3d::BoxShape* mShape {};
 
+  void shapeInit( entt::registry& ) override;
+  void shapeDestroy() override;
+
+  Json::Value shapeSerialize() const override;
+
+  void shapeDeserialize( entt::registry&, const Json::Value& ) override;
+
 public:
-  ColliderBox();
   ~ColliderBox();
 
-  void shapeEnable() override;
-  void shapeDisable() override;
-
   void ui_show( const entt::registry& ) override;
-
-  Json::Value serialize() const override;
-
-  void shapeStateApply() override;
-  void shapeStateValidate() override;
 
   rp3d::CollisionShape* shape() const override;
 

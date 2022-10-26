@@ -62,55 +62,34 @@ const static Json::Value collisionBodyJsonReference =
   return root;
 }();
 
-CollisionBody::CollisionBody()
+CollisionBody::CollisionBody(
+  CollisionBody&& other )
 {
-  bodyState["active"] = false;
+  *this = std::move(other);
+}
+
+CollisionBody&
+CollisionBody::operator = (
+  CollisionBody&& other )
+{
+  colliders = std::move(other.colliders);
+  world = other.world;
+  body = other.body;
+
+  if ( body != nullptr )
+    body->setUserData(this);
+
+  other.body = nullptr;
+
+  return *this;
 }
 
 CollisionBody::~CollisionBody()
 {
   colliders.clear();
 
-  if ( body != nullptr &&
-       world != nullptr )
-    world->destroyCollisionBody(body);
-
-  body = nullptr;
-}
-
-void
-CollisionBody::enable(
-  entt::registry& registry )
-{
-  using types::PhysicsManager;
-
-  if ( body != nullptr )
-    return;
-
-  if ( world == nullptr )
-    world = registry.ctx().at <PhysicsManager> ().world();
-
-  body = world->createCollisionBody({});
-  body->setUserData(this);
-
-  for ( auto& collider : colliders )
-    collider->enable(registry, body);
-
-  body->setIsActive(bodyState["active"].asBool());
-}
-
-void
-CollisionBody::disable()
-{
   if ( body == nullptr )
     return;
-
-  CQDE_ASSERT_DEBUG(world != nullptr, return);
-
-  bodyState["active"] = body->isActive();
-
-  for ( auto& collider : colliders )
-    collider->disable();
 
   world->destroyCollisionBody(body);
   body = nullptr;
@@ -121,13 +100,10 @@ CollisionBody::serialize() const
 {
   Json::Value json {};
 
-  auto& jsonBody = json["body"];
-
   if ( body != nullptr )
-    jsonBody["active"] = body->isActive();
+    json["body"]["active"] = body->isActive();
   else
-    jsonBody = bodyState;
-
+    json["body"]["active"] = false;
 
   auto& jsonColliders = json["colliders"];
   jsonColliders = Json::arrayValue;
@@ -147,13 +123,17 @@ CollisionBody::deserialize(
                             identifier_hash>& idMap )
 {
   using fmt::format;
+  using types::PhysicsManager;
   using types::ColliderFactory;
 
   jsonValidateObject(json, collisionBodyJsonReference);
 
   auto& comp = registry.emplace_or_replace <CollisionBody> (entity);
 
-  comp.bodyState = json["body"];
+  comp.world = registry.ctx().at <PhysicsManager> ().world();
+
+  comp.body = comp.world->createCollisionBody({});
+  comp.body->setUserData(&comp);
 
   const auto& colliderFactory = registry.ctx().at <ColliderFactory> ();
   const auto& jsonColliders = json["colliders"];
@@ -165,7 +145,7 @@ CollisionBody::deserialize(
 
     try
     {
-      collider->deserialize(jsonCollider);
+      collider->deserialize(registry, comp.body, jsonCollider);
     }
     catch ( const std::exception& e )
     {
@@ -176,6 +156,8 @@ CollisionBody::deserialize(
 
     comp.colliders.push_back(collider);
   }
+
+  comp.body->setIsActive(json["body"]["active"].asBool());
 }
 
 } // namespace cqde::compos

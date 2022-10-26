@@ -16,23 +16,21 @@ struct CollisionBody
 {
   using Collider = types::Collider;
 
-  Json::Value bodyState {Json::objectValue};
-
   std::vector <std::shared_ptr <Collider>> colliders {};
 
   rp3d::PhysicsWorld* world {};
   rp3d::CollisionBody* body {};
 
 
-  CollisionBody();
-  ~CollisionBody();
+  CollisionBody() = default;
+  CollisionBody( CollisionBody&& );
+  CollisionBody& operator = ( CollisionBody&& );
 
-  void enable( entt::registry& );
-  void disable();
+  ~CollisionBody();
 
 
   void ui_edit_props( const entt::entity,
-                      const entt::registry& );
+                      entt::registry& );
 
   Json::Value serialize() const;
 

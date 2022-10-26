@@ -11,7 +11,7 @@
 namespace cqde::types
 {
 
-struct Collider
+class Collider
 {
   struct
   {
@@ -19,53 +19,51 @@ struct Collider
     std::vector <CallbackId> onStay {};
     std::vector <CallbackId> onLeave {};
 
-  } callbacks {};
+  } mCallbacks {};
 
 protected:
-
   rp3d::PhysicsCommon* mCommon {};
   rp3d::Collider* mCollider {};
 
-  Json::Value mState {Json::objectValue};
-
-public:
-  Collider();
-  virtual ~Collider();
-
-  void enable( entt::registry&, rp3d::CollisionBody* );
-  void disable();
-
   void destroy();
 
-  void onEnter( const entt::registry&,
+  virtual void shapeInit( entt::registry& );
+  virtual void shapeDestroy();
+
+  virtual Json::Value shapeSerialize() const;
+
+  virtual void shapeDeserialize( entt::registry&, const Json::Value& );
+
+public:
+  virtual ~Collider();
+
+  void init( entt::registry&, rp3d::CollisionBody* );
+
+  void onEnter( entt::registry&,
                 const entt::entity body1,
                 const entt::entity body2 );
 
-  void onStay(  const entt::registry&,
+  void onStay(  entt::registry&,
                 const entt::entity body1,
                 const entt::entity body2 );
 
-  void onLeave( const entt::registry&,
+  void onLeave( entt::registry&,
                 const entt::entity body1,
                 const entt::entity body2 );
 
-  virtual void shapeEnable();
-  virtual void shapeDisable();
 
   virtual void ui_show( const entt::registry& );
 
-  void deserialize( const Json::Value& );
-  virtual Json::Value serialize() const;
+  Json::Value serialize() const;
 
-  void stateApply();
-  void stateValidate();
+  void deserialize( entt::registry&,
+                    rp3d::CollisionBody*,
+                    const Json::Value& );
 
-  virtual void shapeStateApply();
-  virtual void shapeStateValidate();
 
-  virtual rp3d::Collider* collider() const;
+  rp3d::Collider* collider() const;
+
   virtual rp3d::CollisionShape* shape() const;
-
   virtual std::string type() const;
 };
 
