@@ -31,6 +31,8 @@
 #include <cqde/components/assets/FontAssetUnloadList.hpp>
 #include <cqde/components/assets/GeometryAssetLoadList.hpp>
 #include <cqde/components/assets/GeometryAssetUnloadList.hpp>
+#include <cqde/components/assets/TerrainAssetLoadList.hpp>
+#include <cqde/components/assets/TerrainAssetUnloadList.hpp>
 #include <cqde/components/assets/TextStringAssetLoadList.hpp>
 #include <cqde/components/assets/TextStringAssetUnloadList.hpp>
 #include <cqde/components/assets/TextureAssetLoadList.hpp>
@@ -132,6 +134,8 @@ engineInit(
   entityManager.registerComponent <FontAssetUnloadList> ("FontAssetUnloadList");
   entityManager.registerComponent <GeometryAssetLoadList> ("GeometryAssetLoadList");
   entityManager.registerComponent <GeometryAssetUnloadList> ("GeometryAssetUnloadList");
+  entityManager.registerComponent <TerrainAssetLoadList> ("TerrainAssetLoadList");
+  entityManager.registerComponent <TerrainAssetUnloadList> ("TerrainAssetUnloadList");
   entityManager.registerComponent <TextStringAssetLoadList> ("TextStringAssetLoadList");
   entityManager.registerComponent <TextStringAssetUnloadList> ("TextStringAssetUnloadList");
   entityManager.registerComponent <TextureAssetLoadList> ("TextureAssetLoadList");

@@ -23,6 +23,7 @@
 #include <cqde/types/assets/AudioAssetManager.hpp>
 #include <cqde/types/assets/FontAssetManager.hpp>
 #include <cqde/types/assets/GeometryAssetManager.hpp>
+#include <cqde/types/assets/TerrainAssetManager.hpp>
 #include <cqde/types/assets/TextStringAssetManager.hpp>
 #include <cqde/types/assets/TextureAssetManager.hpp>
 
@@ -45,6 +46,8 @@
 #include <cqde/components/assets/FontAssetUnloadList.hpp>
 #include <cqde/components/assets/GeometryAssetLoadList.hpp>
 #include <cqde/components/assets/GeometryAssetUnloadList.hpp>
+#include <cqde/components/assets/TerrainAssetLoadList.hpp>
+#include <cqde/components/assets/TerrainAssetUnloadList.hpp>
 #include <cqde/components/assets/TextStringAssetLoadList.hpp>
 #include <cqde/components/assets/TextStringAssetUnloadList.hpp>
 #include <cqde/components/assets/TextureAssetLoadList.hpp>
@@ -1198,6 +1201,21 @@ loadGeometryAssets(
 }
 
 void
+loadTerrainAssets(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using compos::TerrainAssetLoadList;
+  using types::TerrainAssetManager;
+
+  const auto assetLoadList = std::any_cast <TerrainAssetLoadList*> (args.at(0));
+
+  auto& terrainManager = registry.ctx().at <TerrainAssetManager> ();
+
+  terrainManager.load(assetLoadList->terrainToLoad);
+}
+
+void
 loadTextStringAssets(
   entt::registry& registry,
   const std::vector <std::any>& args )
@@ -1270,6 +1288,21 @@ unloadGeometryAssets(
   auto& audioManager = registry.ctx().at <GeometryAssetManager> ();
 
   audioManager.unload(assetUnloadList->geometryToUnload);
+}
+
+void
+unloadTerrainAssets(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using compos::TerrainAssetUnloadList;
+  using types::TerrainAssetManager;
+
+  const auto assetUnloadList = std::any_cast <TerrainAssetUnloadList*> (args.at(0));
+
+  auto& terrainManager = registry.ctx().at <TerrainAssetManager> ();
+
+  terrainManager.unload(assetUnloadList->terrainToUnload);
 }
 
 void

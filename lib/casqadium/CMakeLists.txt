@@ -330,6 +330,14 @@ target_sources(${TARGET} PRIVATE
   src/components/assets/GeometryAssetUnloadList_ui_impl.cpp
   include/${CASQADIUM_SHORT}/components/assets/GeometryAssetUnloadList.hpp
 
+  src/components/assets/TerrainAssetLoadList.cpp
+  src/components/assets/TerrainAssetLoadList_ui_impl.cpp
+  include/${CASQADIUM_SHORT}/components/assets/TerrainAssetLoadList.hpp
+
+  src/components/assets/TerrainAssetUnloadList.cpp
+  src/components/assets/TerrainAssetUnloadList_ui_impl.cpp
+  include/${CASQADIUM_SHORT}/components/assets/TerrainAssetUnloadList.hpp
+
   src/components/assets/TextStringAssetLoadList.cpp
   src/components/assets/TextStringAssetLoadList_ui_impl.cpp
   include/${CASQADIUM_SHORT}/components/assets/TextStringAssetLoadList.hpp

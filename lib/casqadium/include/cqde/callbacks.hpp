@@ -194,6 +194,10 @@ void loadGeometryAssets(
   entt::registry&,
   const std::vector <std::any>& args = {} );
 
+void loadTerrainAssets(
+  entt::registry&,
+  const std::vector <std::any>& args = {} );
+
 void loadTextStringAssets(
   entt::registry&,
   const std::vector <std::any>& args = {} );
@@ -201,6 +205,7 @@ void loadTextStringAssets(
 void loadTextureAssets(
   entt::registry&,
   const std::vector <std::any>& args = {} );
+
 
 void unloadAudioAssets(
   entt::registry&,
@@ -211,6 +216,10 @@ void unloadFontAssets(
   const std::vector <std::any>& args = {} );
 
 void unloadGeometryAssets(
+  entt::registry&,
+  const std::vector <std::any>& args = {} );
+
+void unloadTerrainAssets(
   entt::registry&,
   const std::vector <std::any>& args = {} );
 
