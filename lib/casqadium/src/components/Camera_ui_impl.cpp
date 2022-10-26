@@ -24,48 +24,42 @@ Camera::ui_edit_props(
 
   if ( ImGui::CollapsingHeader("Viewport", ImGuiTreeNodeFlags_DefaultOpen) )
   {
-    ImGui::SetNextItemWidth(width);
+    ImGui::PushItemWidth(width);
+
     ImGui::DragFloat("##viewportX", &viewport.x, 0.01f,
                      0.0f, 1.0f - viewport.z + glm::epsilon <float> (),
                      "X %.2f", flags);
 
     ImGui::SameLine();
-    ImGui::SetNextItemWidth(width);
     ImGui::DragFloat("##viewportY", &viewport.y, 0.01f,
                      0.0f, 1.0f - viewport.w + glm::epsilon <float> (),
                      "Y %.2f", flags);
 
-    ImGui::SetNextItemWidth(width);
     ImGui::DragFloat("##viewportW", &viewport.z, 0.01f,
                      glm::epsilon <float> (), 1.0f - viewport.x,
                      "W %.2f", flags);
 
     ImGui::SameLine();
-    ImGui::SetNextItemWidth(width);
     ImGui::DragFloat("##viewportH", &viewport.w, 0.01f,
                      glm::epsilon <float> (), 1.0f - viewport.y,
                      "H %.2f", flags);
+
+    ImGui::PopItemWidth();
   }
 
   if ( ImGui::CollapsingHeader("Z-range", ImGuiTreeNodeFlags_DefaultOpen) )
   {
-    ImGui::AlignTextToFramePadding();
-    ImGui::Text("zNear");
+    ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
 
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
     ImGui::DragFloat("##zRangeNear", &zRange.first,
-                      0.01f, 0.0f, zRange.second, "%.2f",
-                      flags);
+                      0.01f, 0.0f, zRange.second,
+                      "Z near %.2f",flags);
 
-    ImGui::AlignTextToFramePadding();
-    ImGui::Text("zFar ");
-
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
     ImGui::DragFloat("##zRangeFar", &zRange.second,
-                      0.01f, zRange.first, std::numeric_limits <float>::max(), "%.2f",
-                      flags);
+                      0.01f, zRange.first, std::numeric_limits <float>::max(),
+                     "Z far %.2f", flags);
+
+    ImGui::PopItemWidth();
   }
 
   if ( ImGui::CollapsingHeader("Layer", ImGuiTreeNodeFlags_DefaultOpen) )

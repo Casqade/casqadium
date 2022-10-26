@@ -57,29 +57,18 @@ Transform::ui_edit_props(
       translationBuffer = ToWorldSpace(translation, registry,
                                        entity, *this);
 
-    ImGui::AlignTextToFramePadding();
-    ImGui::Text("X");
+    ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
 
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
     ImGui::DragFloat("##translationX", &translationBuffer.x,
-                     0.01f, 0.0f, 0.0f, "%.3f", flags);
+                     0.01f, 0.0f, 0.0f, "X: %.3f", flags);
 
-    ImGui::AlignTextToFramePadding();
-    ImGui::Text("Y");
-
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
     ImGui::DragFloat("##translationY", &translationBuffer.y,
-                     0.01f, 0.0f, 0.0f, "%.3f", flags);
+                     0.01f, 0.0f, 0.0f, "Y: %.3f", flags);
 
-    ImGui::AlignTextToFramePadding();
-    ImGui::Text("Z");
-
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
     ImGui::DragFloat("##translationZ", &translationBuffer.z,
-                     0.01f, 0.0f, 0.0f, "%.3f", flags);
+                     0.01f, 0.0f, 0.0f, "Z: %.3f", flags);
+
+    ImGui::PopItemWidth();
 
     if ( ImGui::Button("Reset##translationReset") )
       translationBuffer = glm::vec3{};
@@ -120,49 +109,29 @@ Transform::ui_edit_props(
     {
       case OrientationMode::Quat:
       {
-        ImGui::AlignTextToFramePadding();
-        ImGui::Text("X");
+        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
 
-        ImGui::SameLine();
         ImGui::BeginDisabled(true);
-        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+
         ImGui::DragFloat( "##orientationX", &orientationBuffer.x,
-                          glm::radians(0.1f), 0.0f, 1.0f, "%.3f",
-                          flags);
-        ImGui::EndDisabled();
+                          glm::radians(0.1f), 0.0f, 1.0f,
+                          "X: %.3f", flags);
 
-        ImGui::AlignTextToFramePadding();
-        ImGui::Text("Y");
-
-        ImGui::SameLine();
-        ImGui::BeginDisabled(true);
-        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
         ImGui::DragFloat( "##orientationY", &orientationBuffer.y,
-                          glm::radians(0.1f), 0.0f, 1.0f, "%.3f",
-                          flags);
-        ImGui::EndDisabled();
+                          glm::radians(0.1f), 0.0f, 1.0f,
+                          "Y: %.3f", flags);
 
-        ImGui::AlignTextToFramePadding();
-        ImGui::Text("Z");
-
-        ImGui::SameLine();
-        ImGui::BeginDisabled(true);
-        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
         ImGui::DragFloat( "##orientationZ", &orientationBuffer.z,
-                          glm::radians(0.1f), 0.0f, 1.0f, "%.3f",
-                          flags);
-        ImGui::EndDisabled();
+                          glm::radians(0.1f), 0.0f, 1.0f,
+                          "Z: %.3f", flags);
 
-        ImGui::AlignTextToFramePadding();
-        ImGui::Text("W");
-
-        ImGui::SameLine();
-        ImGui::BeginDisabled(true);
-        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
         ImGui::DragFloat( "##orientationW", &orientationBuffer.w,
-                          glm::radians(0.1f), 0.0f, 1.0f, "%.3f",
-                          flags);
+                          glm::radians(0.1f), 0.0f, 1.0f,
+                          "W: %.3f", flags);
+
         ImGui::EndDisabled();
+
+        ImGui::PopItemWidth();
 
         break;
       }
@@ -171,29 +140,21 @@ Transform::ui_edit_props(
       {
         auto orientationEuler = glm::degrees(glm::eulerAngles(orientationBuffer));
 
-        ImGui::AlignTextToFramePadding();
-        ImGui::Text("X");
+        ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
 
-        ImGui::SameLine();
-        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
         ImGui::DragFloat( "##orientationX", &orientationEuler.x,
-                          0.1f, -180.0f, 180.0f, "%.1f°", flags);
+                          0.1f, -180.0f, 180.0f,
+                          "X: %.1f°", flags);
 
-        ImGui::AlignTextToFramePadding();
-        ImGui::Text("Y");
-
-        ImGui::SameLine();
-        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
         ImGui::DragFloat( "##orientationY", &orientationEuler.y,
-                          0.1f, -180.0f, 180.0f, "%.1f°", flags);
+                          0.1f, -180.0f, 180.0f,
+                          "Y: %.1f°", flags);
 
-        ImGui::AlignTextToFramePadding();
-        ImGui::Text("Z");
-
-        ImGui::SameLine();
-        ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
         ImGui::DragFloat( "##orientationZ", &orientationEuler.z,
-                          0.1f, -180.0f, 180.0f, "%.1f°", flags);
+                          0.1f, -180.0f, 180.0f,
+                          "Z: %.1f°", flags);
+
+        ImGui::PopItemWidth();
 
         orientationBuffer = glm::radians(orientationEuler);
 
@@ -303,29 +264,18 @@ Transform::ui_edit_props(
   {
     ImGui::Text("Local");
 
-    ImGui::AlignTextToFramePadding();
-    ImGui::Text("X");
+    ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
 
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
     ImGui::DragFloat("##scaleX", &scale.x, 0.01f,
-                     0.0f, 0.0f, "%.2f", flags);
+                     0.0f, 0.0f, "X: %.2f", flags);
 
-    ImGui::AlignTextToFramePadding();
-    ImGui::Text("Y");
-
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
     ImGui::DragFloat("##scaleY", &scale.y, 0.01f,
-                     0.0f, 0.0f, "%.2f", flags);
+                     0.0f, 0.0f, "Y: %.2f", flags);
 
-    ImGui::AlignTextToFramePadding();
-    ImGui::Text("Z");
-
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
     ImGui::DragFloat("##scaleZ", &scale.z, 0.01f,
-                     0.0f, 0.0f, "%.2f", flags);
+                     0.0f, 0.0f, "Z: %.2f", flags);
+
+    ImGui::PopItemWidth();
 
     if ( ImGui::Button("Reset##scaleReset") )
       scale = glm::vec3{1.0f};
@@ -334,29 +284,18 @@ Transform::ui_edit_props(
 
     ImGui::Text("World");
 
-    ImGui::AlignTextToFramePadding();
-    ImGui::Text("X");
+    ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
 
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
     ImGui::DragFloat("##scaleWorldX", &scaleWorld.x, 0.01f,
-                     0.0f, 0.0f, "%.2f", flags);
+                     0.0f, 0.0f, "X: %.2f", flags);
 
-    ImGui::AlignTextToFramePadding();
-    ImGui::Text("Y");
-
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
     ImGui::DragFloat("##scaleWorldY", &scaleWorld.y, 0.01f,
-                     0.0f, 0.0f, "%.2f", flags);
+                     0.0f, 0.0f, "Y: %.2f", flags);
 
-    ImGui::AlignTextToFramePadding();
-    ImGui::Text("Z");
-
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
     ImGui::DragFloat("##scaleWorldZ", &scaleWorld.z, 0.01f,
-                     0.0f, 0.0f, "%.2f", flags);
+                     0.0f, 0.0f, "Z: %.2f", flags);
+
+    ImGui::PopItemWidth();
 
     if ( ImGui::Button("Reset##scaleWorldReset") )
       scaleWorld = glm::vec3{1.0f};

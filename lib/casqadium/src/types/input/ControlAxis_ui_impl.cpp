@@ -42,39 +42,44 @@ ControlAxis::ui_show(
 
   if ( ImGui::CollapsingHeader("Value", ImGuiTreeNodeFlags_DefaultOpen) )
   {
+    const auto flags = ImGuiSliderFlags_NoRoundToFormat |
+                       ImGuiSliderFlags_AlwaysClamp;
+
     ImGui::SetNextItemWidth(width);
     if ( constraint.first < constraint.second )
-      ImGui::DragFloat("##value", &value, 0.1f, constraint.first, constraint.second, "%.3f",
-                       ImGuiSliderFlags_NoRoundToFormat | ImGuiSliderFlags_AlwaysClamp);
+      ImGui::DragFloat("##value", &value, 0.1f,
+                       constraint.first,
+                       constraint.second,
+                       "%.3f", flags);
 
     else if ( constraint.first > constraint.second )
-      ImGui::DragFloat("##value", &value, 0.1f, 0.0f, 0.0f, "%.3f",
-                       ImGuiSliderFlags_NoRoundToFormat | ImGuiSliderFlags_AlwaysClamp);
+      ImGui::DragFloat("##value", &value, 0.1f,
+                       0.0f, 0.0f, "%.3f", flags);
     else
     {
       ImGui::BeginDisabled(true);
-      ImGui::DragFloat("##value", &value, 0.1f,
-                       0.0f, 0.0f,
-                       "%.3f", ImGuiSliderFlags_NoRoundToFormat );
+      ImGui::DragFloat("##value", &value,
+                       0.1f, 0.0f, 0.0f,
+                       "%.3f", flags );
       ImGui::EndDisabled();
     }
   }
 
   if ( ImGui::CollapsingHeader("Constraint", ImGuiTreeNodeFlags_DefaultOpen) )
   {
-    ImGui::Text("Min");
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
+    ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+
     ImGui::DragFloat("##constraintFirst", &constraint.first, 0.1f,
-                     std::numeric_limits <float>::lowest(), constraint.second, "%.3f",
+                     std::numeric_limits <float>::lowest(), constraint.second,
+                     "Min: %.3f",
                      ImGuiSliderFlags_NoRoundToFormat);
 
-    ImGui::Text("Max");
-    ImGui::SameLine();
-    ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
     ImGui::DragFloat("##constraintSecond", &constraint.second, 0.1f,
-                     constraint.first, std::numeric_limits <float>::max(), "%.3f",
+                     constraint.first, std::numeric_limits <float>::max(),
+                     "Max: %.3f",
                      ImGuiSliderFlags_NoRoundToFormat);
+
+    ImGui::PopItemWidth();
   }
 
   if ( ImGui::CollapsingHeader("Callbacks", ImGuiTreeNodeFlags_DefaultOpen) )

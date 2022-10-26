@@ -272,27 +272,27 @@ AssetManager <vertexBuffer>::ui_show(
 {
   using fmt::format;
 
+  const auto flags = ImGuiSliderFlags_NoRoundToFormat;
+
   size_t vertexCount {};
+
   for ( auto& vertex : entry )
   {
     ImGui::PushID(++vertexCount);
 
-    ImGui::Text("X");
-    ImGui::SameLine();
     float vertexX = vertex[0].asFloat();
-    if ( ImGui::DragFloat("##vertexX", &vertexX, 0.01f) )
+    if ( ImGui::DragFloat("##vertexX", &vertexX, 0.01f,
+                          0.0f, 0.0f, "X: %.2f", flags) )
       vertex[0] = vertexX;
 
-    ImGui::Text("Y");
-    ImGui::SameLine();
     float vertexY = vertex[1].asFloat();
-    if ( ImGui::DragFloat("##vertexY", &vertexY, 0.01f) )
+    if ( ImGui::DragFloat("##vertexY", &vertexY, 0.01f,
+                          0.0f, 0.0f, "Y: %.2f", flags) )
       vertex[1] = vertexY;
 
-    ImGui::Text("Z");
-    ImGui::SameLine();
     float vertexZ = vertex[2].asFloat();
-    if ( ImGui::DragFloat("##vertexZ", &vertexZ, 0.01f) )
+    if ( ImGui::DragFloat("##vertexZ", &vertexZ, 0.01f,
+                          0.0f, 0.0f, "Z: %.2f", flags) )
       vertex[2] = vertexZ;
 
     ImGui::Separator();

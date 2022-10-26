@@ -452,10 +452,8 @@ ViewportManagerUi::ui_show_viewport_windows(
             {
               ImGui::DragFloat("##cubeOrbitRadius", &mViewCubeOrbitRadius, 0.1f,
                                glm::epsilon <float> (),
-                               std::numeric_limits <float>::max());
-
-              if ( ImGui::IsItemHovered() )
-                ImGui::SetTooltip("Orbit radius");
+                               std::numeric_limits <float>::max(),
+                               "Radius: %.1f");
             }
           }
 
