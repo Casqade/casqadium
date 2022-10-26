@@ -19,6 +19,7 @@ class RigidBody;
 
 class CollisionShape;
 class BoxShape;
+class SphereShape;
 
 enum class BodyType;
 class EventListener;
