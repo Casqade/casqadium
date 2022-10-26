@@ -54,6 +54,7 @@
 #include <cqde/types/physics/ColliderFactory.hpp>
 #include <cqde/types/physics/colliders/ColliderBox.hpp>
 #include <cqde/types/physics/colliders/ColliderCapsule.hpp>
+#include <cqde/types/physics/colliders/ColliderHeightField.hpp>
 #include <cqde/types/physics/colliders/ColliderSphere.hpp>
 
 #include <cqde/types/sequences/SequenceFactory.hpp>
@@ -294,6 +295,7 @@ engineInit(
 
   colliderShapeFactory.registerCollider <ColliderBox> ("BoxShape");
   colliderShapeFactory.registerCollider <ColliderCapsule> ("CapsuleShape");
+  colliderShapeFactory.registerCollider <ColliderHeightField> ("HeightFieldShape");
   colliderShapeFactory.registerCollider <ColliderSphere> ("SphereShape");
 
 

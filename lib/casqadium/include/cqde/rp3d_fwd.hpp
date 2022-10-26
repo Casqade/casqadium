@@ -20,6 +20,7 @@ class RigidBody;
 class CollisionShape;
 class BoxShape;
 class CapsuleShape;
+class HeightFieldShape;
 class SphereShape;
 
 enum class BodyType;

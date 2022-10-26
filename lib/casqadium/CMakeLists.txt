@@ -102,6 +102,10 @@ target_sources(${TARGET} PRIVATE
   src/types/physics/colliders/ColliderCapsule_ui_impl.cpp
   include/${CASQADIUM_SHORT}/types/physics/colliders/ColliderCapsule.hpp
 
+  src/types/physics/colliders/ColliderHeightField.cpp
+  src/types/physics/colliders/ColliderHeightField_ui_impl.cpp
+  include/${CASQADIUM_SHORT}/types/physics/colliders/ColliderHeightField.hpp
+
   src/types/physics/colliders/ColliderSphere.cpp
   src/types/physics/colliders/ColliderSphere_ui_impl.cpp
   include/${CASQADIUM_SHORT}/types/physics/colliders/ColliderSphere.hpp
