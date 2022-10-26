@@ -15,10 +15,12 @@ class PhysicsCommon;
 class PhysicsWorld;
 class Collider;
 class CollisionBody;
+class RigidBody;
 
 class CollisionShape;
 class BoxShape;
 
+enum class BodyType;
 class EventListener;
 class CollisionCallback;
 class OverlapCallback;

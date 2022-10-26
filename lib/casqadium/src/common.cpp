@@ -39,6 +39,7 @@
 #include <cqde/components/assets/TextureAssetUnloadList.hpp>
 
 #include <cqde/components/physics/CollisionBody.hpp>
+#include <cqde/components/physics/RigidBody.hpp>
 
 #include <cqde/types/CallbackManager.hpp>
 #include <cqde/types/EntityManager.hpp>
@@ -142,6 +143,7 @@ engineInit(
   entityManager.registerComponent <TextureAssetUnloadList> ("TextureAssetUnloadList");
 
   entityManager.registerComponent <CollisionBody> ("CollisionBody");
+  entityManager.registerComponent <RigidBody> ("RigidBody");
 
 //  Components-tags
   entityManager.registerEmptyComponent <CasqadiumEditorInternal> ("CasqadiumEditorInternal");

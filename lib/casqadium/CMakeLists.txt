@@ -358,6 +358,10 @@ target_sources(${TARGET} PRIVATE
   src/components/physics/CollisionBody.cpp
   src/components/physics/CollisionBody_ui_impl.cpp
   include/${CASQADIUM_SHORT}/components/physics/CollisionBody.hpp
+
+  src/components/physics/RigidBody.cpp
+  src/components/physics/RigidBody_ui_impl.cpp
+  include/${CASQADIUM_SHORT}/components/physics/RigidBody.hpp
 )
 
 if(${BUILD_SHARED_LIBS})

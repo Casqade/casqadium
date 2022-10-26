@@ -41,11 +41,13 @@
 #include <cqde/components/WantsMouseHidden.hpp>
 
 #include <cqde/components/physics/CollisionBody.hpp>
+#include <cqde/components/physics/RigidBody.hpp>
 
 #include <entt/entity/registry.hpp>
 
 #include <glm/gtx/compatibility.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
+#include <glm/ext/matrix_relational.hpp>
 
 #include <imgui.h>
 
@@ -622,9 +624,28 @@ PhysicsSystem(
           : registry.view <CollisionBody> (entt::exclude <SubscriberUpdate>).each() )
     cBody.body->setIsActive(false);
 
+  for ( auto&& [eBody, cBody]
+          : registry.view <RigidBody, SubscriberUpdate> ().each() )
+    cBody.body->setIsActive(true);
+
+  for ( auto&& [eBody, cBody]
+          : registry.view <RigidBody> (entt::exclude <SubscriberUpdate>).each() )
+    cBody.body->setIsActive(false);
+
   for ( auto&& [eBody, cTransform, cBody]
           : registry.view <Transform, CollisionBody, SubscriberUpdate> ().each() )
     cBody.body->setTransform(glmToRp3d(GetWorldMatrix(registry, eBody, cTransform)));
+
+  for ( auto&& [eBody, cTransform, cBody]
+          : registry.view <Transform, RigidBody, SubscriberUpdate> ().each() )
+  {
+    const auto transformCurrent = GetWorldMatrix(registry, eBody, cTransform);
+
+    if ( glm::all(glm::equal(transformCurrent,
+                             cBody.transformPrevious,
+                             glm::epsilon <float> ())) == false )
+      cBody.body->setTransform(glmToRp3d(transformCurrent));
+  }
 
   const auto& tick = registry.ctx().at <TickCurrent> ();
   const auto elapsed = tick.tickInterval;
@@ -638,8 +659,10 @@ PhysicsSystem(
   for ( auto&& [eBody, cTransform, cBody]
           : registry.view <Transform, RigidBody, SubscriberUpdate> ().each() )
   {
-    const auto matrixWorld = rp3dToGlm(cBody.body->getTransform());
+    auto matrixWorld = rp3dToGlm(cBody.body->getTransform());
     cBody.transformPrevious = matrixWorld;
+
+    matrixWorld = ToLocalSpace(matrixWorld, registry, eBody, cTransform);
 
     glm::vec3 nodeTranslation {};
     glm::quat nodeOrientation {};
