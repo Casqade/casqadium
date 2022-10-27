@@ -68,6 +68,11 @@ const static Json::Value rigidBodyJsonReference =
   jsonBodySleeping.setComment("// body 'sleeping' must be a JSON boolean"s,
                               Json::CommentPlacement::commentBefore);
 
+  auto& jsonBodySleepAllowed = jsonBody["sleepAllowed"];
+  jsonBodySleepAllowed = ValueType::booleanValue;
+  jsonBodySleepAllowed.setComment("// body 'sleepAllowed' must be a JSON boolean"s,
+                                  Json::CommentPlacement::commentBefore);
+
   auto& jsonBodyType = jsonBody["type"];
   jsonBodyType = ValueType::stringValue;
   jsonBodyType.setComment("// body 'type' must be a JSON string"s,
@@ -219,6 +224,7 @@ RigidBody::serialize() const
   {
     jsonBody["active"] = body->isActive();
     jsonBody["sleeping"] = body->isSleeping();
+    jsonBody["sleepAllowed"] = body->isAllowedToSleep();
     jsonBody["type"] = BodyTypeToString(body->getType());
     jsonBody["mass"] = body->getMass();
 
@@ -253,6 +259,7 @@ RigidBody::serialize() const
   {
     jsonBody["active"] = false;
     jsonBody["sleeping"] = false;
+    jsonBody["sleepAllowed"] = true;
     jsonBody["type"] = BodyTypeToString(rp3d::BodyType::STATIC);
     jsonBody["mass"] = 1.0f;
     jsonBody["massPropsFromColliders"] = massPropsFromColliders;
@@ -377,8 +384,9 @@ RigidBody::deserialize(
     comp.colliders.push_back(collider);
   }
 
-  comp.body->setIsActive(jsonBody["active"].asBool());
   comp.body->setIsSleeping(jsonBody["sleeping"].asBool());
+  comp.body->setIsAllowedToSleep(jsonBody["sleepAllowed"].asBool());
+  comp.body->setIsActive(jsonBody["active"].asBool());
 }
 
 } // namespace cqde::compos
