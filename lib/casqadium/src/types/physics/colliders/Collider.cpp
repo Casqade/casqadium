@@ -167,37 +167,43 @@ Collider::shapeDestroy()
 void
 Collider::onEnter(
   entt::registry& registry,
-  const entt::entity body1,
-  const entt::entity body2 )
+  const std::vector <std::any>& args )
 {
+  if ( mCallbacks.onEnter.empty() == true )
+    return;
+
   const auto& callbackManager = registry.ctx().at <CallbackManager> ();
 
   for ( const auto& callback : mCallbacks.onEnter )
-    callbackManager.execute(callback, registry, {body1, body2});
+    callbackManager.execute(callback, registry, args);
 }
 
 void
 Collider::onStay(
   entt::registry& registry,
-  const entt::entity body1,
-  const entt::entity body2 )
+  const std::vector <std::any>& args )
 {
+  if ( mCallbacks.onStay.empty() == true )
+    return;
+
   const auto& callbackManager = registry.ctx().at <CallbackManager> ();
 
   for ( const auto& callback : mCallbacks.onStay )
-    callbackManager.execute(callback, registry, {body1, body2});
+    callbackManager.execute(callback, registry, args);
 }
 
 void
 Collider::onLeave(
   entt::registry& registry,
-  const entt::entity body1,
-  const entt::entity body2 )
+  const std::vector <std::any>& args )
 {
+  if ( mCallbacks.onLeave.empty() == true )
+    return;
+
   const auto& callbackManager = registry.ctx().at <CallbackManager> ();
 
   for ( const auto& callback : mCallbacks.onLeave )
-    callbackManager.execute(callback, registry, {body1, body2});
+    callbackManager.execute(callback, registry, args);
 }
 
 Json::Value

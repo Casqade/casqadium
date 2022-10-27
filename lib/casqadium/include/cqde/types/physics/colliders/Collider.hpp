@@ -7,6 +7,9 @@
 
 #include <json/value.h>
 
+#include <any>
+#include <vector>
+
 
 namespace cqde::types
 {
@@ -40,16 +43,13 @@ public:
   void init( entt::registry&, rp3d::CollisionBody* );
 
   void onEnter( entt::registry&,
-                const entt::entity body1,
-                const entt::entity body2 );
+                const std::vector <std::any>& args );
 
   void onStay(  entt::registry&,
-                const entt::entity body1,
-                const entt::entity body2 );
+                const std::vector <std::any>& args );
 
   void onLeave( entt::registry&,
-                const entt::entity body1,
-                const entt::entity body2 );
+                const std::vector <std::any>& args );
 
 
   virtual void ui_show( const entt::registry& );
