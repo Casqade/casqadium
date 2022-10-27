@@ -316,7 +316,7 @@ Collider::ui_show(
         mCollider->setCollisionCategoryBits(state.collision.group.to_ulong());
 
       if ( state.collision.mask != statePrev.collision.mask )
-        mCollider->setCollisionCategoryBits(state.collision.mask.to_ulong());
+        mCollider->setCollideWithMaskBits(state.collision.mask.to_ulong());
 
       ImGui::EndTabBar(); // Collision
     }
