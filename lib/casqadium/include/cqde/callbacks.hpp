@@ -231,4 +231,9 @@ void unloadTextureAssets(
   entt::registry&,
   const std::vector <std::any>& args = {} );
 
+
+void forceEmitterCallback(
+  entt::registry&,
+  const std::vector <std::any>& args = {} );
+
 } // cqde::callbacks

@@ -374,6 +374,10 @@ target_sources(${TARGET} PRIVATE
   src/components/physics/RigidBody.cpp
   src/components/physics/RigidBody_ui_impl.cpp
   include/${CASQADIUM_SHORT}/components/physics/RigidBody.hpp
+
+  src/components/physics/ForceEmitter.cpp
+  src/components/physics/ForceEmitter_ui_impl.cpp
+  include/${CASQADIUM_SHORT}/components/physics/ForceEmitter.hpp
 )
 
 if(${BUILD_SHARED_LIBS})

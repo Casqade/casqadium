@@ -1,5 +1,7 @@
 #include <cqde/callbacks.hpp>
 
+#include <cqde/conversion/rp3d_glm.hpp>
+
 #include <cqde/types/TickCurrent.hpp>
 
 #include <cqde/types/CallbackManager.hpp>
@@ -10,7 +12,6 @@
 
 #include <cqde/types/input/InputManager.hpp>
 #include <cqde/types/input/InputBindingRelative.hpp>
-
 
 #include <cqde/types/ui/AssetManagerUi.hpp>
 #include <cqde/types/ui/EntityManagerUi.hpp>
@@ -53,6 +54,9 @@
 #include <cqde/components/assets/TextureAssetLoadList.hpp>
 #include <cqde/components/assets/TextureAssetUnloadList.hpp>
 
+#include <cqde/components/physics/RigidBody.hpp>
+#include <cqde/components/physics/ForceEmitter.hpp>
+
 #include <cqde/file_helpers.hpp>
 #include <cqde/json_helpers.hpp>
 #include <cqde/math_helpers.hpp>
@@ -61,6 +65,11 @@
 #include <olcPGE/olcPixelGameEngine.hpp>
 
 #include <entt/entity/registry.hpp>
+
+#include <glm/gtx/vector_query.hpp>
+#include <glm/gtx/compatibility.hpp>
+
+#include <reactphysics3d/body/RigidBody.h>
 
 #include <json/writer.h>
 
@@ -1333,6 +1342,54 @@ unloadTextureAssets(
   auto& audioManager = registry.ctx().at <TextureAssetManager> ();
 
   audioManager.unload(assetUnloadList->texturesToUnload);
+}
+
+void
+forceEmitterCallback(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using compos::RigidBody;
+  using compos::Transform;
+  using compos::ForceEmitter;
+
+  const auto eEmitter = std::any_cast <entt::entity> (args.at(0));
+  const auto eBody = std::any_cast <entt::entity> (args.at(1));
+
+  const auto [cTransform1, cEmitter] = registry.try_get <Transform, ForceEmitter> (eEmitter);
+  const auto [cTransform2, cBody] = registry.try_get <Transform, RigidBody> (eBody);
+
+  if ( cEmitter != nullptr &&
+       cBody != nullptr &&
+       cTransform1 != nullptr &&
+       cTransform2 != nullptr )
+  {
+    glm::vec3 direction {};
+
+    if ( glm::isNull(glm::vec3{cEmitter->force}, glm::epsilon <float> ()) == true )
+    {
+      const glm::vec3 emitterPos = GetWorldMatrix(registry, eEmitter, *cTransform1)[3];
+      const glm::vec3 bodyPos = GetWorldMatrix(registry, eBody, *cTransform2)[3];
+
+      direction = glm::normalize(emitterPos - bodyPos);
+    }
+    else
+    {
+      if ( cEmitter->useWorldSpace == true )
+        direction = glm::vec{cEmitter->force};
+
+      else
+        direction = ToWorldSpace(glm::vec3{cEmitter->force},
+                                 registry,
+                                 eEmitter,
+                                 *cTransform1);
+    }
+
+    const auto force = direction * cEmitter->force.w;
+
+    if ( glm::all(glm::isfinite(force)) == true )
+      cBody->body->applyWorldForceAtCenterOfMass(glmToRp3d(force));
+  }
 }
 
 } // namespace cqde::callbacks

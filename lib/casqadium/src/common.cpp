@@ -40,6 +40,7 @@
 
 #include <cqde/components/physics/CollisionBody.hpp>
 #include <cqde/components/physics/RigidBody.hpp>
+#include <cqde/components/physics/ForceEmitter.hpp>
 
 #include <cqde/types/CallbackManager.hpp>
 #include <cqde/types/EntityManager.hpp>
@@ -147,6 +148,7 @@ engineInit(
 
   entityManager.registerComponent <CollisionBody> ("CollisionBody");
   entityManager.registerComponent <RigidBody> ("RigidBody");
+  entityManager.registerComponent <ForceEmitter> ("ForceEmitter");
 
 //  Components-tags
   entityManager.registerEmptyComponent <CasqadiumEditorInternal> ("CasqadiumEditorInternal");
@@ -219,6 +221,8 @@ engineInit(
   callbackManager.Register("ControlPitchRelative", controlPitchRelative);
   callbackManager.Register("ControlYawRelative", controlYawRelative);
   callbackManager.Register("ControlRollRelative", controlRollRelative);
+
+  callbackManager.Register("ForceEmitterCallback", forceEmitterCallback);
 
   using Phase = System::Phase;
 
