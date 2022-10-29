@@ -30,8 +30,16 @@ windingOrder(
 types::VertexBuffer
 vertexShader(
   const std::vector <glm::vec3>& vertices,
-  const glm::mat4& modelViewMatrix,
-  const glm::mat4& projectionMatrix,
+  const glm::mat4& modelView,
+  const glm::mat4& projection,
+  const glm::vec4& viewport,
+  const float zNear );
+
+types::VertexBuffer
+vertexShader(
+  const std::vector <glm::vec3>& vertices,
+  const glm::mat4& modelView,
+  const glm::mat4& projection,
   const glm::vec4& viewport );
 
 void drawLines(
