@@ -328,6 +328,30 @@ RigidBody::deserialize(
   axisLockFactor << jsonBody["axisFactor"]["angular"];
   comp.body->setAngularLockAxisFactor(glmToRp3d(axisLockFactor));
 
+
+  const auto& colliderFactory = registry.ctx().at <ColliderFactory> ();
+  const auto& jsonColliders = json["colliders"];
+
+  for ( const auto& jsonCollider : jsonColliders )
+  {
+    const auto shapeId = jsonCollider["type"].asString();
+    const auto collider = colliderFactory.create(shapeId);
+
+    try
+    {
+      collider->deserialize(registry, comp.body, jsonCollider);
+    }
+    catch ( const std::exception& e )
+    {
+      throw std::runtime_error(
+        format("Failed to deserialize collider '{}': {}",
+                shapeId, e.what()));
+    }
+
+    comp.colliders.push_back(collider);
+  }
+
+
   comp.massPropsFromColliders = jsonBody["massPropsFromColliders"].asBool();
 
   if ( comp.massPropsFromColliders == true )
@@ -362,27 +386,6 @@ RigidBody::deserialize(
   velocity << jsonBody["velocity"]["angular"];
   comp.body->setAngularVelocity(glmToRp3d(velocity));
 
-  const auto& colliderFactory = registry.ctx().at <ColliderFactory> ();
-  const auto& jsonColliders = json["colliders"];
-
-  for ( const auto& jsonCollider : jsonColliders )
-  {
-    const auto shapeId = jsonCollider["type"].asString();
-    const auto collider = colliderFactory.create(shapeId);
-
-    try
-    {
-      collider->deserialize(registry, comp.body, jsonCollider);
-    }
-    catch ( const std::exception& e )
-    {
-      throw std::runtime_error(
-        format("Failed to deserialize collider '{}': {}",
-                shapeId, e.what()));
-    }
-
-    comp.colliders.push_back(collider);
-  }
 
   comp.body->setIsSleeping(jsonBody["sleeping"].asBool());
   comp.body->setIsAllowedToSleep(jsonBody["sleepAllowed"].asBool());
