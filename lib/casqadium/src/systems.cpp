@@ -188,6 +188,8 @@ EditorPhysicsDebugRenderSystem(
   debugRenderer.setIsDebugItemDisplayed(DebugItem::COLLISION_SHAPE, true);
   debugRenderer.setIsDebugItemDisplayed(DebugItem::CONTACT_POINT, true); // eats fps
   debugRenderer.setIsDebugItemDisplayed(DebugItem::CONTACT_NORMAL, true);
+  debugRenderer.setNbSectorsSphere(6);
+  debugRenderer.setNbStacksSphere(3);
 
   const auto& lines = debugRenderer.getLines();
   const auto& triangles = debugRenderer.getTriangles();
@@ -713,6 +715,8 @@ PhysicsDebugRenderSystem(
   debugRenderer.setIsDebugItemDisplayed(DebugItem::COLLISION_SHAPE, true);
   debugRenderer.setIsDebugItemDisplayed(DebugItem::CONTACT_POINT, true); // eats fps
   debugRenderer.setIsDebugItemDisplayed(DebugItem::CONTACT_NORMAL, true);
+  debugRenderer.setNbSectorsSphere(6);
+  debugRenderer.setNbStacksSphere(3);
 
   const auto& lines = debugRenderer.getLines();
   const auto& triangles = debugRenderer.getTriangles();
