@@ -740,8 +740,7 @@ PhysicsDebugRenderSystem(
         buffer,
         camView,
         camProjection,
-        camViewport,
-        cCamera.zRange.first );
+        camViewport );
 
       if ( vBuffer.depth < 0.0f )
         continue;
