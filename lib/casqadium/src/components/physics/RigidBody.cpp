@@ -369,6 +369,10 @@ RigidBody::deserialize(
     comp.body->setMass(jsonBody["mass"].asFloat());
   }
 
+  comp.body->setIsSleeping(jsonBody["sleeping"].asBool());
+  comp.body->setIsAllowedToSleep(jsonBody["sleepAllowed"].asBool());
+  comp.body->setIsActive(jsonBody["active"].asBool());
+
   glm::vec3 force {};
   force << jsonBody["force"];
   comp.body->applyWorldForceAtCenterOfMass(glmToRp3d(force));
@@ -385,11 +389,6 @@ RigidBody::deserialize(
 
   velocity << jsonBody["velocity"]["angular"];
   comp.body->setAngularVelocity(glmToRp3d(velocity));
-
-
-  comp.body->setIsSleeping(jsonBody["sleeping"].asBool());
-  comp.body->setIsAllowedToSleep(jsonBody["sleepAllowed"].asBool());
-  comp.body->setIsActive(jsonBody["active"].asBool());
 }
 
 } // namespace cqde::compos
