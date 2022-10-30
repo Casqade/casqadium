@@ -223,6 +223,7 @@ engineInit(
   callbackManager.Register("ControlRollRelative", controlRollRelative);
 
   callbackManager.Register("ForceEmitterCallback", forceEmitterCallback);
+  callbackManager.Register("GravityEmitterCallback", gravityEmitterCallback);
 
   using Phase = System::Phase;
 

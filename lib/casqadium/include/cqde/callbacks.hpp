@@ -236,4 +236,8 @@ void forceEmitterCallback(
   entt::registry&,
   const std::vector <std::any>& args = {} );
 
+void gravityEmitterCallback(
+  entt::registry&,
+  const std::vector <std::any>& args = {} );
+
 } // cqde::callbacks

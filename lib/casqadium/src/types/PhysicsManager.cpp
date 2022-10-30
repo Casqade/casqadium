@@ -12,6 +12,7 @@ PhysicsManager::PhysicsManager(
 
   PhysicsWorld::WorldSettings settings {};
   settings.worldName = "casqadium";
+  settings.gravity = {};
   settings.persistentContactDistanceThreshold = 0.03;
   settings.defaultFrictionCoefficient = 0.3;
   settings.defaultBounciness = 0.5;
@@ -20,6 +21,7 @@ PhysicsManager::PhysicsManager(
 
   mWorld = mCommon.createPhysicsWorld(settings);
   mWorld->setEventListener(&mEventListener);
+  mWorld->setIsGravityEnabled(false);
 }
 
 PhysicsManager::PhysicsWorld*
