@@ -222,7 +222,7 @@ EntityManagerUi::ui_show_entities_table(
   registry.sort <Tag> (
   [] ( const Tag& lhs, const Tag& rhs )
   {
-    return lhs.id < rhs.id;
+    return lhs.id.str() < rhs.id.str();
   });
 
   registry.view <Tag> ().each(
