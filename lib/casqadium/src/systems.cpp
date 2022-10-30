@@ -433,6 +433,9 @@ RenderSystem(
           }
         }
 
+        if ( decal == nullptr )
+          continue;
+
         if (  cCamera.lightingMode == Camera::LightingMode::Diffuse &&
               registry.all_of <LightTarget> (entity) == true )
             tint = buffer.tint.front();
