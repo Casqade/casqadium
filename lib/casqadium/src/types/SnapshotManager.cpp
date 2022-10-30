@@ -12,6 +12,8 @@
 #include <cqde/json_helpers.hpp>
 #include <cqde/util/logger.hpp>
 
+#include <cqde/components/SnapshotExcluded.hpp>
+
 #include <entt/entity/registry.hpp>
 
 #include <json/writer.h>
@@ -257,6 +259,13 @@ SnapshotManager::Load(
       format("Failed to load snapshot '{}': {}",
              snapshotPath.string(), e.what()));
   }
+
+  registry.each(
+  [&registry, &entityManager] ( const entt::entity entity )
+  {
+    if ( registry.all_of <compos::SnapshotExcluded> (entity) == false )
+      entityManager.removeLater(entity);
+  });
 
   auto& registrySnapshot = snapshot["registry"];
   auto& systemsSnapshot = snapshot["systems"];
