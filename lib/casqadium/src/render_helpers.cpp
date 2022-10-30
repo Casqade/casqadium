@@ -69,9 +69,11 @@ vertexClip(
 
   float distance {};
 
+  const float zNearEpsilon = zNear + glm::epsilon <float> ();
+
   const bool intersects =
     glm::intersectRayPlane(p0, direction,
-                           glm::vec3{glm::vec2{}, -zNear},
+                           glm::vec3{glm::vec2{}, -zNearEpsilon},
                            glm::vec3{glm::vec2{}, -1.0f},
                            distance);
 

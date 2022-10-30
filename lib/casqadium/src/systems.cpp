@@ -141,7 +141,7 @@ EditorCullingSystem(
         modelView,
         camProjection,
         camViewport,
-        cCamera->zRange.first + glm::epsilon <float> () );
+        cCamera->zRange.first );
 
       if ( vBuffer.depth < 0.0f )
         continue;
@@ -227,7 +227,7 @@ EditorPhysicsDebugRenderSystem(
         camView,
         camProjection,
         camViewport,
-        cCamera->zRange.first + glm::epsilon <float> ());
+        cCamera->zRange.first );
 
       if ( vBuffer.depth < 0.0f )
         continue;
@@ -251,7 +251,7 @@ EditorPhysicsDebugRenderSystem(
         camView,
         camProjection,
         camViewport,
-        cCamera->zRange.first + glm::epsilon <float> () );
+        cCamera->zRange.first );
 
       if ( vBuffer.depth < 0.0f )
         continue;
@@ -365,7 +365,7 @@ CullingSystem(
         modelView,
         camProjection,
         camViewport,
-        cCamera.zRange.first + glm::epsilon <float> () );
+        cCamera.zRange.first );
 
       if ( vBuffer.depth < 0.0f )
         continue;
@@ -740,7 +740,7 @@ PhysicsDebugRenderSystem(
         camView,
         camProjection,
         camViewport,
-        cCamera.zRange.first + glm::epsilon <float> () );
+        cCamera.zRange.first );
 
       if ( vBuffer.depth < 0.0f )
         continue;
@@ -764,7 +764,7 @@ PhysicsDebugRenderSystem(
         camView,
         camProjection,
         camViewport,
-        cCamera.zRange.first + glm::epsilon <float> () );
+        cCamera.zRange.first );
 
       if ( vBuffer.depth < 0.0f )
         continue;
