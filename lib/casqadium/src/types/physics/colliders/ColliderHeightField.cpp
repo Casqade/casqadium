@@ -31,7 +31,7 @@ const static Json::Value colliderHeightFieldJsonReference =
                   Json::CommentPlacement::commentBefore);
 
   auto& jsonTerrainId = root["terrainId"];
-  jsonTerrainId = ValueType::uintValue;
+  jsonTerrainId = ValueType::stringValue;
   jsonTerrainId.setComment("// 'terrainId' must be a JSON string"s,
                           Json::CommentPlacement::commentBefore);
 
