@@ -226,8 +226,7 @@ EditorPhysicsDebugRenderSystem(
         buffer,
         camView,
         camProjection,
-        camViewport,
-        cCamera->zRange.first );
+        camViewport );
 
       if ( vBuffer.depth < 0.0f )
         continue;
@@ -250,8 +249,7 @@ EditorPhysicsDebugRenderSystem(
         buffer,
         camView,
         camProjection,
-        camViewport,
-        cCamera->zRange.first );
+        camViewport );
 
       if ( vBuffer.depth < 0.0f )
         continue;
@@ -766,8 +764,7 @@ PhysicsDebugRenderSystem(
         buffer,
         camView,
         camProjection,
-        camViewport,
-        cCamera.zRange.first );
+        camViewport );
 
       if ( vBuffer.depth < 0.0f )
         continue;
