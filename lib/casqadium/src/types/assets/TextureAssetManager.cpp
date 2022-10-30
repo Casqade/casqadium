@@ -82,7 +82,7 @@ AssetManager <olc::Renderable>::initPlaceholders()
 
   insert(null_id, textureNull);
 
-  const auto textureError = textureFromText("ERROR", olc::RED, true);
+  const auto textureError = textureFromText("ERROR", olc::RED, olc::BLANK, true);
   insert("error"_id, textureError);
 }
 

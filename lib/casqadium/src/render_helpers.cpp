@@ -298,13 +298,14 @@ void drawLines(
 std::shared_ptr <olc::Renderable>
 textureFromText(
   const std::string& text,
-  const olc::Pixel& color,
+  const olc::Pixel& colorFg,
+  const olc::Pixel& colorBg,
   const bool monospaced )
 {
   olc::PixelGameEngine* pge = olc::renderer->ptrPGE;
 
-  const auto textSize = monospaced ?
-                          pge->GetTextSize(text)
+  const auto textSize = monospaced
+                        ? pge->GetTextSize(text)
                         : pge->GetTextSizeProp(text);
 
   auto texture = std::make_shared <olc::Renderable> ();
@@ -314,9 +315,11 @@ textureFromText(
 
   pge->SetDrawTarget(texture->Sprite());
 
+  pge->Clear(colorBg);
+
   monospaced ?
-      pge->DrawString({0, 0}, text, color)
-    : pge->DrawStringProp({0, 0}, text, color);
+      pge->DrawString({0, 0}, text, colorFg)
+    : pge->DrawStringProp({0, 0}, text, colorFg);
 
   pge->SetDrawTarget(drawTargetPrev);
 

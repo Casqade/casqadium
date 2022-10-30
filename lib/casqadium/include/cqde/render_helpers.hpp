@@ -49,8 +49,9 @@ void drawLines(
 
 std::shared_ptr <olc::Renderable> textureFromText(
   const std::string& text,
-  const olc::Pixel&,
-  const bool monospaced );
+  const olc::Pixel& colorFg,
+  const olc::Pixel& colorBg = olc::BLANK,
+  const bool monospaced = false );
 
 std::shared_ptr <olc::Renderable> textureFromText(
   const std::string& text,
