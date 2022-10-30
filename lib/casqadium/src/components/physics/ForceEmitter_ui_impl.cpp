@@ -25,13 +25,13 @@ ForceEmitter::ui_edit_props(
     ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
 
     ImGui::DragFloat("##forceX", &force.x, 0.01f,
-                     0.0f, 1.0f, "X: %.2f", flags);
+                     -1.0f, 1.0f, "X: %.2f", flags);
 
     ImGui::DragFloat("##forceY", &force.y, 0.01f,
-                     0.0f, 1.0f, "Y: %.2f", flags);
+                     -1.0f, 1.0f, "Y: %.2f", flags);
 
     ImGui::DragFloat("##forceZ", &force.z, 0.01f,
-                     0.0f, 1.0f, "Z: %.2f", flags);
+                     -1.0f, 1.0f, "Z: %.2f", flags);
 
     ImGui::DragFloat("##forceAmount", &force.w, 0.1f,
                      0.0f, 0.0f, "Amount %.2f", flags);
