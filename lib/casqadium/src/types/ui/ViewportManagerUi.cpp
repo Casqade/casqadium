@@ -285,8 +285,6 @@ ViewportManagerUi::ui_show_viewport_windows(
     {
       const auto& [cCamera, cCameraTransform] = registry.get <Camera, Transform> (eCamera);
 
-      cCamera.zBuffer.clear();
-
       auto camView = cCamera.viewMatrix(registry, eCamera, cCameraTransform);
       const auto camProjection = cCamera.projMatrix();
 
