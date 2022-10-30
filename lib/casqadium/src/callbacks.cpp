@@ -1359,37 +1359,34 @@ forceEmitterCallback(
   const auto [cTransform1, cEmitter] = registry.try_get <Transform, ForceEmitter> (eEmitter);
   const auto [cTransform2, cBody] = registry.try_get <Transform, RigidBody> (eBody);
 
-  if ( cEmitter != nullptr &&
-       cBody != nullptr &&
-       cTransform1 != nullptr &&
-       cTransform2 != nullptr )
+  if ( cEmitter == nullptr ||
+       cBody == nullptr ||
+       cTransform1 == nullptr ||
+       cTransform2 == nullptr )
+    return;
+
+  glm::vec3 direction {};
+
+  if ( glm::isNull(glm::vec3{cEmitter->force}, glm::epsilon <float> ()) == true )
   {
-    glm::vec3 direction {};
+    const glm::vec3 emitterPos = GetWorldMatrix(registry, eEmitter, *cTransform1)[3];
+    const glm::vec3 bodyPos = GetWorldMatrix(registry, eBody, *cTransform2)[3];
 
-    if ( glm::isNull(glm::vec3{cEmitter->force}, glm::epsilon <float> ()) == true )
-    {
-      const glm::vec3 emitterPos = GetWorldMatrix(registry, eEmitter, *cTransform1)[3];
-      const glm::vec3 bodyPos = GetWorldMatrix(registry, eBody, *cTransform2)[3];
-
-      direction = glm::normalize(emitterPos - bodyPos);
-    }
-    else
-    {
-      if ( cEmitter->useWorldSpace == true )
-        direction = glm::vec{cEmitter->force};
-
-      else
-        direction = ToWorldSpace(glm::vec3{cEmitter->force},
-                                 registry,
-                                 eEmitter,
-                                 *cTransform1);
-    }
-
-    const auto force = direction * cEmitter->force.w;
-
-    if ( glm::all(glm::isfinite(force)) == true )
-      cBody->body->applyWorldForceAtCenterOfMass(glmToRp3d(force));
+    direction = glm::normalize(emitterPos - bodyPos);
   }
+  else if ( cEmitter->useWorldSpace == true )
+    direction = glm::vec{cEmitter->force};
+
+  else
+    direction = ToWorldSpace(glm::vec3{cEmitter->force},
+                             registry,
+                             eEmitter,
+                             *cTransform1);
+
+  const auto force = direction * cEmitter->force.w;
+
+  if ( glm::all(glm::isfinite(force)) == true )
+    cBody->body->applyWorldForceAtCenterOfMass(glmToRp3d(force));
 }
 
 void
