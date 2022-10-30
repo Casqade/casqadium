@@ -1396,6 +1396,26 @@ void PixelGameEngine::DrawLineDecal(const olc::vf2d& pos1, const olc::vf2d& pos2
   vLayers[nTargetLayer].vecDecalInstance.push_back(di);
 }
 
+void PixelGameEngine::DrawPolyLineDecal(const std::vector<olc::vf2d>& pos, Pixel p)
+{
+  DecalInstance di;
+  di.decal = nullptr;
+  di.points = uint32_t(pos.size());
+  di.pos.resize(di.points);
+  di.uv.resize(di.points);
+  di.w.resize(di.points);
+  di.tint.resize(di.points);
+  for (uint32_t i = 0; i < di.points; i++)
+    {
+      di.pos[i] = { (pos[i].x * vInvScreenSize.x) * 2.0f - 1.0f, ((pos[i].y * vInvScreenSize.y) * 2.0f - 1.0f) * -1.0f };
+      di.uv[i] = { 0.0f, 0.0f };
+      di.tint[i] = p;
+      di.w[i] = 1.0f;
+    }
+  di.mode = olc::DecalMode::WIREFRAME;
+  vLayers[nTargetLayer].vecDecalInstance.push_back(di);
+}
+
 void PixelGameEngine::DrawRectDecal(const olc::vf2d& pos, const olc::vf2d& size, const olc::Pixel col)
 {
   DrawLineDecal(pos, {pos.x + size.x, pos.y}, col);

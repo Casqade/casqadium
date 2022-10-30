@@ -256,7 +256,7 @@ EditorPhysicsDebugRenderSystem(
 
       olc::Pixel color = triangle.color1;
       color.a = 255;
-      drawLines(vBuffer.vertices, color, LineRenderMode::Loop);
+      olc::renderer->ptrPGE->DrawPolyLineDecal(vBuffer.vertices, color);
     }
   }
 };
