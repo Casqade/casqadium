@@ -367,17 +367,11 @@
           "callbacks" : 
           {
             "onEnter" : 
-            [
-              "OnContactEnter"
-            ],
+            [],
             "onLeave" : 
-            [
-              "OnContactLeave"
-            ],
+            [],
             "onStay" : 
-            [
-              "OnContactStay"
-            ]
+            []
           },
           "collision" : 
           {
