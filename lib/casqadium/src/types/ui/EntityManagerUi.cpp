@@ -811,7 +811,11 @@ EntityManagerUi::prefabDeserialize(
 
   for ( const auto& entityId : prefab.getMemberNames() )
   {
-    idMap[entityId] = mEntityMgr->idGenerate(entityId);
+    idMap[entityId] = entityId;
+
+    if ( mEntityMgr->get(entityId) != entt::null )
+      idMap[entityId] = mEntityMgr->idGenerate(entityId);
+
     mEntityMgr->idRegister(idMap[entityId], entt::null);
   }
 

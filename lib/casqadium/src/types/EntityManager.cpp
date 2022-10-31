@@ -259,7 +259,7 @@ EntityManager::entityDeserialize(
   if ( entityId == null_id.str() )
     throw std::runtime_error("Failed to deserialize entity 'null': Invalid entity ID");
 
-  if ( mEntitiesTags.count(entityId) == 0 )
+  if ( get(entityId) == entt::null )
     LOG_DEBUG("Deserializing entity '{}'", entityId.str());
 
   else if ( idMap.count(entityId) > 0 )
