@@ -675,10 +675,16 @@ PhysicsSystem(
   for ( auto&& [eBody, cTransform, cBody]
           : registry.view <Transform, RigidBody, SubscriberUpdate> ().each() )
   {
-    auto matrixWorld = rp3dToGlm(cBody.body->getTransform());
-    cBody.transformPrevious = matrixWorld;
+    auto transformCurrent = rp3dToGlm(cBody.body->getTransform());
 
-    matrixWorld = ToLocalSpace(matrixWorld, registry, eBody, cTransform);
+    if ( glm::all(glm::equal(transformCurrent,
+                             cBody.transformPrevious,
+                             glm::epsilon <float> ())) == true )
+      continue;
+
+    cBody.transformPrevious = transformCurrent;
+
+    transformCurrent = ToLocalSpace(transformCurrent, registry, eBody, cTransform);
 
     glm::vec3 nodeTranslation {};
     glm::quat nodeOrientation {};
@@ -686,7 +692,7 @@ PhysicsSystem(
     glm::vec3 skew {};
     glm::vec4 perspective {};
 
-    glm::decompose( matrixWorld,
+    glm::decompose( transformCurrent,
                     nodeScale,
                     nodeOrientation,
                     nodeTranslation,
