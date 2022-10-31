@@ -58,7 +58,7 @@ const static Json::Value colliderJsonReference =
 
   jsonCallbacksOnStay.append(ValueType::stringValue);
   jsonCallbacksOnStay.begin()->setComment("// callbacks 'onStay' element must be a JSON string"s,
-                                        Json::CommentPlacement::commentBefore);
+                                          Json::CommentPlacement::commentBefore);
 
   auto& jsonCallbacksOnLeave = jsonCallbacks["onLeave"];
   jsonCallbacksOnLeave = Json::arrayValue;

@@ -188,8 +188,6 @@ vertexShader(
                             viewport.y * 2 + viewport.w - vertex.y });
   }
 
-  vb.depth /= vb.vertices.size();
-
   const Rect bb = boundingBox(vb.vertices);
 
   const Rect vp
@@ -203,6 +201,7 @@ vertexShader(
   if ( rectsIntersect(bb, vp) == false )
     return {{}, -1.0f};
 
+  vb.depth /= vb.vertices.size();
   vb.windingOrder = windingOrder(vb.vertices);
 
   return vb;

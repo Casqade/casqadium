@@ -408,7 +408,6 @@ RenderSystem(
       if ( cCamera.renderMode == Camera::RenderMode::Solid )
       {
         olc::Decal* decal {};
-        auto tint = olc::WHITE;
 
         if ( cCamera.textureMode == Camera::TextureMode::Textured )
         {
@@ -435,6 +434,8 @@ RenderSystem(
 
         if ( decal == nullptr )
           continue;
+
+        auto tint = olc::WHITE;
 
         if (  cCamera.lightingMode == Camera::LightingMode::Diffuse &&
               registry.all_of <LightTarget> (entity) == true )
