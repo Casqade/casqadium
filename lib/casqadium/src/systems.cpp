@@ -634,11 +634,19 @@ PhysicsSystem(
 
   for ( auto&& [eBody, cBody]
           : registry.view <RigidBody, SubscriberUpdate> ().each() )
-    cBody.body->setIsActive(true);
+    if ( cBody.body->isActive() == false )
+    {
+      cBody.body->setIsActive(true);
+      cBody.body->setIsSleeping(false);
+    }
 
   for ( auto&& [eBody, cBody]
           : registry.view <RigidBody> (entt::exclude <SubscriberUpdate>).each() )
-    cBody.body->setIsActive(false);
+    if ( cBody.body->isActive() == true )
+    {
+      cBody.body->setIsSleeping(true);
+      cBody.body->setIsActive(false);
+    }
 
   for ( auto&& [eBody, cTransform, cBody]
           : registry.view <Transform, CollisionBody, SubscriberUpdate> ().each() )
