@@ -449,7 +449,7 @@ RenderSystem(
         continue;
       }
 
-      drawLines(buffer.vertices, olc::GREY, LineRenderMode::Loop);
+      olc::renderer->ptrPGE->DrawPolyLineDecal(buffer.vertices, olc::GREY);
     }
   }
 }
@@ -789,7 +789,7 @@ PhysicsDebugRenderSystem(
 
       olc::Pixel color = triangle.color1;
       color.a = 255;
-      drawLines(vBuffer.vertices, color, LineRenderMode::Loop);
+      olc::renderer->ptrPGE->DrawPolyLineDecal(vBuffer.vertices, color);
     }
   }
 }
