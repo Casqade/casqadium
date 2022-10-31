@@ -284,7 +284,7 @@ EditorEntityHighlightSystem(
             : registry.view <Camera, CasqadiumEditorInternal> ().each() )
       for ( const auto& [vBuf, entity] : cCamera.zBuffer )
         if ( entity == selectedEntity )
-          drawLines(vBuf.vertices, olc::YELLOW, LineRenderMode::Loop);
+          olc::renderer->ptrPGE->DrawPolyLineDecal(vBuf.vertices, olc::YELLOW);
   }
 };
 
