@@ -477,7 +477,7 @@ LightingSystem(
   using compos::SubscriberUpdate;
 
   for ( auto&& [eCamera, cCamera]
-          : registry.view <Camera, SubscriberUpdate> ().each() )
+          : registry.view <Camera, const SubscriberUpdate> ().each() )
   {
     if ( cCamera.lightingMode != Camera::LightingMode::Diffuse )
       continue;
@@ -500,7 +500,7 @@ LightingSystem(
       olc::Pixel accumulatedLight {olc::BLACK};
 
       for ( const auto&& [eLightSrc, cLightSrcTransform, cLightSrc]
-              : registry.view <Transform, LightSource, SubscriberUpdate> ().each() )
+              : registry.view <const Transform, const LightSource, const SubscriberUpdate> ().each() )
       {
         const auto lightSrcPos
           = GetWorldMatrix(registry, eLightSrc, cLightSrcTransform)[3];

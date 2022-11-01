@@ -38,6 +38,7 @@ protected:
   virtual void shapeDeserialize( entt::registry&, const Json::Value& );
 
 public:
+  Collider() = default;
   virtual ~Collider();
 
   void init( entt::registry&, rp3d::CollisionBody* );

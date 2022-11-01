@@ -14,6 +14,9 @@
 int
 main( int, char* argv[] )
 {
+  using log_level = spdlog::level::level_enum;
+  using spdlog::sinks::stdout_color_sink_mt;
+  using spdlog::sinks::basic_file_sink_mt;
   using path = std::filesystem::path;
   using cqde::types::ConfigManager;
 
@@ -26,19 +29,19 @@ main( int, char* argv[] )
 
   std::vector <std::shared_ptr <spdlog::sinks::sink>> sinks {};
 
-  if ( configManager.logLevelCmd() < spdlog::level::level_enum::off )
+  if ( configManager.logLevelCmd() < log_level::off )
   {
-    auto stdoutSink = std::make_shared <spdlog::sinks::stdout_color_sink_mt> ();
+    auto stdoutSink = std::make_shared <stdout_color_sink_mt> ();
     stdoutSink->set_level(configManager.logLevelCmd());
 
     sinks.push_back(stdoutSink);
   }
 
-  if ( configManager.logLevelFile() < spdlog::level::level_enum::off )
+  if ( configManager.logLevelFile() < log_level::off )
   {
     try
     {
-      auto fileSink = std::make_shared <spdlog::sinks::basic_file_sink_mt> (logFilename, true);
+      auto fileSink = std::make_shared <basic_file_sink_mt> (logFilename, true);
       fileSink->set_level(configManager.logLevelFile());
       sinks.push_back(fileSink);
     }

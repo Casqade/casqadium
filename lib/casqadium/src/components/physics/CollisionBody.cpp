@@ -146,8 +146,7 @@ CollisionBody::deserialize(
     try
     {
       if ( collider == nullptr )
-        throw std::runtime_error(
-          format("Unknown collider type"));
+        throw std::runtime_error("Unknown collider type");
 
       collider->deserialize(registry, comp.body, jsonCollider);
     }
