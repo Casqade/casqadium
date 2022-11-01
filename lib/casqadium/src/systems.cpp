@@ -492,10 +492,7 @@ LightingSystem(
         continue;
 
       const auto [cLightTgtTransform, cTextureTint]
-        = registry.try_get <const Transform, TextureTint> (eLightTgt);
-
-      if ( cTextureTint == nullptr )
-        continue;
+        = registry.try_get <const Transform, const TextureTint> (eLightTgt);
 
       const auto lightTgtPos
         = GetWorldMatrix(registry, eLightTgt, *cLightTgtTransform)[3];
@@ -556,27 +553,31 @@ LightingSystem(
         }
       }
 
-      const glm::vec3 resultLight
+      const glm::vec4 resultLight
       {
         accumulatedLight.r / 255.0f,
         accumulatedLight.g / 255.0f,
         accumulatedLight.b / 255.0f,
+        1.0f
       };
 
-      glm::vec3 resultTint
-      {
-        cTextureTint->tint.r / 255.0f,
-        cTextureTint->tint.g / 255.0f,
-        cTextureTint->tint.b / 255.0f,
-      };
+      glm::vec4 resultTint {1.0f};
+
+      if ( cTextureTint != nullptr )
+        resultTint =
+        {
+          cTextureTint->tint.r / 255.0f,
+          cTextureTint->tint.g / 255.0f,
+          cTextureTint->tint.b / 255.0f,
+          cTextureTint->tint.a / 255.0f,
+        };
 
       resultTint *= resultLight;
 
       auto vb = buffer;
 
       vb.tint.front() = olc::PixelF(resultTint.r, resultTint.g,
-                                    resultTint.b,
-                                    cTextureTint->tint.a / 255.0f);
+                                    resultTint.b, resultTint.a);
 
       cCamera.zBuffer.emplace(vb, eLightTgt);
       iter = cCamera.zBuffer.erase(iter);
