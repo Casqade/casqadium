@@ -15,6 +15,8 @@ target_sources(${TARGET} PRIVATE
   include/${CASQADIUM_SHORT}/fwd.hpp
   include/${CASQADIUM_SHORT}/rp3d_fwd.hpp
 
+  include/${CASQADIUM_SHORT}/callbacks.hpp
+
   src/ecs_helpers.cpp
   include/${CASQADIUM_SHORT}/ecs_helpers.hpp
 
@@ -29,9 +31,6 @@ target_sources(${TARGET} PRIVATE
 
   src/render_helpers.cpp
   include/${CASQADIUM_SHORT}/render_helpers.hpp
-
-  src/callbacks.cpp
-  include/${CASQADIUM_SHORT}/callbacks.hpp
 
   src/common.cpp
   include/${CASQADIUM_SHORT}/common.hpp
@@ -378,6 +377,35 @@ target_sources(${TARGET} PRIVATE
   src/components/physics/ForceEmitter.cpp
   src/components/physics/ForceEmitter_ui_impl.cpp
   include/${CASQADIUM_SHORT}/components/physics/ForceEmitter.hpp
+
+
+#  Callbacks
+  src/callbacks/assets.cpp
+  include/${CASQADIUM_SHORT}/callbacks/assets.hpp
+
+  src/callbacks/editor.cpp
+  include/${CASQADIUM_SHORT}/callbacks/editor.hpp
+
+  src/callbacks/editor_camera_input.cpp
+  include/${CASQADIUM_SHORT}/callbacks/editor_camera_input.hpp
+
+  src/callbacks/editor_gizmo_input.cpp
+  include/${CASQADIUM_SHORT}/callbacks/editor_gizmo_input.hpp
+
+  src/callbacks/editor_input.cpp
+  include/${CASQADIUM_SHORT}/callbacks/editor_input.hpp
+
+  src/callbacks/entities.cpp
+  include/${CASQADIUM_SHORT}/callbacks/entities.hpp
+
+  src/callbacks/input.cpp
+  include/${CASQADIUM_SHORT}/callbacks/input.hpp
+
+  src/callbacks/physics.cpp
+  include/${CASQADIUM_SHORT}/callbacks/physics.hpp
+
+  src/callbacks/snapshots.cpp
+  include/${CASQADIUM_SHORT}/callbacks/snapshots.hpp
 )
 
 if(${BUILD_SHARED_LIBS})
