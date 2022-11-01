@@ -25,7 +25,7 @@ target_sources(${TARGET} PRIVATE
 
 set_target_properties(${TARGET} PROPERTIES
   CXX_STANDARD_REQUIRED ON
-  CXX_STANDARD 14
+  CXX_STANDARD 17
 )
 
 target_compile_options(${TARGET} PUBLIC -Og)

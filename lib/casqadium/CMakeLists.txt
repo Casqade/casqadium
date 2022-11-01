@@ -408,6 +408,11 @@ target_sources(${TARGET} PRIVATE
   include/${CASQADIUM_SHORT}/callbacks/snapshots.hpp
 )
 
+set_target_properties(${TARGET} PROPERTIES
+  CXX_STANDARD_REQUIRED ON
+  CXX_STANDARD 17
+)
+
 if(${BUILD_SHARED_LIBS})
   set(BUILD_SHARED_LIBS ON CACHE BOOL "" FORCE)
   set(SPDLOG_BUILD_SHARED ON CACHE BOOL "" FORCE)
