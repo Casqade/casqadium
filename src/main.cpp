@@ -8,15 +8,21 @@
 #include <cqde/util/logger.hpp>
 
 #include <iostream>
+#include <filesystem>
 
 
 int
-main( int , char*[] )
+main( int, char* argv[] )
 {
-  const std::string configFilename = "AnotherDayAtHospital.conf";
-  const std::string logFilename = "AnotherDayAtHospital.log";
+  using path = std::filesystem::path;
+  using cqde::types::ConfigManager;
 
-  const cqde::types::ConfigManager configManager (configFilename);
+  const auto executableName = path{argv[0]}.stem();
+
+  const auto configFilename = executableName.string() + ".conf";
+  const auto logFilename = executableName.string() + ".log";
+
+  const ConfigManager configManager (configFilename);
 
   std::vector <std::shared_ptr <spdlog::sinks::sink>> sinks {};
 
