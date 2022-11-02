@@ -74,7 +74,7 @@ struct Camera
   glm::vec4 viewportScaled() const;
 
   glm::mat4 projMatrix() const;
-  glm::mat4 viewMatrix( entt::registry&,
+  glm::mat4 viewMatrix( const entt::registry&,
                         const entt::entity,
                         const Transform& ) const;
 

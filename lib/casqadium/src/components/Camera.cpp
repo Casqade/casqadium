@@ -55,9 +55,9 @@ Camera::projMatrix() const
 
 glm::mat4
 Camera::viewMatrix(
-  entt::registry&   registry,
-  const entt::entity entity,
-  const Transform&  cTransform ) const
+  const entt::registry& registry,
+  const entt::entity    entity,
+  const Transform&      cTransform ) const
 {
   return glm::inverse(GetWorldMatrix(registry, entity, cTransform));
 }
