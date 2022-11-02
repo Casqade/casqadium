@@ -57,4 +57,18 @@ CallbackManager::callbacks() const
   return result;
 }
 
+std::vector <CallbackId>
+CallbackManager::callbacksSorted() const
+{
+  auto result = callbacks();
+
+  std::sort(result.begin(), result.end(),
+  [] ( const CallbackId& lhs, const CallbackId& rhs )
+  {
+    return lhs.str() < rhs.str();
+  });
+
+  return result;
+}
+
 } // namespace cqde::types

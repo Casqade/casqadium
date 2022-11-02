@@ -41,6 +41,7 @@ public:
                  const CallbackFunc& );
 
   std::vector <CallbackId> callbacks() const;
+  std::vector <CallbackId> callbacksSorted() const;
 };
 
 } // namespace cqde::types

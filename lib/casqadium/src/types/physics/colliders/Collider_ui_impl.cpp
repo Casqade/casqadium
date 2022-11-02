@@ -68,7 +68,7 @@ Collider::ui_show(
 
       auto& callbackManager = registry.ctx().at <CallbackManager> ();
 
-      for ( const auto& callbackId : callbackManager.callbacks() )
+      for ( const auto& callbackId : callbackManager.callbacksSorted() )
       {
         if ( callbackFilter.query(callbackId.str()) == false )
           continue;
