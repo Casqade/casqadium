@@ -2,6 +2,8 @@
 
 #include <entt/fwd.hpp>
 
+#include <cassert>
+
 
 // assert in debug build
 // handle condition safely in release
