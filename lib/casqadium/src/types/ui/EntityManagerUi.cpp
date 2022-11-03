@@ -167,7 +167,8 @@ EntityManagerUi::ui_show_filter_section(
                         mClipboard["payload"].empty() );
 
   if ( ImGui::Button("Paste##entityPaste") )
-    prefabDeserialize(registry, mClipboard["payload"]);
+    mEntityMgr->prefabDeserialize(registry, mClipboard["payload"],
+                                  mRegistryFilter.package());
 
   ImGui::EndDisabled();
 
@@ -200,7 +201,8 @@ EntityManagerUi::ui_show_entities_table(
 
       const auto prefab = *(const Json::Value*) payload->Data;
 
-      prefabDeserialize(registry, prefab);
+      mEntityMgr->prefabDeserialize(registry, prefab,
+                                    mRegistryFilter.package());
     }
     ImGui::EndDragDropTarget();
   }
@@ -553,7 +555,8 @@ EntityManagerUi::ui_show_nodes_table(
 
       const auto prefab = *(const Json::Value*) prefabPayload->Data;
 
-      prefabDeserialize(registry, prefab);
+      mEntityMgr->prefabDeserialize(registry, prefab,
+                                    mRegistryFilter.package());
     }
 
     ImGui::EndDragDropTarget();
@@ -797,37 +800,6 @@ EntityManagerUi::entitiesSave(
   });
 
   package->save(ContentType::Entities, entitiesJson);
-}
-
-void
-EntityManagerUi::prefabDeserialize(
-  entt::registry& registry,
-  const Json::Value& prefab )
-{
-  using compos::EntityMetaInfo;
-
-  std::unordered_map <EntityId, EntityId,
-                      identifier_hash> idMap {};
-
-  for ( const auto& entityId : prefab.getMemberNames() )
-  {
-    idMap[entityId] = entityId;
-
-    if ( mEntityMgr->get(entityId) != entt::null )
-      idMap[entityId] = mEntityMgr->idGenerate(entityId);
-
-    mEntityMgr->idRegister(idMap[entityId], entt::null);
-  }
-
-  for ( const auto& entityId : prefab.getMemberNames() )
-  {
-    const auto entity
-      = mEntityMgr->entityDeserialize(registry, entityId,
-                                      prefab[entityId], idMap);
-
-    auto& cMetaInfo = registry.emplace_or_replace <EntityMetaInfo> (entity);
-    cMetaInfo.packageId = mRegistryFilter.package();
-  }
 }
 
 void

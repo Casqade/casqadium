@@ -33,6 +33,10 @@ class EntityManager
                       std::vector <ComponentType>> mComponentsToRemove {};
 
 public:
+
+  using IdMap = std::unordered_map <EntityId, EntityId,
+                                    identifier_hash>;
+
   EntityManager() = default;
 
   static void Validate( const Json::Value& );
@@ -67,8 +71,12 @@ public:
     entt::registry&,
     EntityId,
     const Json::Value&,
-    const std::unordered_map <EntityId, EntityId,
-                              identifier_hash>& idMap = {} );
+    const IdMap& idMap = {} );
+
+  IdMap prefabDeserialize(
+    entt::registry&,
+    const Json::Value&,
+    const PackageId& );
 
 
   void componentAdd(
@@ -92,8 +100,7 @@ public:
     const entt::entity,
     const std::string& componentName,
     const Json::Value&,
-    const std::unordered_map <EntityId, EntityId,
-                              identifier_hash>& idMap = {} );
+    const IdMap& idMap = {} );
 
 
   template <typename Component>

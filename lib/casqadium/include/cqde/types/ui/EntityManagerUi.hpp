@@ -70,8 +70,6 @@ private:
   void ui_show_menu_bar( entt::registry& );
 
   void entitiesSave( const PackageId&, entt::registry& ) const;
-
-  void prefabDeserialize( entt::registry&, const Json::Value& );
 };
 
 } // namespace cqde::types

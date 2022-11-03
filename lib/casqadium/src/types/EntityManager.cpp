@@ -251,7 +251,7 @@ EntityManager::entityDeserialize(
   entt::registry& registry,
   EntityId entityId,
   const Json::Value& entityJson,
-  const std::unordered_map <EntityId, EntityId, identifier_hash>& idMap )
+  const IdMap& idMap )
 {
   using fmt::format;
   using compos::Tag;
@@ -301,6 +301,39 @@ EntityManager::entityDeserialize(
   return entity;
 }
 
+EntityManager::IdMap
+EntityManager::prefabDeserialize(
+  entt::registry& registry,
+  const Json::Value& prefab,
+  const PackageId& packageId )
+{
+  using compos::EntityMetaInfo;
+
+  IdMap idMap {};
+
+  for ( const auto& entityId : prefab.getMemberNames() )
+  {
+    idMap[entityId] = entityId;
+
+    if ( get(entityId) != entt::null )
+      idMap[entityId] = idGenerate(entityId);
+
+    idRegister(idMap[entityId], entt::null);
+  }
+
+  for ( const auto& entityId : prefab.getMemberNames() )
+  {
+    const auto entity
+      = entityDeserialize(registry, entityId,
+                          prefab[entityId], idMap);
+
+    auto& cMetaInfo = registry.emplace_or_replace <EntityMetaInfo> (entity);
+    cMetaInfo.packageId = packageId;
+  }
+
+  return idMap;
+}
+
 void
 EntityManager::componentAdd(
   const ComponentType componentType,
@@ -325,7 +358,7 @@ EntityManager::componentAdd(
   Json::Value componentJson = Json::objectValue;
   componentJson = serializeFunc.invoke(instance).cast <Json::Value> ();
 
-  const static std::unordered_map <EntityId, EntityId, identifier_hash> idMap {};
+  const static IdMap idMap {};
 
   const auto deserializeFunc = component.func("deserialize"_hs);
   deserializeFunc.invoke( {}, entt::forward_as_meta(registry),
@@ -399,8 +432,7 @@ EntityManager::componentDeserialize(
   const entt::entity entity,
   const std::string& componentName,
   const Json::Value& componentJson,
-  const std::unordered_map <EntityId, EntityId,
-                            identifier_hash>& idMap )
+  const IdMap& idMap )
 {
   using namespace entt::literals;
 
