@@ -61,8 +61,6 @@ target_sources(${TARGET} PRIVATE
   src/conversion/SoLoudBackendStringConverter.cpp
   include/${CASQADIUM_SHORT}/conversion/SoLoudBackendStringConverter.hpp
 
-  thirdparty/ctpl/ctpl_stl.h
-
 
 #  Classes & PODs
   include/${CASQADIUM_SHORT}/types/FrameCurrent.hpp
@@ -446,6 +444,14 @@ set(RP3D_DOUBLE_PRECISION_ENABLED OFF CACHE BOOL "" FORCE) # ReactPhysics3D
 
 include(FetchContent)
 
+FetchContent_Declare(ctpl
+  GIT_REPOSITORY git@github.com:Casqade/CTPL
+  GIT_TAG        master
+  GIT_SHALLOW    TRUE
+)
+FetchContent_MakeAvailable(ctpl)
+
+
 FetchContent_Declare(TimeUtils
   GIT_REPOSITORY git@gitlab.com:Casqade/timeutils.git
   GIT_TAG        main
@@ -518,6 +524,7 @@ endif()
 
 
 target_link_libraries(${TARGET} PUBLIC
+  ctpl::ctpl
   TimeUtils::TimeUtils
   EnTT::EnTT
   olcPGE::olcPGE

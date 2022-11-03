@@ -10,7 +10,7 @@
 #include <json/value.h>
 #include <json/reader.h>
 
-#include <thirdparty/ctpl/ctpl_stl.h>
+#include <ctpl/ctpl_stl.h>
 
 #include <imgui.h>
 

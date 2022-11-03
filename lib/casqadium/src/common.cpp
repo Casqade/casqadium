@@ -74,7 +74,7 @@
 
 #include <entt/entity/registry.hpp>
 
-#include <thirdparty/ctpl/ctpl_stl.h>
+#include <ctpl/ctpl_stl.h>
 
 
 namespace cqde
