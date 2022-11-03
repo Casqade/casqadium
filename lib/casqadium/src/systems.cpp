@@ -100,13 +100,10 @@ EditorCullingSystem(
   using types::GeometryAssetManager;
   using ui::ViewportManagerUi;
 
-  auto* pge = olc::renderer->ptrPGE;
+  const auto& const_registry = registry;
 
   auto& geometry = registry.ctx().at <GeometryAssetManager> ();
-  auto& viewportManagerUi = registry.ctx().at <ViewportManagerUi> ();
-
-  for ( const auto&& [eCamera, cCamera] : registry.view <Camera> ().each() )
-    cCamera.zBuffer.clear();
+  auto& viewportManagerUi = const_registry.ctx().at <ViewportManagerUi> ();
 
   for ( const auto& viewport : viewportManagerUi.viewports() )
   {
@@ -116,7 +113,7 @@ EditorCullingSystem(
       continue;
 
     const auto [cCamera, cCameraTransform]
-      = registry.try_get <Camera, Transform> (eCamera);
+      = registry.try_get <Camera, const Transform> (eCamera);
 
     if ( cCamera == nullptr ||
          cCameraTransform == nullptr )
@@ -149,6 +146,8 @@ EditorCullingSystem(
       cCamera->zBuffer.emplace( vBuffer, eDrawable );
     }
 
+    auto* pge = olc::renderer->ptrPGE;
+
     const uint32_t colorViewport = ImGui::GetColorU32(ImGuiCol_FrameBg);
     const uint32_t colorWindow = ImGui::GetColorU32(ImGuiCol_Border, 0.75f);
 
@@ -167,7 +166,7 @@ EditorCullingSystem(
 
 void
 EditorPhysicsDebugRenderSystem(
-  entt::registry& registry )
+  const entt::registry& registry )
 {
   using compos::Camera;
   using compos::Transform;
@@ -235,6 +234,7 @@ EditorPhysicsDebugRenderSystem(
 
       olc::Pixel color = line.color1;
       color.a = 255;
+
       drawLines(vBuffer.vertices, color, LineRenderMode::Strip);
     }
 
@@ -258,6 +258,7 @@ EditorPhysicsDebugRenderSystem(
 
       olc::Pixel color = triangle.color1;
       color.a = 255;
+
       olc::renderer->ptrPGE->DrawPolyLineDecal(vBuffer.vertices, color);
     }
   }
@@ -265,15 +266,15 @@ EditorPhysicsDebugRenderSystem(
 
 void
 EditorEntityHighlightSystem(
-  entt::registry& registry )
+  const entt::registry& registry )
 {
   using compos::Camera;
   using compos::CasqadiumEditorInternal;
   using types::EntityManager;
   using ui::EntityManagerUi;
 
-  const auto& entityManager   = registry.ctx().at <EntityManager> ();
-  const auto& entityManagerUi = registry.ctx().at <EntityManagerUi> ();
+  auto& entityManager   = registry.ctx().at <EntityManager> ();
+  auto& entityManagerUi = registry.ctx().at <EntityManagerUi> ();
 
   for ( const auto selectedEntity : entityManagerUi.selectedEntities() )
   {
@@ -290,7 +291,7 @@ EditorEntityHighlightSystem(
 
 void
 MouseCenteringSystem(
-  entt::registry& registry )
+  const entt::registry& registry )
 {
   using namespace compos;
 
@@ -317,7 +318,7 @@ MouseCenteringSystem(
 
 void
 MouseHidingSystem(
-  entt::registry& registry )
+  const entt::registry& registry )
 {
   using namespace compos;
 
@@ -339,13 +340,13 @@ CullingSystem(
   using namespace compos;
   using types::GeometryAssetManager;
 
+  const auto& const_registry = registry;
+
   auto& geometry = registry.ctx().at <GeometryAssetManager> ();
 
   for ( const auto&& [eCamera, cCamera, cCameraTransform]
-          : registry.view <Camera, Transform, SubscriberUpdate> ().each() )
+          : registry.view <Camera, const Transform, const SubscriberUpdate> ().each() )
   {
-    cCamera.zBuffer.clear();
-
     const glm::mat4 camView = cCamera.viewMatrix(registry, eCamera, cCameraTransform);
     const glm::mat4 camProjection = cCamera.projMatrix();
     const glm::vec4 camViewport = cCamera.viewportScaled();
@@ -392,6 +393,8 @@ RenderSystem(
   using namespace compos;
   using namespace types;
 
+  const auto& const_registry = registry;
+
   registry.sort <Camera> (
   [] ( const Camera& lhs, const Camera& rhs )
   {
@@ -399,7 +402,7 @@ RenderSystem(
   });
 
   for ( const auto&& [eCamera, cCamera]
-          : registry.view <Camera> ().each() )
+          : const_registry.view <Camera> ().each() )
   {
     for ( const auto& [buffer, entity] : cCamera.zBuffer )
     {
@@ -411,7 +414,7 @@ RenderSystem(
 
         if ( cCamera.textureMode == Camera::TextureMode::Textured )
         {
-          const TextureBuffer* textureBuffer = registry.try_get <TextureBuffer> (entity);
+          const TextureBuffer* textureBuffer = const_registry.try_get <TextureBuffer> (entity);
           if ( textureBuffer != nullptr )
           {
             if ( (textureBuffer->textures.size() > 0 &&
@@ -441,7 +444,7 @@ RenderSystem(
               registry.all_of <LightTarget> (entity) == true )
             tint = buffer.tint.front();
 
-        else if ( auto cTextureTint = registry.try_get <TextureTint> (entity);
+        else if ( auto cTextureTint = const_registry.try_get <TextureTint> (entity);
                   cTextureTint != nullptr )
           tint = cTextureTint->tint;
 
@@ -476,6 +479,8 @@ LightingSystem(
   using compos::Transform;
   using compos::SubscriberUpdate;
 
+  const auto& const_registry = registry;
+
   for ( auto&& [eCamera, cCamera]
           : registry.view <Camera, const SubscriberUpdate> ().each() )
   {
@@ -492,7 +497,7 @@ LightingSystem(
         continue;
 
       const auto [cLightTgtTransform, cTextureTint]
-        = registry.try_get <const Transform, const TextureTint> (eLightTgt);
+        = const_registry.try_get <Transform, TextureTint> (eLightTgt);
 
       const auto lightTgtPos
         = GetWorldMatrix(registry, eLightTgt, *cLightTgtTransform)[3];
@@ -519,7 +524,8 @@ LightingSystem(
         glm::vec3 lightDir {};
 
         if ( cLightSrc.type != LightSource::Type::Ambient )
-          normal = glm::rotate( ToWorldSpace( cLightTgtTransform->orientation, registry,
+          normal = glm::rotate( ToWorldSpace( cLightTgtTransform->orientation,
+                                              registry,
                                               eLightTgt, *cLightTgtTransform),
                                 {0.0f, 0.0f, 1.0f});
 
@@ -541,7 +547,8 @@ LightingSystem(
           }
           case LightSource::Type::Directional:
           {
-            lightDir = glm::rotate( ToWorldSpace( cLightSrcTransform.orientation, registry,
+            lightDir = glm::rotate( ToWorldSpace( cLightSrcTransform.orientation,
+                                                  registry,
                                                   eLightTgt, cLightSrcTransform),
                                     {0.0f, 0.0f, 1.0f});
 
@@ -575,12 +582,13 @@ LightingSystem(
       resultTint *= resultLight;
 
       auto vb = buffer;
+      auto& tint = vb.tint.front();
 
-      vb.tint.front() = olc::PixelF(resultTint.r, resultTint.g,
-                                    resultTint.b, resultTint.a);
+      tint = olc::PixelF( resultTint.r, resultTint.g,
+                          resultTint.b, resultTint.a );
 
-      cCamera.zBuffer.emplace(vb, eLightTgt);
-      iter = cCamera.zBuffer.erase(iter);
+      cCamera.zBuffer.erase(iter);
+      iter = cCamera.zBuffer.emplace(vb, eLightTgt);
     }
   }
 }
@@ -625,6 +633,8 @@ PhysicsSystem(
   using types::TickCurrent;
   using types::PhysicsManager;
 
+  const auto& const_registry = registry;
+
   for ( auto&& [eBody, cBody]
           : registry.view <CollisionBody, SubscriberUpdate> ().each() )
     cBody.body->setIsActive(true);
@@ -649,12 +659,14 @@ PhysicsSystem(
       cBody.body->setIsActive(false);
     }
 
+//  todo: parallelize
   for ( auto&& [eBody, cTransform, cBody]
-          : registry.view <Transform, CollisionBody, SubscriberUpdate> ().each() )
+          : registry.view <const Transform, CollisionBody, const SubscriberUpdate> ().each() )
     cBody.body->setTransform(glmToRp3d(GetWorldMatrix(registry, eBody, cTransform)));
 
+//  todo: parallelize
   for ( auto&& [eBody, cTransform, cBody]
-          : registry.view <Transform, RigidBody, SubscriberUpdate> ().each() )
+          : registry.view <const Transform, RigidBody, const SubscriberUpdate> ().each() )
   {
     const auto transformCurrent = GetWorldMatrix(registry, eBody, cTransform);
 
@@ -664,17 +676,17 @@ PhysicsSystem(
       cBody.body->setTransform(glmToRp3d(transformCurrent));
   }
 
-  const auto& tick = registry.ctx().at <TickCurrent> ();
+  auto& tick = const_registry.ctx().at <TickCurrent> ();
   const auto elapsed = tick.tickInterval;
 
-  auto& physicsManager = registry.ctx().at <PhysicsManager> ();
+  auto& physicsManager = const_registry.ctx().at <PhysicsManager> ();
 
   physicsManager.world()->update(static_cast <rp3d::decimal> (elapsed));
 
 //  todo: sort transform by sceneNode depth ?
 
   for ( auto&& [eBody, cTransform, cBody]
-          : registry.view <Transform, RigidBody, SubscriberUpdate> ().each() )
+          : registry.view <Transform, RigidBody, const SubscriberUpdate> ().each() )
   {
     auto transformCurrent = rp3dToGlm(cBody.body->getTransform());
 
@@ -712,7 +724,7 @@ PhysicsSystem(
 
 void
 PhysicsDebugRenderSystem(
-  entt::registry& registry )
+  const entt::registry& registry )
 {
   using compos::Camera;
   using compos::Transform;

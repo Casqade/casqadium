@@ -260,6 +260,7 @@ SnapshotManager::Load(
              snapshotPath.string(), e.what()));
   }
 
+//  todo: replace with registry.view <void> when it becomes available
   registry.each(
   [&registry, &entityManager] ( const entt::entity entity )
   {

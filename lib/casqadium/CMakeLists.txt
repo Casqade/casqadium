@@ -466,7 +466,7 @@ FetchContent_Declare(EnTT
   GIT_SHALLOW    TRUE
 )
 
-if(CMAKE_BUILD_TYPE MATCHES RELEASE)
+if(NOT CMAKE_BUILD_TYPE STREQUAL DEBUG)
   target_compile_definitions(${TARGET} PUBLIC ENTT_DISABLE_ASSERT)
 endif()
 
@@ -516,10 +516,8 @@ FetchContent_MakeAvailable(soloud)
 
 if(${BUILD_SHARED_LIBS})
   target_compile_definitions(glm_shared PUBLIC GLM_FORCE_DEPTH_ZERO_TO_ONE)
-#  target_compile_definitions(glm_shared PRIVATE GLM_FORCE_MESSAGES)
 else()
   target_compile_definitions(glm_static PUBLIC GLM_FORCE_DEPTH_ZERO_TO_ONE)
-#  target_compile_definitions(glm_static PRIVATE GLM_FORCE_MESSAGES)
 endif()
 
 
