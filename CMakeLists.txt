@@ -30,7 +30,7 @@ set_target_properties(${TARGET} PROPERTIES
 
 target_compile_options(${TARGET} PUBLIC -Og)
 
-if(CMAKE_BUILD_TYPE STREQUAL DEBUG)
+if(CMAKE_BUILD_TYPE STREQUAL "Debug")
 #  target_link_libraries(${TARGET} PUBLIC -mconsole)
   set_target_properties(${TARGET} PROPERTIES
     WIN32_EXECUTABLE FALSE

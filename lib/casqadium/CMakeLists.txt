@@ -466,7 +466,7 @@ FetchContent_Declare(EnTT
   GIT_SHALLOW    TRUE
 )
 
-if(NOT CMAKE_BUILD_TYPE STREQUAL DEBUG)
+if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
   target_compile_definitions(${TARGET} PUBLIC ENTT_DISABLE_ASSERT)
 endif()
 
