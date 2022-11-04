@@ -439,6 +439,11 @@ set(JSONCPP_WITH_PKGCONFIG_SUPPORT OFF CACHE BOOL "" FORCE)
 set(SPDLOG_NO_ATOMIC_LEVELS ON CACHE BOOL "" FORCE)
 set(SPDLOG_DISABLE_DEFAULT_LOGGER ON CACHE BOOL "" FORCE)
 
+set(TBB_TEST OFF CACHE BOOL "" FORCE) # TBB
+set(TBB_STRICT OFF CACHE BOOL "" FORCE)
+set(TBBMALLOC_BUILD OFF CACHE BOOL "" FORCE)
+set(TBB_DISABLE_HWLOC_AUTOMATIC_SEARCH ON CACHE BOOL "" FORCE)
+
 set(RP3D_DOUBLE_PRECISION_ENABLED OFF CACHE BOOL "" FORCE) # ReactPhysics3D
 
 
@@ -497,6 +502,14 @@ FetchContent_Declare(spdlog
 FetchContent_MakeAvailable(spdlog)
 
 
+FetchContent_Declare(tbb
+  GIT_REPOSITORY https://github.com/oneapi-src/oneTBB
+  GIT_TAG        v2021.7.0
+  GIT_SHALLOW    TRUE
+)
+FetchContent_MakeAvailable(tbb)
+
+
 FetchContent_Declare(ReactPhysics3D
   GIT_REPOSITORY https://github.com/Casqade/reactphysics3d
   GIT_TAG        master
@@ -520,6 +533,8 @@ else()
   target_compile_definitions(glm_static PUBLIC GLM_FORCE_DEPTH_ZERO_TO_ONE)
 endif()
 
+target_compile_options(tbb PUBLIC -msse4.1)
+target_compile_definitions(tbb PUBLIC TBB_USE_PROFILING_TOOLS=0)
 
 target_link_libraries(${TARGET} PUBLIC
   ctpl::ctpl
@@ -527,6 +542,7 @@ target_link_libraries(${TARGET} PUBLIC
   EnTT::EnTT
   olcPGE::olcPGE
   spdlog::spdlog
+  TBB::tbb
   ReactPhysics3D::reactphysics3d
   soloud
 )

@@ -51,6 +51,8 @@
 
 #include <imgui.h>
 
+#include <execution>
+
 
 namespace cqde::systems
 {
@@ -123,13 +125,25 @@ EditorCullingSystem(
     const auto camProjection = cCamera->projMatrix();
     const auto camViewport = viewport.viewport;
 
-    for ( const auto&& [eDrawable, cGeometryBuffer, cTransform]
-            : registry.view <GeometryBuffer, Transform>().each() )
+    std::recursive_mutex zBufferMutex {};
+
+    auto drawablesView = const_registry.view <GeometryBuffer, Transform> ();
+
+    const auto& handle = drawablesView.handle();
+
+    std::for_each(std::execution::par_unseq, handle.begin(), handle.end(),
+    [&, cCamera = cCamera] ( const auto eDrawable )
     {
+      if ( drawablesView.contains(eDrawable) == false )
+        return;
+
+      const auto&& [cGeometryBuffer, cTransform]
+        = drawablesView.get <const GeometryBuffer, const Transform> (eDrawable);
+
       const auto gBuffer = geometry.get(cGeometryBuffer.buffer);
 
       if ( gBuffer == nullptr )
-        continue;
+        return;
 
       const glm::mat4 modelView = camView * GetWorldMatrix(registry, eDrawable, cTransform);
 
@@ -141,10 +155,11 @@ EditorCullingSystem(
         cCamera->zRange.first );
 
       if ( vBuffer.depth < 0.0f )
-        continue;
+        return;
 
+      std::lock_guard lock {zBufferMutex};
       cCamera->zBuffer.emplace( vBuffer, eDrawable );
-    }
+    });
 
     auto* pge = olc::renderer->ptrPGE;
 
@@ -351,13 +366,25 @@ CullingSystem(
     const glm::mat4 camProjection = cCamera.projMatrix();
     const glm::vec4 camViewport = cCamera.viewportScaled();
 
-    for ( const auto&& [eDrawable, cGeometryBuffer, cTransform]
-            : registry.view <GeometryBuffer, Transform>().each() )
+    std::recursive_mutex zBufferMutex {};
+
+    auto drawablesView = const_registry.view <GeometryBuffer, Transform> ();
+
+    const auto& handle = drawablesView.handle();
+
+    std::for_each(std::execution::par_unseq, handle.begin(), handle.end(),
+    [&, cCamera = &cCamera] ( const auto eDrawable )
     {
+      if ( drawablesView.contains(eDrawable) == false )
+        return;
+
+      const auto&& [cGeometryBuffer, cTransform]
+        = drawablesView.get <const GeometryBuffer, const Transform> (eDrawable);
+
       const auto gBuffer = geometry.get(cGeometryBuffer.buffer);
 
       if ( gBuffer == nullptr )
-        continue;
+        return;
 
       const glm::mat4 modelView = camView * GetWorldMatrix(registry, eDrawable, cTransform);
 
@@ -366,13 +393,14 @@ CullingSystem(
         modelView,
         camProjection,
         camViewport,
-        cCamera.zRange.first );
+        cCamera->zRange.first );
 
       if ( vBuffer.depth < 0.0f )
-        continue;
+        return;
 
-      cCamera.zBuffer.emplace( vBuffer, eDrawable );
-    }
+      std::lock_guard lock {zBufferMutex};
+      cCamera->zBuffer.emplace( vBuffer, eDrawable );
+    });
   }
 }
 
@@ -502,18 +530,27 @@ LightingSystem(
       const auto lightTgtPos
         = GetWorldMatrix(registry, eLightTgt, *cLightTgtTransform)[3];
 
+      std::mutex accumulatedLightMutex {};
       olc::Pixel accumulatedLight {olc::BLACK};
 
-      for ( const auto&& [eLightSrc, cLightSrcTransform, cLightSrc]
-              : registry.view <const Transform, const LightSource, const SubscriberUpdate> ().each() )
+      const auto lightSourcesView
+          = const_registry.view <Transform, LightSource, SubscriberUpdate> ();
+
+      const auto& handle = lightSourcesView.handle();
+
+      std::for_each(std::execution::par_unseq, handle.begin(), handle.end(),
+      [&, cLightTgtTransform = cLightTgtTransform, eLightTgt = eLightTgt] ( const auto eLightSrc )
       {
+        const auto&& [cLightSrcTransform, cLightSrc]
+          = lightSourcesView.get <const Transform, const LightSource> (eLightSrc);
+
         const auto lightSrcPos
           = GetWorldMatrix(registry, eLightSrc, cLightSrcTransform)[3];
 
         const auto distance = glm::length(lightTgtPos - lightSrcPos);
 
         if ( distance >= cLightSrc.radius )
-          continue;
+          return;
 
         const float attenuation = 1.0f
           / ( cLightSrc.attenuationConstant
@@ -533,6 +570,7 @@ LightingSystem(
         {
           case LightSource::Type::Ambient:
           {
+            std::lock_guard lock {accumulatedLightMutex};
             accumulatedLight += cLightSrc.color * attenuation;
             break;
           }
@@ -542,7 +580,9 @@ LightingSystem(
 
             const float diffuse = glm::max(glm::dot(normal, lightDir), 0.0f);
 
+            std::lock_guard lock {accumulatedLightMutex};
             accumulatedLight += cLightSrc.color * attenuation * diffuse;
+
             break;
           }
           case LightSource::Type::Directional:
@@ -554,11 +594,13 @@ LightingSystem(
 
             const float diffuse = glm::max(glm::dot(normal, lightDir), 0.0f);
 
+            std::lock_guard lock {accumulatedLightMutex};
             accumulatedLight += cLightSrc.color * attenuation * diffuse;
+
             break;
           }
         }
-      }
+      });
 
       const glm::vec4 resultLight
       {
