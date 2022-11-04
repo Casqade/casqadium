@@ -10,6 +10,64 @@ EventHandler::EventHandler( const PixelGameEngine* const pge )
   : mPGE(pge)
 {}
 
+bool
+EventHandler::acceptKeyHeldEvent(
+  const Event& event ) const
+{
+  using EventType = Event::EventType;
+
+  if ( event.type != EventType::KeyHeld )
+    return true;
+
+  for ( auto iter = mEvents.rbegin();
+        iter < mEvents.rend();
+        ++iter )
+  {
+    if (  event.key.code != iter->key.code ||
+          iter->type != EventType::KeyHeld )
+      continue;
+
+    for ( ; iter > mEvents.rbegin();
+          --iter )
+      if (  event.key.code == iter->key.code &&
+            iter->type == EventType::KeyPressed )
+        return true;
+
+    return false;
+  }
+
+  return true;
+}
+
+bool
+EventHandler::acceptButtonHeldEvent(
+  const Event& event ) const
+{
+  using EventType = Event::EventType;
+
+  if ( event.type != EventType::MouseButtonHeld )
+    return true;
+
+  for ( auto iter = mEvents.rbegin();
+        iter < mEvents.rend();
+        ++iter )
+  {
+    if (  event.mouseButton.button != iter->mouseButton.button ||
+          iter->type != EventType::MouseButtonHeld )
+      continue;
+
+    for ( ; iter > mEvents.rbegin();
+          --iter )
+      if (  event.mouseButton.button == iter->mouseButton.button &&
+            iter->type == EventType::MouseButtonPressed )
+        return true;
+
+    return false;
+  }
+
+  return true;
+}
+
 void
 EventHandler::update()
 {
@@ -54,6 +112,9 @@ EventHandler::update()
         key < Key::ENUM_END;
         ++key )
   {
+    if ( ImGui::GetIO().WantCaptureKeyboard == true )
+      continue;
+
     Event event;
 
     const HWButton keyState = mPGE->GetKey(Key(key));
@@ -72,7 +133,7 @@ EventHandler::update()
 
     event.key.code = Key(key);
 
-    if ( ImGui::GetIO().WantCaptureKeyboard == false )
+    if ( acceptKeyHeldEvent(event) == true )
       mEvents.push_back(event);
   }
 
@@ -122,10 +183,14 @@ EventHandler::update()
       continue;
 
     event.mouseButton.button = Event::MouseButton(button);
-    event.mouseButton.x = mousePos.x;
-    event.mouseButton.y = mousePos.y;
 
-    mEvents.push_back(event);
+    if ( acceptButtonHeldEvent(event) == true )
+    {
+      event.mouseButton.x = mousePos.x;
+      event.mouseButton.y = mousePos.y;
+
+      mEvents.push_back(event);
+    }
   }
 
   const int32_t mouseWheel = mPGE->GetMouseWheel();

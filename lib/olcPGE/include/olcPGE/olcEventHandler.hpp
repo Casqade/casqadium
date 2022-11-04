@@ -16,6 +16,9 @@ class OLCPGE_EXPORT EventHandler
 
   std::deque <olc::Event> mEvents;
 
+  bool acceptKeyHeldEvent( const Event& ) const;
+  bool acceptButtonHeldEvent( const Event& ) const;
+
 public:
   EventHandler() = delete;
   EventHandler( const PixelGameEngine* const );
