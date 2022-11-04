@@ -71,6 +71,8 @@ EventHandler::acceptButtonHeldEvent(
 void
 EventHandler::update()
 {
+  using EventType = Event::EventType;
+
   const bool isInFocus = mPGE->IsFocused();
   static bool wasInFocus = isInFocus;
 
@@ -79,9 +81,9 @@ EventHandler::update()
     Event event;
 
     if ( isInFocus )
-      event.type = Event::EventType::GainedFocus;
+      event.type = EventType::GainedFocus;
     else
-      event.type = Event::EventType::LostFocus;
+      event.type = EventType::LostFocus;
 
     mEvents.push_back(event);
 
@@ -98,7 +100,7 @@ EventHandler::update()
   {
     Event event;
 
-    event.type = Event::EventType::WindowResized;
+    event.type = EventType::WindowResized;
 
     event.windowResize.newSize = windowSize;
     event.windowResize.oldSize = windowSizePrev;
@@ -120,13 +122,13 @@ EventHandler::update()
     const HWButton keyState = mPGE->GetKey(Key(key));
 
     if ( keyState.bPressed )
-      event.type = Event::EventType::KeyPressed;
+      event.type = EventType::KeyPressed;
 
     else if ( keyState.bReleased )
-      event.type = Event::EventType::KeyReleased;
+      event.type = EventType::KeyReleased;
 
     else if ( keyState.bHeld )
-      event.type = Event::EventType::KeyHeld;
+      event.type = EventType::KeyHeld;
 
     else
       continue;
@@ -150,7 +152,7 @@ EventHandler::update()
 
     Event event;
 
-    event.type = Event::EventType::MouseMoved;
+    event.type = EventType::MouseMoved;
 
     event.mouseMove.x = mousePos.x;
     event.mouseMove.y = mousePos.y;
@@ -171,13 +173,13 @@ EventHandler::update()
     const HWButton mouseState = mPGE->GetMouse(button);
 
     if ( mouseState.bPressed )
-      event.type = Event::EventType::MouseButtonPressed;
+      event.type = EventType::MouseButtonPressed;
 
     else if ( mouseState.bReleased )
-      event.type = Event::EventType::MouseButtonReleased;
+      event.type = EventType::MouseButtonReleased;
 
     else if ( mouseState.bHeld )
-      event.type = Event::EventType::MouseButtonHeld;
+      event.type = EventType::MouseButtonHeld;
 
     else
       continue;
@@ -200,7 +202,7 @@ EventHandler::update()
   {
     Event event;
 
-    event.type = Event::EventType::MouseWheelScrolled;
+    event.type = EventType::MouseWheelScrolled;
 
     event.mouseWheelScroll.delta = mouseWheel;
     event.mouseWheelScroll.x = mousePos.x;
