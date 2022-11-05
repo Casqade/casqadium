@@ -236,20 +236,17 @@ PackageManagerUi::ui_show_menu_bar(
 
     for ( auto& packageId : packages )
     {
-      const auto package = mPackageMgr->package(packageId.asString());
-
-      if ( package == nullptr )
-      {
-        LOG_ERROR("Failed to write packages: Unknown package '{}'",
-                  packageId.asString());
-
-        return ImGui::EndMenuBar();
-      }
-
       if ( mConfigState.packages.isMember(packageId.asString()) == false )
         continue;
 
-      package->save(ContentType::Manifest, mConfigState.packages[packageId.asString()]);
+      auto package = mPackageMgr->package(packageId.asString());
+      const auto packageManifest = mConfigState.packages[packageId.asString()];
+
+      if ( package == nullptr )
+        mPackageMgr->create(packageId.asString(), packageManifest);
+
+      else
+        package->save(ContentType::Manifest, packageManifest);
     }
 
     const auto streamFlags = std::ios::out |
