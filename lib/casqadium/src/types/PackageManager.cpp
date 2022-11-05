@@ -152,6 +152,40 @@ PackageManager::unload()
   mPackages.clear();
 }
 
+void
+PackageManager::create(
+  const PackageId& packageId,
+  const Json::Value& manifest )
+{
+  using fmt::format;
+  using ContentType = Package::ContentType;
+
+  for ( const auto& package : mPackages )
+    if ( package.id() == packageId )
+      throw std::runtime_error(
+        format("Failed to create package '{}': Package already exists",
+               packageId.str()));
+
+  Package package {packageId};
+
+  package.setRootPath(mPackagesRootPath / packageId.str());
+
+  try
+  {
+    package.deserialize(manifest);
+  }
+  catch ( const std::exception& e )
+  {
+    throw std::runtime_error(
+      format("Failed to create package '{}': {}",
+             packageId.str(), e.what()));
+  }
+
+  package.save(ContentType::Manifest, manifest);
+
+  mPackages.push_back(package);
+}
+
 const Package*
 PackageManager::package(
   const PackageId& id ) const

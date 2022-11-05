@@ -31,6 +31,8 @@ public:
   void load( entt::registry& );
   void unload();
 
+  void create( const PackageId&, const Json::Value& manifest );
+
   static void Validate( const Json::Value& packagesManifest );
 
   const Package* package( const PackageId& ) const;

@@ -44,6 +44,8 @@ public:
     Text,
   };
 
+  void deserialize( const Json::Value& manifest );
+
   void setRootPath( const path& );
   void parseManifest();
 

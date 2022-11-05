@@ -72,6 +72,31 @@ Package::Package(
 {}
 
 void
+Package::deserialize(
+  const Json::Value& manifest )
+{
+  using fmt::format;
+
+  try
+  {
+    Validate(manifest);
+  }
+  catch ( const std::exception& e )
+  {
+    throw std::runtime_error(
+      format("Failed to validate package '{}' manifest: {}",
+              mId.str(), e.what()));
+  }
+
+  mTitle = manifest["title"].asString();
+  mDescription = manifest["description"].asString();
+  mVersion = manifest["version"].asString();
+
+  for ( const auto& dependency : manifest["dependencies"])
+    mDependencies.emplace(dependency.asString());
+}
+
+void
 Package::setRootPath(
   const path& rootPath )
 {
@@ -94,27 +119,11 @@ Package::parseManifest()
   catch ( const std::exception& e )
   {
     throw std::runtime_error(
-      format("Failed to parse package manifest ({})",
-              e.what()));
+      format("Failed to parse package '{}' manifest: {}",
+              mId.str(), e.what()));
   }
 
-  try
-  {
-    Validate(manifest);
-  }
-  catch ( const std::exception& e )
-  {
-    throw std::runtime_error(
-      format("Failed to validate package '{}' manifest '{}': {}",
-              mId.str(), manifestPath.string(), e.what()));
-  }
-
-  mTitle = manifest["title"].asString();
-  mDescription = manifest["description"].asString();
-  mVersion = manifest["version"].asString();
-
-  for ( const auto& dependency : manifest["dependencies"])
-    mDependencies.emplace(dependency.asString());
+  deserialize(manifest);
 }
 
 void
