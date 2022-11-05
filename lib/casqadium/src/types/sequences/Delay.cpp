@@ -48,10 +48,7 @@ Delay::execute(
 
   const auto& tickCurrent = registry.ctx().at <TickCurrent> ();
 
-  for ( uint32_t tick = 0;
-        tick < tickCurrent.ticksElapsed;
-        ++tick )
-    mTime.first += tickCurrent.tickInterval;
+  mTime.first += tickCurrent.tickInterval;
 
   if ( mTime.first < mTime.second )
     return false;
