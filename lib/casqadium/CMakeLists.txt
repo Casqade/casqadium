@@ -16,6 +16,7 @@ target_sources(${TARGET} PRIVATE
   include/${CASQADIUM_SHORT}/rp3d_fwd.hpp
 
   include/${CASQADIUM_SHORT}/callbacks.hpp
+  include/${CASQADIUM_SHORT}/systems.hpp
 
   src/ecs_helpers.cpp
   include/${CASQADIUM_SHORT}/ecs_helpers.hpp
@@ -37,9 +38,6 @@ target_sources(${TARGET} PRIVATE
 
   src/identifier.cpp
   include/${CASQADIUM_SHORT}/identifier.hpp
-
-  src/systems.cpp
-  include/${CASQADIUM_SHORT}/systems.hpp
 
   src/util/logger.cpp
   include/${CASQADIUM_SHORT}/util/logger.hpp
@@ -404,6 +402,12 @@ target_sources(${TARGET} PRIVATE
 
   src/callbacks/snapshots.cpp
   include/${CASQADIUM_SHORT}/callbacks/snapshots.hpp
+
+#  Systems
+  src/systems/input.cpp
+  src/systems/logic.cpp
+  src/systems/physics.cpp
+  src/systems/render.cpp
 )
 
 set_target_properties(${TARGET} PROPERTIES

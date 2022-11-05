@@ -1,8 +1,8 @@
 #pragma once
 
-#include <olcPGE/olcPixelGameEngine.hpp>
-
 #include <cqde/types/VertexBuffer.hpp>
+
+#include <olcPGE/olcPixelGameEngine.hpp>
 
 #include <glm/fwd.hpp>
 
@@ -21,6 +21,10 @@ enum class LineRenderMode
   Loop,
 };
 
+
+std::array <olc::vf2d, 4>
+vec_to_array(
+  const std::vector <olc::vf2d>& );
 
 types::VertexBuffer::WindingOrder
 windingOrder(

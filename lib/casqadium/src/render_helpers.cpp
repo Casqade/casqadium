@@ -14,6 +14,16 @@
 namespace cqde
 {
 
+std::array <olc::vf2d, 4>
+vec_to_array(
+  const std::vector <olc::vf2d>& src )
+{
+  std::array <olc::vf2d, 4> dest;
+  std::copy( src.begin(), src.begin() + 4, dest.begin() );
+
+  return dest;
+}
+
 types::VertexBuffer::WindingOrder
 windingOrder(
   const std::vector <olc::vf2d>& vertices,
