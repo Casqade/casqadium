@@ -72,8 +72,8 @@ AssetManagerUi::stateApply(
   audioMgr.clear();
   fontMgr.clear();
   geometryMgr.clear();
-  textMgr.clear();
   terrainMgr.clear();
+  textMgr.clear();
   textureMgr.clear();
 
   const auto& pkgMgr = registry.ctx().at <PackageManager> ();
@@ -153,15 +153,7 @@ void
 AssetManagerUi::ui_show(
   entt::registry& registry )
 {
-  using AudioAssetManager = types::FontAssetManager;
-  using FontAssetManager = types::FontAssetManager;
-  using GeometryAssetManager = types::GeometryAssetManager;
-  using TerrainAssetManager = types::TerrainAssetManager;
-  using TextStringAssetManager = types::TextStringAssetManager;
-  using TextureAssetManager = types::TextureAssetManager;
-
   using PackageManager = types::PackageManager;
-  using ContentType = types::Package::ContentType;
 
   if ( ImGui::Begin("Assets", nullptr,
                     ImGuiWindowFlags_MenuBar) == false )
@@ -202,7 +194,7 @@ AssetManagerUi::ui_show(
 
   ImGui::Separator();
 
-  auto& pkgMgr = registry.ctx().at <PackageManager> ();
+  const auto& pkgMgr = registry.ctx().at <PackageManager> ();
 
   auto package = pkgMgr.package(mPackageFilter.package());
 

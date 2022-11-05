@@ -106,6 +106,7 @@ void
 AssetManager <SoLoud::AudioSource>::unloadImpl(
   AssetHandle& handle ) const
 {
+  LOG_TRACE("Freeing audio");
   handle.reset();
 }
 

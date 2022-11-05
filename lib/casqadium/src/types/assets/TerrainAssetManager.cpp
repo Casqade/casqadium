@@ -182,6 +182,7 @@ void
 AssetManager <Terrain>::unloadImpl(
   AssetHandle& handle ) const
 {
+  LOG_TRACE("Freeing terrain");
   handle.reset();
 }
 
