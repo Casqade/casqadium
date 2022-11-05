@@ -8,8 +8,8 @@ target_sources(${TARGET}
     ${CMAKE_CURRENT_SOURCE_DIR}/GameState.cpp
     ${CMAKE_CURRENT_SOURCE_DIR}/GameState.hpp
 
-    ${CMAKE_CURRENT_SOURCE_DIR}/GameStateEcsSandbox.cpp
-    ${CMAKE_CURRENT_SOURCE_DIR}/GameStateEcsSandbox.hpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/GameStateDemo.cpp
+    ${CMAKE_CURRENT_SOURCE_DIR}/GameStateDemo.hpp
 )
 
 target_include_directories(${TARGET} PUBLIC

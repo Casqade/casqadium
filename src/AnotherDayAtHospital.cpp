@@ -1,6 +1,6 @@
 #include <AnotherDayAtHospital.hpp>
 
-#include <GameStateEcsSandbox.hpp>
+#include <GameStateDemo.hpp>
 
 #include <cqde/util/logger.hpp>
 
@@ -67,7 +67,7 @@ AnotherDayAtHospital::OnUserCreate()
   EnableLayer(mGameLayer, true);
   SetDrawTarget(mGameLayer);
 
-  mGameStateController.setState <GameStateEcsSandbox> (mConfigManager);
+  mGameStateController.setState <GameStateDemo> (mConfigManager);
 
   return true;
 }

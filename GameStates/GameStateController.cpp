@@ -1,6 +1,6 @@
 #include <GameStateController.hpp>
 
-#include <GameStateEcsSandbox.hpp>
+#include <GameStateDemo.hpp>
 
 #include <cqde/types/ConfigManager.hpp>
 
@@ -64,4 +64,4 @@ GameStateController::render(
 
 template
 void
-GameStateController::setState <GameStateEcsSandbox> ( const cqde::types::ConfigManager& );
+GameStateController::setState <GameStateDemo> ( const cqde::types::ConfigManager& );

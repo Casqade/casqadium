@@ -1,4 +1,4 @@
-#include <GameStateEcsSandbox.hpp>
+#include <GameStateDemo.hpp>
 #include <GameStateController.hpp>
 
 #include <TimeUtils/Duration.hpp>
@@ -45,7 +45,7 @@
 #include <json/writer.h>
 
 
-GameStateEcsSandbox::GameStateEcsSandbox(
+GameStateDemo::GameStateDemo(
   GameStateController* const stateController,
   const ConfigManager& configManager )
   : GameState(stateController)
@@ -129,13 +129,14 @@ GameStateEcsSandbox::GameStateEcsSandbox(
   cqde::callbacks::editorModeEnable(mRegistry);
 }
 
-GameStateEcsSandbox::~GameStateEcsSandbox()
+GameStateDemo::~GameStateDemo()
 {
   mRegistry.clear();
 }
 
 void
-GameStateEcsSandbox::keyEvent( const olc::Event event )
+GameStateDemo::keyEvent(
+  const olc::Event event )
 {
   if ( ImGui::GetIO().WantCaptureKeyboard == true ||
        ImGui::GetIO().WantTextInput == true )
@@ -157,7 +158,8 @@ GameStateEcsSandbox::keyEvent( const olc::Event event )
 }
 
 void
-GameStateEcsSandbox::mouseMoveEvent( const olc::Event::MouseMoveEvent event )
+GameStateDemo::mouseMoveEvent(
+  const olc::Event::MouseMoveEvent event )
 {
   using olc::MouseInputId;
   using cqde::InputHwCode;
@@ -191,7 +193,8 @@ GameStateEcsSandbox::mouseMoveEvent( const olc::Event::MouseMoveEvent event )
 }
 
 void
-GameStateEcsSandbox::mouseButtonEvent( const olc::Event event )
+GameStateDemo::mouseButtonEvent(
+  const olc::Event event )
 {
   using olc::MouseInputId;
   using cqde::InputHwCode;
@@ -210,7 +213,8 @@ GameStateEcsSandbox::mouseButtonEvent( const olc::Event event )
 }
 
 void
-GameStateEcsSandbox::mouseWheelEvent( const olc::Event::MouseWheelScrollEvent event )
+GameStateDemo::mouseWheelEvent(
+  const olc::Event::MouseWheelScrollEvent event )
 {
   using olc::MouseInputId;
   using cqde::InputHwCode;
@@ -225,8 +229,9 @@ GameStateEcsSandbox::mouseWheelEvent( const olc::Event::MouseWheelScrollEvent ev
 }
 
 bool
-GameStateEcsSandbox::update(  const uint32_t ticks,
-                              const TimeUtils::Duration& interval )
+GameStateDemo::update(
+  const uint32_t ticks,
+  const TimeUtils::Duration& interval )
 {
   using cqde::types::CallbackManager;
   using cqde::types::EntityManager;
@@ -257,7 +262,7 @@ GameStateEcsSandbox::update(  const uint32_t ticks,
 }
 
 void
-GameStateEcsSandbox::render(
+GameStateDemo::render(
   const uint32_t frames,
   const TimeUtils::Duration& interval )
 {

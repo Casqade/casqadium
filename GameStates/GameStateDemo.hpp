@@ -7,7 +7,7 @@
 #include <entt/entt.hpp>
 
 
-class GameStateEcsSandbox
+class GameStateDemo
   : public GameState
 {
   using ConfigManager = cqde::types::ConfigManager;
@@ -22,9 +22,9 @@ class GameStateEcsSandbox
   void mouseWheelEvent( const olc::Event::MouseWheelScrollEvent ) override;
 
 public:
-  GameStateEcsSandbox( GameStateController* const,
-                       const ConfigManager& );
-  ~GameStateEcsSandbox();
+  GameStateDemo(  GameStateController* const,
+                  const ConfigManager& );
+  ~GameStateDemo();
 
   bool update( const uint32_t ticks,
                const TimeUtils::Duration& interval ) override;
