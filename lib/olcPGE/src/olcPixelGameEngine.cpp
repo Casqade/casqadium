@@ -2018,10 +2018,13 @@ void PixelGameEngine::olc_CoreUpdate()
   SetDecalMode(DecalMode::NORMAL);
   renderer->PrepareDrawing();
 
+  size_t nDecalsCount {};
+
   for (auto layer = vLayers.rbegin(); layer != vLayers.rend(); ++layer)
     {
       if (layer->bShow)
         {
+          nDecalsCount += layer->vecDecalInstance.size();
           if (layer->funcHook == nullptr)
             {
               renderer->ApplyTexture(layer->pDrawTarget.Decal()->id);
@@ -2056,10 +2059,12 @@ void PixelGameEngine::olc_CoreUpdate()
     {
       nLastFPS = nFrameCount;
       fFrameTimer -= 1.0f;
-      std::string sTitle = sAppName + " - FPS: " + std::to_string(nFrameCount);
-      platform->SetWindowTitle(sTitle);
       nFrameCount = 0;
     }
+
+  auto sTitle = sAppName + " - FPS: " + std::to_string(nLastFPS)
+                        + " Decals: " + std::to_string(nDecalsCount);
+  platform->SetWindowTitle(sTitle);
 }
 
 void PixelGameEngine::olc_ConstructFontSheet()
