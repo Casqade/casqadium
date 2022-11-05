@@ -106,7 +106,6 @@ void
 AssetManager <SoLoud::AudioSource>::unloadImpl(
   AssetHandle& handle ) const
 {
-  handle->stop();
   handle.reset();
 }
 
