@@ -50,11 +50,12 @@ TransformInterpolated::execute(
   using compos::Transform;
   using types::TickCurrent;
 
-  if ( Delay::execute(registry, entity) == true )
-    return true;
+  const bool timeExpired = Delay::execute(registry, entity);
 
-  float dt = static_cast <double> (mTime.first)
+  auto dt = static_cast <double> (mTime.first)
           / static_cast <double> (mTime.second);
+
+  dt = std::min(dt, static_cast <double> (mTime.second));
 
   dt = ImGui::BezierValue(dt, glm::value_ptr(mBezierParams));
 
@@ -77,7 +78,7 @@ TransformInterpolated::execute(
                   cTransform.translation,
                   skew, perspective );
 
-  return false;
+  return timeExpired;
 }
 
 Json::Value
