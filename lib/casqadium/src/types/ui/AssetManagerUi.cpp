@@ -69,6 +69,7 @@ AssetManagerUi::stateApply(
 
   mAssetsState.clear();
 
+  audioMgr.clear();
   fontMgr.clear();
   geometryMgr.clear();
   textMgr.clear();
@@ -378,7 +379,7 @@ AssetManagerUi::ui_show_package_state(
         break;
 
       case ContentType::Terrain:
-        newAsset = TextureAssetManager::AssetJsonDbEntryReference();
+        newAsset = TerrainAssetManager::AssetJsonDbEntryReference();
         break;
 
       case ContentType::Text:

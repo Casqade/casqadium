@@ -6,6 +6,7 @@
 
 #include <cqde/util/logger.hpp>
 
+#include <cqde/types/assets/AudioAssetManager.hpp>
 #include <cqde/types/assets/FontAssetManager.hpp>
 #include <cqde/types/assets/GeometryAssetManager.hpp>
 #include <cqde/types/assets/TerrainAssetManager.hpp>
@@ -124,7 +125,7 @@ Package::load(
 
   LOG_DEBUG("Loading package '{}' ('{}')", mId.str(), manifestPath.string());
 
-  auto& audio = registry.ctx().at <FontAssetManager> ();
+  auto& audio = registry.ctx().at <AudioAssetManager> ();
   audio.parseAssetDbFile(contentPath(ContentType::Audio));
 
   auto& fonts = registry.ctx().at <FontAssetManager> ();
