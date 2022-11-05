@@ -205,7 +205,7 @@ LightingSystem(
           iter != cCamera.zBuffer.end();
           ++iter )
     {
-      auto& [buffer, eLightTgt] = *iter;
+      const auto [buffer, eLightTgt] = *iter;
 
       if ( registry.all_of <LightTarget> (eLightTgt) == false )
         continue;
@@ -227,6 +227,9 @@ LightingSystem(
       std::for_each(std::execution::par_unseq, handle.begin(), handle.end(),
       [&, cLightTgtTransform = cLightTgtTransform, eLightTgt = eLightTgt] ( const auto eLightSrc )
       {
+        if ( lightSourcesView.contains(eLightSrc) == false )
+          return;
+
         const auto&& [cLightSrcTransform, cLightSrc]
           = lightSourcesView.get <const Transform, const LightSource> (eLightSrc);
 
