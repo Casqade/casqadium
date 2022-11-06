@@ -1,0 +1,50 @@
+{
+  "quad" : 
+  {
+    "eQuad" : 
+    {
+      "GeometryBuffer" : 
+      {
+        "buffer" : "null"
+      },
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "null"
+      },
+      "Tag" : {},
+      "TextureBuffer" : 
+      {
+        "textures" : []
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    }
+  }
+}
