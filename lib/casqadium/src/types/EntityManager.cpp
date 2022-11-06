@@ -202,6 +202,7 @@ EntityManager::entityCreate(
     auto& cTag = registry.emplace <Tag> (entity);
     cTag.id = id;
 
+    idInvalidate(id);
     idRegister(id, entity);
   }
 
@@ -268,7 +269,6 @@ EntityManager::entityDeserialize(
               entityId.str(), idMap.at(entityId).str());
 
     entityId = idMap.at(entityId);
-    idInvalidate(entityId);
   }
   else
   {
@@ -317,6 +317,8 @@ EntityManager::prefabDeserialize(
 
     if ( get(entityId) != entt::null )
       idMap[entityId] = idGenerate(entityId);
+
+    idRegister(idMap[entityId], entt::null);
   }
 
   for ( const auto& entityId : prefab.getMemberNames() )
