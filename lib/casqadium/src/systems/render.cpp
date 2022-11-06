@@ -164,7 +164,7 @@ EditorCullingSystem(
       cCamera->zBuffer.emplace( vBuffer, eDrawable );
     });
 
-    auto* pge = olc::renderer->ptrPGE;
+    auto pge = olc::renderer->ptrPGE;
 
     const uint32_t colorViewport = ImGui::GetColorU32(ImGuiCol_FrameBg);
     const uint32_t colorWindow = ImGui::GetColorU32(ImGuiCol_Border, 0.75f);
@@ -333,6 +333,8 @@ RenderSystem(
 
   const auto& const_registry = registry;
 
+  auto pge = olc::renderer->ptrPGE;
+
   registry.sort <Camera> (
   [] ( const Camera& lhs, const Camera& rhs )
   {
@@ -386,11 +388,11 @@ RenderSystem(
                   cTextureTint != nullptr )
           tint = cTextureTint->tint;
 
-        olc::renderer->ptrPGE->DrawWarpedDecal( decal, vertices, tint );
+        pge->DrawWarpedDecal( decal, vertices, tint );
         continue;
       }
 
-      olc::renderer->ptrPGE->DrawPolyLineDecal(buffer.vertices, olc::GREY);
+      pge->DrawPolyLineDecal(buffer.vertices, olc::GREY);
     }
   }
 }
