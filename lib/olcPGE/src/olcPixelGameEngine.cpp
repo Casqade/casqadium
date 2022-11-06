@@ -2003,6 +2003,8 @@ void PixelGameEngine::olc_CoreUpdate()
 
   for (auto& ext : vExtensions) ext->OnAfterUserUpdate(fElapsedTime);
 
+  fFrameTimer += fElapsedTime;
+
   if (bNewFrame == false)
     return;
 
@@ -2053,7 +2055,6 @@ void PixelGameEngine::olc_CoreUpdate()
   renderer->DisplayFrame();
 
   // Update Title Bar
-  fFrameTimer += fElapsedTime;
   nFrameCount++;
   if (fFrameTimer >= 1.0f)
     {
