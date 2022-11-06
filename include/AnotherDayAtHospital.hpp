@@ -21,7 +21,7 @@ class AnotherDayAtHospital : public olc::PixelGameEngine
   TimeUtils::Duration mFrameInterval {};
 
   TimeUtils::Duration mTickPrevious {TimeUtils::Now()};
-  TimeUtils::Duration mFramePrevious {TimeUtils::Now()};
+  TimeUtils::Duration mFramePrevious {mTickPrevious};
 
   GameStateController mGameStateController {};
   olc::EventHandler   mEventHandler {this};

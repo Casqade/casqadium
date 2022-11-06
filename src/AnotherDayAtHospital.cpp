@@ -22,10 +22,12 @@ AnotherDayAtHospital::AnotherDayAtHospital(
                    : TimeUtils::Duration())
 {
   sAppName = u8"Another Day At Hospital";
+  TimeUtils::TimePeriodInit();
 }
 
 AnotherDayAtHospital::~AnotherDayAtHospital()
 {
+  TimeUtils::TimePeriodDeinit();
   mGameStateController.clearState();
 
   if ( olc::Font::deinit() != olc::rcode::OK )
@@ -75,17 +77,24 @@ AnotherDayAtHospital::OnUserCreate()
 bool
 AnotherDayAtHospital::OnUserUpdate( float )
 {
-  mEventHandler.update();
-
   static const bool tickRateLimited = mTickInterval > TimeUtils::Duration();
   static const bool frameRateLimited = mFrameInterval > TimeUtils::Duration();
 
-  const auto currentTime = TimeUtils::Now();
+  const auto tickTimeToSleep = mTickPrevious + mTickInterval;
+  const auto frameTimeToSleep = mFramePrevious + mFrameInterval;
+
+  TimeUtils::SleepUntil( std::min(tickTimeToSleep, frameTimeToSleep) );
+
+
+  mEventHandler.update();
 
   bool running = true;
+  static bool worldStateUpdated {};
   uint32_t ticks = 0;
 
-  if ( tickRateLimited )
+  const auto currentTime = TimeUtils::Now();
+
+  if ( tickRateLimited == true )
     for ( ; currentTime >= mTickPrevious + mTickInterval;
             mTickPrevious += mTickInterval )
       ++ticks;
@@ -99,30 +108,30 @@ AnotherDayAtHospital::OnUserUpdate( float )
   mImGui.ImGui_ImplPGE_NewFrame();
 
   if ( ticks != 0 )
+  {
     running = update( ticks, mTickInterval );
+    worldStateUpdated = true;
+  }
 
   if ( running == false )
     return running;
 
   uint32_t frames = 0;
 
-  if ( frameRateLimited )
+  if ( frameRateLimited == true )
     for ( ; currentTime >= mFramePrevious + mFrameInterval;
             mFramePrevious += mFrameInterval )
       ++frames;
   else
     frames = 1;
 
-  if ( frames != 0 )
+  if ( frames != 0 &&
+       (frameRateLimited == false || worldStateUpdated == true) )
   {
     NewFrame();
     mGameStateController.render(frames, mFrameInterval);
+    worldStateUpdated = false;
   }
-
-  const auto tickTimeToSleep = mTickPrevious + mTickInterval;
-  const auto frameTimeToSleep = mFramePrevious + mFrameInterval;
-
-  TimeUtils::SleepUntil( std::min(tickTimeToSleep, frameTimeToSleep) );
 
   return true;
 }
