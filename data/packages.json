@@ -1,8 +1,8 @@
 {
   "entry_point" : "editor",
-  "load_order" : 
+  "load_order" :
   [
     "editor",
-    "dummy"
+    "demo"
   ]
 }

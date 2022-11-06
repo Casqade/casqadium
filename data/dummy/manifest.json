@@ -1,6 +1,0 @@
-{
-  "title": "dummy",
-  "description": "dummy package",
-  "dependencies": ["editor"],
-  "version": "1.0.0",
-}
