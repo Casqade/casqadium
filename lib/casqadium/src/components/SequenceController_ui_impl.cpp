@@ -160,7 +160,7 @@ SequenceController::ui_edit_props(
   if ( ImGui::Begin(windowTitle.c_str(),
                     &stepWindowOpened,
                     ImGuiWindowFlags_MenuBar) )
-    steps.at(selectedStep)->ui_show(registry);
+    steps.at(selectedStep)->ui_show(registry, entity);
 
   ImGui::End(); // windowTitle
 }
