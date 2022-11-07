@@ -8,13 +8,10 @@ namespace TimeUtils
 class Duration;
 }
 
-class GameStateController;
 
-
-class GameState
+class CasqadiumState
 {
 protected:
-  GameStateController* const mGameStateController;
   olc::PixelGameEngine* const mPGE;
 
   virtual void keyEvent( const olc::Event );
@@ -24,8 +21,8 @@ protected:
   virtual void windowResizeEvent( const olc::Event::WindowResizeEvent );
 
 public:
-  GameState( GameStateController* const );
-  virtual ~GameState();
+  CasqadiumState();
+  virtual ~CasqadiumState();
 
   virtual bool update( const uint32_t ticks,
                        const TimeUtils::Duration& interval );

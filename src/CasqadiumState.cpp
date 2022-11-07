@@ -1,4 +1,4 @@
-#include <GameState.hpp>
+#include <CasqadiumState.hpp>
 
 #include <cqde/util/logger.hpp>
 
@@ -23,19 +23,17 @@ std::string getTypeName( const Type* type)
   return typeName;
 }
 
-GameState::GameState(
-  GameStateController* const stateController )
-  : mGameStateController(stateController)
-  , mPGE(olc::renderer->ptrPGE)
+CasqadiumState::CasqadiumState()
+  : mPGE(olc::renderer->ptrPGE)
 {}
 
-GameState::~GameState()
+CasqadiumState::~CasqadiumState()
 {
   LOG_TRACE("Destroying state {}", getTypeName ( this ));
 }
 
 bool
-GameState::update(
+CasqadiumState::update(
   const uint32_t ticks,
   const TimeUtils::Duration& )
 {
@@ -45,7 +43,7 @@ GameState::update(
 }
 
 void
-GameState::render(
+CasqadiumState::render(
   const uint32_t frames,
   const TimeUtils::Duration& )
 {
@@ -53,7 +51,8 @@ GameState::render(
 }
 
 void
-GameState::handleEvent( const olc::Event event )
+CasqadiumState::handleEvent( 
+  const olc::Event event )
 {
   using EventType = olc::Event::EventType;
 
@@ -89,31 +88,36 @@ GameState::handleEvent( const olc::Event event )
 }
 
 void
-GameState::keyEvent( const olc::Event )
+CasqadiumState::keyEvent( 
+  const olc::Event )
 {
   LOG_TRACE("{}", __FUNCTION__);
 }
 
 void
-GameState::mouseMoveEvent( const olc::Event::MouseMoveEvent )
+CasqadiumState::mouseMoveEvent( 
+  const olc::Event::MouseMoveEvent )
 {
   LOG_TRACE("{}", __FUNCTION__);
 }
 
 void
-GameState::mouseButtonEvent( const olc::Event )
+CasqadiumState::mouseButtonEvent( 
+  const olc::Event )
 {
   LOG_TRACE("{}", __FUNCTION__);
 }
 
 void
-GameState::mouseWheelEvent( const olc::Event::MouseWheelScrollEvent )
+CasqadiumState::mouseWheelEvent( 
+  const olc::Event::MouseWheelScrollEvent )
 {
   LOG_TRACE("{}", __FUNCTION__);
 }
 
 void
-GameState::windowResizeEvent( const olc::Event::WindowResizeEvent )
+CasqadiumState::windowResizeEvent( 
+  const olc::Event::WindowResizeEvent )
 {
   LOG_TRACE("{}", __FUNCTION__);
 }

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.8 FATAL_ERROR)
 
-set(TARGET AnotherDayAtHospital)
+set(TARGET Casqadium)
 project(${TARGET} VERSION 1.0 LANGUAGES CXX)
 
 # For developing only
@@ -15,9 +15,13 @@ option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 add_executable(${TARGET})
 target_sources(${TARGET} PRIVATE
 
-  include/AnotherDayAtHospital.hpp
+  include/Casqadium.hpp
+  include/CasqadiumState.hpp
+  include/CasqadiumStateDemo.hpp
 
-  src/AnotherDayAtHospital.cpp
+  src/Casqadium.cpp
+  src/CasqadiumState.cpp
+  src/CasqadiumStateDemo.cpp
 
   src/main.cpp
   src/icon.rc
@@ -41,10 +45,6 @@ else()
     WIN32_EXECUTABLE TRUE
   )
 endif()
-
-add_subdirectory(GameStates)
-target_include_directories(${TARGET} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/GameStates)
-target_include_directories(${TARGET} PRIVATE ${CMAKE_CURRENT_LIST_DIR}/include)
 
 if(NOT ${BUILD_SHARED_LIBS})
   target_link_libraries(${TARGET} PUBLIC -static)
@@ -76,6 +76,10 @@ if(WIN32)
   endif()
 
 endif()
+
+target_include_directories(${TARGET} PRIVATE
+  $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/${CMAKE_INSTALL_INCLUDEDIR}>
+)
 
 install(TARGETS ${TARGET} DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})
 file(COPY data DESTINATION ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_BINDIR})

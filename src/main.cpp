@@ -1,4 +1,4 @@
-#include <AnotherDayAtHospital.hpp>
+#include <Casqadium.hpp>
 
 #include <spdlog/fmt/bundled/format.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
@@ -59,14 +59,15 @@ main( int, char* argv[] )
                     configManager.logFlushLevel(),
                     sinks );
 
-  AnotherDayAtHospital game(configManager);
+  Casqadium engine (configManager);
 
-  const olc::rcode result = game.Construct(
+  const olc::rcode result = engine.Construct(
     configManager.windowWidth(),
     configManager.windowHeight(),
     1, 1,
     configManager.fullscreenEnabled(),
     false, true );
 
-  return result != olc::rcode::OK || game.Start() != olc::rcode::OK;
+  return  result != olc::rcode::OK ||
+          engine.Start() != olc::rcode::OK;
 }

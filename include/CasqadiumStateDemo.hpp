@@ -1,14 +1,14 @@
 #pragma once
 
-#include <GameState.hpp>
+#include <CasqadiumState.hpp>
 
 #include <cqde/alias.hpp>
 
 #include <entt/entt.hpp>
 
 
-class GameStateDemo
-  : public GameState
+class CasqadiumStateDemo
+  : public CasqadiumState
 {
   using ConfigManager = cqde::types::ConfigManager;
 
@@ -22,9 +22,8 @@ class GameStateDemo
   void mouseWheelEvent( const olc::Event::MouseWheelScrollEvent ) override;
 
 public:
-  GameStateDemo(  GameStateController* const,
-                  const ConfigManager& );
-  ~GameStateDemo();
+  CasqadiumStateDemo( const ConfigManager& );
+  ~CasqadiumStateDemo();
 
   bool update( const uint32_t ticks,
                const TimeUtils::Duration& interval ) override;

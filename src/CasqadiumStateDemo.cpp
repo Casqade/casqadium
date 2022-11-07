@@ -1,5 +1,4 @@
-#include <GameStateDemo.hpp>
-#include <GameStateController.hpp>
+#include <CasqadiumStateDemo.hpp>
 
 #include <TimeUtils/Duration.hpp>
 
@@ -7,6 +6,7 @@
 #include <cqde/common.hpp>
 #include <cqde/file_helpers.hpp>
 #include <cqde/json_helpers.hpp>
+#include <cqde/render_helpers.hpp>
 
 #include <cqde/types/ConfigManager.hpp>
 #include <cqde/types/CallbackManager.hpp>
@@ -45,10 +45,8 @@
 #include <json/writer.h>
 
 
-GameStateDemo::GameStateDemo(
-  GameStateController* const stateController,
+CasqadiumStateDemo::CasqadiumStateDemo(
   const ConfigManager& configManager )
-  : GameState(stateController)
 {
   using namespace cqde::types;
 
@@ -109,11 +107,32 @@ GameStateDemo::GameStateDemo(
       return;
     }
 
+  auto pge = olc::renderer->ptrPGE;
+  const auto layer = pge->GetDrawTarget();
+
   auto textRenderable = fonts.get(fontId)->RenderStringToRenderable(U"T", olc::WHITE, false);
   auto textTexture = std::make_shared <olc::Renderable> (std::move(textRenderable));
 
+  auto skyBoxTexture = std::make_shared <olc::Renderable> ();
+  auto monolithTexture = std::make_shared <olc::Renderable> ();
+
+  skyBoxTexture->Create(1, 1);
+  monolithTexture->Create(1, 1);
+
+  pge->SetDrawTarget(skyBoxTexture->Sprite());
+  pge->Clear({140, 218, 255});
+  pge->SetDrawTarget(layer);
+
+  skyBoxTexture->Decal()->Update();
+
   auto& textures = mRegistry.ctx().at <TextureAssetManager> ();
   textures.insert("text_texture", textTexture);
+  textures.insert("skybox_n", skyBoxTexture);
+  textures.insert("monolith", monolithTexture);
+  textures.insert("cqde_c", cqde::textureFromText("c", olc::RED, olc::BLANK, true));
+  textures.insert("cqde_q", cqde::textureFromText("q", olc::GREEN, olc::BLANK, true));
+  textures.insert("cqde_d", cqde::textureFromText("d", olc::WHITE, olc::BLANK, true));
+  textures.insert("cqde_e", cqde::textureFromText("e", olc::BLUE, olc::BLANK, true));
 
   const auto engineShutdown =
   [this] (  entt::registry& registry,
@@ -129,13 +148,13 @@ GameStateDemo::GameStateDemo(
   cqde::callbacks::editorModeEnable(mRegistry);
 }
 
-GameStateDemo::~GameStateDemo()
+CasqadiumStateDemo::~CasqadiumStateDemo()
 {
   mRegistry.clear();
 }
 
 void
-GameStateDemo::keyEvent(
+CasqadiumStateDemo::keyEvent(
   const olc::Event event )
 {
   if ( ImGui::GetIO().WantCaptureKeyboard == true ||
@@ -158,7 +177,7 @@ GameStateDemo::keyEvent(
 }
 
 void
-GameStateDemo::mouseMoveEvent(
+CasqadiumStateDemo::mouseMoveEvent(
   const olc::Event::MouseMoveEvent event )
 {
   using olc::MouseInputId;
@@ -193,7 +212,7 @@ GameStateDemo::mouseMoveEvent(
 }
 
 void
-GameStateDemo::mouseButtonEvent(
+CasqadiumStateDemo::mouseButtonEvent(
   const olc::Event event )
 {
   using olc::MouseInputId;
@@ -213,7 +232,7 @@ GameStateDemo::mouseButtonEvent(
 }
 
 void
-GameStateDemo::mouseWheelEvent(
+CasqadiumStateDemo::mouseWheelEvent(
   const olc::Event::MouseWheelScrollEvent event )
 {
   using olc::MouseInputId;
@@ -229,7 +248,7 @@ GameStateDemo::mouseWheelEvent(
 }
 
 bool
-GameStateDemo::update(
+CasqadiumStateDemo::update(
   const uint32_t ticks,
   const TimeUtils::Duration& interval )
 {
@@ -262,7 +281,7 @@ GameStateDemo::update(
 }
 
 void
-GameStateDemo::render(
+CasqadiumStateDemo::render(
   const uint32_t frames,
   const TimeUtils::Duration& interval )
 {

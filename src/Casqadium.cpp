@@ -1,6 +1,6 @@
-#include <AnotherDayAtHospital.hpp>
+#include <Casqadium.hpp>
 
-#include <GameStateDemo.hpp>
+#include <CasqadiumStateDemo.hpp>
 
 #include <cqde/util/logger.hpp>
 
@@ -10,8 +10,7 @@
 #include <ImGuizmo.h>
 
 
-
-AnotherDayAtHospital::AnotherDayAtHospital(
+Casqadium::Casqadium(
   const ConfigManager& configManager )
   : mConfigManager{configManager}
   , mTickInterval(configManager.tickRate() > 0
@@ -21,14 +20,14 @@ AnotherDayAtHospital::AnotherDayAtHospital(
                    ? 1.0 / configManager.frameRate()
                    : TimeUtils::Duration())
 {
-  sAppName = u8"Another Day At Hospital";
+  sAppName = u8"Casqadium Engine";
   TimeUtils::TimePeriodInit();
 }
 
-AnotherDayAtHospital::~AnotherDayAtHospital()
+Casqadium::~Casqadium()
 {
   TimeUtils::TimePeriodDeinit();
-  mGameStateController.clearState();
+  mState.reset();
 
   if ( olc::Font::deinit() != olc::rcode::OK )
     LOG_ERROR("Failed to deinitialize olc::Font: {}",
@@ -36,18 +35,18 @@ AnotherDayAtHospital::~AnotherDayAtHospital()
 }
 
 bool
-AnotherDayAtHospital::update(
+Casqadium::update(
   const uint32_t ticks,
   const TimeUtils::Duration tickInterval )
 {
   olc::Event event;
   while ( mEventHandler.pollEvent(event) )
-    mGameStateController.handleEvent( event );
+    mState->handleEvent(event);
 
   ImGui::NewFrame();
   ImGuizmo::BeginFrame();
 
-  auto result = mGameStateController.update( ticks, tickInterval );
+  auto result = mState->update(ticks, tickInterval);
 
   ImGui::EndFrame();
 
@@ -55,7 +54,7 @@ AnotherDayAtHospital::update(
 }
 
 bool
-AnotherDayAtHospital::OnUserCreate()
+Casqadium::OnUserCreate()
 {
   if ( olc::Font::init() != olc::rcode::OK )
   {
@@ -69,13 +68,13 @@ AnotherDayAtHospital::OnUserCreate()
   EnableLayer(mGameLayer, true);
   SetDrawTarget(mGameLayer);
 
-  mGameStateController.setState <GameStateDemo> (mConfigManager);
+  mState = std::make_unique <CasqadiumStateDemo> (mConfigManager);
 
   return true;
 }
 
 bool
-AnotherDayAtHospital::OnUserUpdate( float )
+Casqadium::OnUserUpdate( float )
 {
   static const bool tickRateLimited = mTickInterval > TimeUtils::Duration();
   static const bool frameRateLimited = mFrameInterval > TimeUtils::Duration();
@@ -129,7 +128,7 @@ AnotherDayAtHospital::OnUserUpdate( float )
        (frameRateLimited == false || worldStateUpdated == true) )
   {
     NewFrame();
-    mGameStateController.render(frames, mFrameInterval);
+    mState->render(frames, mFrameInterval);
     worldStateUpdated = false;
   }
 
