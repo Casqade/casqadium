@@ -24,6 +24,23 @@
 namespace cqde::types
 {
 
+const static Json::Value transformInterpolatedSequenceStepJsonReference =
+[]
+{
+  using ValueType = Json::ValueType;
+  using namespace std::string_literals;
+
+  Json::Value root = ValueType::objectValue;
+  root.setComment("// transformInterpolated sequence step root must be a JSON object"s,
+                   Json::CommentPlacement::commentBefore);
+
+  root["useWorldSpace"] = ValueType::booleanValue;
+  root["useWorldSpace"].setComment("// 'useWorldSpace' must be a JSON boolean"s,
+                                  Json::CommentPlacement::commentBefore);
+
+  return root;
+}();
+
 std::string
 TransformInterpolated::name() const
 {
@@ -66,8 +83,9 @@ TransformInterpolated::execute(
 
   auto& cTransform = registry.get <Transform> (entity);
 
-  transform = ToLocalSpace( transform, registry,
-                            entity, cTransform );
+  if ( mUseWorldSpace == true )
+    transform = ToLocalSpace( transform, registry,
+                              entity, cTransform );
 
   glm::vec3 skew {};
   glm::vec4 perspective {};
@@ -97,6 +115,7 @@ TransformInterpolated::toJson() const
   json["transformTarget"][3] << mTransform.second[3];
 
   json["bezierParams"] << mBezierParams;
+  json["useWorldSpace"] = mUseWorldSpace;
 
   return json;
 }
@@ -108,6 +127,10 @@ TransformInterpolated::fromJson(
   using fmt::format;
 
   Delay::fromJson(json);
+
+  jsonValidateObject(json, transformInterpolatedSequenceStepJsonReference);
+
+  mUseWorldSpace = json["useWorldSpace"].asBool();
 
   try
   {

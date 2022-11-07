@@ -37,8 +37,11 @@ TransformInterpolated::ui_show(
   if ( ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
 
+  ImGui::Checkbox("Use world space", &mUseWorldSpace);
+
   const auto setFromTransform =
-  [] ( const entt::registry& registry, glm::mat4& targetMatrix )
+  [useWorldSpace = mUseWorldSpace, entity]
+  ( const entt::registry& registry, glm::mat4& targetMatrix )
   {
     if ( ImGui::IsWindowAppearing() )
       ImGui::SetKeyboardFocusHere(2);
@@ -47,7 +50,7 @@ TransformInterpolated::ui_show(
 
     entityFilter.search({}, ImGuiInputTextFlags_AutoSelectAll);
 
-    for ( const auto&& [entity, cTag, cTransform]
+    for ( const auto&& [eReference, cTag, cTransform]
             : registry.view <Tag, Transform> ().each() )
     {
       const auto entityId = cTag.id;
@@ -60,7 +63,12 @@ TransformInterpolated::ui_show(
 
       if ( ImGui::Selectable(entityId.str().c_str(), false) )
       {
-        targetMatrix = GetWorldMatrix(registry, entity, cTransform);
+        targetMatrix = GetWorldMatrix(registry, eReference, cTransform);
+
+        if ( useWorldSpace == false )
+          targetMatrix = ToLocalSpace(targetMatrix, registry,
+                                      entity, cTransform);
+
         break;
       }
     }
