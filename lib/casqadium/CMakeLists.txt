@@ -9,6 +9,9 @@ add_library(${TARGET}::${TARGET} ALIAS ${TARGET})
 
 set(CASQADIUM_SHORT cqde)
 
+option(CQDE_DISABLE_SIMD "Disable SIMD instructions usage in Casqadium" OFF)
+option(GLM_FORCE_INLINE "Force GLM functions inlining" OFF)
+
 target_sources(${TARGET} PRIVATE
 
   include/${CASQADIUM_SHORT}/alias.hpp
@@ -474,11 +477,6 @@ FetchContent_Declare(EnTT
   GIT_TAG        v3.10.3
   GIT_SHALLOW    TRUE
 )
-
-if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
-  target_compile_definitions(${TARGET} PUBLIC ENTT_DISABLE_ASSERT)
-endif()
-
 FetchContent_MakeAvailable(EnTT)
 
 
@@ -506,12 +504,14 @@ FetchContent_Declare(spdlog
 FetchContent_MakeAvailable(spdlog)
 
 
-FetchContent_Declare(tbb
-  GIT_REPOSITORY https://github.com/oneapi-src/oneTBB
-  GIT_TAG        v2021.7.0
-  GIT_SHALLOW    TRUE
-)
-FetchContent_MakeAvailable(tbb)
+if (NOT ${CQDE_DISABLE_SIMD})
+  FetchContent_Declare(tbb
+    GIT_REPOSITORY https://github.com/oneapi-src/oneTBB
+    GIT_TAG        v2021.7.0
+    GIT_SHALLOW    TRUE
+  )
+  FetchContent_MakeAvailable(tbb)
+endif()
 
 
 FetchContent_Declare(ReactPhysics3D
@@ -531,37 +531,65 @@ FetchContent_Declare(soloud
 FetchContent_MakeAvailable(soloud)
 
 
-if(${BUILD_SHARED_LIBS})
-  target_compile_definitions(glm_shared PUBLIC GLM_FORCE_DEPTH_ZERO_TO_ONE)
-else()
-  target_compile_definitions(glm_static PUBLIC GLM_FORCE_DEPTH_ZERO_TO_ONE)
+if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
+  target_compile_definitions(EnTT::EnTT PUBLIC
+    ENTT_DISABLE_ASSERT
+  )
 endif()
 
-target_compile_options(tbb PUBLIC -msse4.1)
-target_compile_definitions(tbb PUBLIC TBB_USE_PROFILING_TOOLS=0)
+set(GLM_LIB_TYPE glm_static)
+set(JSONCPP_LIB_TYPE jsoncpp_static)
+
+if(${BUILD_SHARED_LIBS})
+  set(GLM_LIB_TYPE glm_shared)
+  set(JSONCPP_LIB_TYPE jsoncpp_lib)
+endif()
+
+target_compile_definitions(${GLM_LIB_TYPE} PUBLIC
+  GLM_FORCE_DEPTH_ZERO_TO_ONE
+)
+
+if(${GLM_FORCE_INLINE})
+  target_compile_definitions(${GLM_LIB_TYPE} PUBLIC
+    GLM_FORCE_INLINE
+  )
+endif()
+
+if(NOT ${CQDE_DISABLE_SIMD})
+  target_compile_options(${GLM_LIB_TYPE} PUBLIC
+    -msse4.1
+  )
+  target_compile_definitions(${GLM_LIB_TYPE} PUBLIC
+    GLM_FORCE_INTRINSICS
+    GLM_FORCE_DEFAULT_ALIGNED_GENTYPES
+  )
+
+  target_compile_options(tbb PUBLIC
+    -msse4.1
+  )
+
+  target_compile_definitions(tbb PUBLIC
+    TBB_USE_PROFILING_TOOLS=0
+  )
+
+  target_link_libraries(${TARGET} PUBLIC
+    TBB::tbb
+  )
+endif()
+
 
 target_link_libraries(${TARGET} PUBLIC
   ctpl::ctpl
   TimeUtils::TimeUtils
-  EnTT::EnTT
   olcPGE::olcPGE
+  EnTT::EnTT
+  glm::${GLM_LIB_TYPE}
+  ${JSONCPP_LIB_TYPE}
   spdlog::spdlog
-  TBB::tbb
   ReactPhysics3D::reactphysics3d
   soloud
 )
 
-if(${BUILD_SHARED_LIBS})
-  target_link_libraries(${TARGET} PUBLIC
-    jsoncpp_lib
-    glm::glm_shared
-  )
-else()
-  target_link_libraries(${TARGET} PUBLIC
-    jsoncpp_static
-    glm::glm_static
-  )
-endif()
 
 include(GenerateExportHeader)
 generate_export_header(${TARGET} EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/exports/${CASQADIUM_SHORT}/${CASQADIUM_SHORT}_export.hpp)

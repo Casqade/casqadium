@@ -63,7 +63,6 @@ set(IMGUI_DISABLE_OBSOLETE_FUNCTIONS ON CACHE BOOL "" FORCE)
 add_subdirectory(lib)
 
 target_link_libraries(${TARGET} PRIVATE
-  olcPGE::olcPGE
   casqadium::casqadium
 )
 
