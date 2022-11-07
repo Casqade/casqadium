@@ -23,7 +23,7 @@ public:
 
   virtual bool execute( entt::registry&, const entt::entity );
 
-  virtual void ui_show( const entt::registry& );
+  virtual void ui_show( const entt::registry&, const entt::entity );
 
   virtual Json::Value toJson() const;
 

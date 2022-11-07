@@ -28,7 +28,8 @@ SequenceStep::execute(
 
 void
 SequenceStep::ui_show(
-  const entt::registry& )
+  const entt::registry&,
+  const entt::entity )
 {}
 
 Json::Value

@@ -28,7 +28,7 @@ public:
 
   bool execute( entt::registry&, const entt::entity ) override;
 
-  void ui_show( const entt::registry& ) override;
+  void ui_show( const entt::registry&, const entt::entity ) override;
 
   Json::Value toJson() const override;
 

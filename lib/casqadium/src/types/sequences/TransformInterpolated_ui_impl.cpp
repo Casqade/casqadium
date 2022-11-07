@@ -22,13 +22,14 @@ namespace cqde::types
 
 void
 TransformInterpolated::ui_show(
-  const entt::registry& registry )
+  const entt::registry& registry,
+  const entt::entity entity )
 {
   using compos::Tag;
   using compos::Transform;
   using ui::StringFilter;
 
-  Delay::ui_show(registry);
+  Delay::ui_show(registry, entity);
 
   if ( ImGui::CollapsingHeader("Interpolation", ImGuiTreeNodeFlags_DefaultOpen) )
     ImGui::Bezier("##interpolation", glm::value_ptr(mBezierParams));

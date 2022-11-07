@@ -10,7 +10,8 @@ namespace cqde::types
 
 void
 Delay::ui_show(
-  const entt::registry& registry )
+  const entt::registry& registry,
+  const entt::entity )
 {
   if ( ImGui::CollapsingHeader("Time", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
