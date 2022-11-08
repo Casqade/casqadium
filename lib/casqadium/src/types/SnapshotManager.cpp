@@ -184,6 +184,7 @@ SnapshotManager::Load(
   using fmt::format;
   using ui::EntityManagerUi;
   using ui::SystemManagerUi;
+  using Phase = types::System::Phase;
 
   Json::Value snapshot {};
 
@@ -296,6 +297,14 @@ SnapshotManager::Load(
   }
 
   registry.ctx().at <SystemManagerUi> ().init(registry);
+
+  if ( systemManager.systemsActive(Phase::Editor).empty() == true )
+    return;
+
+  systemManager.deactivate();
+
+  for ( const auto& systemId : systemManager.systems(Phase::Editor) )
+    systemManager.activate(systemId);
 }
 
 } // namespace cqde::types
