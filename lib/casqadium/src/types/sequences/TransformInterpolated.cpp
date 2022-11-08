@@ -38,6 +38,10 @@ const static Json::Value transformInterpolatedSequenceStepJsonReference =
   root["useWorldSpace"].setComment("// 'useWorldSpace' must be a JSON boolean"s,
                                   Json::CommentPlacement::commentBefore);
 
+  root["initFromTransform"] = ValueType::booleanValue;
+  root["initFromTransform"].setComment("// 'initFromTransform' must be a JSON boolean"s,
+                                        Json::CommentPlacement::commentBefore);
+
   return root;
 }();
 
@@ -54,9 +58,16 @@ TransformInterpolated::init(
 {
   using compos::Transform;
 
-  auto& cTransform = registry.get <Transform> (entity);
+  if ( mInitFromTransform == false )
+    return;
 
-  mTransform.first = GetWorldMatrix(registry, entity, cTransform);
+  auto& cTransform = registry.get <const Transform> (entity);
+
+  if ( mUseWorldSpace == true )
+    mTransform.first = GetWorldMatrix(registry, entity, cTransform);
+
+  else
+    mTransform.first = cTransform.modelLocal();
 }
 
 bool
@@ -116,6 +127,7 @@ TransformInterpolated::toJson() const
 
   json["bezierParams"] << mBezierParams;
   json["useWorldSpace"] = mUseWorldSpace;
+  json["initFromTransform"] = mInitFromTransform;
 
   return json;
 }
@@ -131,6 +143,7 @@ TransformInterpolated::fromJson(
   jsonValidateObject(json, transformInterpolatedSequenceStepJsonReference);
 
   mUseWorldSpace = json["useWorldSpace"].asBool();
+  mInitFromTransform = json["initFromTransform"].asBool();
 
   try
   {

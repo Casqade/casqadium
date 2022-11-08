@@ -19,6 +19,7 @@ class TransformInterpolated : public Delay
   glm::vec4 mBezierParams {0.0f, 0.0f, 1.0f, 1.0f};
 
   bool mUseWorldSpace {};
+  bool mInitFromTransform {};
 
 public:
   TransformInterpolated() = default;

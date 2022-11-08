@@ -38,6 +38,7 @@ TransformInterpolated::ui_show(
     return;
 
   ImGui::Checkbox("Use world space", &mUseWorldSpace);
+  ImGui::Checkbox("Init from Transform", &mInitFromTransform);
 
   const auto setFromTransform =
   [useWorldSpace = mUseWorldSpace, entity]
