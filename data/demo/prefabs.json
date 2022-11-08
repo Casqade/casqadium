@@ -1,0 +1,1470 @@
+{
+  "cqde_logo" : 
+  {
+    "eC" : 
+    {
+      "GeometryBuffer" : 
+      {
+        "buffer" : "quad"
+      },
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eLogo"
+      },
+      "Tag" : {},
+      "TextureBuffer" : 
+      {
+        "textures" : 
+        [
+          "cqde_c"
+        ]
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.0,
+          0.70722872018814087,
+          0.0,
+          0.70698481798171997
+        ],
+        "scale" : 
+        [
+          0.99999970197677612,
+          1.0,
+          0.99999970197677612
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "eD" : 
+    {
+      "GeometryBuffer" : 
+      {
+        "buffer" : "quad"
+      },
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eLogo"
+      },
+      "Tag" : {},
+      "TextureBuffer" : 
+      {
+        "textures" : 
+        [
+          "cqde_d"
+        ]
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          -0.70710653066635132,
+          0.0,
+          0.0,
+          0.70710700750350952
+        ],
+        "scale" : 
+        [
+          0.99999970197677612,
+          0.99999487400054932,
+          0.99999481439590454
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          0.0,
+          -0.029999908059835434,
+          -0.059999998658895493
+        ]
+      }
+    },
+    "eE" : 
+    {
+      "GeometryBuffer" : 
+      {
+        "buffer" : "quad"
+      },
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eLogo"
+      },
+      "Tag" : {},
+      "TextureBuffer" : 
+      {
+        "textures" : 
+        [
+          "cqde_e"
+        ]
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" : 
+        [
+          0.99999970197677612,
+          0.99999737739562988,
+          0.99999731779098511
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "eLogo" : 
+    {
+      "SceneNode" : 
+      {
+        "children" : 
+        [
+          "eE",
+          "eD",
+          "eQ",
+          "eC"
+        ],
+        "parent" : "null"
+      },
+      "Tag" : {},
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "eQ" : 
+    {
+      "GeometryBuffer" : 
+      {
+        "buffer" : "quad"
+      },
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eLogo"
+      },
+      "Tag" : {},
+      "TextureBuffer" : 
+      {
+        "textures" : 
+        [
+          "cqde_q"
+        ]
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          -0.70710653066635132,
+          0.0,
+          0.0,
+          0.70710700750350952
+        ],
+        "scale" : 
+        [
+          0.99999970197677612,
+          0.99999737739562988,
+          0.99999731779098511
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    }
+  },
+  "monolith" : 
+  {
+    "eMonolith" : 
+    {
+      "SceneNode" : 
+      {
+        "children" : 
+        [
+          "eMonolithLeft",
+          "eMonolithBottom",
+          "eMonolithTop",
+          "eMonolithBack",
+          "eMonolithRight",
+          "eMonolithFace"
+        ],
+        "parent" : "null"
+      },
+      "Tag" : {},
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          0.0,
+          0.0,
+          1.0918641090393066
+        ]
+      }
+    },
+    "eMonolithBack" : 
+    {
+      "GeometryBuffer" : 
+      {
+        "buffer" : "null"
+      },
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eMonolith"
+      },
+      "Tag" : {},
+      "TextureBuffer" : 
+      {
+        "textures" : 
+        [
+          "monolith"
+        ]
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" : 
+        [
+          1.125,
+          2.0,
+          1.0
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          0.0,
+          0.0,
+          -0.10000000149011612
+        ]
+      }
+    },
+    "eMonolithBottom" : 
+    {
+      "GeometryBuffer" : 
+      {
+        "buffer" : "null"
+      },
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eMonolith"
+      },
+      "Tag" : {},
+      "TextureBuffer" : 
+      {
+        "textures" : 
+        [
+          "monolith"
+        ]
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.70710676908493042,
+          0.0,
+          0.0,
+          0.70710676908493042
+        ],
+        "scale" : 
+        [
+          1.125,
+          0.19999966025352478,
+          0.99999779462814331
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          0.0,
+          -1.0,
+          0.0
+        ]
+      }
+    },
+    "eMonolithFace" : 
+    {
+      "GeometryBuffer" : 
+      {
+        "buffer" : "null"
+      },
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eMonolith"
+      },
+      "Tag" : {},
+      "TextureBuffer" : 
+      {
+        "textures" : 
+        [
+          "monolith"
+        ]
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" : 
+        [
+          1.125,
+          2.0,
+          1.0
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          0.0,
+          0.0,
+          0.10000000149011612
+        ]
+      }
+    },
+    "eMonolithLeft" : 
+    {
+      "GeometryBuffer" : 
+      {
+        "buffer" : "null"
+      },
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eMonolith"
+      },
+      "Tag" : {},
+      "TextureBuffer" : 
+      {
+        "textures" : 
+        [
+          "monolith"
+        ]
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.0,
+          -0.70698469877243042,
+          0.0,
+          0.70722883939743042
+        ],
+        "scale" : 
+        [
+          0.20000000298023224,
+          2.0,
+          1.0
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          -0.5625,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "eMonolithRight" : 
+    {
+      "GeometryBuffer" : 
+      {
+        "buffer" : "null"
+      },
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eMonolith"
+      },
+      "Tag" : {},
+      "TextureBuffer" : 
+      {
+        "textures" : 
+        [
+          "monolith"
+        ]
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.0,
+          0.70698469877243042,
+          0.0,
+          0.70722883939743042
+        ],
+        "scale" : 
+        [
+          0.20000000298023224,
+          2.0,
+          1.0
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          0.5625,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "eMonolithTop" : 
+    {
+      "GeometryBuffer" : 
+      {
+        "buffer" : "null"
+      },
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eMonolith"
+      },
+      "Tag" : {},
+      "TextureBuffer" : 
+      {
+        "textures" : 
+        [
+          "monolith"
+        ]
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          -0.70722872018814087,
+          0.0,
+          0.0,
+          0.70698481798171997
+        ],
+        "scale" : 
+        [
+          1.125,
+          0.19999966025352478,
+          0.99999779462814331
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      }
+    }
+  },
+  "skybox_wall" : 
+  {
+    "eSkyboxWall" : 
+    {
+      "EntityMetaInfo" : 
+      {
+        "packageId" : "demo"
+      },
+      "SceneNode" : 
+      {
+        "children" : 
+        [
+          "eSkyboxWall_15",
+          "eSkyboxWall_14",
+          "eSkyboxWall_0",
+          "eSkyboxWall_1",
+          "eSkyboxWall_2",
+          "eSkyboxWall_3",
+          "eSkyboxWall_4",
+          "eSkyboxWall_5",
+          "eSkyboxWall_13",
+          "eSkyboxWall_8",
+          "eSkyboxWall_11",
+          "eSkyboxWall_6",
+          "eSkyboxWall_10",
+          "eSkyboxWall_7",
+          "eSkyboxWall_9",
+          "eSkyboxWall_12"
+        ],
+        "parent" : "eSkybox"
+      },
+      "Tag" : {},
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          -5.0,
+          -2.5,
+          -10.0
+        ]
+      }
+    },
+    "eSkyboxWall_0" : 
+    {
+      "EntityMetaInfo" : 
+      {
+        "packageId" : "demo"
+      },
+      "GeometryBuffer" : 
+      {
+        "buffer" : "null"
+      },
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eSkyboxWall"
+      },
+      "Tag" : {},
+      "TextureBuffer" : 
+      {
+        "textures" : 
+        [
+          "skybox_n"
+        ]
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" : 
+        [
+          5.0,
+          5.0,
+          1.0
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "eSkyboxWall_1" : 
+    {
+      "EntityMetaInfo" : 
+      {
+        "packageId" : "demo"
+      },
+      "GeometryBuffer" : 
+      {
+        "buffer" : "null"
+      },
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eSkyboxWall"
+      },
+      "Tag" : {},
+      "TextureBuffer" : 
+      {
+        "textures" : 
+        [
+          "skybox_n"
+        ]
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" : 
+        [
+          5.0,
+          5.0,
+          1.0
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          5.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "eSkyboxWall_10" : 
+    {
+      "EntityMetaInfo" : 
+      {
+        "packageId" : "demo"
+      },
+      "GeometryBuffer" : 
+      {
+        "buffer" : "null"
+      },
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eSkyboxWall"
+      },
+      "Tag" : {},
+      "TextureBuffer" : 
+      {
+        "textures" : 
+        [
+          "skybox_n"
+        ]
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" : 
+        [
+          5.0,
+          5.0,
+          1.0
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          10.0,
+          10.0,
+          0.0
+        ]
+      }
+    },
+    "eSkyboxWall_11" : 
+    {
+      "EntityMetaInfo" : 
+      {
+        "packageId" : "demo"
+      },
+      "GeometryBuffer" : 
+      {
+        "buffer" : "null"
+      },
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eSkyboxWall"
+      },
+      "Tag" : {},
+      "TextureBuffer" : 
+      {
+        "textures" : 
+        [
+          "skybox_n"
+        ]
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" : 
+        [
+          5.0,
+          5.0,
+          1.0
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          15.0,
+          10.0,
+          0.0
+        ]
+      }
+    },
+    "eSkyboxWall_12" : 
+    {
+      "EntityMetaInfo" : 
+      {
+        "packageId" : "demo"
+      },
+      "GeometryBuffer" : 
+      {
+        "buffer" : "null"
+      },
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eSkyboxWall"
+      },
+      "Tag" : {},
+      "TextureBuffer" : 
+      {
+        "textures" : 
+        [
+          "skybox_n"
+        ]
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" : 
+        [
+          5.0,
+          5.0,
+          1.0
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          0.0,
+          15.0,
+          0.0
+        ]
+      }
+    },
+    "eSkyboxWall_13" : 
+    {
+      "EntityMetaInfo" : 
+      {
+        "packageId" : "demo"
+      },
+      "GeometryBuffer" : 
+      {
+        "buffer" : "null"
+      },
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eSkyboxWall"
+      },
+      "Tag" : {},
+      "TextureBuffer" : 
+      {
+        "textures" : 
+        [
+          "skybox_n"
+        ]
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" : 
+        [
+          5.0,
+          5.0,
+          1.0
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          5.0,
+          15.0,
+          0.0
+        ]
+      }
+    },
+    "eSkyboxWall_14" : 
+    {
+      "EntityMetaInfo" : 
+      {
+        "packageId" : "demo"
+      },
+      "GeometryBuffer" : 
+      {
+        "buffer" : "null"
+      },
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eSkyboxWall"
+      },
+      "Tag" : {},
+      "TextureBuffer" : 
+      {
+        "textures" : 
+        [
+          "skybox_n"
+        ]
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" : 
+        [
+          5.0,
+          5.0,
+          1.0
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          10.0,
+          15.0,
+          0.0
+        ]
+      }
+    },
+    "eSkyboxWall_15" : 
+    {
+      "EntityMetaInfo" : 
+      {
+        "packageId" : "demo"
+      },
+      "GeometryBuffer" : 
+      {
+        "buffer" : "null"
+      },
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eSkyboxWall"
+      },
+      "Tag" : {},
+      "TextureBuffer" : 
+      {
+        "textures" : 
+        [
+          "skybox_n"
+        ]
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" : 
+        [
+          5.0,
+          5.0,
+          1.0
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          15.0,
+          15.0,
+          0.0
+        ]
+      }
+    },
+    "eSkyboxWall_2" : 
+    {
+      "EntityMetaInfo" : 
+      {
+        "packageId" : "demo"
+      },
+      "GeometryBuffer" : 
+      {
+        "buffer" : "null"
+      },
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eSkyboxWall"
+      },
+      "Tag" : {},
+      "TextureBuffer" : 
+      {
+        "textures" : 
+        [
+          "skybox_n"
+        ]
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" : 
+        [
+          5.0,
+          5.0,
+          1.0
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          10.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "eSkyboxWall_3" : 
+    {
+      "EntityMetaInfo" : 
+      {
+        "packageId" : "demo"
+      },
+      "GeometryBuffer" : 
+      {
+        "buffer" : "null"
+      },
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eSkyboxWall"
+      },
+      "Tag" : {},
+      "TextureBuffer" : 
+      {
+        "textures" : 
+        [
+          "skybox_n"
+        ]
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" : 
+        [
+          5.0,
+          5.0,
+          1.0
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          15.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "eSkyboxWall_4" : 
+    {
+      "EntityMetaInfo" : 
+      {
+        "packageId" : "demo"
+      },
+      "GeometryBuffer" : 
+      {
+        "buffer" : "null"
+      },
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eSkyboxWall"
+      },
+      "Tag" : {},
+      "TextureBuffer" : 
+      {
+        "textures" : 
+        [
+          "skybox_n"
+        ]
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" : 
+        [
+          5.0,
+          5.0,
+          1.0
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          0.0,
+          5.0,
+          0.0
+        ]
+      }
+    },
+    "eSkyboxWall_5" : 
+    {
+      "EntityMetaInfo" : 
+      {
+        "packageId" : "demo"
+      },
+      "GeometryBuffer" : 
+      {
+        "buffer" : "null"
+      },
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eSkyboxWall"
+      },
+      "Tag" : {},
+      "TextureBuffer" : 
+      {
+        "textures" : 
+        [
+          "skybox_n"
+        ]
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" : 
+        [
+          5.0,
+          5.0,
+          1.0
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          5.0,
+          5.0,
+          0.0
+        ]
+      }
+    },
+    "eSkyboxWall_6" : 
+    {
+      "EntityMetaInfo" : 
+      {
+        "packageId" : "demo"
+      },
+      "GeometryBuffer" : 
+      {
+        "buffer" : "null"
+      },
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eSkyboxWall"
+      },
+      "Tag" : {},
+      "TextureBuffer" : 
+      {
+        "textures" : 
+        [
+          "skybox_n"
+        ]
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" : 
+        [
+          5.0,
+          5.0,
+          1.0
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          10.0,
+          5.0,
+          0.0
+        ]
+      }
+    },
+    "eSkyboxWall_7" : 
+    {
+      "EntityMetaInfo" : 
+      {
+        "packageId" : "demo"
+      },
+      "GeometryBuffer" : 
+      {
+        "buffer" : "null"
+      },
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eSkyboxWall"
+      },
+      "Tag" : {},
+      "TextureBuffer" : 
+      {
+        "textures" : 
+        [
+          "skybox_n"
+        ]
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" : 
+        [
+          5.0,
+          5.0,
+          1.0
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          15.0,
+          5.0,
+          0.0
+        ]
+      }
+    },
+    "eSkyboxWall_8" : 
+    {
+      "EntityMetaInfo" : 
+      {
+        "packageId" : "demo"
+      },
+      "GeometryBuffer" : 
+      {
+        "buffer" : "null"
+      },
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eSkyboxWall"
+      },
+      "Tag" : {},
+      "TextureBuffer" : 
+      {
+        "textures" : 
+        [
+          "skybox_n"
+        ]
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" : 
+        [
+          5.0,
+          5.0,
+          1.0
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          0.0,
+          10.0,
+          0.0
+        ]
+      }
+    },
+    "eSkyboxWall_9" : 
+    {
+      "EntityMetaInfo" : 
+      {
+        "packageId" : "demo"
+      },
+      "GeometryBuffer" : 
+      {
+        "buffer" : "null"
+      },
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eSkyboxWall"
+      },
+      "Tag" : {},
+      "TextureBuffer" : 
+      {
+        "textures" : 
+        [
+          "skybox_n"
+        ]
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" : 
+        [
+          5.0,
+          5.0,
+          1.0
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          5.0,
+          10.0,
+          0.0
+        ]
+      }
+    }
+  }
+}
