@@ -15,13 +15,23 @@ option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 add_executable(${TARGET})
 target_sources(${TARGET} PRIVATE
 
+  src/Casqadium.cpp
   include/Casqadium.hpp
+
+  src/CasqadiumState.cpp
   include/CasqadiumState.hpp
+
+  src/CasqadiumStateDemo.cpp
   include/CasqadiumStateDemo.hpp
 
-  src/Casqadium.cpp
-  src/CasqadiumState.cpp
-  src/CasqadiumStateDemo.cpp
+  src/demo/callbacks.cpp
+  include/demo/callbacks.hpp
+
+  src/demo/components.cpp
+  include/demo/components.hpp
+
+  src/demo/systems.cpp
+  include/demo/systems.hpp
 
   src/main.cpp
   src/icon.rc
