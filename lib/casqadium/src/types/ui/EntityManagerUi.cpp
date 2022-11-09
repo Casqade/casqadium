@@ -325,11 +325,11 @@ EntityManagerUi::ui_show_entities_table(
 
         for ( const auto selectedEntity : mSelectedEntities )
           if ( registry.all_of <SceneNode> (selectedEntity) == true )
-            SerializeChildNode(registry, mClipboard["payload"], selectedEntity);
+            SerializeChildNode( registry, mClipboard["payload"], selectedEntity,
+                                {mEntityMgr->componentType <EntityMetaInfo> ()});
           else
-            mEntityMgr->entitySerialize(registry,
-                                        mClipboard["payload"],
-                                        selectedEntity);
+            mEntityMgr->entitySerialize(registry, mClipboard["payload"], selectedEntity,
+                                        {mEntityMgr->componentType <EntityMetaInfo> ()});
       }
 
       ImGui::EndPopup(); // entityContextMenu

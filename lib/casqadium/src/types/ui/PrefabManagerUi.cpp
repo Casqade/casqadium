@@ -99,6 +99,7 @@ PrefabManagerUi::ui_show(
   using types::Package;
   using types::PackageManager;
   using types::EntityManager;
+  using compos::EntityMetaInfo;
   using ContentType = types::Package::ContentType;
 
   CQDE_ASSERT_DEBUG(mPrefabMgr != nullptr, return);
@@ -248,7 +249,8 @@ PrefabManagerUi::ui_show(
         const auto& entityManager = registry.ctx().at <EntityManager> ();
 
         for ( const auto entity : entities )
-          entityManager.entitySerialize(registry, prefabsState[prefabId], entity);
+          entityManager.entitySerialize(registry, prefabsState[prefabId], entity,
+                                        {entityManager.componentType <EntityMetaInfo> ()});
       }
 
       const auto nodePayload = ImGui::AcceptDragDropPayload("sceneNodePayload");
@@ -257,8 +259,11 @@ PrefabManagerUi::ui_show(
       {
         IM_ASSERT(nodePayload->DataSize == sizeof(entt::entity));
 
+        const auto& entityManager = registry.ctx().at <EntityManager> ();
+
         const auto eDragged = *(const entt::entity*) nodePayload->Data;
-        SerializeChildNode(registry, prefabsState[prefabId], eDragged);
+        SerializeChildNode(registry, prefabsState[prefabId], eDragged,
+                           {entityManager.componentType <EntityMetaInfo> ()});
       }
 
       ImGui::EndDragDropTarget();
