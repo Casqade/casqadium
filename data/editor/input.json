@@ -78,12 +78,12 @@
     "+MouseMove_Y" : 
     {
       "absolute" : false,
-      "sensitivity" : -0.5
+      "sensitivity" : -5.0
     },
     "-MouseMove_Y" : 
     {
       "absolute" : false,
-      "sensitivity" : 0.5
+      "sensitivity" : 5.0
     },
     "~Key_Down" : 
     {
@@ -156,12 +156,12 @@
     "+MouseMove_X" : 
     {
       "absolute" : false,
-      "sensitivity" : -0.5
+      "sensitivity" : -5.0
     },
     "-MouseMove_X" : 
     {
       "absolute" : false,
-      "sensitivity" : 0.5
+      "sensitivity" : 5.0
     },
     "~Key_Left" : 
     {
