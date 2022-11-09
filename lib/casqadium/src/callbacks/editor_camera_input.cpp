@@ -25,7 +25,6 @@ editorCameraControlOn(
   entt::registry& registry,
   const std::vector <std::any>& args )
 {
-  using types::EntityManager;
   using ui::ViewportManagerUi;
   using namespace compos;
 
@@ -53,15 +52,15 @@ editorCameraControlOff(
   const std::vector <std::any>& args )
 {
   using types::EntityManager;
-  using ui::ViewportManagerUi;
   using namespace compos;
 
   const auto eCamera = std::any_cast <entt::entity> (args.at(0));
 
   entityInputOff(registry, args);
 
-  registry.remove <WantsMouseCentered> (eCamera);
-  registry.remove <WantsMouseHidden> (eCamera);
+  auto& entityManager = registry.ctx().at <EntityManager> ();
+  entityManager.removeLater(eCamera, entityManager.componentType <WantsMouseCentered> ());
+  entityManager.removeLater(eCamera, entityManager.componentType <WantsMouseHidden> ());
 };
 
 void
@@ -70,7 +69,6 @@ editorCameraFovControl(
   const std::vector <std::any>& args )
 {
   using compos::Camera;
-  using compos::InputController;
   using types::ControlAxis;
 
   const auto eCamera = std::any_cast <entt::entity> (args.at(0));
@@ -88,7 +86,6 @@ editorCameraZoomControl(
   const std::vector <std::any>& args )
 {
   using compos::Camera;
-  using compos::InputController;
   using types::ControlAxis;
 
   const auto eCamera = std::any_cast <entt::entity> (args.at(0));

@@ -1,5 +1,7 @@
 #include <cqde/callbacks/entities.hpp>
 
+#include <cqde/types/EntityManager.hpp>
+
 #include <cqde/components/SubscriberInput.hpp>
 #include <cqde/components/SubscriberUpdate.hpp>
 
@@ -25,10 +27,14 @@ entityUpdateOff(
   entt::registry& registry,
   const std::vector <std::any>& args )
 {
+  using types::EntityManager;
   using compos::SubscriberUpdate;
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
-  registry.remove <SubscriberUpdate> (entity);
+
+  auto& entityManager = registry.ctx().at <EntityManager> ();
+  entityManager.removeLater(entity, entityManager.componentType <SubscriberUpdate> ());
+
 };
 
 void
@@ -62,10 +68,13 @@ entityInputOff(
   entt::registry& registry,
   const std::vector <std::any>& args )
 {
+  using types::EntityManager;
   using compos::SubscriberInput;
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
-  registry.remove <SubscriberInput> (entity);
+
+  auto& entityManager = registry.ctx().at <EntityManager> ();
+  entityManager.removeLater(entity, entityManager.componentType <SubscriberInput> ());
 };
 
 void
