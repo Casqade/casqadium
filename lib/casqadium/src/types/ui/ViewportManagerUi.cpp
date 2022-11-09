@@ -11,6 +11,7 @@
 
 #include <cqde/types/assets/GeometryAssetManager.hpp>
 
+#include <cqde/ecs_helpers.hpp>
 #include <cqde/math_helpers.hpp>
 #include <cqde/render_helpers.hpp>
 
@@ -321,7 +322,7 @@ ViewportManagerUi::ui_show_viewport_windows(
 
       bool viewCubeHovered {};
 
-      if ( selectedEntity != entt::null  &&
+      if ( entity_valid(selectedEntity, registry) == true &&
            selectedEntity != eCamera &&
            (viewCubeHovered == false ||
             mGizmoCubeUsingIndex == -1 ||
