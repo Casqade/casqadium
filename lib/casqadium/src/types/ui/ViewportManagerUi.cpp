@@ -377,8 +377,6 @@ ViewportManagerUi::ui_show_viewport_windows(
         }
       }
 
-      ImGui::Text("%s", format("Z-buffer depth: {}", cCamera.zBuffer.size()).c_str());
-
       if ( mGizmoSettingsExpanded == true )
       {
         ImGui::PushStyleColor(ImGuiCol_ChildBg, ImGui::GetStyleColorVec4(ImGuiCol_WindowBg));
@@ -387,6 +385,10 @@ ViewportManagerUi::ui_show_viewport_windows(
                                {comboWidth, camViewport.w - ImGui::GetCursorPosY()},
                                true) )
         {
+          ImGui::AlignTextToFramePadding();
+          ImGui::Text("%s", format("Z-buffer depth: {}",
+                                   cCamera.zBuffer.size()).c_str());
+
           if ( ImGui::CollapsingHeader("View cube", ImGuiTreeNodeFlags_DefaultOpen) )
           {
             const auto gizmoSize = comboWidth * 0.5f;
