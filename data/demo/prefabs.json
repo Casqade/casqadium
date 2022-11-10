@@ -602,7 +602,7 @@
           "eSkyboxWall_9",
           "eSkyboxWall_12"
         ],
-        "parent" : "eSkybox"
+        "parent" : "null"
       },
       "Tag" : {},
       "Transform" : 
