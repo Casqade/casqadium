@@ -121,13 +121,16 @@ CasqadiumStateDemo::CasqadiumStateDemo(
   auto monolithTexture = std::make_shared <olc::Renderable> ();
 
   skyBoxTexture->Create(1, 1);
-  monolithTexture->Create(1, 1);
-
   pge->SetDrawTarget(skyBoxTexture->Sprite());
   pge->Clear({140, 218, 255});
-  pge->SetDrawTarget(layer);
-
   skyBoxTexture->Decal()->Update();
+
+  monolithTexture->Create(1, 1);
+  pge->SetDrawTarget(monolithTexture->Sprite());
+  pge->Clear({15, 15, 15});
+  monolithTexture->Decal()->Update();
+
+  pge->SetDrawTarget(layer);
 
   auto& textures = mRegistry.ctx().at <TextureAssetManager> ();
   textures.insert("text_texture", textTexture);
