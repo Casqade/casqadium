@@ -26,6 +26,8 @@
 
 #include <cqde/types/input/InputManager.hpp>
 
+#include <cqde/types/sequences/SequenceFactory.hpp>
+
 #include <cqde/util/logger.hpp>
 
 #include <cqde/components/Tag.hpp>
@@ -33,6 +35,8 @@
 
 #include <cqde/callbacks.hpp>
 #include <cqde/systems.hpp>
+
+#include <demo/sequences.hpp>
 
 #include <olcPGE/olcMouseInputId.hpp>
 #include <olcPGE/olcPGEX_ImGui.hpp>
@@ -144,6 +148,9 @@ CasqadiumStateDemo::CasqadiumStateDemo(
 
   auto& callbackMgr = mRegistry.ctx().at <CallbackManager> ();
   callbackMgr.Register("EngineShutdown", engineShutdown);
+
+  auto& sequenceFactory = mRegistry.ctx().at <SequenceFactory> ();
+  sequenceFactory.registerSequence <demo::CameraFovInterpolated> ("CameraFovInterpolated");
 
   cqde::callbacks::editorModeEnable(mRegistry);
 }
