@@ -76,6 +76,20 @@ CasqadiumStateDemo::CasqadiumStateDemo(
     return;
   }
 
+  const auto engineShutdown =
+  [this] (  entt::registry& registry,
+            const std::vector <std::any>& args )
+  {
+    registry.clear();
+    mRunning = false;
+  };
+
+  auto& callbackMgr = mRegistry.ctx().at <CallbackManager> ();
+  callbackMgr.Register("EngineShutdown", engineShutdown);
+
+  auto& sequenceFactory = mRegistry.ctx().at <SequenceFactory> ();
+  sequenceFactory.registerSequence <demo::CameraFovInterpolated> ("CameraFovInterpolated");
+
   auto& packageManager = mRegistry.ctx().at <PackageManager> ();
 
   try
@@ -140,20 +154,6 @@ CasqadiumStateDemo::CasqadiumStateDemo(
   textures.insert("cqde_q", cqde::textureFromText("q", olc::GREEN, olc::BLANK, true));
   textures.insert("cqde_d", cqde::textureFromText("d", olc::WHITE, olc::BLANK, true));
   textures.insert("cqde_e", cqde::textureFromText("e", olc::BLUE, olc::BLANK, true));
-
-  const auto engineShutdown =
-  [this] (  entt::registry& registry,
-            const std::vector <std::any>& args )
-  {
-    registry.clear();
-    mRunning = false;
-  };
-
-  auto& callbackMgr = mRegistry.ctx().at <CallbackManager> ();
-  callbackMgr.Register("EngineShutdown", engineShutdown);
-
-  auto& sequenceFactory = mRegistry.ctx().at <SequenceFactory> ();
-  sequenceFactory.registerSequence <demo::CameraFovInterpolated> ("CameraFovInterpolated");
 
   cqde::callbacks::editorModeEnable(mRegistry);
 }
