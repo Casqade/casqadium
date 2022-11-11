@@ -6,6 +6,7 @@
 #include <cqde/components/SceneNode.hpp>
 #include <cqde/components/Transform.hpp>
 #include <cqde/components/GeometryBuffer.hpp>
+#include <cqde/components/CasqadiumEditorInternal.hpp>
 
 #include <cqde/systems.hpp>
 
@@ -187,6 +188,7 @@ ViewportManagerUi::ui_show_viewport_windows(
   using compos::Camera;
   using compos::SceneNode;
   using compos::Transform;
+  using compos::CasqadiumEditorInternal;
 
   std::vector <int32_t> windowsToClose {};
 
@@ -417,7 +419,8 @@ ViewportManagerUi::ui_show_viewport_windows(
 
                 if ( camView != camViewPrev &&
                      (mGizmoCubeUsingIndex == viewportIndex ||
-                      mGizmoCubeUsingIndex == -1) )
+                      mGizmoCubeUsingIndex == -1) &&
+                     registry.all_of <CasqadiumEditorInternal> (eCamera) == true )
                 {
                   camView = glm::inverse(camView);
 
