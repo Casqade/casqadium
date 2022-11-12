@@ -68,12 +68,10 @@ CameraFovInterpolated::execute(
 
   const bool timeExpired = Delay::execute(registry, entity);
 
-  auto dt = static_cast <double> (mTime.first)
-          / static_cast <double> (mTime.second);
+  auto progress = static_cast <double> (mTime.first)
+                / static_cast <double> (mTime.second);
 
-  dt = std::min(dt, static_cast <double> (mTime.second));
-
-  dt = ImGui::BezierValue(dt, glm::value_ptr(mBezierParams));
+  const auto dt = mSpline.value(std::min(progress, 1.0));
 
   auto& cCamera = registry.get <Camera> (entity);
   cCamera.fov = glm::lerp(mFov.first, mFov.second, static_cast <float> (dt));
@@ -91,7 +89,7 @@ CameraFovInterpolated::toJson() const
   json["fovInitial"] = mFov.first;
   json["fovTarget"] = mFov.second;
 
-  json["bezierParams"] << mBezierParams;
+  json["curve"] << glm::vec4{mSpline.p0(), mSpline.p1()};
   json["initFromCurrentFov"] = mInitFromCurrentFov;
 
   return json;
@@ -115,12 +113,14 @@ CameraFovInterpolated::fromJson(
 
   try
   {
-    mBezierParams << json["bezierParams"];
+    glm::vec4 curve {};
+    curve << json["curve"];
+    mSpline.setPoints({curve}, {curve.z, curve.w});
   }
   catch ( const std::exception& e )
   {
     throw std::runtime_error(
-      format("'bezierParams' parse error: {}",
+      format("'curve' parse error: {}",
              e.what()));
   }
 }

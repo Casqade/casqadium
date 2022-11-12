@@ -18,8 +18,6 @@
 
 #include <json/value.h>
 
-#include <imgui_bezier.hpp>
-
 
 namespace cqde::types
 {
@@ -80,12 +78,10 @@ TransformInterpolated::execute(
 
   const bool timeExpired = Delay::execute(registry, entity);
 
-  auto dt = static_cast <double> (mTime.first)
-          / static_cast <double> (mTime.second);
+  const auto progress = static_cast <double> (mTime.first)
+                      / static_cast <double> (mTime.second);
 
-  dt = std::min(dt, static_cast <double> (mTime.second));
-
-  dt = ImGui::BezierValue(dt, glm::value_ptr(mBezierParams));
+  const auto dt = mSpline.value(std::min(progress, 1.0));
 
   auto transform
     = cqde::interpolate(mTransform.first,
@@ -125,7 +121,7 @@ TransformInterpolated::toJson() const
   json["transformTarget"][2] << mTransform.second[2];
   json["transformTarget"][3] << mTransform.second[3];
 
-  json["bezierParams"] << mBezierParams;
+  json["curve"] << glm::vec4{mSpline.p0(), mSpline.p1()};
   json["useWorldSpace"] = mUseWorldSpace;
   json["initFromTransform"] = mInitFromTransform;
 
@@ -175,12 +171,14 @@ TransformInterpolated::fromJson(
 
   try
   {
-    mBezierParams << json["bezierParams"];
+    glm::vec4 curve {};
+    curve << json["curve"];
+    mSpline.setPoints({curve}, {curve.z, curve.w});
   }
   catch ( const std::exception& e )
   {
     throw std::runtime_error(
-      format("'bezierParams' parse error: {}",
+      format("'curve' parse error: {}",
              e.what()));
   }
 }

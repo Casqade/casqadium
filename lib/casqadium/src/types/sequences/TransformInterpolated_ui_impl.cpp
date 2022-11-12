@@ -16,6 +16,7 @@
 
 #include <optional>
 
+#include <cqde/util/logger.hpp>
 
 namespace cqde::types
 {
@@ -31,8 +32,13 @@ TransformInterpolated::ui_show(
 
   Delay::ui_show(registry, entity);
 
-  if ( ImGui::CollapsingHeader("Interpolation", ImGuiTreeNodeFlags_DefaultOpen) )
-    ImGui::Bezier("##interpolation", glm::value_ptr(mBezierParams));
+  if ( ImGui::CollapsingHeader("Interpolation curve", ImGuiTreeNodeFlags_DefaultOpen) )
+  {
+    glm::vec4 curve {mSpline.p0(), mSpline.p1()};
+
+    ImGui::Bezier("##interpolationCurve", glm::value_ptr(curve));
+    mSpline.setPoints({curve}, {curve.z, curve.w});
+  }
 
   if ( ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;

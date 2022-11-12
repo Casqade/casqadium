@@ -1,12 +1,7 @@
 #pragma once
 
+#include <cqde/types/SplineCurve.hpp>
 #include <cqde/types/sequences/Delay.hpp>
-
-#include <TimeUtils/Duration.hpp>
-
-#include <entt/fwd.hpp>
-
-#include <glm/mat4x4.hpp>
 
 
 namespace cqde::types
@@ -16,14 +11,13 @@ class TransformInterpolated : public Delay
 {
   std::pair <glm::mat4, glm::mat4> mTransform {1.0f, 1.0f};
 
-  glm::vec4 mBezierParams {0.0f, 0.0f, 1.0f, 1.0f};
+  SplineCurve mSpline {{}, {1.0f, 1.0f}};
 
   bool mUseWorldSpace {};
   bool mInitFromTransform {};
 
 public:
   TransformInterpolated() = default;
-
   ~TransformInterpolated() override = default;
 
   virtual std::string name() const override;

@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cqde/types/SplineCurve.hpp>
 #include <cqde/types/sequences/Delay.hpp>
 
 
@@ -8,9 +9,11 @@ namespace demo
 
 class CameraFovInterpolated : public cqde::types::Delay
 {
+  using SplineCurve = cqde::types::SplineCurve;
+
   std::pair <float, float> mFov {1.0f, 1.0f};
 
-  glm::vec4 mBezierParams {0.0f, 0.0f, 1.0f, 1.0f};
+  SplineCurve mSpline {{}, {1.0f, 1.0f}};
 
   bool mInitFromCurrentFov {};
 

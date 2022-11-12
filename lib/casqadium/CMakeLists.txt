@@ -79,6 +79,9 @@ target_sources(${TARGET} PRIVATE
   src/types/Package_ui_impl.cpp
   include/${CASQADIUM_SHORT}/types/Package.hpp
 
+  src/types/SplineCurve.cpp
+  include/${CASQADIUM_SHORT}/types/SplineCurve.hpp
+
   src/types/VertexBuffer.cpp
   include/${CASQADIUM_SHORT}/types/VertexBuffer.hpp
 
