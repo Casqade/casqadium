@@ -48,6 +48,9 @@ target_sources(${TARGET} PRIVATE
   src/util/logger_rp3d.cpp
   include/${CASQADIUM_SHORT}/util/logger_rp3d.hpp
 
+  src/util/editor_imgui_settings.cpp
+  include/${CASQADIUM_SHORT}/util/editor_imgui_settings.hpp
+
   src/conversion/json_glm_vec.cpp
   src/conversion/rp3d_glm.cpp
   include/${CASQADIUM_SHORT}/conversion/json_glm_vec.hpp

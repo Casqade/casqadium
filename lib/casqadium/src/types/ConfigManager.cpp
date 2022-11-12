@@ -144,11 +144,15 @@ const static Json::Value configReference =
 }();
 
 ConfigManager::ConfigManager(
-  const path& configPath )
-  : ConfigManager()
+  const std::string& executableName,
+  path configPath )
+  : mExecutableName{executableName}
 {
-  setConfig(read(configPath));
-  write(configPath);
+  if ( configPath.empty() == true )
+    configPath = executableName + ".conf";
+
+  ConfigManager::setConfig(ConfigManager::read(configPath));
+  ConfigManager::write(configPath);
 }
 
 Json::Value
@@ -330,6 +334,12 @@ ConfigManager::write(
       format("Error: Can't write configuration file ({})\n",
              e.what());
   }
+}
+
+std::string
+ConfigManager::executableName() const
+{
+  return mExecutableName;
 }
 
 std::string

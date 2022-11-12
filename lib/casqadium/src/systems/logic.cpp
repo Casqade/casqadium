@@ -2,6 +2,8 @@
 
 #include <cqde/callbacks.hpp>
 
+#include <cqde/types/ConfigManager.hpp>
+
 #include <cqde/types/ui/AssetManagerUi.hpp>
 #include <cqde/types/ui/EntityManagerUi.hpp>
 #include <cqde/types/ui/InputManagerUi.hpp>
@@ -15,6 +17,8 @@
 
 #include <imgui.h>
 
+#include <cqde/util/editor_imgui_settings.hpp>
+
 
 namespace cqde::systems
 {
@@ -24,6 +28,15 @@ EditorSystem(
   entt::registry& registry )
 {
   using namespace ui;
+  using types::ConfigManager;
+
+  if ( auto& imguiIO = ImGui::GetIO();
+       imguiIO.IniFilename == nullptr )
+  {
+    static auto imguiIniFileName = registry.ctx().at <ConfigManager> ().executableName() + ".imgui";
+    imguiIO.IniFilename = imguiIniFileName.data();
+    ImGui::LoadIniSettingsFromMemory(EditorImGuiSettings);
+  }
 
   static int32_t frameCountPrev {};
   const auto frameCount = ImGui::GetFrameCount();

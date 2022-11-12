@@ -24,6 +24,8 @@ class ConfigManager
   using BACKEND = SoLoud::Soloud::BACKENDS;
   using FLAGS = SoLoud::Soloud::FLAGS;
 
+  std::string mExecutableName {};
+
 //  [%Y-%m-%d %T.%e] [%^%l%$] [%s:%#] [thread %t] %v
   std::string mLogPattern {"[%T.%e] [%^%l%$] [%s:%#] [thread %t] %v"};
 
@@ -51,7 +53,8 @@ class ConfigManager
 
 public:
   ConfigManager() = default;
-  ConfigManager( const path& configPath );
+  ConfigManager( const std::string& executableName, path configPath = {} );
+  virtual ~ConfigManager() = default;
 
   virtual void write( const path& );
   virtual void setConfig( const Json::Value& config );
@@ -59,6 +62,8 @@ public:
   virtual Json::Value read( const path& ) const;
 
   virtual Json::Value config() const;
+
+  std::string executableName() const;
 
   std::string logPattern() const;
 

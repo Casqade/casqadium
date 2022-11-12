@@ -30,6 +30,7 @@ olc::rcode PGE_ImGUI::ImGui_ImplPGE_Init()
 {
   ImGui::CreateContext();
   ImGuizmo::SetImGuiContext(ImGui::GetCurrentContext());
+  ImGui::GetIO().IniFilename = {};
 
 #ifdef OLC_GFX_OPENGL33
   GLenum err = glewInit();

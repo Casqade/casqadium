@@ -25,7 +25,7 @@ main( int, char* argv[] )
   const auto configFilename = executableName.string() + ".conf";
   const auto logFilename = executableName.string() + ".log";
 
-  const ConfigManager configManager (configFilename);
+  const ConfigManager configManager (executableName.string());
 
   std::vector <std::shared_ptr <spdlog::sinks::sink>> sinks {};
 
