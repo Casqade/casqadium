@@ -62,8 +62,8 @@ target_sources(${TARGET} PRIVATE
   include/${CASQADIUM_SHORT}/conversion/json_glm_bvec3.hpp
   include/${CASQADIUM_SHORT}/conversion/rp3d_glm.hpp
 
-  src/conversion/SoLoudBackendStringConverter.cpp
-  include/${CASQADIUM_SHORT}/conversion/SoLoudBackendStringConverter.hpp
+  src/conversion/soloud_string.cpp
+  include/${CASQADIUM_SHORT}/conversion/soloud_string.hpp
 
 
 #  Classes & PODs

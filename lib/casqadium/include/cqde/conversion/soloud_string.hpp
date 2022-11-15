@@ -18,3 +18,4 @@ public:
   std::string toString( const BACKEND ) const;
   BACKEND toBackend( const std::string& ) const;
 };
+

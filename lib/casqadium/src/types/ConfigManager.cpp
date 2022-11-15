@@ -4,7 +4,7 @@
 #include <cqde/file_helpers.hpp>
 #include <cqde/json_helpers.hpp>
 
-#include <cqde/conversion/SoLoudBackendStringConverter.hpp>
+#include <cqde/conversion/soloud_string.hpp>
 
 #include <spdlog/fmt/bundled/format.h>
 
