@@ -45,3 +45,35 @@ SoLoudBackendStringConverter::toBackend(
   return BACKEND::AUTO;
 }
 
+
+SoLoudResamplerStringConverter::SoLoudResamplerStringConverter()
+{
+  mResamplers =
+  {
+    {RESAMPLER::RESAMPLER_POINT, "point"},
+    {RESAMPLER::RESAMPLER_LINEAR, "linear"},
+    {RESAMPLER::RESAMPLER_CATMULLROM, "catmullrom"},
+  };
+}
+
+std::string
+SoLoudResamplerStringConverter::toString(
+  const RESAMPLER backend ) const
+{
+  for ( const auto& backendPair : mResamplers )
+    if ( backendPair.first == backend )
+      return backendPair.second;
+
+  return mResamplers.at(SOLOUD_DEFAULT_RESAMPLER);
+}
+
+SoLoudResamplerStringConverter::RESAMPLER
+SoLoudResamplerStringConverter::toResampler(
+  const std::string& backend ) const
+{
+  for ( const auto& backendPair : mResamplers )
+    if ( backendPair.second == backend )
+      return backendPair.first;
+
+  return SOLOUD_DEFAULT_RESAMPLER;
+}

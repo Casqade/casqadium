@@ -23,6 +23,7 @@ class ConfigManager
 
   using BACKEND = SoLoud::Soloud::BACKENDS;
   using FLAGS = SoLoud::Soloud::FLAGS;
+  using RESAMPLER = SoLoud::Soloud::RESAMPLER;
 
   std::string mExecutableName {};
 
@@ -41,10 +42,12 @@ class ConfigManager
   uint64_t mTickRate {60};
   uint64_t mFrameRate {0};
 
-  BACKEND mAudioBackend {};
+  BACKEND mAudioBackend {BACKEND::AUTO};
+  RESAMPLER mAudioResampler {SOLOUD_DEFAULT_RESAMPLER};
 
   uint32_t mAudioBufferSize {};
   uint32_t mAudioSampleRate {};
+  uint32_t mAudioMaxActiveVoices {16};
 
   bool mAudioRoudoffClipping {true};
   bool mAudioNoFpuChange {};
@@ -79,11 +82,13 @@ public:
   uint64_t tickRate() const;
   uint64_t frameRate() const;
 
-  BACKEND audioBackend() const;
   int audioFlags() const;
+  BACKEND audioBackend() const;
+  RESAMPLER audioResampler() const;
 
   uint32_t audioBufferSize() const;
   uint32_t audioSampleRate() const;
+  uint32_t audioMaxActiveVoices() const;
 
   bool audioRoundoffClipping() const;
   bool audioNoFpuChange() const;

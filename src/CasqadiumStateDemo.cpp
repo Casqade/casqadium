@@ -76,6 +76,9 @@ CasqadiumStateDemo::CasqadiumStateDemo(
     return;
   }
 
+  audioBackend.setMainResampler(configManager.audioResampler());
+  audioBackend.setMaxActiveVoiceCount(configManager.audioMaxActiveVoices());
+
   const auto engineShutdown =
   [this] (  entt::registry& registry,
             const std::vector <std::any>& args )

@@ -109,6 +109,11 @@ const static Json::Value configReference =
   backend.setComment("// 'backend' value must be a JSON string"s,
                       Json::CommentPlacement::commentBefore);
 
+  Json::Value& resampler = audio["resampler"];
+  resampler = ValueType::stringValue;
+  resampler.setComment("// 'resampler' value must be a JSON string"s,
+                        Json::CommentPlacement::commentBefore);
+
   Json::Value& bufferSize = audio["buffer-size"];
   bufferSize = ValueType::stringValue;
   bufferSize.setComment("// 'buffer-size' value must be a JSON unsigned integer"s,
@@ -118,6 +123,11 @@ const static Json::Value configReference =
   sampleRate = ValueType::stringValue;
   sampleRate.setComment("// 'sample-rate' value must be a JSON unsigned integer"s,
                         Json::CommentPlacement::commentBefore);
+
+  Json::Value& maxActiveVoices = audio["max-active-voices"];
+  maxActiveVoices = ValueType::stringValue;
+  maxActiveVoices.setComment("// 'maxActiveVoices' value must be a JSON unsigned integer"s,
+                              Json::CommentPlacement::commentBefore);
 
   Json::Value& audioFlags = audio["flags"];
   audioFlags = ValueType::objectValue;
@@ -175,9 +185,11 @@ ConfigManager::config() const
   config["video"]["fullscreen"] = mFullscreenEnabled;
 
   config["audio"]["backend"] = SoLoudBackendStringConverter{}.toString(mAudioBackend);
+  config["audio"]["resampler"] = SoLoudResamplerStringConverter{}.toString(mAudioResampler);
 
   config["audio"]["buffer-size"] = mAudioBufferSize;
   config["audio"]["sample-rate"] = mAudioSampleRate;
+  config["audio"]["max-active-voices"] = mAudioMaxActiveVoices;
 
   config["audio"]["flags"]["roundoff-clipping"] = mAudioRoudoffClipping;
   config["audio"]["flags"]["no-fpu-change"] = mAudioNoFpuChange;
@@ -206,9 +218,11 @@ ConfigManager::setConfig(
   mFullscreenEnabled = config["video"]["fullscreen"].asBool();
 
   mAudioBackend = SoLoudBackendStringConverter{}.toBackend(config["audio"]["backend"].asString());
+  mAudioResampler = SoLoudResamplerStringConverter{}.toResampler(config["audio"]["resampler"].asString());
 
   mAudioBufferSize = config["audio"]["buffer-size"].asUInt();
   mAudioSampleRate = config["audio"]["sample-rate"].asUInt();
+  mAudioMaxActiveVoices = config["audio"]["max-active-voices"].asUInt();
 
   mAudioRoudoffClipping = config["audio"]["flags"]["roundoff-clipping"].asBool();
   mAudioNoFpuChange = config["audio"]["flags"]["no-fpu-change"].asBool();
@@ -285,6 +299,11 @@ ConfigManager::read(
   else
     result["audio"]["backend"] = configDefault["audio"]["backend"];
 
+  if ( configIn["audio"]["resampler"].isString() )
+    result["audio"]["resampler"] = configIn["audio"]["resampler"];
+  else
+    result["audio"]["resampler"] = configDefault["audio"]["resampler"];
+
   if ( configIn["audio"]["buffer-size"].isUInt() )
     result["audio"]["buffer-size"] = configIn["audio"]["buffer-size"];
   else
@@ -294,6 +313,11 @@ ConfigManager::read(
     result["audio"]["sample-rate"] = configIn["audio"]["sample-rate"];
   else
     result["audio"]["sample-rate"] = configDefault["audio"]["sample-rate"];
+
+  if ( configIn["audio"]["max-active-voices"].isUInt() )
+    result["audio"]["max-active-voices"] = configIn["audio"]["max-active-voices"];
+  else
+    result["audio"]["max-active-voices"] = configDefault["audio"]["max-active-voices"];
 
   if ( configIn["audio"]["flags"]["roundoff-clipping"].isBool() )
     result["audio"]["flags"]["roundoff-clipping"] = configIn["audio"]["flags"]["roundoff-clipping"];
@@ -396,12 +420,6 @@ ConfigManager::frameRate() const
   return mFrameRate;
 }
 
-ConfigManager::BACKEND
-ConfigManager::audioBackend() const
-{
-  return mAudioBackend;
-}
-
 int
 ConfigManager::audioFlags() const
 {
@@ -416,6 +434,18 @@ ConfigManager::audioFlags() const
   return flags;
 }
 
+ConfigManager::BACKEND
+ConfigManager::audioBackend() const
+{
+  return mAudioBackend;
+}
+
+ConfigManager::RESAMPLER
+ConfigManager::audioResampler() const
+{
+  return mAudioResampler;
+}
+
 uint32_t
 ConfigManager::audioBufferSize() const
 {
@@ -426,6 +456,12 @@ uint32_t
 ConfigManager::audioSampleRate() const
 {
   return mAudioSampleRate;
+}
+
+uint32_t
+ConfigManager::audioMaxActiveVoices() const
+{
+  return mAudioMaxActiveVoices;
 }
 
 bool
