@@ -279,16 +279,16 @@ CasqadiumStateDemo::update(
   tick.ticksElapsed = ticks;
   tick.tickInterval = interval;
 
-  for ( uint32_t tick = 0; tick < ticks; ++tick )
+  for ( uint32_t i = 0; i < ticks; ++i )
   {
     mRegistry.ctx().at <SystemManager> ().execute(mRegistry,
                                                   System::Phase::Logic);
 
     callbackManager.delayedExecution(mRegistry);
     entityManager.delayedRemove(mRegistry);
-  }
 
-  tick.lastTickTimepoint = TimeUtils::Now();
+    tick.lastTickTimepoint = TimeUtils::Now();
+  }
 
   return mRunning;
 }
