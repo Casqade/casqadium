@@ -79,7 +79,7 @@ target_sources(${TARGET} PRIVATE
   include/${CASQADIUM_SHORT}/types/UndoRedoQueue_types.hpp
 
   src/types/Package.cpp
-  src/types/Package_ui_impl.cpp
+  src/types/Package_ui.cpp
   include/${CASQADIUM_SHORT}/types/Package.hpp
 
   src/types/SplineCurve.cpp
@@ -95,23 +95,23 @@ target_sources(${TARGET} PRIVATE
   include/${CASQADIUM_SHORT}/types/physics/ColliderFactory.hpp
 
   src/types/physics/colliders/Collider.cpp
-  src/types/physics/colliders/Collider_ui_impl.cpp
+  src/types/physics/colliders/Collider_ui.cpp
   include/${CASQADIUM_SHORT}/types/physics/colliders/Collider.hpp
 
   src/types/physics/colliders/ColliderBox.cpp
-  src/types/physics/colliders/ColliderBox_ui_impl.cpp
+  src/types/physics/colliders/ColliderBox_ui.cpp
   include/${CASQADIUM_SHORT}/types/physics/colliders/ColliderBox.hpp
 
   src/types/physics/colliders/ColliderCapsule.cpp
-  src/types/physics/colliders/ColliderCapsule_ui_impl.cpp
+  src/types/physics/colliders/ColliderCapsule_ui.cpp
   include/${CASQADIUM_SHORT}/types/physics/colliders/ColliderCapsule.hpp
 
   src/types/physics/colliders/ColliderHeightField.cpp
-  src/types/physics/colliders/ColliderHeightField_ui_impl.cpp
+  src/types/physics/colliders/ColliderHeightField_ui.cpp
   include/${CASQADIUM_SHORT}/types/physics/colliders/ColliderHeightField.hpp
 
   src/types/physics/colliders/ColliderSphere.cpp
-  src/types/physics/colliders/ColliderSphere_ui_impl.cpp
+  src/types/physics/colliders/ColliderSphere_ui.cpp
   include/${CASQADIUM_SHORT}/types/physics/colliders/ColliderSphere.hpp
 
 
@@ -123,11 +123,11 @@ target_sources(${TARGET} PRIVATE
   include/${CASQADIUM_SHORT}/types/sequences/SequenceFactory.hpp
 
   src/types/sequences/Delay.cpp
-  src/types/sequences/Delay_ui_impl.cpp
+  src/types/sequences/Delay_ui.cpp
   include/${CASQADIUM_SHORT}/types/sequences/Delay.hpp
 
   src/types/sequences/TransformInterpolated.cpp
-  src/types/sequences/TransformInterpolated_ui_impl.cpp
+  src/types/sequences/TransformInterpolated_ui.cpp
   include/${CASQADIUM_SHORT}/types/sequences/TransformInterpolated.hpp
 
 
@@ -193,15 +193,15 @@ target_sources(${TARGET} PRIVATE
   include/${CASQADIUM_SHORT}/types/input/InputManager.hpp
 
   src/types/input/ControlAxis.cpp
-  src/types/input/ControlAxis_ui_impl.cpp
+  src/types/input/ControlAxis_ui.cpp
   include/${CASQADIUM_SHORT}/types/input/ControlAxis.hpp
 
   src/types/input/InputBinding.cpp
-  src/types/input/InputBinding_ui_impl.cpp
+  src/types/input/InputBinding_ui.cpp
   include/${CASQADIUM_SHORT}/types/input/InputBinding.hpp
 
   src/types/input/InputBindingAbsolute.cpp
-  src/types/input/InputBindingAbsolute_ui_impl.cpp
+  src/types/input/InputBindingAbsolute_ui.cpp
   include/${CASQADIUM_SHORT}/types/input/InputBindingAbsolute.hpp
 
   src/types/input/InputBindingRelative.cpp
@@ -248,11 +248,11 @@ target_sources(${TARGET} PRIVATE
 
 #  Components
   src/components/Camera.cpp
-  src/components/Camera_ui_impl.cpp
+  src/components/Camera_ui.cpp
   include/${CASQADIUM_SHORT}/components/Camera.hpp
 
   src/components/CasqadiumEditorCameraSettings.cpp
-  src/components/CasqadiumEditorCameraSettings_ui_impl.cpp
+  src/components/CasqadiumEditorCameraSettings_ui.cpp
   include/${CASQADIUM_SHORT}/components/CasqadiumEditorCameraSettings.hpp
 
   src/components/CasqadiumEditorInternal.cpp
@@ -262,35 +262,35 @@ target_sources(${TARGET} PRIVATE
   include/${CASQADIUM_SHORT}/components/CasqadiumEntryPoint.hpp
 
   src/components/EntityList.cpp
-  src/components/EntityList_ui_impl.cpp
+  src/components/EntityList_ui.cpp
   include/${CASQADIUM_SHORT}/components/EntityList.hpp
 
   src/components/EntityMetaInfo.cpp
-  src/components/EntityMetaInfo_ui_impl.cpp
+  src/components/EntityMetaInfo_ui.cpp
   include/${CASQADIUM_SHORT}/components/EntityMetaInfo.hpp
 
   src/components/GeometryBuffer.cpp
-  src/components/GeometryBuffer_ui_impl.cpp
+  src/components/GeometryBuffer_ui.cpp
   include/${CASQADIUM_SHORT}/components/GeometryBuffer.hpp
 
   src/components/InputController.cpp
-  src/components/InputController_ui_impl.cpp
+  src/components/InputController_ui.cpp
   include/${CASQADIUM_SHORT}/components/InputController.hpp
 
   src/components/LightSource.cpp
-  src/components/LightSource_ui_impl.cpp
+  src/components/LightSource_ui.cpp
   include/${CASQADIUM_SHORT}/components/LightSource.hpp
 
   src/components/LightTarget.cpp
-  src/components/LightTarget_ui_impl.cpp
+  src/components/LightTarget_ui.cpp
   include/${CASQADIUM_SHORT}/components/LightTarget.hpp
 
   src/components/SceneNode.cpp
-  src/components/SceneNode_ui_impl.cpp
+  src/components/SceneNode_ui.cpp
   include/${CASQADIUM_SHORT}/components/SceneNode.hpp
 
   src/components/SequenceController.cpp
-  src/components/SequenceController_ui_impl.cpp
+  src/components/SequenceController_ui.cpp
   include/${CASQADIUM_SHORT}/components/SequenceController.hpp
 
   src/components/SnapshotExcluded.cpp
@@ -303,23 +303,23 @@ target_sources(${TARGET} PRIVATE
   include/${CASQADIUM_SHORT}/components/SubscriberUpdate.hpp
 
   src/components/SystemList.cpp
-  src/components/SystemList_ui_impl.cpp
+  src/components/SystemList_ui.cpp
   include/${CASQADIUM_SHORT}/components/SystemList.hpp
 
   src/components/Tag.cpp
-  src/components/Tag_ui_impl.cpp
+  src/components/Tag_ui.cpp
   include/${CASQADIUM_SHORT}/components/Tag.hpp
 
   src/components/TextureBuffer.cpp
-  src/components/TextureBuffer_ui_impl.cpp
+  src/components/TextureBuffer_ui.cpp
   include/${CASQADIUM_SHORT}/components/TextureBuffer.hpp
 
   src/components/TextureTint.cpp
-  src/components/TextureTint_ui_impl.cpp
+  src/components/TextureTint_ui.cpp
   include/${CASQADIUM_SHORT}/components/TextureTint.hpp
 
   src/components/Transform.cpp
-  src/components/Transform_ui_impl.cpp
+  src/components/Transform_ui.cpp
   include/${CASQADIUM_SHORT}/components/Transform.hpp
 
   src/components/WantsMouseCentered.cpp
@@ -330,40 +330,40 @@ target_sources(${TARGET} PRIVATE
 
 
   src/components/assets/AudioAssetList.cpp
-  src/components/assets/AudioAssetList_ui_impl.cpp
+  src/components/assets/AudioAssetList_ui.cpp
   include/${CASQADIUM_SHORT}/components/assets/AudioAssetList.hpp
 
   src/components/assets/FontAssetList.cpp
-  src/components/assets/FontAssetList_ui_impl.cpp
+  src/components/assets/FontAssetList_ui.cpp
   include/${CASQADIUM_SHORT}/components/assets/FontAssetList.hpp
 
   src/components/assets/GeometryAssetList.cpp
-  src/components/assets/GeometryAssetList_ui_impl.cpp
+  src/components/assets/GeometryAssetList_ui.cpp
   include/${CASQADIUM_SHORT}/components/assets/GeometryAssetList.hpp
 
   src/components/assets/TerrainAssetList.cpp
-  src/components/assets/TerrainAssetList_ui_impl.cpp
+  src/components/assets/TerrainAssetList_ui.cpp
   include/${CASQADIUM_SHORT}/components/assets/TerrainAssetList.hpp
 
   src/components/assets/TextStringAssetList.cpp
-  src/components/assets/TextStringAssetList_ui_impl.cpp
+  src/components/assets/TextStringAssetList_ui.cpp
   include/${CASQADIUM_SHORT}/components/assets/TextStringAssetList.hpp
 
   src/components/assets/TextureAssetList.cpp
-  src/components/assets/TextureAssetList_ui_impl.cpp
+  src/components/assets/TextureAssetList_ui.cpp
   include/${CASQADIUM_SHORT}/components/assets/TextureAssetList.hpp
 
 
   src/components/physics/CollisionBody.cpp
-  src/components/physics/CollisionBody_ui_impl.cpp
+  src/components/physics/CollisionBody_ui.cpp
   include/${CASQADIUM_SHORT}/components/physics/CollisionBody.hpp
 
   src/components/physics/RigidBody.cpp
-  src/components/physics/RigidBody_ui_impl.cpp
+  src/components/physics/RigidBody_ui.cpp
   include/${CASQADIUM_SHORT}/components/physics/RigidBody.hpp
 
   src/components/physics/ForceEmitter.cpp
-  src/components/physics/ForceEmitter_ui_impl.cpp
+  src/components/physics/ForceEmitter_ui.cpp
   include/${CASQADIUM_SHORT}/components/physics/ForceEmitter.hpp
 
 
