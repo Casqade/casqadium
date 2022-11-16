@@ -738,7 +738,7 @@ EntityManagerUi::ui_show_menu_bar(
     entitiesDeselect();
     componentDeselect();
 
-    registry.ctx().at <EntityManager> ().clear();
+    mEntityMgr->clear();
     registry.clear();
 
     try

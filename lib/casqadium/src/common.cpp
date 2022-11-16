@@ -163,7 +163,6 @@ engineInit(
   callbackManager.Register("MouseCursorShow", mouseCursorShow);
   callbackManager.Register("MouseGrabToggle", mouseGrabToggle);
 
-
   callbackManager.Register("EditorModeEnable", editorModeEnable);
   callbackManager.Register("EditorModeDisable", editorModeDisable);
   callbackManager.Register("EditorModeToggle", editorModeToggle);
@@ -195,10 +194,8 @@ engineInit(
   callbackManager.Register("EditorCameraZoomControl", editorCameraZoomControl);
   callbackManager.Register("EditorEntitySelect", editorEntitySelect);
 
-
   callbackManager.Register("QuickSave", quickSave);
   callbackManager.Register("QuickLoad", quickLoad);
-
 
   callbackManager.Register("EntityUpdateOn", entityUpdateOn);
   callbackManager.Register("EntityUpdateOff", entityUpdateOff);
@@ -239,6 +236,7 @@ engineInit(
 
   callbackManager.Register("ForceEmitterCallback", forceEmitterCallback);
   callbackManager.Register("GravityEmitterCallback", gravityEmitterCallback);
+
 
   using Phase = System::Phase;
 
