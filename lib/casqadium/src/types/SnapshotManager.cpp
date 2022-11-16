@@ -296,7 +296,8 @@ SnapshotManager::Load(
               snapshotPath.string(), e.what()));
   }
 
-  registry.ctx().at <SystemManagerUi> ().init(registry);
+  if ( registry.ctx().contains <SystemManagerUi> () == true )
+    registry.ctx().at <SystemManagerUi> ().init(registry);
 
   if ( systemManager.systemsActive(Phase::Editor).empty() == true )
     return;
