@@ -262,6 +262,10 @@ target_sources(${TARGET} PRIVATE
   src/components/CasqadiumEntryPoint_ui_impl.cpp
   include/${CASQADIUM_SHORT}/components/CasqadiumEntryPoint.hpp
 
+  src/components/EntityList.cpp
+  src/components/EntityList_ui_impl.cpp
+  include/${CASQADIUM_SHORT}/components/EntityList.hpp
+
   src/components/EntityMetaInfo.cpp
   src/components/EntityMetaInfo_ui_impl.cpp
   include/${CASQADIUM_SHORT}/components/EntityMetaInfo.hpp
@@ -298,6 +302,10 @@ target_sources(${TARGET} PRIVATE
 
   src/components/SubscriberUpdate.cpp
   include/${CASQADIUM_SHORT}/components/SubscriberUpdate.hpp
+
+  src/components/SystemList.cpp
+  src/components/SystemList_ui_impl.cpp
+  include/${CASQADIUM_SHORT}/components/SystemList.hpp
 
   src/components/Tag.cpp
   src/components/Tag_ui_impl.cpp

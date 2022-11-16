@@ -25,6 +25,9 @@
 #include <cqde/components/WantsMouseCentered.hpp>
 #include <cqde/components/WantsMouseHidden.hpp>
 
+#include <cqde/components/EntityList.hpp>
+#include <cqde/components/SystemList.hpp>
+
 #include <cqde/components/assets/AudioAssetList.hpp>
 #include <cqde/components/assets/FontAssetList.hpp>
 #include <cqde/components/assets/GeometryAssetList.hpp>
@@ -127,6 +130,9 @@ engineInit(
   entityManager.registerComponent <TextureTint> ("TextureTint");
   entityManager.registerComponent <Transform> ("Transform");
 
+  entityManager.registerComponent <EntityList> ("EntityList");
+  entityManager.registerComponent <SystemList> ("SystemList");
+
   entityManager.registerComponent <AudioAssetList> ("AudioAssetList");
   entityManager.registerComponent <FontAssetList> ("FontAssetList");
   entityManager.registerComponent <GeometryAssetList> ("GeometryAssetList");
@@ -194,13 +200,20 @@ engineInit(
   callbackManager.Register("QuickLoad", quickLoad);
 
 
-  callbackManager.Register("EntityInputOn", entityInputOn);
-  callbackManager.Register("EntityInputOff", entityInputOff);
-  callbackManager.Register("EntityInputToggle", entityInputToggle);
-
   callbackManager.Register("EntityUpdateOn", entityUpdateOn);
   callbackManager.Register("EntityUpdateOff", entityUpdateOff);
   callbackManager.Register("EntityUpdateToggle", entityUpdateToggle);
+  callbackManager.Register("EntitiesUpdateOn", entitiesUpdateOn);
+  callbackManager.Register("EntitiesUpdateOff", entitiesUpdateOff);
+
+  callbackManager.Register("EntityInputOn", entityInputOn);
+  callbackManager.Register("EntityInputOff", entityInputOff);
+  callbackManager.Register("EntityInputToggle", entityInputToggle);
+  callbackManager.Register("EntitiesInputOn", entitiesInputOn);
+  callbackManager.Register("EntitiesInputOff", entitiesInputOff);
+
+  callbackManager.Register("SystemsActivate", systemsActivate);
+  callbackManager.Register("SystemsDeactivate", systemsDeactivate);
 
   callbackManager.Register("ControlTranslateXRelative", controlTranslateXRelative);
   callbackManager.Register("ControlTranslateYRelative", controlTranslateYRelative);
