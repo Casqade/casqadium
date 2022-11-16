@@ -170,6 +170,10 @@ Package::save(
 {
   const auto path = contentPath(type);
 
+  if ( fileExists(path) == false &&
+       data.empty() == true )
+    return true;
+
   std::string contentTypeName {};
 
   switch (type)
