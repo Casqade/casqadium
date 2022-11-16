@@ -361,11 +361,11 @@ target_sources(${TARGET} PRIVATE
 
 
 #  Callbacks
-  src/callbacks/assets.cpp
-  include/${CASQADIUM_SHORT}/callbacks/assets.hpp
+  src/callbacks/assets_routine.cpp
+  include/${CASQADIUM_SHORT}/callbacks/assets_routine.hpp
 
-  src/callbacks/editor.cpp
-  include/${CASQADIUM_SHORT}/callbacks/editor.hpp
+  src/callbacks/editor_common.cpp
+  include/${CASQADIUM_SHORT}/callbacks/editor_common.hpp
 
   src/callbacks/editor_camera_input.cpp
   include/${CASQADIUM_SHORT}/callbacks/editor_camera_input.hpp
@@ -376,8 +376,8 @@ target_sources(${TARGET} PRIVATE
   src/callbacks/editor_input.cpp
   include/${CASQADIUM_SHORT}/callbacks/editor_input.hpp
 
-  src/callbacks/entities.cpp
-  include/${CASQADIUM_SHORT}/callbacks/entities.hpp
+  src/callbacks/common_routine.cpp
+  include/${CASQADIUM_SHORT}/callbacks/common_routine.hpp
 
   src/callbacks/input.cpp
   include/${CASQADIUM_SHORT}/callbacks/input.hpp
@@ -385,8 +385,6 @@ target_sources(${TARGET} PRIVATE
   src/callbacks/physics.cpp
   include/${CASQADIUM_SHORT}/callbacks/physics.hpp
 
-  src/callbacks/snapshots.cpp
-  include/${CASQADIUM_SHORT}/callbacks/snapshots.hpp
 
 #  Systems
   src/systems/input.cpp

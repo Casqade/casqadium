@@ -1,5 +1,5 @@
 #include <cqde/callbacks/editor_input.hpp>
-#include <cqde/callbacks/editor.hpp>
+#include <cqde/callbacks/editor_common.hpp>
 
 #include <cqde/types/EntityManager.hpp>
 #include <cqde/types/SystemManager.hpp>

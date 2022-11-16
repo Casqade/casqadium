@@ -33,4 +33,13 @@ void entityInputToggle(
   entt::registry&,
   const std::vector <std::any>& args = {} );
 
+
+void quickSave(
+  entt::registry&,
+  const std::vector <std::any>& args = {} );
+
+void quickLoad(
+  entt::registry&,
+  const std::vector <std::any>& args = {} );
+
 } // cqde::callbacks
