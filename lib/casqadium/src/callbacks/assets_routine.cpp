@@ -28,11 +28,13 @@ loadAudioAssets(
   using compos::AudioAssetList;
   using types::AudioAssetManager;
 
-  const auto assetLoadList = std::any_cast <AudioAssetList*> (args.at(0));
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+
+  auto& assetLoadList = registry.get <const AudioAssetList> (entity);
 
   auto& audioManager = registry.ctx().at <AudioAssetManager> ();
 
-  audioManager.load(assetLoadList->audio);
+  audioManager.load(assetLoadList.audio);
 }
 
 void
@@ -43,11 +45,13 @@ loadFontAssets(
   using compos::FontAssetList;
   using types::FontAssetManager;
 
-  const auto assetLoadList = std::any_cast <FontAssetList*> (args.at(0));
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+
+  auto& assetLoadList = registry.get <FontAssetList> (entity);
 
   auto& fontManager = registry.ctx().at <FontAssetManager> ();
 
-  fontManager.load(assetLoadList->fonts);
+  fontManager.load(assetLoadList.fonts);
 }
 
 void
@@ -58,11 +62,13 @@ loadGeometryAssets(
   using compos::GeometryAssetList;
   using types::GeometryAssetManager;
 
-  const auto assetLoadList = std::any_cast <GeometryAssetList*> (args.at(0));
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+
+  auto& assetLoadList = registry.get <GeometryAssetList> (entity);
 
   auto& geometryManager = registry.ctx().at <GeometryAssetManager> ();
 
-  geometryManager.load(assetLoadList->geometry);
+  geometryManager.load(assetLoadList.geometry);
 }
 
 void
@@ -73,11 +79,13 @@ loadTerrainAssets(
   using compos::TerrainAssetList;
   using types::TerrainAssetManager;
 
-  const auto assetLoadList = std::any_cast <TerrainAssetList*> (args.at(0));
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+
+  auto& assetLoadList = registry.get <TerrainAssetList> (entity);
 
   auto& terrainManager = registry.ctx().at <TerrainAssetManager> ();
 
-  terrainManager.load(assetLoadList->terrain);
+  terrainManager.load(assetLoadList.terrain);
 }
 
 void
@@ -88,11 +96,13 @@ loadTextStringAssets(
   using compos::TextStringAssetList;
   using types::TextStringAssetManager;
 
-  const auto assetLoadList = std::any_cast <TextStringAssetList*> (args.at(0));
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+
+  auto& assetLoadList = registry.get <TextStringAssetList> (entity);
 
   auto& textManager = registry.ctx().at <TextStringAssetManager> ();
 
-  textManager.load(assetLoadList->text);
+  textManager.load(assetLoadList.text);
 }
 
 void
@@ -103,11 +113,13 @@ loadTextureAssets(
   using compos::TextureAssetList;
   using types::TextureAssetManager;
 
-  const auto assetLoadList = std::any_cast <TextureAssetList*> (args.at(0));
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+
+  auto& assetLoadList = registry.get <TextureAssetList> (entity);
 
   auto& textureManager = registry.ctx().at <TextureAssetManager> ();
 
-  textureManager.load(assetLoadList->textures);
+  textureManager.load(assetLoadList.textures);
 }
 
 void
@@ -118,11 +130,13 @@ unloadAudioAssets(
   using compos::AudioAssetList;
   using types::AudioAssetManager;
 
-  const auto assetUnloadList = std::any_cast <AudioAssetList*> (args.at(0));
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+
+  auto& assetUnloadList = registry.get <AudioAssetList> (entity);
 
   auto& audioManager = registry.ctx().at <AudioAssetManager> ();
 
-  audioManager.unload(assetUnloadList->audio);
+  audioManager.unload(assetUnloadList.audio);
 }
 
 void
@@ -133,11 +147,13 @@ unloadFontAssets(
   using compos::FontAssetList;
   using types::FontAssetManager;
 
-  const auto assetUnloadList = std::any_cast <FontAssetList*> (args.at(0));
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+
+  auto& assetUnloadList = registry.get <FontAssetList> (entity);
 
   auto& fontManager = registry.ctx().at <FontAssetManager> ();
 
-  fontManager.unload(assetUnloadList->fonts);
+  fontManager.unload(assetUnloadList.fonts);
 }
 
 void
@@ -148,11 +164,13 @@ unloadGeometryAssets(
   using compos::GeometryAssetList;
   using types::GeometryAssetManager;
 
-  const auto assetUnloadList = std::any_cast <GeometryAssetList*> (args.at(0));
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+
+  auto& assetUnloadList = registry.get <GeometryAssetList> (entity);
 
   auto& geometryManager = registry.ctx().at <GeometryAssetManager> ();
 
-  geometryManager.unload(assetUnloadList->geometry);
+  geometryManager.unload(assetUnloadList.geometry);
 }
 
 void
@@ -163,11 +181,13 @@ unloadTerrainAssets(
   using compos::TerrainAssetList;
   using types::TerrainAssetManager;
 
-  const auto assetUnloadList = std::any_cast <TerrainAssetList*> (args.at(0));
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+
+  auto& assetUnloadList = registry.get <TerrainAssetList> (entity);
 
   auto& terrainManager = registry.ctx().at <TerrainAssetManager> ();
 
-  terrainManager.unload(assetUnloadList->terrain);
+  terrainManager.unload(assetUnloadList.terrain);
 }
 
 void
@@ -178,11 +198,13 @@ unloadTextStringAssets(
   using compos::TextStringAssetList;
   using types::TextStringAssetManager;
 
-  const auto assetUnloadList = std::any_cast <TextStringAssetList*> (args.at(0));
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+
+  auto& assetUnloadList = registry.get <TextStringAssetList> (entity);
 
   auto& textManager = registry.ctx().at <TextStringAssetManager> ();
 
-  textManager.unload(assetUnloadList->text);
+  textManager.unload(assetUnloadList.text);
 }
 
 void
@@ -193,11 +215,13 @@ unloadTextureAssets(
   using compos::TextureAssetList;
   using types::TextureAssetManager;
 
-  const auto assetUnloadList = std::any_cast <TextureAssetList*> (args.at(0));
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+
+  auto& assetUnloadList = registry.get <TextureAssetList> (entity);
 
   auto& textureManager = registry.ctx().at <TextureAssetManager> ();
 
-  textureManager.unload(assetUnloadList->textures);
+  textureManager.unload(assetUnloadList.textures);
 }
 
 } // namespace cqde::callbacks
