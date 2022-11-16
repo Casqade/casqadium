@@ -215,6 +215,20 @@ engineInit(
   callbackManager.Register("SystemsActivate", systemsActivate);
   callbackManager.Register("SystemsDeactivate", systemsDeactivate);
 
+  callbackManager.Register("LoadAudioAssets", loadAudioAssets);
+  callbackManager.Register("LoadFontAssets", loadFontAssets);
+  callbackManager.Register("LoadGeometryAssets", loadGeometryAssets);
+  callbackManager.Register("LoadTerrainAssets", loadTerrainAssets);
+  callbackManager.Register("LoadTextStringAssets", loadTextStringAssets);
+  callbackManager.Register("LoadTextureAssets", loadTextureAssets);
+
+  callbackManager.Register("UnloadAudioAssets", unloadAudioAssets);
+  callbackManager.Register("UnloadFontAssets", unloadFontAssets);
+  callbackManager.Register("UnloadGeometryAssets", unloadGeometryAssets);
+  callbackManager.Register("UnloadTerrainAssets", unloadTerrainAssets);
+  callbackManager.Register("UnloadTextStringAssets", unloadTextStringAssets);
+  callbackManager.Register("UnloadTextureAssets", unloadTextureAssets);
+
   callbackManager.Register("ControlTranslateXRelative", controlTranslateXRelative);
   callbackManager.Register("ControlTranslateYRelative", controlTranslateYRelative);
   callbackManager.Register("ControlTranslateZRelative", controlTranslateZRelative);
