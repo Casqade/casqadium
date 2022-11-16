@@ -8,6 +8,8 @@
 #include <cqde/util/logger.hpp>
 
 #include <cqde/components/Tag.hpp>
+#include <cqde/components/EntityList.hpp>
+#include <cqde/components/SystemList.hpp>
 #include <cqde/components/EntityMetaInfo.hpp>
 #include <cqde/components/SubscriberInput.hpp>
 #include <cqde/components/SubscriberUpdate.hpp>
@@ -513,41 +515,36 @@ EntityManager::entryPointExecute(
   using compos::EntityMetaInfo;
   using compos::SubscriberInput;
   using compos::SubscriberUpdate;
+  using compos::EntityList;
+  using compos::SystemList;
 
   const auto& packageManager = registry.ctx().at <PackageManager> ();
 
   const auto entryPoint = packageManager.entryPoint();
 
-  for ( const auto&& [entity, cEntryPoint, cMetaInfo]
+  for ( const auto&& [entity, cMetaInfo]
           : registry.view <CasqadiumEntryPoint, EntityMetaInfo> ().each() )
   {
     if ( cMetaInfo.packageId != entryPoint )
       continue;
 
-    for ( const auto& entityId : cEntryPoint.entitiesToEnableUpdate )
-    {
-      const auto entity = get_if_valid(entityId, registry);
+    auto [cEntities, cSystems]
+      = registry.try_get <const EntityList, const SystemList> (entity);
 
-      if ( entity == entt::null )
-        continue;
+    if ( cEntities != nullptr )
+      for ( const auto& entityId : cEntities->entities )
+      {
+        const auto entity = get_if_valid(entityId, registry);
 
-      registry.emplace_or_replace <SubscriberUpdate> (entity);
-    }
-
-    for ( const auto& entityId : cEntryPoint.entitiesToEnableInput )
-    {
-      const auto entity = get_if_valid(entityId, registry);
-
-      if ( entity == entt::null )
-        continue;
-
-      registry.emplace_or_replace <SubscriberInput> (entity);
-    }
+        if ( entity != entt::null )
+          registry.emplace_or_replace <SubscriberUpdate> (entity);
+      }
 
     auto& systemManager = registry.ctx().at <SystemManager> ();
 
-    for ( const auto& systemId : cEntryPoint.systemsToEnable )
-      systemManager.activate(systemId);
+    if ( cSystems != nullptr )
+      for ( const auto& systemId : cSystems->systems )
+        systemManager.activate(systemId);
 
     return;
   }

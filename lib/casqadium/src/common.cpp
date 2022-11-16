@@ -116,7 +116,6 @@ engineInit(
   registry.ctx().emplace <TextStringAssetManager> (tp);
 
   entityManager.registerComponent <Camera> ("Camera");
-  entityManager.registerComponent <CasqadiumEntryPoint> ("CasqadiumEntryPoint");
   entityManager.registerComponent <CasqadiumEditorCameraSettings> ("CasqadiumEditorCameraSettings");
   entityManager.registerComponent <EntityMetaInfo> ("EntityMetaInfo");
   entityManager.registerComponent <GeometryBuffer> ("GeometryBuffer");
@@ -145,6 +144,7 @@ engineInit(
   entityManager.registerComponent <ForceEmitter> ("ForceEmitter");
 
 //  Components-tags
+  entityManager.registerEmptyComponent <CasqadiumEntryPoint> ("CasqadiumEntryPoint");
   entityManager.registerEmptyComponent <CasqadiumEditorInternal> ("CasqadiumEditorInternal");
   entityManager.registerEmptyComponent <LightTarget> ("LightTarget"); // todo: make component non-empty
   entityManager.registerEmptyComponent <SnapshotExcluded> ("SnapshotExcluded");

@@ -259,7 +259,6 @@ target_sources(${TARGET} PRIVATE
   include/${CASQADIUM_SHORT}/components/CasqadiumEditorInternal.hpp
 
   src/components/CasqadiumEntryPoint.cpp
-  src/components/CasqadiumEntryPoint_ui_impl.cpp
   include/${CASQADIUM_SHORT}/components/CasqadiumEntryPoint.hpp
 
   src/components/EntityList.cpp
