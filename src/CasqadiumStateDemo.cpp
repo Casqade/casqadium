@@ -33,8 +33,7 @@
 #include <cqde/components/Tag.hpp>
 #include <cqde/components/EntityMetaInfo.hpp>
 
-#include <cqde/callbacks.hpp>
-#include <cqde/systems.hpp>
+#include <cqde/callbacks/editor_input.hpp>
 
 #include <demo/sequences.hpp>
 

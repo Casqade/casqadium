@@ -45,9 +45,9 @@ loadFontAssets(
 
   const auto assetLoadList = std::any_cast <FontAssetList*> (args.at(0));
 
-  auto& audioManager = registry.ctx().at <FontAssetManager> ();
+  auto& fontManager = registry.ctx().at <FontAssetManager> ();
 
-  audioManager.load(assetLoadList->fonts);
+  fontManager.load(assetLoadList->fonts);
 }
 
 void
@@ -60,9 +60,9 @@ loadGeometryAssets(
 
   const auto assetLoadList = std::any_cast <GeometryAssetList*> (args.at(0));
 
-  auto& audioManager = registry.ctx().at <GeometryAssetManager> ();
+  auto& geometryManager = registry.ctx().at <GeometryAssetManager> ();
 
-  audioManager.load(assetLoadList->geometry);
+  geometryManager.load(assetLoadList->geometry);
 }
 
 void
@@ -90,9 +90,9 @@ loadTextStringAssets(
 
   const auto assetLoadList = std::any_cast <TextStringAssetList*> (args.at(0));
 
-  auto& audioManager = registry.ctx().at <TextStringAssetManager> ();
+  auto& textManager = registry.ctx().at <TextStringAssetManager> ();
 
-  audioManager.load(assetLoadList->text);
+  textManager.load(assetLoadList->text);
 }
 
 void
@@ -105,9 +105,9 @@ loadTextureAssets(
 
   const auto assetLoadList = std::any_cast <TextureAssetList*> (args.at(0));
 
-  auto& audioManager = registry.ctx().at <TextureAssetManager> ();
+  auto& textureManager = registry.ctx().at <TextureAssetManager> ();
 
-  audioManager.load(assetLoadList->textures);
+  textureManager.load(assetLoadList->textures);
 }
 
 void
@@ -135,9 +135,9 @@ unloadFontAssets(
 
   const auto assetUnloadList = std::any_cast <FontAssetList*> (args.at(0));
 
-  auto& audioManager = registry.ctx().at <FontAssetManager> ();
+  auto& fontManager = registry.ctx().at <FontAssetManager> ();
 
-  audioManager.unload(assetUnloadList->fonts);
+  fontManager.unload(assetUnloadList->fonts);
 }
 
 void
@@ -150,9 +150,9 @@ unloadGeometryAssets(
 
   const auto assetUnloadList = std::any_cast <GeometryAssetList*> (args.at(0));
 
-  auto& audioManager = registry.ctx().at <GeometryAssetManager> ();
+  auto& geometryManager = registry.ctx().at <GeometryAssetManager> ();
 
-  audioManager.unload(assetUnloadList->geometry);
+  geometryManager.unload(assetUnloadList->geometry);
 }
 
 void
@@ -180,9 +180,9 @@ unloadTextStringAssets(
 
   const auto assetUnloadList = std::any_cast <TextStringAssetList*> (args.at(0));
 
-  auto& audioManager = registry.ctx().at <TextStringAssetManager> ();
+  auto& textManager = registry.ctx().at <TextStringAssetManager> ();
 
-  audioManager.unload(assetUnloadList->text);
+  textManager.unload(assetUnloadList->text);
 }
 
 void
@@ -195,9 +195,9 @@ unloadTextureAssets(
 
   const auto assetUnloadList = std::any_cast <TextureAssetList*> (args.at(0));
 
-  auto& audioManager = registry.ctx().at <TextureAssetManager> ();
+  auto& textureManager = registry.ctx().at <TextureAssetManager> ();
 
-  audioManager.unload(assetUnloadList->textures);
+  textureManager.unload(assetUnloadList->textures);
 }
 
 } // namespace cqde::callbacks
