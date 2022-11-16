@@ -12,12 +12,12 @@
 namespace cqde::compos
 {
 
-struct FontAssetLoadList
+struct FontAssetList
 {
-  std::unordered_set <FontId, identifier_hash> fontsToLoad {};
+  std::unordered_set <FontId, identifier_hash> fonts {};
 
 
-  FontAssetLoadList() = default;
+  FontAssetList() = default;
 
 
   void ui_edit_props( const entt::entity,

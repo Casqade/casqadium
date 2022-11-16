@@ -1,4 +1,4 @@
-#include <cqde/components/assets/GeometryAssetUnloadList.hpp>
+#include <cqde/components/assets/GeometryAssetList.hpp>
 #include <cqde/types/assets/GeometryAssetManager.hpp>
 
 #include <cqde/types/ui/widgets/StringFilter.hpp>
@@ -14,14 +14,14 @@ namespace cqde::compos
 {
 
 void
-GeometryAssetUnloadList::ui_edit_props(
+GeometryAssetList::ui_edit_props(
   const entt::entity entity,
   const entt::registry& registry)
 {
   using fmt::format;
   using types::GeometryAssetManager;
 
-  if ( ImGui::CollapsingHeader("Geometry to unload", ImGuiTreeNodeFlags_DefaultOpen) == false )
+  if ( ImGui::CollapsingHeader("Geometry", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
 
   const auto geometryList = registry.ctx().at <GeometryAssetManager> ().assetIdList();
@@ -45,15 +45,15 @@ GeometryAssetUnloadList::ui_edit_props(
       if ( geometryFilter.query(geometryId.str()) == false )
         continue;
 
-      if ( std::find(geometryToUnload.begin(), geometryToUnload.end(),
-                     geometryId) != geometryToUnload.end() )
+      if ( std::find(geometry.begin(), geometry.end(),
+                     geometryId) != geometry.end() )
         continue;
 
       geometryFound = true;
 
       if ( ImGui::Selectable(geometryId.str().c_str(), false) )
       {
-        geometryToUnload.insert(geometryId);
+        geometry.insert(geometryId);
         ImGui::CloseCurrentPopup();
         break;
       }
@@ -70,21 +70,21 @@ GeometryAssetUnloadList::ui_edit_props(
   const auto tableFlags = ImGuiTableFlags_ScrollX |
                           ImGuiTableFlags_ScrollY;
 
-  if ( ImGui::BeginTable( "GeometryToUnloadList", 1, tableFlags) == false )
+  if ( ImGui::BeginTable( "GeometryList", 1, tableFlags) == false )
     return;
 
   ImGui::TableNextColumn();
 
-  for ( auto iter = geometryToUnload.begin();
-        iter != geometryToUnload.end();
+  for ( auto iter = geometry.begin();
+        iter != geometry.end();
         ++iter )
   {
-    ImGui::PushID(std::distance(geometryToUnload.begin(), iter));
+    ImGui::PushID(std::distance(geometry.begin(), iter));
 
     if ( ImGui::SmallButton("-##geometryDel") )
-      iter = geometryToUnload.erase(iter);
+      iter = geometry.erase(iter);
 
-    if ( iter == geometryToUnload.end() )
+    if ( iter == geometry.end() )
     {
       ImGui::PopID();
       break;
@@ -99,7 +99,7 @@ GeometryAssetUnloadList::ui_edit_props(
     ImGui::PopID();
   }
 
-  ImGui::EndTable(); // GeometryToUnloadList
+  ImGui::EndTable(); // GeometryList
 }
 
 } // namespace cqde::compos

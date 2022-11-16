@@ -12,12 +12,12 @@
 namespace cqde::compos
 {
 
-struct AudioAssetLoadList
+struct GeometryAssetList
 {
-  std::unordered_set <AudioId, identifier_hash> audioToLoad {};
+  std::unordered_set <GeometryId, identifier_hash> geometry {};
 
 
-  AudioAssetLoadList() = default;
+  GeometryAssetList() = default;
 
 
   void ui_edit_props( const entt::entity,

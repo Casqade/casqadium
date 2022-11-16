@@ -1,4 +1,4 @@
-#include <cqde/components/assets/TextStringAssetLoadList.hpp>
+#include <cqde/components/assets/TextStringAssetList.hpp>
 #include <cqde/types/assets/TextStringAssetManager.hpp>
 
 #include <cqde/types/ui/widgets/StringFilter.hpp>
@@ -14,14 +14,14 @@ namespace cqde::compos
 {
 
 void
-TextStringAssetLoadList::ui_edit_props(
+TextStringAssetList::ui_edit_props(
   const entt::entity entity,
   const entt::registry& registry)
 {
   using fmt::format;
   using types::TextStringAssetManager;
 
-  if ( ImGui::CollapsingHeader("Text strings to load", ImGuiTreeNodeFlags_DefaultOpen) == false )
+  if ( ImGui::CollapsingHeader("Text strings", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
 
   const auto textStringList = registry.ctx().at <TextStringAssetManager> ().assetIdList();
@@ -45,15 +45,15 @@ TextStringAssetLoadList::ui_edit_props(
       if ( textStringFilter.query(textStringId.str()) == false )
         continue;
 
-      if ( std::find(textToLoad.begin(), textToLoad.end(),
-                     textStringId) != textToLoad.end() )
+      if ( std::find(text.begin(), text.end(),
+                     textStringId) != text.end() )
         continue;
 
       textStringsFound = true;
 
       if ( ImGui::Selectable(textStringId.str().c_str(), false) )
       {
-        textToLoad.insert(textStringId);
+        text.insert(textStringId);
         ImGui::CloseCurrentPopup();
         break;
       }
@@ -70,21 +70,21 @@ TextStringAssetLoadList::ui_edit_props(
   const auto tableFlags = ImGuiTableFlags_ScrollX |
                           ImGuiTableFlags_ScrollY;
 
-  if ( ImGui::BeginTable( "TextStringsToLoadList", 1, tableFlags) == false )
+  if ( ImGui::BeginTable( "TextStringsList", 1, tableFlags) == false )
     return;
 
   ImGui::TableNextColumn();
 
-  for ( auto iter = textToLoad.begin();
-        iter != textToLoad.end();
+  for ( auto iter = text.begin();
+        iter != text.end();
         ++iter )
   {
-    ImGui::PushID(std::distance(textToLoad.begin(), iter));
+    ImGui::PushID(std::distance(text.begin(), iter));
 
     if ( ImGui::SmallButton("-##textStringDel") )
-      iter = textToLoad.erase(iter);
+      iter = text.erase(iter);
 
-    if ( iter == textToLoad.end() )
+    if ( iter == text.end() )
     {
       ImGui::PopID();
       break;
@@ -99,7 +99,7 @@ TextStringAssetLoadList::ui_edit_props(
     ImGui::PopID();
   }
 
-  ImGui::EndTable(); // TextStringsToLoadList
+  ImGui::EndTable(); // TextStringsList
 }
 
 } // namespace cqde::compos

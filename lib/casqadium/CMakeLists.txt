@@ -322,53 +322,29 @@ target_sources(${TARGET} PRIVATE
   include/${CASQADIUM_SHORT}/components/WantsMouseHidden.hpp
 
 
-  src/components/assets/AudioAssetLoadList.cpp
-  src/components/assets/AudioAssetLoadList_ui_impl.cpp
-  include/${CASQADIUM_SHORT}/components/assets/AudioAssetLoadList.hpp
+  src/components/assets/AudioAssetList.cpp
+  src/components/assets/AudioAssetList_ui_impl.cpp
+  include/${CASQADIUM_SHORT}/components/assets/AudioAssetList.hpp
 
-  src/components/assets/AudioAssetUnloadList.cpp
-  src/components/assets/AudioAssetUnloadList_ui_impl.cpp
-  include/${CASQADIUM_SHORT}/components/assets/AudioAssetUnloadList.hpp
+  src/components/assets/FontAssetList.cpp
+  src/components/assets/FontAssetList_ui_impl.cpp
+  include/${CASQADIUM_SHORT}/components/assets/FontAssetList.hpp
 
-  src/components/assets/FontAssetLoadList.cpp
-  src/components/assets/FontAssetLoadList_ui_impl.cpp
-  include/${CASQADIUM_SHORT}/components/assets/FontAssetLoadList.hpp
+  src/components/assets/GeometryAssetList.cpp
+  src/components/assets/GeometryAssetList_ui_impl.cpp
+  include/${CASQADIUM_SHORT}/components/assets/GeometryAssetList.hpp
 
-  src/components/assets/FontAssetUnloadList.cpp
-  src/components/assets/FontAssetUnloadList_ui_impl.cpp
-  include/${CASQADIUM_SHORT}/components/assets/FontAssetUnloadList.hpp
+  src/components/assets/TerrainAssetList.cpp
+  src/components/assets/TerrainAssetList_ui_impl.cpp
+  include/${CASQADIUM_SHORT}/components/assets/TerrainAssetList.hpp
 
-  src/components/assets/GeometryAssetLoadList.cpp
-  src/components/assets/GeometryAssetLoadList_ui_impl.cpp
-  include/${CASQADIUM_SHORT}/components/assets/GeometryAssetLoadList.hpp
+  src/components/assets/TextStringAssetList.cpp
+  src/components/assets/TextStringAssetList_ui_impl.cpp
+  include/${CASQADIUM_SHORT}/components/assets/TextStringAssetList.hpp
 
-  src/components/assets/GeometryAssetUnloadList.cpp
-  src/components/assets/GeometryAssetUnloadList_ui_impl.cpp
-  include/${CASQADIUM_SHORT}/components/assets/GeometryAssetUnloadList.hpp
-
-  src/components/assets/TerrainAssetLoadList.cpp
-  src/components/assets/TerrainAssetLoadList_ui_impl.cpp
-  include/${CASQADIUM_SHORT}/components/assets/TerrainAssetLoadList.hpp
-
-  src/components/assets/TerrainAssetUnloadList.cpp
-  src/components/assets/TerrainAssetUnloadList_ui_impl.cpp
-  include/${CASQADIUM_SHORT}/components/assets/TerrainAssetUnloadList.hpp
-
-  src/components/assets/TextStringAssetLoadList.cpp
-  src/components/assets/TextStringAssetLoadList_ui_impl.cpp
-  include/${CASQADIUM_SHORT}/components/assets/TextStringAssetLoadList.hpp
-
-  src/components/assets/TextStringAssetUnloadList.cpp
-  src/components/assets/TextStringAssetUnloadList_ui_impl.cpp
-  include/${CASQADIUM_SHORT}/components/assets/TextStringAssetUnloadList.hpp
-
-  src/components/assets/TextureAssetLoadList.cpp
-  src/components/assets/TextureAssetLoadList_ui_impl.cpp
-  include/${CASQADIUM_SHORT}/components/assets/TextureAssetLoadList.hpp
-
-  src/components/assets/TextureAssetUnloadList.cpp
-  src/components/assets/TextureAssetUnloadList_ui_impl.cpp
-  include/${CASQADIUM_SHORT}/components/assets/TextureAssetUnloadList.hpp
+  src/components/assets/TextureAssetList.cpp
+  src/components/assets/TextureAssetList_ui_impl.cpp
+  include/${CASQADIUM_SHORT}/components/assets/TextureAssetList.hpp
 
 
   src/components/physics/CollisionBody.cpp

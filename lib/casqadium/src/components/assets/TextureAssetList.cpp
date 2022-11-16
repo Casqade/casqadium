@@ -1,4 +1,4 @@
-#include <cqde/components/assets/TextureAssetUnloadList.hpp>
+#include <cqde/components/assets/TextureAssetList.hpp>
 
 #include <cqde/json_helpers.hpp>
 
@@ -10,7 +10,7 @@
 namespace cqde::compos
 {
 
-const static Json::Value textureAssetUnloadListJsonReference =
+const static Json::Value textureAssetListJsonReference =
 []
 {
   using ValueType = Json::ValueType;
@@ -20,46 +20,46 @@ const static Json::Value textureAssetUnloadListJsonReference =
   root.setComment("// root must be a JSON object"s,
                   Json::CommentPlacement::commentBefore);
 
-  Json::Value& textures = root["texturesToUnload"];
+  Json::Value& textures = root["textures"];
   textures = ValueType::arrayValue;
-  textures.setComment("// 'texturesToUnload' must be a JSON array"s,
+  textures.setComment("// 'textures' must be a JSON array"s,
                       Json::CommentPlacement::commentBefore);
 
   textures.append(ValueType::stringValue);
-  textures.begin()->setComment("// 'texturesToUnload' element must be a JSON string"s,
+  textures.begin()->setComment("// 'textures' element must be a JSON string"s,
                                 Json::CommentPlacement::commentBefore);
 
   return root;
 }();
 
 Json::Value
-TextureAssetUnloadList::serialize() const
+TextureAssetList::serialize() const
 {
   Json::Value json {};
 
-  auto& jsonTextures = json["texturesToUnload"];
+  auto& jsonTextures = json["textures"];
   jsonTextures = Json::arrayValue;
 
-  for ( const auto& texture : texturesToUnload )
+  for ( const auto& texture : textures )
     jsonTextures.append(texture.str());
 
   return json;
 }
 
 void
-TextureAssetUnloadList::deserialize(
+TextureAssetList::deserialize(
   entt::registry& registry,
   entt::entity entity,
   const Json::Value& json,
   const std::unordered_map <EntityId, EntityId,
                             identifier_hash>& idMap )
 {
-  jsonValidateObject(json, textureAssetUnloadListJsonReference);
+  jsonValidateObject(json, textureAssetListJsonReference);
 
-  auto& comp = registry.emplace_or_replace <TextureAssetUnloadList> (entity);
+  auto& comp = registry.emplace_or_replace <TextureAssetList> (entity);
 
-  for ( const auto& texture : json["texturesToUnload"] )
-    comp.texturesToUnload.insert(texture.asString());
+  for ( const auto& texture : json["textures"] )
+    comp.textures.insert(texture.asString());
 }
 
 } // namespace cqde::compos

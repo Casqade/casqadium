@@ -1,4 +1,4 @@
-#include <cqde/components/assets/TextStringAssetLoadList.hpp>
+#include <cqde/components/assets/TextStringAssetList.hpp>
 
 #include <cqde/json_helpers.hpp>
 
@@ -10,7 +10,7 @@
 namespace cqde::compos
 {
 
-const static Json::Value textStringAssetLoadListJsonReference =
+const static Json::Value textStringAssetListJsonReference =
 []
 {
   using ValueType = Json::ValueType;
@@ -20,46 +20,46 @@ const static Json::Value textStringAssetLoadListJsonReference =
   root.setComment("// root must be a JSON object"s,
                   Json::CommentPlacement::commentBefore);
 
-  Json::Value& textStrings = root["textToLoad"];
+  Json::Value& textStrings = root["text"];
   textStrings = ValueType::arrayValue;
-  textStrings.setComment("// 'textToLoad' must be a JSON array"s,
+  textStrings.setComment("// 'text' must be a JSON array"s,
                           Json::CommentPlacement::commentBefore);
 
   textStrings.append(ValueType::stringValue);
-  textStrings.begin()->setComment("// 'textToLoad' element must be a JSON string"s,
+  textStrings.begin()->setComment("// 'text' element must be a JSON string"s,
                                   Json::CommentPlacement::commentBefore);
 
   return root;
 }();
 
 Json::Value
-TextStringAssetLoadList::serialize() const
+TextStringAssetList::serialize() const
 {
   Json::Value json {};
 
-  auto& jsonTextStrings = json["textToLoad"];
+  auto& jsonTextStrings = json["text"];
   jsonTextStrings = Json::arrayValue;
 
-  for ( const auto& text : textToLoad )
+  for ( const auto& text : text )
     jsonTextStrings.append(text.str());
 
   return json;
 }
 
 void
-TextStringAssetLoadList::deserialize(
+TextStringAssetList::deserialize(
   entt::registry& registry,
   entt::entity entity,
   const Json::Value& json,
   const std::unordered_map <EntityId, EntityId,
                             identifier_hash>& idMap )
 {
-  jsonValidateObject(json, textStringAssetLoadListJsonReference);
+  jsonValidateObject(json, textStringAssetListJsonReference);
 
-  auto& comp = registry.emplace_or_replace <TextStringAssetLoadList> (entity);
+  auto& comp = registry.emplace_or_replace <TextStringAssetList> (entity);
 
-  for ( const auto& text : json["textToLoad"] )
-    comp.textToLoad.insert(text.asString());
+  for ( const auto& text : json["text"] )
+    comp.text.insert(text.asString());
 }
 
 } // namespace cqde::compos

@@ -1,4 +1,4 @@
-#include <cqde/components/assets/AudioAssetUnloadList.hpp>
+#include <cqde/components/assets/AudioAssetList.hpp>
 #include <cqde/types/assets/AudioAssetManager.hpp>
 
 #include <cqde/types/ui/widgets/StringFilter.hpp>
@@ -14,14 +14,14 @@ namespace cqde::compos
 {
 
 void
-AudioAssetUnloadList::ui_edit_props(
+AudioAssetList::ui_edit_props(
   const entt::entity entity,
   const entt::registry& registry)
 {
   using fmt::format;
   using types::AudioAssetManager;
 
-  if ( ImGui::CollapsingHeader("Audio to unload", ImGuiTreeNodeFlags_DefaultOpen) == false )
+  if ( ImGui::CollapsingHeader("Audio", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
 
   const auto audioList = registry.ctx().at <AudioAssetManager> ().assetIdList();
@@ -45,15 +45,15 @@ AudioAssetUnloadList::ui_edit_props(
       if ( audioFilter.query(audioId.str()) == false )
         continue;
 
-      if ( std::find(audioToUnload.begin(), audioToUnload.end(),
-                     audioId) != audioToUnload.end() )
+      if ( std::find(audio.begin(), audio.end(),
+                     audioId) != audio.end() )
         continue;
 
       audioFound = true;
 
       if ( ImGui::Selectable(audioId.str().c_str(), false) )
       {
-        audioToUnload.insert(audioId);
+        audio.insert(audioId);
         ImGui::CloseCurrentPopup();
         break;
       }
@@ -70,21 +70,21 @@ AudioAssetUnloadList::ui_edit_props(
   const auto tableFlags = ImGuiTableFlags_ScrollX |
                           ImGuiTableFlags_ScrollY;
 
-  if ( ImGui::BeginTable( "AudioToUnloadList", 1, tableFlags) == false )
+  if ( ImGui::BeginTable( "AudioList", 1, tableFlags) == false )
     return;
 
   ImGui::TableNextColumn();
 
-  for ( auto iter = audioToUnload.begin();
-        iter != audioToUnload.end();
+  for ( auto iter = audio.begin();
+        iter != audio.end();
         ++iter )
   {
-    ImGui::PushID(std::distance(audioToUnload.begin(), iter));
+    ImGui::PushID(std::distance(audio.begin(), iter));
 
     if ( ImGui::SmallButton("-##audioDel") )
-      iter = audioToUnload.erase(iter);
+      iter = audio.erase(iter);
 
-    if ( iter == audioToUnload.end() )
+    if ( iter == audio.end() )
     {
       ImGui::PopID();
       break;
@@ -99,7 +99,7 @@ AudioAssetUnloadList::ui_edit_props(
     ImGui::PopID();
   }
 
-  ImGui::EndTable(); // AudioToUnloadList
+  ImGui::EndTable(); // AudioList
 }
 
 } // namespace cqde::compos

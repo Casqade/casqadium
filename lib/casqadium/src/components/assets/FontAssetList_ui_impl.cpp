@@ -1,4 +1,4 @@
-#include <cqde/components/assets/FontAssetUnloadList.hpp>
+#include <cqde/components/assets/FontAssetList.hpp>
 #include <cqde/types/assets/FontAssetManager.hpp>
 
 #include <cqde/types/ui/widgets/StringFilter.hpp>
@@ -14,14 +14,14 @@ namespace cqde::compos
 {
 
 void
-FontAssetUnloadList::ui_edit_props(
+FontAssetList::ui_edit_props(
   const entt::entity entity,
   const entt::registry& registry)
 {
   using fmt::format;
   using types::FontAssetManager;
 
-  if ( ImGui::CollapsingHeader("Fonts to unload", ImGuiTreeNodeFlags_DefaultOpen) == false )
+  if ( ImGui::CollapsingHeader("Fonts", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
 
   const auto fontList = registry.ctx().at <FontAssetManager> ().assetIdList();
@@ -45,15 +45,15 @@ FontAssetUnloadList::ui_edit_props(
       if ( fontFilter.query(fontId.str()) == false )
         continue;
 
-      if ( std::find(fontsToUnload.begin(), fontsToUnload.end(),
-                     fontId) != fontsToUnload.end() )
+      if ( std::find(fonts.begin(), fonts.end(),
+                     fontId) != fonts.end() )
         continue;
 
       fontsFound = true;
 
       if ( ImGui::Selectable(fontId.str().c_str(), false) )
       {
-        fontsToUnload.insert(fontId);
+        fonts.insert(fontId);
         ImGui::CloseCurrentPopup();
         break;
       }
@@ -70,21 +70,21 @@ FontAssetUnloadList::ui_edit_props(
   const auto tableFlags = ImGuiTableFlags_ScrollX |
                           ImGuiTableFlags_ScrollY;
 
-  if ( ImGui::BeginTable( "FontsToUnloadList", 1, tableFlags) == false )
+  if ( ImGui::BeginTable( "FontList", 1, tableFlags) == false )
     return;
 
   ImGui::TableNextColumn();
 
-  for ( auto iter = fontsToUnload.begin();
-        iter != fontsToUnload.end();
+  for ( auto iter = fonts.begin();
+        iter != fonts.end();
         ++iter )
   {
-    ImGui::PushID(std::distance(fontsToUnload.begin(), iter));
+    ImGui::PushID(std::distance(fonts.begin(), iter));
 
     if ( ImGui::SmallButton("-##fontDel") )
-      iter = fontsToUnload.erase(iter);
+      iter = fonts.erase(iter);
 
-    if ( iter == fontsToUnload.end() )
+    if ( iter == fonts.end() )
     {
       ImGui::PopID();
       break;
@@ -99,7 +99,7 @@ FontAssetUnloadList::ui_edit_props(
     ImGui::PopID();
   }
 
-  ImGui::EndTable(); // FontsToUnloadList
+  ImGui::EndTable(); // FontList
 }
 
 } // namespace cqde::compos

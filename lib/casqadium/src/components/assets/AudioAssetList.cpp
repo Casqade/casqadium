@@ -1,4 +1,4 @@
-#include <cqde/components/assets/AudioAssetUnloadList.hpp>
+#include <cqde/components/assets/AudioAssetList.hpp>
 
 #include <cqde/json_helpers.hpp>
 
@@ -10,7 +10,7 @@
 namespace cqde::compos
 {
 
-const static Json::Value audioAssetUnloadListJsonReference =
+const static Json::Value audioAssetListJsonReference =
 []
 {
   using ValueType = Json::ValueType;
@@ -20,46 +20,46 @@ const static Json::Value audioAssetUnloadListJsonReference =
   root.setComment("// root must be a JSON object"s,
                   Json::CommentPlacement::commentBefore);
 
-  Json::Value& audio = root["audioToUnload"];
+  Json::Value& audio = root["audio"];
   audio = ValueType::arrayValue;
-  audio.setComment("// 'audioToUnload' must be a JSON array"s,
+  audio.setComment("// 'audio' must be a JSON array"s,
                     Json::CommentPlacement::commentBefore);
 
   audio.append(ValueType::stringValue);
-  audio.begin()->setComment("// 'audioToUnload' element must be a JSON string"s,
+  audio.begin()->setComment("// 'audio' element must be a JSON string"s,
                             Json::CommentPlacement::commentBefore);
 
   return root;
 }();
 
 Json::Value
-AudioAssetUnloadList::serialize() const
+AudioAssetList::serialize() const
 {
   Json::Value json {};
 
-  auto& jsonAudio= json["audioToUnload"];
+  auto& jsonAudio= json["audio"];
   jsonAudio = Json::arrayValue;
 
-  for ( const auto& audio : audioToUnload )
+  for ( const auto& audio : audio )
     jsonAudio.append(audio.str());
 
   return json;
 }
 
 void
-AudioAssetUnloadList::deserialize(
+AudioAssetList::deserialize(
   entt::registry& registry,
   entt::entity entity,
   const Json::Value& json,
   const std::unordered_map <EntityId, EntityId,
                             identifier_hash>& idMap )
 {
-  jsonValidateObject(json, audioAssetUnloadListJsonReference);
+  jsonValidateObject(json, audioAssetListJsonReference);
 
-  auto& comp = registry.emplace_or_replace <AudioAssetUnloadList> (entity);
+  auto& comp = registry.emplace_or_replace <AudioAssetList> (entity);
 
-  for ( const auto& texture : json["audioToUnload"] )
-    comp.audioToUnload.insert(texture.asString());
+  for ( const auto& audio : json["audio"] )
+    comp.audio.insert(audio.asString());
 }
 
 } // namespace cqde::compos

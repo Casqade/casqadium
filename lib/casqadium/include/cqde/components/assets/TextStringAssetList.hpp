@@ -12,12 +12,12 @@
 namespace cqde::compos
 {
 
-struct TerrainAssetUnloadList
+struct TextStringAssetList
 {
-  std::unordered_set <TextureId, identifier_hash> terrainToUnload {};
+  std::unordered_set <StringId, identifier_hash> text {};
 
 
-  TerrainAssetUnloadList() = default;
+  TextStringAssetList() = default;
 
 
   void ui_edit_props( const entt::entity,

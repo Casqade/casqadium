@@ -7,18 +7,12 @@
 #include <cqde/types/assets/TextStringAssetManager.hpp>
 #include <cqde/types/assets/TextureAssetManager.hpp>
 
-#include <cqde/components/assets/AudioAssetLoadList.hpp>
-#include <cqde/components/assets/AudioAssetUnloadList.hpp>
-#include <cqde/components/assets/FontAssetLoadList.hpp>
-#include <cqde/components/assets/FontAssetUnloadList.hpp>
-#include <cqde/components/assets/GeometryAssetLoadList.hpp>
-#include <cqde/components/assets/GeometryAssetUnloadList.hpp>
-#include <cqde/components/assets/TerrainAssetLoadList.hpp>
-#include <cqde/components/assets/TerrainAssetUnloadList.hpp>
-#include <cqde/components/assets/TextStringAssetLoadList.hpp>
-#include <cqde/components/assets/TextStringAssetUnloadList.hpp>
-#include <cqde/components/assets/TextureAssetLoadList.hpp>
-#include <cqde/components/assets/TextureAssetUnloadList.hpp>
+#include <cqde/components/assets/AudioAssetList.hpp>
+#include <cqde/components/assets/FontAssetList.hpp>
+#include <cqde/components/assets/GeometryAssetList.hpp>
+#include <cqde/components/assets/TerrainAssetList.hpp>
+#include <cqde/components/assets/TextStringAssetList.hpp>
+#include <cqde/components/assets/TextureAssetList.hpp>
 
 #include <entt/entity/registry.hpp>
 
@@ -31,14 +25,14 @@ loadAudioAssets(
   entt::registry& registry,
   const std::vector <std::any>& args )
 {
-  using compos::AudioAssetLoadList;
+  using compos::AudioAssetList;
   using types::AudioAssetManager;
 
-  const auto assetLoadList = std::any_cast <AudioAssetLoadList*> (args.at(0));
+  const auto assetLoadList = std::any_cast <AudioAssetList*> (args.at(0));
 
   auto& audioManager = registry.ctx().at <AudioAssetManager> ();
 
-  audioManager.load(assetLoadList->audioToLoad);
+  audioManager.load(assetLoadList->audio);
 }
 
 void
@@ -46,14 +40,14 @@ loadFontAssets(
   entt::registry& registry,
   const std::vector <std::any>& args )
 {
-  using compos::FontAssetLoadList;
+  using compos::FontAssetList;
   using types::FontAssetManager;
 
-  const auto assetLoadList = std::any_cast <FontAssetLoadList*> (args.at(0));
+  const auto assetLoadList = std::any_cast <FontAssetList*> (args.at(0));
 
   auto& audioManager = registry.ctx().at <FontAssetManager> ();
 
-  audioManager.load(assetLoadList->fontsToLoad);
+  audioManager.load(assetLoadList->fonts);
 }
 
 void
@@ -61,14 +55,14 @@ loadGeometryAssets(
   entt::registry& registry,
   const std::vector <std::any>& args )
 {
-  using compos::GeometryAssetLoadList;
+  using compos::GeometryAssetList;
   using types::GeometryAssetManager;
 
-  const auto assetLoadList = std::any_cast <GeometryAssetLoadList*> (args.at(0));
+  const auto assetLoadList = std::any_cast <GeometryAssetList*> (args.at(0));
 
   auto& audioManager = registry.ctx().at <GeometryAssetManager> ();
 
-  audioManager.load(assetLoadList->geometryToLoad);
+  audioManager.load(assetLoadList->geometry);
 }
 
 void
@@ -76,14 +70,14 @@ loadTerrainAssets(
   entt::registry& registry,
   const std::vector <std::any>& args )
 {
-  using compos::TerrainAssetLoadList;
+  using compos::TerrainAssetList;
   using types::TerrainAssetManager;
 
-  const auto assetLoadList = std::any_cast <TerrainAssetLoadList*> (args.at(0));
+  const auto assetLoadList = std::any_cast <TerrainAssetList*> (args.at(0));
 
   auto& terrainManager = registry.ctx().at <TerrainAssetManager> ();
 
-  terrainManager.load(assetLoadList->terrainToLoad);
+  terrainManager.load(assetLoadList->terrain);
 }
 
 void
@@ -91,14 +85,14 @@ loadTextStringAssets(
   entt::registry& registry,
   const std::vector <std::any>& args )
 {
-  using compos::TextStringAssetLoadList;
+  using compos::TextStringAssetList;
   using types::TextStringAssetManager;
 
-  const auto assetLoadList = std::any_cast <TextStringAssetLoadList*> (args.at(0));
+  const auto assetLoadList = std::any_cast <TextStringAssetList*> (args.at(0));
 
   auto& audioManager = registry.ctx().at <TextStringAssetManager> ();
 
-  audioManager.load(assetLoadList->textToLoad);
+  audioManager.load(assetLoadList->text);
 }
 
 void
@@ -106,14 +100,14 @@ loadTextureAssets(
   entt::registry& registry,
   const std::vector <std::any>& args )
 {
-  using compos::TextureAssetLoadList;
+  using compos::TextureAssetList;
   using types::TextureAssetManager;
 
-  const auto assetLoadList = std::any_cast <TextureAssetLoadList*> (args.at(0));
+  const auto assetLoadList = std::any_cast <TextureAssetList*> (args.at(0));
 
   auto& audioManager = registry.ctx().at <TextureAssetManager> ();
 
-  audioManager.load(assetLoadList->texturesToLoad);
+  audioManager.load(assetLoadList->textures);
 }
 
 void
@@ -121,14 +115,14 @@ unloadAudioAssets(
   entt::registry& registry,
   const std::vector <std::any>& args )
 {
-  using compos::AudioAssetUnloadList;
+  using compos::AudioAssetList;
   using types::AudioAssetManager;
 
-  const auto assetUnloadList = std::any_cast <AudioAssetUnloadList*> (args.at(0));
+  const auto assetUnloadList = std::any_cast <AudioAssetList*> (args.at(0));
 
   auto& audioManager = registry.ctx().at <AudioAssetManager> ();
 
-  audioManager.unload(assetUnloadList->audioToUnload);
+  audioManager.unload(assetUnloadList->audio);
 }
 
 void
@@ -136,14 +130,14 @@ unloadFontAssets(
   entt::registry& registry,
   const std::vector <std::any>& args )
 {
-  using compos::FontAssetUnloadList;
+  using compos::FontAssetList;
   using types::FontAssetManager;
 
-  const auto assetUnloadList = std::any_cast <FontAssetUnloadList*> (args.at(0));
+  const auto assetUnloadList = std::any_cast <FontAssetList*> (args.at(0));
 
   auto& audioManager = registry.ctx().at <FontAssetManager> ();
 
-  audioManager.unload(assetUnloadList->fontsToUnload);
+  audioManager.unload(assetUnloadList->fonts);
 }
 
 void
@@ -151,14 +145,14 @@ unloadGeometryAssets(
   entt::registry& registry,
   const std::vector <std::any>& args )
 {
-  using compos::GeometryAssetUnloadList;
+  using compos::GeometryAssetList;
   using types::GeometryAssetManager;
 
-  const auto assetUnloadList = std::any_cast <GeometryAssetUnloadList*> (args.at(0));
+  const auto assetUnloadList = std::any_cast <GeometryAssetList*> (args.at(0));
 
   auto& audioManager = registry.ctx().at <GeometryAssetManager> ();
 
-  audioManager.unload(assetUnloadList->geometryToUnload);
+  audioManager.unload(assetUnloadList->geometry);
 }
 
 void
@@ -166,14 +160,14 @@ unloadTerrainAssets(
   entt::registry& registry,
   const std::vector <std::any>& args )
 {
-  using compos::TerrainAssetUnloadList;
+  using compos::TerrainAssetList;
   using types::TerrainAssetManager;
 
-  const auto assetUnloadList = std::any_cast <TerrainAssetUnloadList*> (args.at(0));
+  const auto assetUnloadList = std::any_cast <TerrainAssetList*> (args.at(0));
 
   auto& terrainManager = registry.ctx().at <TerrainAssetManager> ();
 
-  terrainManager.unload(assetUnloadList->terrainToUnload);
+  terrainManager.unload(assetUnloadList->terrain);
 }
 
 void
@@ -181,14 +175,14 @@ unloadTextStringAssets(
   entt::registry& registry,
   const std::vector <std::any>& args )
 {
-  using compos::TextStringAssetUnloadList;
+  using compos::TextStringAssetList;
   using types::TextStringAssetManager;
 
-  const auto assetUnloadList = std::any_cast <TextStringAssetUnloadList*> (args.at(0));
+  const auto assetUnloadList = std::any_cast <TextStringAssetList*> (args.at(0));
 
   auto& audioManager = registry.ctx().at <TextStringAssetManager> ();
 
-  audioManager.unload(assetUnloadList->textToUnload);
+  audioManager.unload(assetUnloadList->text);
 }
 
 void
@@ -196,14 +190,14 @@ unloadTextureAssets(
   entt::registry& registry,
   const std::vector <std::any>& args )
 {
-  using compos::TextureAssetUnloadList;
+  using compos::TextureAssetList;
   using types::TextureAssetManager;
 
-  const auto assetUnloadList = std::any_cast <TextureAssetUnloadList*> (args.at(0));
+  const auto assetUnloadList = std::any_cast <TextureAssetList*> (args.at(0));
 
   auto& audioManager = registry.ctx().at <TextureAssetManager> ();
 
-  audioManager.unload(assetUnloadList->texturesToUnload);
+  audioManager.unload(assetUnloadList->textures);
 }
 
 } // namespace cqde::callbacks

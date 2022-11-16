@@ -1,4 +1,4 @@
-#include <cqde/components/assets/TerrainAssetUnloadList.hpp>
+#include <cqde/components/assets/TerrainAssetList.hpp>
 #include <cqde/types/assets/TerrainAssetManager.hpp>
 
 #include <cqde/types/ui/widgets/StringFilter.hpp>
@@ -14,21 +14,21 @@ namespace cqde::compos
 {
 
 void
-TerrainAssetUnloadList::ui_edit_props(
+TerrainAssetList::ui_edit_props(
   const entt::entity entity,
   const entt::registry& registry)
 {
   using fmt::format;
   using types::TerrainAssetManager;
 
-  if ( ImGui::CollapsingHeader("Terrain to unload", ImGuiTreeNodeFlags_DefaultOpen) == false )
+  if ( ImGui::CollapsingHeader("Terrain", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
 
   const auto terrainList = registry.ctx().at <TerrainAssetManager> ().assetIdList();
 
   static ui::StringFilter terrainFilter {"Terrain ID"};
 
-  if ( ImGui::SmallButton("+##terrainAdd") )
+  if ( ImGui::SmallButton("+##terraineAdd") )
     ImGui::OpenPopup("##terrainAddPopup");
 
   if ( ImGui::BeginPopup("##terrainAddPopup") )
@@ -45,15 +45,15 @@ TerrainAssetUnloadList::ui_edit_props(
       if ( terrainFilter.query(terrainId.str()) == false )
         continue;
 
-      if ( std::find(terrainToUnload.begin(), terrainToUnload.end(),
-                     terrainId) != terrainToUnload.end() )
+      if ( std::find(terrain.begin(), terrain.end(),
+                     terrainId) != terrain.end() )
         continue;
 
       terrainFound = true;
 
       if ( ImGui::Selectable(terrainId.str().c_str(), false) )
       {
-        terrainToUnload.insert(terrainId);
+        terrain.insert(terrainId);
         ImGui::CloseCurrentPopup();
         break;
       }
@@ -70,21 +70,21 @@ TerrainAssetUnloadList::ui_edit_props(
   const auto tableFlags = ImGuiTableFlags_ScrollX |
                           ImGuiTableFlags_ScrollY;
 
-  if ( ImGui::BeginTable( "TerrainToUnloadList", 1, tableFlags) == false )
+  if ( ImGui::BeginTable( "TerrainToList", 1, tableFlags) == false )
     return;
 
   ImGui::TableNextColumn();
 
-  for ( auto iter = terrainToUnload.begin();
-        iter != terrainToUnload.end();
+  for ( auto iter = terrain.begin();
+        iter != terrain.end();
         ++iter )
   {
-    ImGui::PushID(std::distance(terrainToUnload.begin(), iter));
+    ImGui::PushID(std::distance(terrain.begin(), iter));
 
     if ( ImGui::SmallButton("-##terrainDel") )
-      iter = terrainToUnload.erase(iter);
+      iter = terrain.erase(iter);
 
-    if ( iter == terrainToUnload.end() )
+    if ( iter == terrain.end() )
     {
       ImGui::PopID();
       break;
@@ -99,7 +99,7 @@ TerrainAssetUnloadList::ui_edit_props(
     ImGui::PopID();
   }
 
-  ImGui::EndTable(); // TerrainToUnloadList
+  ImGui::EndTable(); // TerrainToList
 }
 
 } // namespace cqde::compos

@@ -25,18 +25,12 @@
 #include <cqde/components/WantsMouseCentered.hpp>
 #include <cqde/components/WantsMouseHidden.hpp>
 
-#include <cqde/components/assets/AudioAssetLoadList.hpp>
-#include <cqde/components/assets/AudioAssetUnloadList.hpp>
-#include <cqde/components/assets/FontAssetLoadList.hpp>
-#include <cqde/components/assets/FontAssetUnloadList.hpp>
-#include <cqde/components/assets/GeometryAssetLoadList.hpp>
-#include <cqde/components/assets/GeometryAssetUnloadList.hpp>
-#include <cqde/components/assets/TerrainAssetLoadList.hpp>
-#include <cqde/components/assets/TerrainAssetUnloadList.hpp>
-#include <cqde/components/assets/TextStringAssetLoadList.hpp>
-#include <cqde/components/assets/TextStringAssetUnloadList.hpp>
-#include <cqde/components/assets/TextureAssetLoadList.hpp>
-#include <cqde/components/assets/TextureAssetUnloadList.hpp>
+#include <cqde/components/assets/AudioAssetList.hpp>
+#include <cqde/components/assets/FontAssetList.hpp>
+#include <cqde/components/assets/GeometryAssetList.hpp>
+#include <cqde/components/assets/TerrainAssetList.hpp>
+#include <cqde/components/assets/TextStringAssetList.hpp>
+#include <cqde/components/assets/TextureAssetList.hpp>
 
 #include <cqde/components/physics/CollisionBody.hpp>
 #include <cqde/components/physics/RigidBody.hpp>
@@ -133,18 +127,12 @@ engineInit(
   entityManager.registerComponent <TextureTint> ("TextureTint");
   entityManager.registerComponent <Transform> ("Transform");
 
-  entityManager.registerComponent <AudioAssetLoadList> ("AudioAssetLoadList");
-  entityManager.registerComponent <AudioAssetUnloadList> ("AudioAssetUnloadList");
-  entityManager.registerComponent <FontAssetLoadList> ("FontAssetLoadList");
-  entityManager.registerComponent <FontAssetUnloadList> ("FontAssetUnloadList");
-  entityManager.registerComponent <GeometryAssetLoadList> ("GeometryAssetLoadList");
-  entityManager.registerComponent <GeometryAssetUnloadList> ("GeometryAssetUnloadList");
-  entityManager.registerComponent <TerrainAssetLoadList> ("TerrainAssetLoadList");
-  entityManager.registerComponent <TerrainAssetUnloadList> ("TerrainAssetUnloadList");
-  entityManager.registerComponent <TextStringAssetLoadList> ("TextStringAssetLoadList");
-  entityManager.registerComponent <TextStringAssetUnloadList> ("TextStringAssetUnloadList");
-  entityManager.registerComponent <TextureAssetLoadList> ("TextureAssetLoadList");
-  entityManager.registerComponent <TextureAssetUnloadList> ("TextureAssetUnloadList");
+  entityManager.registerComponent <AudioAssetList> ("AudioAssetList");
+  entityManager.registerComponent <FontAssetList> ("FontAssetList");
+  entityManager.registerComponent <GeometryAssetList> ("GeometryAssetList");
+  entityManager.registerComponent <TerrainAssetList> ("TerrainAssetList");
+  entityManager.registerComponent <TextStringAssetList> ("TextStringAssetList");
+  entityManager.registerComponent <TextureAssetList> ("TextureAssetList");
 
   entityManager.registerComponent <CollisionBody> ("CollisionBody");
   entityManager.registerComponent <RigidBody> ("RigidBody");

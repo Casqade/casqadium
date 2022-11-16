@@ -1,4 +1,4 @@
-#include <cqde/components/assets/TextureAssetLoadList.hpp>
+#include <cqde/components/assets/TextureAssetList.hpp>
 #include <cqde/types/assets/TextureAssetManager.hpp>
 
 #include <cqde/types/ui/widgets/StringFilter.hpp>
@@ -14,14 +14,14 @@ namespace cqde::compos
 {
 
 void
-TextureAssetLoadList::ui_edit_props(
+TextureAssetList::ui_edit_props(
   const entt::entity entity,
   const entt::registry& registry)
 {
   using fmt::format;
   using types::TextureAssetManager;
 
-  if ( ImGui::CollapsingHeader("Textures to load", ImGuiTreeNodeFlags_DefaultOpen) == false )
+  if ( ImGui::CollapsingHeader("Textures", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
 
   const auto textureList = registry.ctx().at <TextureAssetManager> ().assetIdList();
@@ -45,15 +45,15 @@ TextureAssetLoadList::ui_edit_props(
       if ( textureFilter.query(textureId.str()) == false )
         continue;
 
-      if ( std::find(texturesToLoad.begin(), texturesToLoad.end(),
-                     textureId) != texturesToLoad.end() )
+      if ( std::find(textures.begin(), textures.end(),
+                     textureId) != textures.end() )
         continue;
 
       texturesFound = true;
 
       if ( ImGui::Selectable(textureId.str().c_str(), false) )
       {
-        texturesToLoad.insert(textureId);
+        textures.insert(textureId);
         ImGui::CloseCurrentPopup();
         break;
       }
@@ -70,21 +70,21 @@ TextureAssetLoadList::ui_edit_props(
   const auto tableFlags = ImGuiTableFlags_ScrollX |
                           ImGuiTableFlags_ScrollY;
 
-  if ( ImGui::BeginTable( "TexturesToLoadList", 1, tableFlags) == false )
+  if ( ImGui::BeginTable( "TexturesList", 1, tableFlags) == false )
     return;
 
   ImGui::TableNextColumn();
 
-  for ( auto iter = texturesToLoad.begin();
-        iter != texturesToLoad.end();
+  for ( auto iter = textures.begin();
+        iter != textures.end();
         ++iter )
   {
-    ImGui::PushID(std::distance(texturesToLoad.begin(), iter));
+    ImGui::PushID(std::distance(textures.begin(), iter));
 
     if ( ImGui::SmallButton("-##textureDel") )
-      iter = texturesToLoad.erase(iter);
+      iter = textures.erase(iter);
 
-    if ( iter == texturesToLoad.end() )
+    if ( iter == textures.end() )
     {
       ImGui::PopID();
       break;
@@ -99,7 +99,7 @@ TextureAssetLoadList::ui_edit_props(
     ImGui::PopID();
   }
 
-  ImGui::EndTable(); // TexturesToLoadList
+  ImGui::EndTable(); // TexturesList
 }
 
 } // namespace cqde::compos

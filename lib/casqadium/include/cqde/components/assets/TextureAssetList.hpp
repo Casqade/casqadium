@@ -12,12 +12,12 @@
 namespace cqde::compos
 {
 
-struct TextStringAssetLoadList
+struct TextureAssetList
 {
-  std::unordered_set <StringId, identifier_hash> textToLoad {};
+  std::unordered_set <TextureId, identifier_hash> textures {};
 
 
-  TextStringAssetLoadList() = default;
+  TextureAssetList() = default;
 
 
   void ui_edit_props( const entt::entity,

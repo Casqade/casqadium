@@ -12,12 +12,12 @@
 namespace cqde::compos
 {
 
-struct TerrainAssetLoadList
+struct TerrainAssetList
 {
-  std::unordered_set <TerrainId, identifier_hash> terrainToLoad {};
+  std::unordered_set <TerrainId, identifier_hash> terrain {};
 
 
-  TerrainAssetLoadList() = default;
+  TerrainAssetList() = default;
 
 
   void ui_edit_props( const entt::entity,

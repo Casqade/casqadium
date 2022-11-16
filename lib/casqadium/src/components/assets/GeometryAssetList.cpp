@@ -1,4 +1,4 @@
-#include <cqde/components/assets/GeometryAssetLoadList.hpp>
+#include <cqde/components/assets/GeometryAssetList.hpp>
 
 #include <cqde/json_helpers.hpp>
 
@@ -10,7 +10,7 @@
 namespace cqde::compos
 {
 
-const static Json::Value geometryAssetLoadListJsonReference =
+const static Json::Value geometryAssetListJsonReference =
 []
 {
   using ValueType = Json::ValueType;
@@ -20,46 +20,46 @@ const static Json::Value geometryAssetLoadListJsonReference =
   root.setComment("// root must be a JSON object"s,
                   Json::CommentPlacement::commentBefore);
 
-  Json::Value& geometry = root["geometryToLoad"];
+  Json::Value& geometry = root["geometry"];
   geometry = ValueType::arrayValue;
-  geometry.setComment("// 'geometryToLoad' must be a JSON array"s,
+  geometry.setComment("// 'geometry' must be a JSON array"s,
                       Json::CommentPlacement::commentBefore);
 
   geometry.append(ValueType::stringValue);
-  geometry.begin()->setComment("// 'geometryToLoad' element must be a JSON string"s,
+  geometry.begin()->setComment("// 'geometry' element must be a JSON string"s,
                                 Json::CommentPlacement::commentBefore);
 
   return root;
 }();
 
 Json::Value
-GeometryAssetLoadList::serialize() const
+GeometryAssetList::serialize() const
 {
   Json::Value json {};
 
-  auto& jsonGeometry = json["geometryToLoad"];
+  auto& jsonGeometry = json["geometry"];
   jsonGeometry = Json::arrayValue;
 
-  for ( const auto& geometry : geometryToLoad )
+  for ( const auto& geometry : geometry )
     jsonGeometry.append(geometry.str());
 
   return json;
 }
 
 void
-GeometryAssetLoadList::deserialize(
+GeometryAssetList::deserialize(
   entt::registry& registry,
   entt::entity entity,
   const Json::Value& json,
   const std::unordered_map <EntityId, EntityId,
                             identifier_hash>& idMap )
 {
-  jsonValidateObject(json, geometryAssetLoadListJsonReference);
+  jsonValidateObject(json, geometryAssetListJsonReference);
 
-  auto& comp = registry.emplace_or_replace <GeometryAssetLoadList> (entity);
+  auto& comp = registry.emplace_or_replace <GeometryAssetList> (entity);
 
-  for ( const auto& geometry : json["geometryToLoad"] )
-    comp.geometryToLoad.insert(geometry.asString());
+  for ( const auto& geometry : json["geometry"] )
+    comp.geometry.insert(geometry.asString());
 }
 
 } // namespace cqde::compos
