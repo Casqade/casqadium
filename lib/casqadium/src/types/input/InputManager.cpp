@@ -10,6 +10,7 @@
 #include <cqde/components/CasqadiumEditorInternal.hpp>
 #include <cqde/components/InputController.hpp>
 #include <cqde/components/SubscriberInput.hpp>
+#include <cqde/components/SubscriberUpdate.hpp>
 
 #include <cqde/types/CallbackManager.hpp>
 
@@ -262,6 +263,7 @@ InputManager::handleAxisInput(
 {
   using compos::InputController;
   using compos::SubscriberInput;
+  using compos::SubscriberUpdate;
   using compos::CasqadiumEditorInternal;
 
   if ( mHwControlMap.count(inputHwCode) == 0 )
@@ -315,9 +317,10 @@ InputManager::handleAxisInput(
     };
 
     if ( registry.storage <CasqadiumEditorInternal> ().empty() == true )
-      registry.view <InputController, SubscriberInput> ().each(bindingInputHandler);
+      registry.view <InputController, SubscriberUpdate, SubscriberInput> ().each(bindingInputHandler);
     else
-      registry.view <InputController, SubscriberInput, CasqadiumEditorInternal> ().each(bindingInputHandler);
+      registry.view < InputController, SubscriberUpdate, SubscriberInput,
+                      CasqadiumEditorInternal> ().each(bindingInputHandler);
   }
 }
 

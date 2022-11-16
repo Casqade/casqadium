@@ -126,6 +126,7 @@ editorControllerCreate(
   cMetaInfo.packageId = "";
 
   registry.emplace <SubscriberInput> (eController);
+  registry.emplace <SubscriberUpdate> (eController);
   registry.emplace <CasqadiumEditorInternal> (eController);
 
   auto& cInputController = registry.emplace <InputController> (eController);
