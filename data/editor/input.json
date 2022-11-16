@@ -1,28 +1,4 @@
 {
-  "CameraLookOff" : 
-  {
-    "-Key_Alt" : 
-    {
-      "absolute" : false,
-      "sensitivity" : 1.0
-    }
-  },
-  "CameraLookOn" : 
-  {
-    "+Key_Alt" : 
-    {
-      "absolute" : false,
-      "sensitivity" : 1.0
-    }
-  },
-  "CameraLookToggle" : 
-  {
-    "-Key_C" : 
-    {
-      "absolute" : false,
-      "sensitivity" : 1.0
-    }
-  },
   "CursorPosX" : 
   {
     "+MousePos_X" : 
@@ -84,16 +60,6 @@
     {
       "absolute" : false,
       "sensitivity" : 5.0
-    },
-    "~Key_Down" : 
-    {
-      "absolute" : false,
-      "sensitivity" : -0.5
-    },
-    "~Key_Up" : 
-    {
-      "absolute" : false,
-      "sensitivity" : 0.5
     }
   },
   "QuickLoad" : 
@@ -162,16 +128,6 @@
     {
       "absolute" : false,
       "sensitivity" : 5.0
-    },
-    "~Key_Left" : 
-    {
-      "absolute" : false,
-      "sensitivity" : 0.5
-    },
-    "~Key_Right" : 
-    {
-      "absolute" : false,
-      "sensitivity" : -0.5
     }
   }
 }
