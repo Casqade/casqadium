@@ -71,6 +71,25 @@ Package::Package(
   : mId{id}
 {}
 
+Json::Value
+Package::serialize() const
+{
+  using Json::ValueType;
+
+  Json::Value json {};
+
+  json["title"] = mTitle;
+  json["description"] = mDescription;
+  json["version"] = mVersion;
+
+  json["dependencies"] = ValueType::arrayValue;
+
+  for ( const auto& dependency : mDependencies )
+    json["dependencies"].append(dependency.str());
+
+  return json;
+}
+
 void
 Package::deserialize(
   const Json::Value& manifest )
