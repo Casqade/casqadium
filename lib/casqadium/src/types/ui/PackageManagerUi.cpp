@@ -363,6 +363,9 @@ PackageManagerUi::ui_show_package_window(
 
     for ( const auto& package : mConfigState.root["load_order"] )
     {
+      if ( package.asString() == mEditedPackageId )
+        continue;
+
       bool enabled = enabledDeps.count(package.asString());
 
       ImGui::Checkbox(package.asString().c_str(), &enabled);
