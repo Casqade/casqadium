@@ -197,6 +197,8 @@ engineInit(
   callbackManager.Register("QuickSave", quickSave);
   callbackManager.Register("QuickLoad", quickLoad);
 
+  callbackManager.Register("EntityRemove", entityRemove);
+
   callbackManager.Register("EntityUpdateOn", entityUpdateOn);
   callbackManager.Register("EntityUpdateOff", entityUpdateOff);
   callbackManager.Register("EntityUpdateToggle", entityUpdateToggle);

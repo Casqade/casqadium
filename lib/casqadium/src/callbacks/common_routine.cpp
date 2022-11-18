@@ -20,6 +20,19 @@ namespace cqde::callbacks
 {
 
 void
+entityRemove(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using types::EntityManager;
+
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+
+  auto& entityManager = registry.ctx().at <EntityManager> ();
+  entityManager.removeLater(entity);
+}
+
+void
 entityUpdateOn(
   entt::registry& registry,
   const std::vector <std::any>& args )

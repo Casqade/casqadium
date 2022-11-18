@@ -9,6 +9,11 @@
 namespace cqde::callbacks
 {
 
+void entityRemove(
+  entt::registry&,
+  const std::vector <std::any>& args = {} );
+
+
 void entityUpdateOn(
   entt::registry&,
   const std::vector <std::any>& args = {} );
