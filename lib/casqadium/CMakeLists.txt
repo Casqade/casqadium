@@ -519,7 +519,7 @@ FetchContent_MakeAvailable(soloud)
 
 
 if(NOT CMAKE_BUILD_TYPE STREQUAL "Debug")
-  target_compile_definitions(EnTT::EnTT PUBLIC
+  target_compile_definitions(EnTT INTERFACE
     ENTT_DISABLE_ASSERT
   )
 endif()
