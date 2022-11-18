@@ -101,6 +101,23 @@ PackageManagerUi::ui_show(
     mConfigState.packages[mPackageNewName]["version"] = Json::stringValue;
     mConfigState.packages[mPackageNewName]["description"] = Json::stringValue;
     mConfigState.packages[mPackageNewName]["dependencies"] = Json::arrayValue;
+
+    const auto manifestName = Package::ContentFileName(ContentType::Manifest);
+    const auto manifestPath = mPackageMgr->rootPath() / mPackageNewName / manifestName;
+
+    if ( fileExists(manifestPath) == true )
+    {
+      Package newPackage {mPackageNewName};
+
+      try
+      {
+        newPackage.deserialize(fileParse(manifestPath));
+
+        mConfigState.packages[mPackageNewName] = newPackage.serialize();
+      }
+      catch ( ... )
+      {}
+    }
   }
 
   ImGui::EndDisabled();
