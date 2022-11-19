@@ -131,7 +131,8 @@ AssetManager <olc::Font>::try_get(
 template <>
 void
 AssetManager <olc::Font>::ui_show_preview(
-  const AssetId& fontId )
+  const AssetId& fontId,
+  entt::registry& )
 {
   using fmt::format;
 

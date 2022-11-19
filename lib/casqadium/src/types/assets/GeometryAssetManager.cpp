@@ -253,7 +253,8 @@ AssetManager <vertexBuffer>::unloadImpl(
 template <>
 void
 AssetManager <vertexBuffer>::ui_show_preview(
-  const AssetId& geometryId )
+  const AssetId& geometryId,
+  entt::registry& )
 {
   if ( ImGui::CollapsingHeader("Preview", ImGuiTreeNodeFlags_DefaultOpen) )
     ImGui::Text("WIP");

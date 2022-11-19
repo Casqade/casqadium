@@ -190,7 +190,8 @@ AssetManager <olc::Renderable>::try_get(
 template <>
 void
 AssetManager <olc::Renderable>::ui_show_preview(
-  const AssetId& textureId )
+  const AssetId& textureId,
+  entt::registry& )
 {
   using fmt::format;
 

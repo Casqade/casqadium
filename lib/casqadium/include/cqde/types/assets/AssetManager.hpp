@@ -4,6 +4,8 @@
 
 #include <cqde/types/assets/AssetStatus.hpp>
 
+#include <entt/fwd.hpp>
+
 #include <json/value.h>
 
 #include <filesystem>
@@ -75,7 +77,7 @@ public:
   void remove( const AssetId& );
   void clear( const bool keepMemoryResidents = true );
 
-  void ui_show_preview( const AssetId& );
+  void ui_show_preview( const AssetId&, entt::registry& );
   void ui_show( Json::Value& ) const;
 
   AssetStatus status( const AssetId& ) const;

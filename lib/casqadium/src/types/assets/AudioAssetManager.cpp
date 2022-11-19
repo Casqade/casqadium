@@ -113,7 +113,8 @@ AssetManager <SoLoud::AudioSource>::unloadImpl(
 template <>
 void
 AssetManager <SoLoud::AudioSource>::ui_show_preview(
-  const AssetId& audioId )
+  const AssetId& audioId,
+  entt::registry& registry )
 {
   using fmt::format;
 

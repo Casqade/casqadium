@@ -255,7 +255,8 @@ AssetManager <std::string>::try_get(
 template <>
 void
 AssetManager <std::string>::ui_show_preview(
-  const AssetId& stringId )
+  const AssetId& stringId,
+  entt::registry& )
 {
   using fmt::format;
 

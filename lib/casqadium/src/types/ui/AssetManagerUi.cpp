@@ -683,7 +683,7 @@ AssetManagerUi::ui_show_live_audio(
     if ( audioMgr.status(selectedAudioId) != AssetStatus::Undefined )
       audioMgr.load({selectedAudioId});
 
-    audioMgr.ui_show_preview(selectedAudioId);
+    audioMgr.ui_show_preview(selectedAudioId, registry);
   }
 
   ImGui::End(); // windowTitle
@@ -736,7 +736,7 @@ AssetManagerUi::ui_show_live_font(
     if ( fontMgr.status(selectedFontId) != AssetStatus::Undefined )
       fontMgr.load({selectedFontId});
 
-    fontMgr.ui_show_preview(selectedFontId);
+    fontMgr.ui_show_preview(selectedFontId, registry);
   }
 
   ImGui::End(); // windowTitle
@@ -789,7 +789,7 @@ AssetManagerUi::ui_show_live_geometry(
     if ( geometryMgr.status(selectedGeometryId) != AssetStatus::Undefined )
       geometryMgr.load({selectedGeometryId});
 
-    geometryMgr.ui_show_preview(selectedGeometryId);
+    geometryMgr.ui_show_preview(selectedGeometryId, registry);
   }
 
   ImGui::End(); // windowTitle
@@ -842,7 +842,7 @@ AssetManagerUi::ui_show_live_terrain(
     if ( terrainMgr.status(selectedTerrainId) != AssetStatus::Undefined )
       terrainMgr.load({selectedTerrainId});
 
-    terrainMgr.ui_show_preview(selectedTerrainId);
+    terrainMgr.ui_show_preview(selectedTerrainId, registry);
   }
 
   ImGui::End(); // windowTitle
@@ -895,7 +895,7 @@ AssetManagerUi::ui_show_live_text(
     if ( textMgr.status(selectedTextId) != AssetStatus::Undefined )
       textMgr.load({selectedTextId});
 
-    textMgr.ui_show_preview(selectedTextId);
+    textMgr.ui_show_preview(selectedTextId, registry);
   }
 
   ImGui::End(); // windowTitle
@@ -947,7 +947,7 @@ AssetManagerUi::ui_show_live_texture(
     if ( textureMgr.status(selectedTextureId) != AssetStatus::Undefined )
       textureMgr.load({selectedTextureId});
 
-    textureMgr.ui_show_preview(selectedTextureId);
+    textureMgr.ui_show_preview(selectedTextureId, registry);
   }
 
   ImGui::End(); // windowTitle

@@ -189,7 +189,8 @@ AssetManager <Terrain>::unloadImpl(
 template <>
 void
 AssetManager <Terrain>::ui_show_preview(
-  const AssetId& terrainId )
+  const AssetId& terrainId,
+  entt::registry& )
 {
   using fmt::format;
 
