@@ -5,9 +5,21 @@
 
 #include <cqde/util/logger.hpp>
 
+#include <entt/entity/registry.hpp>
+
 #include <json/value.h>
 
 #include <soloud.h>
+#include <soloud_wav.h>
+#include <soloud_wavstream.h>
+#include <soloud_modplug.h>
+#include <soloud_openmpt.h>
+#include <soloud_monotone.h>
+#include <soloud_sfxr.h>
+#include <soloud_speech.h>
+#include <soloud_tedsid.h>
+#include <soloud_vizsn.h>
+#include <soloud_noise.h>
 
 #include <imgui.h>
 #include <imgui_stdlib.h>
@@ -25,6 +37,104 @@ const static std::map <SoLoud::SOLOUD_ERRORS, std::string> SoLoudErrorStrings
   {SoLoud::SOLOUD_ERRORS::UNKNOWN_ERROR, "UNKNOWN_ERROR"},
 };
 
+enum class AudioSourceType
+{
+  EnumBegin,
+  Wav = EnumBegin,
+  WavStream,
+  Modplug,
+  Monotone,
+  Noise,
+  Openmpt,
+  Sfxr,
+  Speech,
+  TedSid,
+  Vizsn,
+
+  EnumEnd = Vizsn,
+};
+
+std::string
+AudioSourceTypeToString(
+  const AudioSourceType type )
+{
+  switch (type)
+  {
+    case AudioSourceType::Wav:
+      return "wav";
+
+    case AudioSourceType::WavStream:
+      return "wavstream";
+
+    case AudioSourceType::Modplug:
+      return "modplug";
+
+    case AudioSourceType::Monotone:
+      return "monotone";
+
+    case AudioSourceType::Noise:
+      return "noise";
+
+    case AudioSourceType::Openmpt:
+      return "openmpt";
+
+    case AudioSourceType::Sfxr:
+      return "sfxr";
+
+    case AudioSourceType::Speech:
+      return "speech";
+
+    case AudioSourceType::TedSid:
+      return "tedsid";
+
+    case AudioSourceType::Vizsn:
+      return "vizsn";
+  }
+
+  CQDE_ASSERT_DEBUG(false, return "");
+}
+
+AudioSourceType
+AudioSourceTypeFromString(
+  const std::string& type )
+{
+  using fmt::format;
+
+  if ( type == AudioSourceTypeToString(AudioSourceType::Wav) )
+    return AudioSourceType::Wav;
+
+  if ( type == AudioSourceTypeToString(AudioSourceType::WavStream) )
+    return AudioSourceType::WavStream;
+
+  if ( type == AudioSourceTypeToString(AudioSourceType::Modplug) )
+    return AudioSourceType::Modplug;
+
+  if ( type == AudioSourceTypeToString(AudioSourceType::Monotone) )
+    return AudioSourceType::Monotone;
+
+  if ( type == AudioSourceTypeToString(AudioSourceType::Noise) )
+    return AudioSourceType::Noise;
+
+  if ( type == AudioSourceTypeToString(AudioSourceType::Openmpt) )
+    return AudioSourceType::Openmpt;
+
+  if ( type == AudioSourceTypeToString(AudioSourceType::Sfxr) )
+    return AudioSourceType::Sfxr;
+
+  if ( type == AudioSourceTypeToString(AudioSourceType::Speech) )
+    return AudioSourceType::Speech;
+
+  if ( type == AudioSourceTypeToString(AudioSourceType::TedSid) )
+    return AudioSourceType::TedSid;
+
+  if ( type == AudioSourceTypeToString(AudioSourceType::Vizsn) )
+    return AudioSourceType::Vizsn;
+
+  throw std::runtime_error(
+    format("'{}' is not a valid audio source type", type));
+}
+
+
 namespace cqde::types
 {
 
@@ -39,7 +149,7 @@ AssetManager <SoLoud::AudioSource>::AssetJsonDbEntryReference()
   reference.setComment("// audio DB entry must be a JSON object"s,
                        Json::CommentPlacement::commentBefore);
 
-  reference["type"] = ValueType::stringValue;
+  reference["type"] = AudioSourceTypeToString(AudioSourceType::Wav);
   reference["type"].setComment("// audio type must be a JSON string"s,
                                 Json::CommentPlacement::commentBefore);
 
@@ -92,13 +202,181 @@ AssetManager <SoLoud::AudioSource>::loadImpl(
   const AssetId& id,
   const AssetPath& path ) const
 {
-  LOG_INFO("Loading audio '{}'", path.string());
+  using SoLoud::SOLOUD_ERRORS;
+  using SoLoud::WAVSTREAM_FILETYPE;
 
-  const auto audio = std::make_shared <SoLoud::AudioSource> ();
+  AssetHandle audio {};
+  SoLoud::result result {};
 
-//  todo: impl
+  const auto type = mAssetsProperties.at(id)["type"].asString();
 
-  return audio;
+  switch ( AudioSourceTypeFromString(type) )
+  {
+    case AudioSourceType::Wav:
+    {
+      LOG_INFO("Loading wav audio '{}'", path.string());
+
+      audio = std::make_shared <SoLoud::Wav> ();
+      const auto wav = std::dynamic_pointer_cast <SoLoud::Wav> (audio);
+
+      result = wav->load(path.string().c_str());
+
+      if ( result == SOLOUD_ERRORS::SO_NO_ERROR )
+        return audio;
+
+      break;
+    }
+
+    case AudioSourceType::WavStream:
+    {
+      LOG_INFO("Loading wavstream audio '{}'", path.string());
+
+      audio = std::make_shared <SoLoud::WavStream> ();
+      const auto stream = std::dynamic_pointer_cast <SoLoud::WavStream> (audio);
+
+      result = stream->load(path.string().c_str());
+
+      if ( result == SOLOUD_ERRORS::SO_NO_ERROR )
+        return audio;
+
+      break;
+    }
+
+    case AudioSourceType::Modplug:
+    {
+      LOG_INFO("Loading modplug audio '{}'", path.string());
+
+      audio = std::make_shared <SoLoud::Modplug> ();
+      const auto modplug = std::dynamic_pointer_cast <SoLoud::Modplug> (audio);
+
+      result = modplug->load(path.string().c_str());
+
+      if ( result == SOLOUD_ERRORS::SO_NO_ERROR )
+        return audio;
+
+      break;
+    }
+
+    case AudioSourceType::Monotone:
+    {
+      LOG_INFO("Loading monotone audio '{}'", path.string());
+
+      audio = std::make_shared <SoLoud::Monotone> ();
+      const auto monotone = std::dynamic_pointer_cast <SoLoud::Monotone> (audio);
+
+      result = monotone->load(path.string().c_str());
+
+      if ( result == SOLOUD_ERRORS::SO_NO_ERROR )
+        return audio;
+
+//      todo: monotone->setParams ?
+
+      break;
+    }
+
+    case AudioSourceType::Noise:
+    {
+      LOG_INFO("Loading noise audio '{}'", path.string());
+
+      audio = std::make_shared <SoLoud::Noise> ();
+      const auto noise = std::dynamic_pointer_cast <SoLoud::Noise> (audio);
+
+//      todo: noise->setType ?
+//      todo: noise->setOctaveScale ?
+
+      break;
+    }
+
+    case AudioSourceType::Openmpt:
+    {
+      LOG_INFO("Loading openmpt audio '{}'", path.string());
+
+      audio = std::make_shared <SoLoud::Openmpt> ();
+      const auto modplug = std::dynamic_pointer_cast <SoLoud::Openmpt> (audio);
+
+      result = modplug->load(path.string().c_str());
+
+      if ( result == SOLOUD_ERRORS::SO_NO_ERROR )
+        return audio;
+
+      break;
+    }
+
+    case AudioSourceType::Sfxr:
+    {
+      LOG_INFO("Loading Sfxr audio '{}'", path.string());
+
+      audio = std::make_shared <SoLoud::Sfxr> ();
+      const auto sfxr = std::dynamic_pointer_cast <SoLoud::Sfxr> (audio);
+
+      result = sfxr->loadParams(path.string().c_str());
+
+      if ( result == SOLOUD_ERRORS::SO_NO_ERROR )
+        return audio;
+
+//      todo: sfxr->loadPreset ?
+
+      return audio;
+    }
+
+    case AudioSourceType::Speech:
+    {
+      LOG_INFO("Loading Klatt speech audio '{}'", path.string());
+
+      audio = std::make_shared <SoLoud::Speech> ();
+      const auto speech = std::dynamic_pointer_cast <SoLoud::Speech> (audio);
+
+//      todo: speech->setText ?
+//      todo: speech->setParams ?
+
+      return audio;
+    }
+
+    case AudioSourceType::TedSid:
+    {
+      LOG_INFO("Loading TED/SID audio '{}'", path.string());
+
+      audio = std::make_shared <SoLoud::TedSid> ();
+      const auto tedsid = std::dynamic_pointer_cast <SoLoud::TedSid> (audio);
+
+      result = tedsid->load(path.string().c_str());
+
+      if ( result == SOLOUD_ERRORS::SO_NO_ERROR )
+        return audio;
+
+      return audio;
+    }
+
+    case AudioSourceType::Vizsn:
+    {
+      LOG_INFO("Loading Vizsn speech audio '{}'", path.string());
+
+      audio = std::make_shared <SoLoud::Vizsn> ();
+      const auto vizsn = std::dynamic_pointer_cast <SoLoud::Vizsn> (audio);
+
+//      todo: vizsn->setText ?
+
+      return audio;
+    }
+
+    default:
+    {
+      LOG_ERROR("Failed to load audio '{}': unknown audio type '{}'",
+                id.str(), type);
+
+      return {};
+    }
+  }
+
+  const SOLOUD_ERRORS errorCode = static_cast <SOLOUD_ERRORS> (result);
+
+  if ( SoLoudErrorStrings.count(errorCode) > 0 )
+    LOG_ERROR("Failed to load audio '{}': {}",
+              id.str(), SoLoudErrorStrings.at(errorCode));
+  else
+    LOG_ERROR("Failed to load audio '{}': unknown error", id.str());
+
+  return {};
 }
 
 template <>
@@ -145,8 +423,67 @@ AssetManager <SoLoud::AudioSource>::ui_show_preview(
 
   const auto handle = try_get(audioId);
 
-  if ( handle == nullptr )
-    return;
+  if ( handle == nullptr ||
+       audioId == null_id )
+    return ImGui::Text("No data to play");
+
+  static auto audioPrev = audioId;
+
+  auto& soloud = registry.ctx().at <SoLoud::Soloud> ();
+
+  static float audioVolume {1.0f};
+  const static SoLoud::handle voiceHandleInvalid {0xfffff000};
+  static SoLoud::handle voiceHandle {voiceHandleInvalid};
+
+  if ( audioPrev != audioId )
+  {
+    if ( soloud.isValidVoiceHandle(voiceHandle) == true )
+      soloud.stop(voiceHandle);
+
+    voiceHandle = voiceHandleInvalid;
+    audioPrev = audioId;
+  }
+
+  if ( ImGui::Button(">##audioPlay") )
+  {
+    if ( soloud.isValidVoiceHandle(voiceHandle) == true )
+    {
+      if ( soloud.getPause(voiceHandle) == true )
+        soloud.setPause(voiceHandle, false);
+      else
+      {
+        soloud.stop(voiceHandle);
+        voiceHandle = soloud.play(*handle, audioVolume);
+      }
+    }
+    else
+      voiceHandle = soloud.play(*handle, audioVolume);
+  }
+
+  ImGui::BeginDisabled(soloud.isValidVoiceHandle(voiceHandle) == false);
+  ImGui::SameLine();
+
+  if ( ImGui::Button("||##audioPause") )
+    soloud.setPause(voiceHandle, true);
+
+  ImGui::EndDisabled();
+
+  ImGui::BeginDisabled(soloud.isValidVoiceHandle(voiceHandle) == false);
+  ImGui::SameLine();
+
+  if ( ImGui::Button("[]##audioStop") )
+  {
+    soloud.stop(voiceHandle);
+    voiceHandle = voiceHandleInvalid;
+  }
+
+  ImGui::EndDisabled();
+
+  const auto flags = ImGuiSliderFlags_NoRoundToFormat;
+
+  if (  ImGui::DragFloat("Volume##audioVolume", &audioVolume,
+                          0.01f, 0.0f, 10.0f, "%.2f", flags) )
+    soloud.setGlobalVolume(audioVolume);
 }
 
 template <>
@@ -156,9 +493,23 @@ AssetManager <SoLoud::AudioSource>::ui_show(
 {
   if ( ImGui::CollapsingHeader("Type", ImGuiTreeNodeFlags_DefaultOpen) )
   {
-    auto type = entry["type"].asString();
-    if ( ImGui::InputText("##audioType", &type) )
-      entry["type"] = type;
+    const auto jsonType = entry["type"];
+
+    if ( ImGui::BeginCombo("##audioType", jsonType.asCString()) )
+    {
+      for ( int type = static_cast <int> (AudioSourceType::EnumBegin);
+            type < static_cast <int> (AudioSourceType::EnumEnd);
+            ++type )
+      {
+        const auto typeLabel = AudioSourceTypeToString(AudioSourceType(type));
+        const bool selected = typeLabel == jsonType.asString();
+
+        if ( ImGui::Selectable(typeLabel.c_str(), selected) )
+          entry["type"] = AudioSourceTypeToString(AudioSourceType(type));
+      }
+
+      ImGui::EndCombo(); // audioType
+    }
   }
 
   if ( ImGui::CollapsingHeader("Path", ImGuiTreeNodeFlags_DefaultOpen) )
@@ -166,6 +517,11 @@ AssetManager <SoLoud::AudioSource>::ui_show(
     std::string path = entry["path"].asString();
     if ( ImGui::InputText("##audioPath", &path) )
       entry["path"] = path;
+  }
+
+  if ( ImGui::CollapsingHeader("Properties", ImGuiTreeNodeFlags_DefaultOpen) )
+  {
+//  todo: switch ( AudioSourceType(type) )
   }
 }
 

@@ -19,6 +19,7 @@
 #include <cqde/types/TickCurrent.hpp>
 #include <cqde/types/FrameCurrent.hpp>
 
+#include <cqde/types/assets/AudioAssetManager.hpp>
 #include <cqde/types/assets/FontAssetManager.hpp>
 #include <cqde/types/assets/GeometryAssetManager.hpp>
 #include <cqde/types/assets/TextureAssetManager.hpp>
@@ -163,6 +164,8 @@ CasqadiumStateDemo::CasqadiumStateDemo(
 CasqadiumStateDemo::~CasqadiumStateDemo()
 {
   mRegistry.clear();
+
+  mRegistry.ctx().at <cqde::types::AudioAssetManager> ().clear(false);
 }
 
 void
