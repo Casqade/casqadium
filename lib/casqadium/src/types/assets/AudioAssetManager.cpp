@@ -182,7 +182,7 @@ template <>
 void
 AssetManager <SoLoud::AudioSource>::initPlaceholders()
 {
-  insert(null_id, std::make_shared <SoLoud::AudioSource> ());
+  insert(null_id, std::make_shared <SoLoud::Wav> ());
 }
 
 template <>
