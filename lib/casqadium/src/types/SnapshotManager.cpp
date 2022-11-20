@@ -16,6 +16,8 @@
 
 #include <entt/entity/registry.hpp>
 
+#include <soloud.h>
+
 #include <json/writer.h>
 
 #include <fstream>
@@ -215,6 +217,8 @@ SnapshotManager::Load(
       format("Failed to validate snapshot '{}': {}",
               snapshotPath.string(), e.what()));
   }
+
+  registry.ctx().at <SoLoud::Soloud> ().stopAll();
 
   auto& entityManager = registry.ctx().at <EntityManager> ();
 
