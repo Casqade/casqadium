@@ -14,6 +14,8 @@
 
 #include <cqde/components/CasqadiumEditorInternal.hpp>
 
+#include <soloud.h>
+
 
 namespace cqde::callbacks
 {
@@ -23,6 +25,8 @@ editorModeEnable(
   entt::registry& registry,
   const std::vector <std::any>& args )
 {
+  registry.ctx().at <SoLoud::Soloud> ().stopAll();
+
   using ui::AssetManagerUi;
   if ( registry.ctx().contains <AssetManagerUi> () == false )
     registry.ctx().emplace <AssetManagerUi> ();
@@ -94,6 +98,8 @@ editorModeDisable(
   using compos::CasqadiumEditorInternal;
 
   using Phase = types::System::Phase;
+
+  registry.ctx().at <SoLoud::Soloud> ().stopAll();
 
   auto& entityManager = registry.ctx().at <EntityManager> ();
   auto& systemManager = registry.ctx().at <SystemManager> ();
