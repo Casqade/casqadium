@@ -54,26 +54,24 @@ PhysicsEventListener::onContact(
     const auto collider1 = static_cast <Collider*> (pair.getCollider1()->getUserData());
     const auto collider2 = static_cast <Collider*> (pair.getCollider2()->getUserData());
 
-    const auto& callbackManager = mRegistry.ctx().at <CallbackManager> ();
-
     switch (pair.getEventType())
     {
       case EventType::ContactStart:
       {
-        collider1->onEnter(mRegistry, {eBody1, eBody2});
-        collider2->onEnter(mRegistry, {eBody2, eBody1});
+        collider1->onEnter(mRegistry, {eBody1, eBody2, &pair});
+        collider2->onEnter(mRegistry, {eBody2, eBody1, &pair});
         break;
       }
       case EventType::ContactStay:
       {
-        collider1->onStay(mRegistry, {eBody1, eBody2});
-        collider2->onStay(mRegistry, {eBody2, eBody1});
+        collider1->onStay(mRegistry, {eBody1, eBody2, &pair});
+        collider2->onStay(mRegistry, {eBody2, eBody1, &pair});
         break;
       }
       case EventType::ContactExit:
       {
-        collider1->onLeave(mRegistry, {eBody1, eBody2});
-        collider2->onLeave(mRegistry, {eBody2, eBody1});
+        collider1->onLeave(mRegistry, {eBody1, eBody2, &pair});
+        collider2->onLeave(mRegistry, {eBody2, eBody1, &pair});
         break;
       }
     }
@@ -95,8 +93,6 @@ PhysicsEventListener::onTrigger(
 
     const auto collider1 = static_cast <Collider*> (pair.getCollider1()->getUserData());
     const auto collider2 = static_cast <Collider*> (pair.getCollider2()->getUserData());
-
-    const auto& callbackManager = mRegistry.ctx().at <CallbackManager> ();
 
     switch (pair.getEventType())
     {
