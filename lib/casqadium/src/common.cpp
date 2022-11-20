@@ -73,6 +73,9 @@
 
 #include <ctpl/ctpl_stl.h>
 
+#include <locale>
+#include <codecvt>
+
 
 namespace cqde
 {
@@ -366,6 +369,20 @@ std::string stringJoin(
       result += *iter + delimeter;
 
   return result;
+}
+
+std::string
+stringToUTF8(
+  const std::u32string& source )
+{
+  return std::wstring_convert <std::codecvt_utf8_utf16 <char32_t>, char32_t> {}.to_bytes(source);
+}
+
+std::u32string
+stringFromUTF8(
+  const std::string& source )
+{
+  return std::wstring_convert <std::codecvt_utf8_utf16 <char32_t>, char32_t> {}.from_bytes(source);
 }
 
 } // namespace cqde

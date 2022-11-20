@@ -23,4 +23,7 @@ std::vector <std::string> stringSplit(  const std::string&,
 std::string stringJoin( const std::vector <std::string>&,
                         const std::string& delimeter = {} );
 
+std::string stringToUTF8( const std::u32string& );
+std::u32string stringFromUTF8( const std::string& );
+
 } // namespace cqde
