@@ -19,6 +19,9 @@
 namespace olc
 {
 
+const std::vector <uint32_t>& OLCPGE_EXPORT FontProggyCleanData();
+const std::vector <uint32_t>& OLCPGE_EXPORT FontRobotoMediumData();
+
 struct FontRect
 {
   olc::vi2d offset;
@@ -39,7 +42,7 @@ public:
   Font& operator=(Font&& other);
 
   olc::rcode LoadFromFile(const std::string& path, const int fontSize);
-  olc::rcode LoadFontDefault(const int fontSize);
+  olc::rcode LoadFromMemory(const std::vector <uint32_t>& fontData, const int fontSize);
 
   olc::rcode DrawString(std::u32string string, int x, int y,
                         olc::Pixel color = olc::BLACK,
@@ -88,8 +91,6 @@ private:
 
   static FT_Library OLCPGE_EXPORT library;
   static std::string OLCPGE_EXPORT libraryErrorMessage;
-
-  static std::vector <uint32_t> FontDefault;
 };
 
 } // namespace olc

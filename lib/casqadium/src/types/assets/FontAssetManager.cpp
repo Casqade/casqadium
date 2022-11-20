@@ -61,7 +61,7 @@ AssetManager <olc::Font>::initPlaceholders()
 {
   auto font = std::make_shared <olc::Font> ();
 
-  if ( font->LoadFontDefault(16) != olc::rcode::OK )
+  if ( font->LoadFromMemory(olc::FontRobotoMediumData(), 16) != olc::rcode::OK )
   {
     LOG_ERROR("Failed to create default font: {}", font->GetErrorMessage());
     CQDE_ASSERT_DEBUG(false, font.reset());

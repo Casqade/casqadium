@@ -1,5 +1,6 @@
 #include <cqde/render_helpers.hpp>
 #include <cqde/math_helpers.hpp>
+#include <cqde/common.hpp>
 
 #include <olcPGE/olcPGEX_TTF.hpp>
 
@@ -344,8 +345,7 @@ textureFromText(
   const olc::Pixel& color,
   const bool antialiased )
 {
-  const std::u32string textU32 {text.begin(), text.end()};
-  auto renderable = font->RenderStringToRenderable(textU32, color, antialiased);
+  auto renderable = font->RenderStringToRenderable(stringFromUTF8(text), color, antialiased);
 
   return std::make_shared <olc::Renderable> (std::move(renderable));
 }

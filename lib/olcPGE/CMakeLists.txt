@@ -18,6 +18,9 @@ target_sources(${TARGET} PRIVATE
   include/${TARGET}/olcPGEX_TTF.hpp
   src/olcPGEX_TTF.cpp
 
+  src/fonts/ProggyClean.cpp
+  src/fonts/RobotoMedium.cpp
+
   include/${TARGET}/olcPGEX_ImGui.hpp
   src/olcPGEX_ImGui.cpp
 
