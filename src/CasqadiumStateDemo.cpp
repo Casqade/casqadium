@@ -83,7 +83,6 @@ CasqadiumStateDemo::CasqadiumStateDemo(
   [this] (  entt::registry& registry,
             const std::vector <std::any>& args )
   {
-    registry.clear();
     mRunning = false;
   };
 
