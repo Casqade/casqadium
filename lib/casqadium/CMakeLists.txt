@@ -407,9 +407,16 @@ target_sources(${TARGET} PRIVATE
 
 #  Systems
   src/systems/input.cpp
+  include/${CASQADIUM_SHORT}/systems/input.hpp
+
   src/systems/logic.cpp
+  include/${CASQADIUM_SHORT}/systems/logic.hpp
+
   src/systems/physics.cpp
+  include/${CASQADIUM_SHORT}/systems/physics.hpp
+
   src/systems/render.cpp
+  include/${CASQADIUM_SHORT}/systems/render.hpp
 )
 
 set_target_properties(${TARGET} PROPERTIES

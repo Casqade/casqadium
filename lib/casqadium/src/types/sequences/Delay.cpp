@@ -19,7 +19,7 @@ const static Json::Value delaySequenceStepJsonReference =
   using namespace std::string_literals;
 
   Json::Value root = ValueType::objectValue;
-  root.setComment("// delay sequence step root must be a JSON object"s,
+  root.setComment("// Delay sequence step root must be a JSON object"s,
                    Json::CommentPlacement::commentBefore);
 
   root["timeElapsed"] = ValueType::realValue;

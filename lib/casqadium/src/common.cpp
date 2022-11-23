@@ -360,7 +360,8 @@ stringSplit(
   return result;
 }
 
-std::string stringJoin(
+std::string
+stringJoin(
   const std::vector <std::string>& strings,
   const std::string& delimeter )
 {

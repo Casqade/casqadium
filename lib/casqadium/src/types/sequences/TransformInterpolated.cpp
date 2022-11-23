@@ -4,7 +4,6 @@
 
 #include <cqde/conversion/json_glm_vec4.hpp>
 
-#include <cqde/types/TickCurrent.hpp>
 
 #include <cqde/json_helpers.hpp>
 #include <cqde/math_helpers.hpp>
@@ -29,7 +28,7 @@ const static Json::Value transformInterpolatedSequenceStepJsonReference =
   using namespace std::string_literals;
 
   Json::Value root = ValueType::objectValue;
-  root.setComment("// transformInterpolated sequence step root must be a JSON object"s,
+  root.setComment("// TransformInterpolated sequence step root must be a JSON object"s,
                    Json::CommentPlacement::commentBefore);
 
   root["useWorldSpace"] = ValueType::booleanValue;
@@ -74,7 +73,6 @@ TransformInterpolated::execute(
   const entt::entity entity )
 {
   using compos::Transform;
-  using types::TickCurrent;
 
   const bool timeExpired = Delay::execute(registry, entity);
 

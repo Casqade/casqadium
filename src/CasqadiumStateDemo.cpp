@@ -110,9 +110,6 @@ CasqadiumStateDemo::CasqadiumStateDemo(
   auto& inputManager = mRegistry.ctx().at <InputManager> ();
   inputManager.load(userManager.inputConfigPath());
 
-  auto& entityManager = mRegistry.ctx().at <EntityManager> ();
-  entityManager.entryPointExecute(mRegistry);
-
   const cqde::identifier fontId = "munro";
 
   auto& fonts = mRegistry.ctx().at <FontAssetManager> ();
@@ -154,6 +151,9 @@ CasqadiumStateDemo::CasqadiumStateDemo(
   textures.insert("cqde_q", cqde::textureFromText("q", olc::GREEN, olc::BLANK, true));
   textures.insert("cqde_d", cqde::textureFromText("d", olc::WHITE, olc::BLANK, true));
   textures.insert("cqde_e", cqde::textureFromText("e", olc::BLUE, olc::BLANK, true));
+
+  auto& entityManager = mRegistry.ctx().at <EntityManager> ();
+  entityManager.entryPointExecute(mRegistry);
 
   cqde::callbacks::editorModeEnable(mRegistry);
 }

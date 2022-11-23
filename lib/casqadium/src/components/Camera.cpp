@@ -26,17 +26,16 @@ Camera::Camera(
 glm::vec4
 Camera::viewportScaled() const
 {
-  glm::vec4 result {};
-
   const float viewportW = olc::renderer->ptrPGE->GetWindowSize().x;
   const float viewportH = olc::renderer->ptrPGE->GetWindowSize().y;
 
-  result.x = viewport.x * viewportW;
-  result.y = viewport.y * viewportH;
-  result.z = viewport.z * viewportW;
-  result.w = viewport.w * viewportH;
-
-  return result;
+  return
+  {
+    viewport.x * viewportW,
+    viewport.y * viewportH,
+    viewport.z * viewportW,
+    viewport.w * viewportH,
+  };
 }
 
 glm::mat4
@@ -50,7 +49,7 @@ Camera::projMatrix() const
 
   return glm::ortho(-viewport.z * zoom, viewport.z * zoom,
                     -viewport.w * zoom, viewport.w * zoom,
-                      zRange.first, zRange.second );
+                    zRange.first, zRange.second );
 }
 
 glm::mat4
