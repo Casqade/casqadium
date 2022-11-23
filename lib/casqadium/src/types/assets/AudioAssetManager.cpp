@@ -362,7 +362,7 @@ AssetManager <SoLoud::AudioSource>::loadImpl(
     default:
     {
       LOG_ERROR("Failed to load audio '{}': unknown audio type '{}'",
-                id.str(), type);
+                path.string(), type);
 
       return {};
     }
