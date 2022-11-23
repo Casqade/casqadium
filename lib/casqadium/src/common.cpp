@@ -58,6 +58,7 @@
 #include <cqde/types/sequences/SequenceFactory.hpp>
 #include <cqde/types/sequences/CameraFovInterpolated.hpp>
 #include <cqde/types/sequences/Delay.hpp>
+#include <cqde/types/sequences/TextureTintInterpolated.hpp>
 #include <cqde/types/sequences/TransformInterpolated.hpp>
 
 #include <cqde/types/TickCurrent.hpp>
@@ -325,6 +326,7 @@ engineInit(
 
   sequenceFactory.registerSequence <CameraFovInterpolated> ("CameraFovInterpolated");
   sequenceFactory.registerSequence <Delay> ("Delay");
+  sequenceFactory.registerSequence <TextureTintInterpolated> ("TextureTintInterpolated");
   sequenceFactory.registerSequence <TransformInterpolated> ("TransformInterpolated");
 }
 
