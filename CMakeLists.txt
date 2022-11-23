@@ -33,10 +33,6 @@ target_sources(${TARGET} PRIVATE
   src/demo/systems.cpp
   include/demo/systems.hpp
 
-  src/demo/sequences/CameraFovInterpolated.cpp
-  src/demo/sequences/CameraFovInterpolated_ui.cpp
-  include/demo/sequences/CameraFovInterpolated.hpp
-
   src/main.cpp
   src/icon.rc
 )

@@ -90,8 +90,6 @@ CasqadiumStateDemo::CasqadiumStateDemo(
   auto& callbackMgr = mRegistry.ctx().at <CallbackManager> ();
   callbackMgr.Register("EngineShutdown", engineShutdown);
 
-  auto& sequenceFactory = mRegistry.ctx().at <SequenceFactory> ();
-  sequenceFactory.registerSequence <demo::CameraFovInterpolated> ("CameraFovInterpolated");
 
   auto& packageManager = mRegistry.ctx().at <PackageManager> ();
 

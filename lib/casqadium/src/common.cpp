@@ -56,6 +56,7 @@
 #include <cqde/types/physics/colliders/ColliderSphere.hpp>
 
 #include <cqde/types/sequences/SequenceFactory.hpp>
+#include <cqde/types/sequences/CameraFovInterpolated.hpp>
 #include <cqde/types/sequences/Delay.hpp>
 #include <cqde/types/sequences/TransformInterpolated.hpp>
 
@@ -322,6 +323,7 @@ engineInit(
   colliderShapeFactory.registerCollider <ColliderSphere> ("SphereShape");
 
 
+  sequenceFactory.registerSequence <CameraFovInterpolated> ("CameraFovInterpolated");
   sequenceFactory.registerSequence <Delay> ("Delay");
   sequenceFactory.registerSequence <TransformInterpolated> ("TransformInterpolated");
 }

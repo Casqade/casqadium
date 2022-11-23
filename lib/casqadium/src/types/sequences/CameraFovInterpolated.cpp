@@ -1,4 +1,4 @@
-#include <demo/sequences.hpp>
+#include <cqde/types/sequences/CameraFovInterpolated.hpp>
 
 #include <cqde/json_helpers.hpp>
 #include <cqde/conversion/json_glm_vec4.hpp>
@@ -7,7 +7,6 @@
 
 #include <entt/entity/registry.hpp>
 
-#include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/compatibility.hpp>
 
 #include <spdlog/fmt/bundled/format.h>
@@ -17,7 +16,7 @@
 #include <imgui_bezier.hpp>
 
 
-namespace demo
+namespace cqde::types
 {
 
 const static Json::Value cameraFovInterpolatedSequenceStepJsonReference =
@@ -27,7 +26,7 @@ const static Json::Value cameraFovInterpolatedSequenceStepJsonReference =
   using namespace std::string_literals;
 
   Json::Value root = ValueType::objectValue;
-  root.setComment("// transformInterpolated sequence step root must be a JSON object"s,
+  root.setComment("// CameraFovInterpolated sequence step root must be a JSON object"s,
                    Json::CommentPlacement::commentBefore);
 
   root["initFromCurrentFov"] = ValueType::booleanValue;
@@ -48,7 +47,7 @@ CameraFovInterpolated::init(
   entt::registry& registry,
   const entt::entity entity )
 {
-  using cqde::compos::Camera;
+  using compos::Camera;
 
   if ( mInitFromCurrentFov == false )
     return;
@@ -63,8 +62,7 @@ CameraFovInterpolated::execute(
   entt::registry& registry,
   const entt::entity entity )
 {
-  using cqde::compos::Camera;
-  using cqde::types::TickCurrent;
+  using compos::Camera;
 
   const bool timeExpired = Delay::execute(registry, entity);
 
@@ -74,7 +72,7 @@ CameraFovInterpolated::execute(
   const auto dt = mSpline.value(std::min(progress, 1.0));
 
   auto& cCamera = registry.get <Camera> (entity);
-  cCamera.fov = glm::lerp(mFov.first, mFov.second, static_cast <float> (dt));
+  cCamera.fov = glm::mix(mFov.first, mFov.second, dt);
 
   return timeExpired;
 }
@@ -82,8 +80,6 @@ CameraFovInterpolated::execute(
 Json::Value
 CameraFovInterpolated::toJson() const
 {
-  using namespace cqde;
-
   auto json = Delay::toJson();
 
   json["fovInitial"] = mFov.first;
@@ -100,7 +96,6 @@ CameraFovInterpolated::fromJson(
   const Json::Value& json )
 {
   using fmt::format;
-  using namespace cqde;
 
   Delay::fromJson(json);
 
@@ -125,4 +120,4 @@ CameraFovInterpolated::fromJson(
   }
 }
 
-} // namespace demo
+} // namespace cqde::types

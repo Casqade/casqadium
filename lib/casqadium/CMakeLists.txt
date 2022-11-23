@@ -122,6 +122,10 @@ target_sources(${TARGET} PRIVATE
   src/types/sequences/SequenceFactory.cpp
   include/${CASQADIUM_SHORT}/types/sequences/SequenceFactory.hpp
 
+  src/types/sequences/CameraFovInterpolated.cpp
+  src/types/sequences/CameraFovInterpolated_ui.cpp
+  include/${CASQADIUM_SHORT}/types/sequences/CameraFovInterpolated.hpp
+
   src/types/sequences/Delay.cpp
   src/types/sequences/Delay_ui.cpp
   include/${CASQADIUM_SHORT}/types/sequences/Delay.hpp

@@ -1,4 +1,4 @@
-#include <demo/sequences/CameraFovInterpolated.hpp>
+#include <cqde/types/sequences/CameraFovInterpolated.hpp>
 
 #include <entt/entity/registry.hpp>
 
@@ -12,7 +12,7 @@
 #include <optional>
 
 
-namespace demo
+namespace cqde::types
 {
 
 void
@@ -20,8 +20,6 @@ CameraFovInterpolated::ui_show(
   const entt::registry& registry,
   const entt::entity entity )
 {
-  using cqde::compos::Camera;
-
   const auto flags = ImGuiSliderFlags_AlwaysClamp |
                      ImGuiSliderFlags_NoRoundToFormat;
 
@@ -79,4 +77,4 @@ CameraFovInterpolated::ui_show(
 
 }
 
-} // namespace demo
+} // namespace cqde::types

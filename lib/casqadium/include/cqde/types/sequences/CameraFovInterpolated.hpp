@@ -4,13 +4,11 @@
 #include <cqde/types/sequences/Delay.hpp>
 
 
-namespace demo
+namespace cqde::types
 {
 
-class CameraFovInterpolated : public cqde::types::Delay
+class CameraFovInterpolated : public Delay
 {
-  using SplineCurve = cqde::types::SplineCurve;
-
   std::pair <float, float> mFov {1.0f, 1.0f};
 
   SplineCurve mSpline {{}, {1.0f, 1.0f}};
@@ -34,4 +32,4 @@ public:
   void fromJson( const Json::Value& ) override;
 };
 
-} // namespace demo
+} // namespace cqde::types
