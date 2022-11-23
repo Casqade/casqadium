@@ -130,6 +130,10 @@ target_sources(${TARGET} PRIVATE
   src/types/sequences/Delay_ui.cpp
   include/${CASQADIUM_SHORT}/types/sequences/Delay.hpp
 
+  src/types/sequences/CallbackExecute.cpp
+  src/types/sequences/CallbackExecute_ui.cpp
+  include/${CASQADIUM_SHORT}/types/sequences/CallbackExecute.hpp
+
   src/types/sequences/TextureTintInterpolated.cpp
   src/types/sequences/TextureTintInterpolated_ui.cpp
   include/${CASQADIUM_SHORT}/types/sequences/TextureTintInterpolated.hpp
