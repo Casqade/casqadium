@@ -628,27 +628,7 @@ EntityId
 EntityManager::idGenerate(
   const EntityId& hint ) const
 {
-  uint32_t id {};
-  std::string newId {hint.str()};
-
-  auto tokens = stringSplit(hint.str(), '_');
-
-  if ( tokens.empty() == true )
-    tokens.push_back("e");
-
-  try
-  {
-    id = std::stoi(tokens.back());
-  }
-  catch ( ... )
-  {
-    tokens.push_back(std::to_string(id));
-  }
-
-  while ( mEntitiesTags.count(stringJoin(tokens, "_") ) > 0 )
-    tokens.back() = std::to_string(++id);
-
-  return stringJoin(tokens, "_");
+  return IdGenerate(mEntitiesTags, hint.str(), "e");
 }
 
 void
