@@ -78,12 +78,12 @@ SequenceSystem(
 
     auto step = cSequenceController.steps.front().get();
 
-    if ( step->execute(registry, entity) == true )
+    while ( step->execute(registry, entity) == true )
     {
       cSequenceController.steps.pop_front();
 
       if ( cSequenceController.steps.empty() == true )
-        continue;
+        break;
 
       step = cSequenceController.steps.front().get();
 
