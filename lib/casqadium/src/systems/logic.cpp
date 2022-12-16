@@ -36,6 +36,7 @@ EditorSystem(
     static auto imguiIniFileName = registry.ctx().at <ConfigManager> ().executableName() + ".imgui";
     imguiIO.IniFilename = imguiIniFileName.data();
     ImGui::LoadIniSettingsFromMemory(EditorImGuiSettings);
+    ImGui::LoadIniSettingsFromDisk(imguiIO.IniFilename);
   }
 
   static int32_t frameCountPrev {};
