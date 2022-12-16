@@ -37,7 +37,6 @@ editorCameraControlOn(
     if ( registry.all_of <SubscriberInput> (eCamera) == true )
       continue;
 
-    entityUpdateOn(registry, {eCamera});
     entityInputOn(registry, {eCamera});
 
     registry.emplace_or_replace <WantsMouseCentered> (eCamera);
@@ -57,7 +56,6 @@ editorCameraControlOff(
 
   const auto eCamera = std::any_cast <entt::entity> (args.at(0));
 
-  entityUpdateOff(registry, args);
   entityInputOff(registry, args);
 
   auto& entityManager = registry.ctx().at <EntityManager> ();
