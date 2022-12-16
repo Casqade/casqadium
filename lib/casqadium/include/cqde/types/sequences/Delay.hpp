@@ -6,8 +6,6 @@
 
 #include <entt/fwd.hpp>
 
-#include <glm/glm.hpp>
-
 
 namespace cqde::types
 {

@@ -3,6 +3,8 @@
 #include <cqde/types/SplineCurve.hpp>
 #include <cqde/types/sequences/Delay.hpp>
 
+#include <glm/vec4.hpp>
+
 
 namespace cqde::types
 {
