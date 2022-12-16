@@ -32,6 +32,8 @@ Casqadium::~Casqadium()
   if ( olc::Font::deinit() != olc::rcode::OK )
     LOG_ERROR("Failed to deinitialize olc::Font: {}",
               olc::Font::GetLibraryErrorMessage());
+
+  mImGui.ImGui_ImplPGE_Shutdown();
 }
 
 bool

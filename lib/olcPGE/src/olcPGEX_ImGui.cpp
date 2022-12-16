@@ -160,6 +160,8 @@ olc::rcode PGE_ImGUI::ImGui_ImplPGE_Init()
 //This currently does nothing, but is defined in the event that it needs to eventually do something
 void PGE_ImGUI::ImGui_ImplPGE_Shutdown(void)
 {
+  ImGui_ImplOpenGL2_Shutdown();
+  ImGui::DestroyContext();
   return;
 }
 
