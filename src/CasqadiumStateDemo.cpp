@@ -56,7 +56,7 @@ CasqadiumStateDemo::CasqadiumStateDemo(
 
   cqde::engineInit(mRegistry);
 
-//  entt::meta_ctx::bind(mRegistry.ctx().at <entt::meta_ctx> ());
+  entt::meta_ctx::bind(mRegistry.ctx().at <entt::meta_ctx> ());
 
   mRegistry.ctx().emplace <ConfigManager> (configManager);
 

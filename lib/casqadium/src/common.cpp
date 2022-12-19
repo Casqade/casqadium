@@ -93,7 +93,7 @@ engineInit(
   using namespace types;
   using namespace ui;
 
-//  entt::meta_ctx::bind(registry.ctx().emplace <entt::meta_ctx> ());
+  entt::meta_ctx::bind(registry.ctx().emplace <entt::meta_ctx> ());
 
   registry.ctx().emplace <SoLoud::Soloud> ();
 
