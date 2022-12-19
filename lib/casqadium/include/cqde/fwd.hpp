@@ -10,20 +10,41 @@ namespace compos
 {
 
 struct Camera;
+struct CasqadiumEditorCameraSettings;
+struct CasqadiumEditorInternal;
+struct CasqadiumEntryPoint;
+struct EntityList;
 struct EntityMetaInfo;
 struct GeometryBuffer;
 struct InputController;
 struct InteractionListener;
 struct InteractionListenerColor;
 struct InteractionSource;
+struct LightSource;
+struct LightTarget;
 struct SceneNode;
 struct SequenceController;
 struct SnapshotExcluded;
 struct SubscriberInput;
 struct SubscriberUpdate;
+struct SystemList;
 struct Tag;
 struct TextureBuffer;
+struct TextureTint;
 struct Transform;
+struct WantsMouseCentered;
+struct WantsMouseHidden;
+
+struct AudioAssetList;
+struct FontAssetList;
+struct GeometryAssetList;
+struct TerrainAssetList;
+struct TextStringAssetList;
+struct TextureAssetList;
+
+struct CollisionBody;
+struct ForceEmitter;
+struct RigidBody;
 
 }
 
@@ -38,14 +59,24 @@ struct InputBinding;
 struct InputBindingComparator;
 struct InputEvent;
 struct System;
+struct Terrain;
 struct TickCurrent;
 struct VertexBuffer;
 
+class Collider;
+class ColliderFactory;
+class Package;
+class SequenceStep;
+class SequenceFactory;
+class SoloudQueue;
+class SplineCurve;
+
 class CallbackManager;
 class ConfigManager;
+class EntityManager;
 class InputManager;
-class Package;
 class PackageManager;
+class PhysicsManager;
 class PrefabManager;
 class SnapshotManager;
 class SystemManager;
@@ -62,7 +93,6 @@ class StringFilter;
 class ToggleButton;
 
 class AssetManagerUi;
-class CallbackManagerUi;
 class EntityManagerUi;
 class InputManagerUi;
 class PackageManagerUi;
