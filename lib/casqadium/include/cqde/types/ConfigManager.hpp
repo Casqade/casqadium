@@ -26,6 +26,7 @@ class ConfigManager
   using RESAMPLER = SoLoud::Soloud::RESAMPLER;
 
   std::string mExecutableName {};
+  bool mEditorMode {};
 
 //  [%Y-%m-%d %T.%e] [%^%l%$] [%s:%#] [thread %t] %v
   std::string mLogPattern {"[%T.%e] [%^%l%$] [%s:%#] [thread %t] %v"};
@@ -56,7 +57,7 @@ class ConfigManager
 
 public:
   ConfigManager() = default;
-  ConfigManager( const std::string& executableName, path configPath = {} );
+  ConfigManager( const std::string& executableName, const bool editorMode = false, path configPath = {} );
   virtual ~ConfigManager() = default;
 
   virtual void write( const path& );
@@ -67,6 +68,7 @@ public:
   virtual Json::Value config() const;
 
   std::string executableName() const;
+  bool editorMode() const;
 
   std::string logPattern() const;
 

@@ -12,7 +12,7 @@
 
 
 int
-main( int, char* argv[] )
+main( int argc, char* argv[] )
 {
   using log_level = spdlog::level::level_enum;
   using spdlog::sinks::stdout_color_sink_mt;
@@ -25,7 +25,9 @@ main( int, char* argv[] )
   const auto configFilename = executableName.string() + ".conf";
   const auto logFilename = executableName.string() + ".log";
 
-  const ConfigManager configManager (executableName.string());
+  const bool editorMode = argc > 1 && std::string{argv[1]} == "-editor";
+
+  const ConfigManager configManager (executableName.string(), editorMode);
 
   std::vector <std::shared_ptr <spdlog::sinks::sink>> sinks {};
 

@@ -155,8 +155,10 @@ const static Json::Value configReference =
 
 ConfigManager::ConfigManager(
   const std::string& executableName,
+  const bool editorMode,
   path configPath )
   : mExecutableName{executableName}
+  , mEditorMode(editorMode)
 {
   if ( configPath.empty() == true )
     configPath = executableName + ".conf";
@@ -364,6 +366,12 @@ std::string
 ConfigManager::executableName() const
 {
   return mExecutableName;
+}
+
+bool
+ConfigManager::editorMode() const
+{
+  return mEditorMode;
 }
 
 std::string
