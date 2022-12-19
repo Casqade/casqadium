@@ -289,6 +289,18 @@ target_sources(${TARGET} PRIVATE
   src/components/InputController_ui.cpp
   include/${CASQADIUM_SHORT}/components/InputController.hpp
 
+  src/components/InteractionListener.cpp
+  src/components/InteractionListener_ui.cpp
+  include/${CASQADIUM_SHORT}/components/InteractionListener.hpp
+
+  src/components/InteractionListenerColor.cpp
+  src/components/InteractionListenerColor_ui.cpp
+  include/${CASQADIUM_SHORT}/components/InteractionListenerColor.hpp
+
+  src/components/InteractionSource.cpp
+  src/components/InteractionSource_ui.cpp
+  include/${CASQADIUM_SHORT}/components/InteractionSource.hpp
+
   src/components/LightSource.cpp
   src/components/LightSource_ui.cpp
   include/${CASQADIUM_SHORT}/components/LightSource.hpp

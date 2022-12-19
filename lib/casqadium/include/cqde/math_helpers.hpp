@@ -24,6 +24,9 @@ bool rectsIntersect( const Rect&, const Rect& );
 
 bool pointInRect( const glm::vec2&, const Rect& );
 
+glm::vec2 rectCenter( const Rect& );
+glm::vec2 rectCenter( const glm::vec4& );
+
 template <typename Vec,
 typename std::enable_if <std::is_arithmetic_v <decltype(Vec::x)>, bool>::type = true,
 typename std::enable_if <std::is_arithmetic_v <decltype(Vec::y)>, bool>::type = true>

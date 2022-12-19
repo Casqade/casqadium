@@ -3,6 +3,7 @@
 #include <cqde/systems.hpp>
 #include <cqde/callbacks.hpp>
 #include <cqde/ecs_helpers.hpp>
+#include <cqde/math_helpers.hpp>
 
 #include <cqde/components/Camera.hpp>
 #include <cqde/components/CasqadiumEntryPoint.hpp>
@@ -11,6 +12,9 @@
 #include <cqde/components/EntityMetaInfo.hpp>
 #include <cqde/components/GeometryBuffer.hpp>
 #include <cqde/components/InputController.hpp>
+#include <cqde/components/InteractionListener.hpp>
+#include <cqde/components/InteractionListenerColor.hpp>
+#include <cqde/components/InteractionSource.hpp>
 #include <cqde/components/LightSource.hpp>
 #include <cqde/components/LightTarget.hpp>
 #include <cqde/components/SubscriberInput.hpp>
@@ -126,6 +130,9 @@ engineInit(
   entityManager.registerComponent <EntityMetaInfo> ("EntityMetaInfo");
   entityManager.registerComponent <GeometryBuffer> ("GeometryBuffer");
   entityManager.registerComponent <InputController> ("InputController");
+  entityManager.registerComponent <InteractionListener> ("InteractionListener");
+  entityManager.registerComponent <InteractionListenerColor> ("InteractionListenerColor");
+  entityManager.registerComponent <InteractionSource> ("InteractionSource");
   entityManager.registerComponent <LightSource> ("LightSource");
 //  entityManager.registerComponent <LightTarget> ("LightTarget"); // todo: add material data
   entityManager.registerComponent <SceneNode> ("SceneNode");
@@ -202,6 +209,8 @@ engineInit(
 
   callbackManager.Register("QuickSave", quickSave);
   callbackManager.Register("QuickLoad", quickLoad);
+
+  callbackManager.Register("Interact", interact);
 
   callbackManager.Register("EntityRemove", entityRemove);
 
@@ -301,6 +310,10 @@ engineInit(
                          RenderSystem,
                          Phase::Render);
 
+  systemManager.Register("InteractionHighlightSystem",
+                         InteractionHighlightSystem,
+                         Phase::Render);
+
   systemManager.Register("PhysicsDebugRenderSystem",
                          PhysicsDebugRenderSystem,
                          Phase::Render);
@@ -330,6 +343,95 @@ engineInit(
   sequenceFactory.registerSequence <CallbackExecute> ("CallbackExecute");
   sequenceFactory.registerSequence <TextureTintInterpolated> ("TextureTintInterpolated");
   sequenceFactory.registerSequence <TransformInterpolated> ("TransformInterpolated");
+}
+
+entt::entity
+findInteractionTarget(
+  const entt::registry& registry,
+  const entt::entity eInteractionSource )
+{
+  using compos::Camera;
+  using compos::Transform;
+  using compos::InputController;
+  using compos::InteractionListener;
+  using compos::InteractionSource;
+  using compos::SubscriberUpdate;
+  using InteractionType = InteractionSource::Type;
+
+  auto cInteractionController = registry.try_get <InputController> (eInteractionSource);
+
+  glm::vec2 probePos {};
+
+  auto&& [cCamera, cInteractionSource]
+    = registry.get <Camera, InteractionSource> (eInteractionSource);
+
+  switch (cInteractionSource.type)
+  {
+    case InteractionType::MousePos:
+    {
+      if ( cInteractionController == nullptr )
+        return entt::null;
+
+      const auto cursorPosX = cInteractionController->axes.find("CursorPosX");
+      const auto cursorPosY = cInteractionController->axes.find("CursorPosY");
+
+      if ( cursorPosX == cInteractionController->axes.end() ||
+           cursorPosY == cInteractionController->axes.end() )
+        return entt::null;
+
+      probePos =
+      {
+        cursorPosX->second.value,
+        cursorPosY->second.value,
+      };
+
+      break;
+    }
+
+    case InteractionType::ViewportCenter:
+    {
+      probePos = rectCenter(cCamera.viewportScaled());
+      break;
+    }
+
+    default:
+      break;
+  }
+
+  for ( auto& [vBuf, entity] : cCamera.zBuffer )
+  {
+    if ( registry.all_of <InteractionListener, SubscriberUpdate> (entity) == false )
+      continue;
+
+    if ( cInteractionSource.radius > 0.0f )
+    {
+      auto& cSourceTransform = registry.get <Transform> (eInteractionSource);
+      auto& cListenerTransform = registry.get <Transform> (entity);
+
+      const auto sourcePos = GetWorldMatrix(registry, eInteractionSource, cSourceTransform)[3];
+      const auto listenerPos = GetWorldMatrix(registry, entity, cListenerTransform)[3];
+
+      const auto distance = glm::length(listenerPos - sourcePos);
+
+      if ( distance > cInteractionSource.radius )
+        continue;
+    }
+
+    switch (cInteractionSource.type)
+    {
+      case InteractionType::ClosestVisible:
+        return entity;
+
+      case InteractionType::MousePos:
+      case InteractionType::ViewportCenter:
+      {
+        if ( pointInRect( probePos, boundingBox(vBuf.vertices) ) == true )
+          return entity;
+      }
+    }
+  }
+
+  return entt::null;
 }
 
 std::string

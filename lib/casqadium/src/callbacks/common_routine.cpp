@@ -1,5 +1,6 @@
 #include <cqde/callbacks/common_routine.hpp>
 
+#include <cqde/common.hpp>
 #include <cqde/util/logger.hpp>
 
 #include <cqde/types/CallbackManager.hpp>
@@ -8,6 +9,8 @@
 #include <cqde/types/SystemManager.hpp>
 #include <cqde/types/UserManager.hpp>
 
+#include <cqde/components/InteractionListener.hpp>
+#include <cqde/components/InteractionSource.hpp>
 #include <cqde/components/SubscriberInput.hpp>
 #include <cqde/components/SubscriberUpdate.hpp>
 #include <cqde/components/EntityList.hpp>
@@ -18,6 +21,30 @@
 
 namespace cqde::callbacks
 {
+
+void
+interact(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using types::CallbackManager;
+  using compos::InteractionSource;
+  using compos::InteractionListener;
+
+  const auto eInteractionSource = std::any_cast <entt::entity> (args.at(0));
+  const auto eListener = findInteractionTarget(registry, eInteractionSource);
+
+  if ( eListener == entt::null )
+    return;
+
+  const auto& cListener = registry.get <InteractionListener> (eListener);
+
+  auto& callbackManager = registry.ctx().at <CallbackManager> ();
+
+  for ( const auto& callback : cListener.callbacks )
+    callbackManager.execute(callback, registry, {eListener, eInteractionSource});
+}
+
 
 void
 entityRemove(

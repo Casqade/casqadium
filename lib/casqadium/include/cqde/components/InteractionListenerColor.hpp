@@ -1,25 +1,23 @@
 #pragma once
 
 #include <cqde/alias.hpp>
-#include <cqde/types/input/ControlAxis.hpp>
+
+#include <olcPGE/olcPixelGameEngine.hpp>
 
 #include <entt/fwd.hpp>
 
 #include <json/forwards.h>
 
-#include <map>
-
 
 namespace cqde::compos
 {
 
-struct InputController
+struct InteractionListenerColor
 {
-  std::unordered_map <InputAxisId, types::ControlAxis,
-                      identifier_hash> axes {};
+  olc::Pixel color {olc::WHITE};
 
 
-  InputController() = default;
+  InteractionListenerColor() = default;
 
 
   void ui_edit_props( const entt::entity,

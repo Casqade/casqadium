@@ -1,25 +1,21 @@
 #pragma once
 
 #include <cqde/alias.hpp>
-#include <cqde/types/input/ControlAxis.hpp>
 
 #include <entt/fwd.hpp>
 
 #include <json/forwards.h>
 
-#include <map>
-
 
 namespace cqde::compos
 {
 
-struct InputController
+struct InteractionListener
 {
-  std::unordered_map <InputAxisId, types::ControlAxis,
-                      identifier_hash> axes {};
+  std::vector <CallbackId> callbacks {};
 
 
-  InputController() = default;
+  InteractionListener() = default;
 
 
   void ui_edit_props( const entt::entity,

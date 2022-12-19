@@ -14,8 +14,6 @@ namespace cqde::types
 
 class CallbackManager
 {
-  friend class ui::CallbackManagerUi;
-
 public:
   using CallbackArgs = std::vector <std::any>;
   using CallbackFunc = std::function <void( entt::registry&,

@@ -1,5 +1,6 @@
 #include <cqde/systems/render.hpp>
 
+#include <cqde/common.hpp>
 #include <cqde/render_helpers.hpp>
 
 #include <cqde/types/EntityManager.hpp>
@@ -13,6 +14,8 @@
 #include <cqde/components/Camera.hpp>
 #include <cqde/components/CasqadiumEditorInternal.hpp>
 #include <cqde/components/GeometryBuffer.hpp>
+#include <cqde/components/InteractionListenerColor.hpp>
+#include <cqde/components/InteractionSource.hpp>
 #include <cqde/components/LightSource.hpp>
 #include <cqde/components/LightTarget.hpp>
 #include <cqde/components/SubscriberUpdate.hpp>
@@ -419,6 +422,38 @@ EditorEntityHighlightSystem(
       for ( const auto& [vBuf, entity] : cCamera.zBuffer )
         if ( entity == selectedEntity )
           olc::renderer->ptrPGE->DrawPolyLineDecal(vBuf.vertices, olc::YELLOW);
+  }
+}
+
+void
+InteractionHighlightSystem(
+  const entt::registry& registry )
+{
+  using compos::Camera;
+  using compos::InteractionListenerColor;
+  using compos::InteractionSource;
+  using compos::SubscriberUpdate;
+
+  for ( const auto&& [eCamera, cCamera, cInteractionSource]
+          : registry.view <Camera, InteractionSource, SubscriberUpdate> ().each() )
+  {
+    const auto eListener = findInteractionTarget(registry, eCamera);
+
+    if ( eListener == entt::null )
+      continue;
+
+    for ( const auto& [vBuf, entity] : cCamera.zBuffer )
+    {
+      if ( entity != eListener )
+        continue;
+
+      auto cListenerColor = registry.try_get <InteractionListenerColor> (eListener);
+
+      if ( cListenerColor != nullptr )
+        olc::renderer->ptrPGE->DrawPolyLineDecal(vBuf.vertices, cListenerColor->color);
+
+      break;
+    }
   }
 }
 

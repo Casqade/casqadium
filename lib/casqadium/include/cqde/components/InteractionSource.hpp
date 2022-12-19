@@ -1,25 +1,33 @@
 #pragma once
 
 #include <cqde/alias.hpp>
-#include <cqde/types/input/ControlAxis.hpp>
 
 #include <entt/fwd.hpp>
 
 #include <json/forwards.h>
 
-#include <map>
-
 
 namespace cqde::compos
 {
 
-struct InputController
+struct InteractionSource
 {
-  std::unordered_map <InputAxisId, types::ControlAxis,
-                      identifier_hash> axes {};
+  float radius {-1.0f};
+
+  enum class Type
+  {
+    ClosestVisible,
+    MousePos,
+    ViewportCenter,
+
+  } type {Type::ClosestVisible};
 
 
-  InputController() = default;
+  InteractionSource() = default;
+
+
+  static std::string InteractionTypeToString( const Type );
+  static Type InteractionTypeFromString( const std::string& );
 
 
   void ui_edit_props( const entt::entity,

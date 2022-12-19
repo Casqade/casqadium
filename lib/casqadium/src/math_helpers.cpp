@@ -56,4 +56,26 @@ pointInRect(
     p.y < rect.bottom;
 }
 
+glm::vec2
+rectCenter(
+  const Rect& rect )
+{
+  return
+  {
+    rect.left + (rect.right - rect.left) * 0.5f,
+    rect.top + (rect.bottom - rect.top) * 0.5f,
+  };
+}
+
+glm::vec2
+rectCenter(
+  const glm::vec4& rect )
+{
+  return
+  {
+    rect.x + rect.z * 0.5f,
+    rect.y + rect.w * 0.5f,
+  };
+}
+
 } // namespace cqde
