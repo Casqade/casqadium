@@ -432,6 +432,8 @@ AssetManager <SoLoud::AudioSource>::ui_show_preview(
   auto& soloud = registry.ctx().at <SoLoud::Soloud> ();
 
   static float audioVolume {1.0f};
+  static float audioSpeed {1.0f};
+  static bool loop {};
   const static SoLoud::handle voiceHandleInvalid {0xfffff000};
   static SoLoud::handle voiceHandle {voiceHandleInvalid};
 
@@ -458,6 +460,10 @@ AssetManager <SoLoud::AudioSource>::ui_show_preview(
     }
     else
       voiceHandle = soloud.play(*handle, audioVolume);
+
+    soloud.setLooping(voiceHandle, loop);
+    soloud.setVolume(voiceHandle, audioVolume);
+    soloud.setRelativePlaySpeed(voiceHandle, audioSpeed);
   }
 
   ImGui::BeginDisabled(soloud.isValidVoiceHandle(voiceHandle) == false);
@@ -477,13 +483,21 @@ AssetManager <SoLoud::AudioSource>::ui_show_preview(
     voiceHandle = voiceHandleInvalid;
   }
 
+  if ( ImGui::Checkbox("Loop##audioLoop", &loop) )
+    soloud.setLooping(voiceHandle, loop);
+
   ImGui::EndDisabled();
 
   const auto flags = ImGuiSliderFlags_NoRoundToFormat;
 
   if (  ImGui::DragFloat("Volume##audioVolume", &audioVolume,
                           0.01f, 0.0f, 10.0f, "%.2f", flags) )
-    soloud.setGlobalVolume(audioVolume);
+    soloud.setVolume(voiceHandle, audioVolume);
+
+  if (  ImGui::DragFloat("Speed##audioSpeed", &audioSpeed,
+                          0.01f, std::numeric_limits <float>::epsilon(),
+                         10.0f, "%.2f", flags) )
+    soloud.setRelativePlaySpeed(voiceHandle, audioSpeed);
 }
 
 template <>
