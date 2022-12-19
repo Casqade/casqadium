@@ -24,10 +24,10 @@ const static Json::Value forceEmitterJsonReference =
   root.setComment("// root must be a JSON object"s,
                   Json::CommentPlacement::commentBefore);
 
-  auto& jsonUseWorldSpace = root["useWorldSpace"];
-  jsonUseWorldSpace = ValueType::booleanValue;
-  jsonUseWorldSpace.setComment("// 'useWorldSpace' must be a JSON boolean"s,
-                                Json::CommentPlacement::commentBefore);
+  auto& useWorldSpace = root["useWorldSpace"];
+  useWorldSpace = ValueType::booleanValue;
+  useWorldSpace.setComment("// 'useWorldSpace' must be a JSON boolean"s,
+                            Json::CommentPlacement::commentBefore);
 
   return root;
 }();

@@ -291,7 +291,7 @@ quickLoad(
   using types::UserManager;
 
   registry.ctx().at <CallbackManager> ().executeLater(
-  [] (  entt::registry& registry ,
+  [] (  entt::registry& registry,
         const CallbackManager::CallbackArgs& )
   {
     try

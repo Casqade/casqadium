@@ -23,8 +23,8 @@ CallbackExecute::ui_show(
   if ( ImGui::CollapsingHeader("Callbacks", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
 
-    if ( ImGui::SmallButton("+##callbackAdd") )
-      ImGui::OpenPopup("##callbackAddPopup");
+  if ( ImGui::SmallButton("+##callbackAdd") )
+    ImGui::OpenPopup("##callbackAddPopup");
 
   if ( ImGui::BeginPopup("##callbackAddPopup") )
   {

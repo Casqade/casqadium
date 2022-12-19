@@ -241,7 +241,7 @@ LightingSystem(
 
         const auto distance = glm::length(lightTgtPos - lightSrcPos);
 
-        if ( distance >= cLightSrc.radius )
+        if ( distance > cLightSrc.radius )
           return;
 
         const float attenuation = 1.0f

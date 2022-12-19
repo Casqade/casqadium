@@ -15,6 +15,9 @@ LightSource::ui_edit_props(
 {
   using ui::StringFilter;
 
+  const auto flags = ImGuiSliderFlags_AlwaysClamp |
+                     ImGuiSliderFlags_NoRoundToFormat;
+
   if ( ImGui::CollapsingHeader("Type", ImGuiTreeNodeFlags_DefaultOpen) )
   {
     if ( ImGui::RadioButton(LightSourceTypeToString(Type::Ambient).c_str(),
@@ -46,13 +49,12 @@ LightSource::ui_edit_props(
   }
 
   if ( ImGui::CollapsingHeader("Radius", ImGuiTreeNodeFlags_DefaultOpen) )
-    ImGui::DragFloat("##radius", &radius);
+    ImGui::DragFloat("##radius", &radius, 0.1f,
+                     0.0f, std::numeric_limits <float>::max(),
+                     "%.1f", flags);
 
   if ( ImGui::CollapsingHeader("Attenuation", ImGuiTreeNodeFlags_DefaultOpen) )
   {
-    const auto flags = ImGuiSliderFlags_AlwaysClamp |
-                       ImGuiSliderFlags_NoRoundToFormat;
-
     ImGui::Text("Constant");
     ImGui::SameLine();
     ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);

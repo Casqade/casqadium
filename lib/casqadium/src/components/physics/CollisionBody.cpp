@@ -29,35 +29,35 @@ const static Json::Value collisionBodyJsonReference =
   root.setComment("// root must be a JSON object"s,
                   Json::CommentPlacement::commentBefore);
 
-  auto& jsonBody = root["body"];
-  jsonBody = ValueType::objectValue;
-  jsonBody.setComment("// 'body' must be a JSON object"s,
+  auto& body = root["body"];
+  body = ValueType::objectValue;
+  body.setComment("// 'body' must be a JSON object"s,
+                  Json::CommentPlacement::commentBefore);
+
+  auto& active = body["active"];
+  active = ValueType::booleanValue;
+  active.setComment("// body 'active' must be a JSON boolean"s,
+                    Json::CommentPlacement::commentBefore);
+
+
+  auto& colliders = root["colliders"];
+  colliders = Json::arrayValue;
+  colliders.setComment("// 'colliders' must be a JSON array"s,
+                        Json::CommentPlacement::commentBefore);
+
+  auto& collider = colliders.append(ValueType::objectValue);
+  collider.setComment("// 'colliders' element must be a JSON object"s,
                       Json::CommentPlacement::commentBefore);
 
-  auto& jsonBodyActive = jsonBody["active"];
-  jsonBodyActive = ValueType::booleanValue;
-  jsonBodyActive.setComment("// body 'active' must be a JSON boolean"s,
+  auto& colliderShape = collider["shape"];
+  colliderShape = Json::objectValue;
+  colliderShape.setComment("// collider 'shape' must be a JSON object"s,
                             Json::CommentPlacement::commentBefore);
 
-
-  auto& jsonColliders = root["colliders"];
-  jsonColliders = Json::arrayValue;
-  jsonColliders.setComment("// 'colliders' must be a JSON array"s,
-                            Json::CommentPlacement::commentBefore);
-
-  auto& jsonCollider = jsonColliders.append(ValueType::objectValue);
-  jsonCollider.setComment("// 'colliders' element must be a JSON object"s,
+  auto& colliderType = collider["type"];
+  colliderType = Json::stringValue;
+  colliderType.setComment("// collider 'type' must be a JSON string"s,
                           Json::CommentPlacement::commentBefore);
-
-  auto& jsonColliderShape = jsonCollider["shape"];
-  jsonColliderShape = Json::objectValue;
-  jsonColliderShape.setComment("// collider 'shape' must be a JSON object"s,
-                                Json::CommentPlacement::commentBefore);
-
-  auto& jsonColliderType = jsonCollider["type"];
-  jsonColliderType = Json::stringValue;
-  jsonColliderType.setComment("// collider 'type' must be a JSON string"s,
-                              Json::CommentPlacement::commentBefore);
 
   return root;
 }();

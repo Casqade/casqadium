@@ -22,6 +22,10 @@ const static Json::Value callbackExecuteSequenceStepJsonReference =
                    Json::CommentPlacement::commentBefore);
 
   auto& callbacks = root["callbacks"];
+  callbacks = ValueType::arrayValue;
+  callbacks.setComment("// 'callbacks' must be a JSON array"s,
+                        Json::CommentPlacement::commentBefore);
+
   callbacks.append(ValueType::stringValue);
   callbacks.begin()->setComment("// 'callbacks' element must be a JSON string"s,
                                 Json::CommentPlacement::commentBefore);

@@ -58,22 +58,22 @@ SoLoudResamplerStringConverter::SoLoudResamplerStringConverter()
 
 std::string
 SoLoudResamplerStringConverter::toString(
-  const RESAMPLER backend ) const
+  const RESAMPLER resampler ) const
 {
-  for ( const auto& backendPair : mResamplers )
-    if ( backendPair.first == backend )
-      return backendPair.second;
+  for ( const auto& resamplerPair : mResamplers )
+    if ( resamplerPair.first == resampler )
+      return resamplerPair.second;
 
   return mResamplers.at(SOLOUD_DEFAULT_RESAMPLER);
 }
 
 SoLoudResamplerStringConverter::RESAMPLER
 SoLoudResamplerStringConverter::toResampler(
-  const std::string& backend ) const
+  const std::string& resampler ) const
 {
-  for ( const auto& backendPair : mResamplers )
-    if ( backendPair.second == backend )
-      return backendPair.first;
+  for ( const auto& resamplerPair : mResamplers )
+    if ( resamplerPair.second == resampler )
+      return resamplerPair.first;
 
   return SOLOUD_DEFAULT_RESAMPLER;
 }

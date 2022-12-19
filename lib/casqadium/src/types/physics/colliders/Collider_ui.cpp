@@ -344,7 +344,8 @@ Collider::ui_show(
       colliderMaterial.setMassDensity(density);
 
     if (  ImGui::DragFloat("##friction", &friction,
-                            0.01f, 0.0f, 1.0f,
+                            0.01f, 0.0f,
+                           std::numeric_limits <float>::max(),
                            "Friction: %.2f") )
       colliderMaterial.setFrictionCoefficient(friction);
 

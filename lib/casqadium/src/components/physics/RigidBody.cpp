@@ -33,105 +33,105 @@ const static Json::Value rigidBodyJsonReference =
   root.setComment("// root must be a JSON object"s,
                   Json::CommentPlacement::commentBefore);
 
-  auto& jsonBody = root["body"];
-  jsonBody = ValueType::objectValue;
-  jsonBody.setComment("// 'body' must be a JSON object"s,
-                      Json::CommentPlacement::commentBefore);
+  auto& body = root["body"];
+  body = ValueType::objectValue;
+  body.setComment("// 'body' must be a JSON object"s,
+                  Json::CommentPlacement::commentBefore);
 
-  auto& jsonColliders = root["colliders"];
-  jsonColliders = Json::arrayValue;
-  jsonColliders.setComment("// 'colliders' must be a JSON array"s,
-                            Json::CommentPlacement::commentBefore);
-
-  auto& jsonCollider = jsonColliders.append(ValueType::objectValue);
-  jsonCollider.setComment("// 'colliders' element must be a JSON object"s,
-                          Json::CommentPlacement::commentBefore);
-
-  auto& jsonColliderShape = jsonCollider["shape"];
-  jsonColliderShape = Json::objectValue;
-  jsonColliderShape.setComment("// collider 'shape' must be a JSON object"s,
-                                Json::CommentPlacement::commentBefore);
-
-  auto& jsonColliderType = jsonCollider["type"];
-  jsonColliderType = Json::stringValue;
-  jsonColliderType.setComment("// collider 'type' must be a JSON string"s,
-                              Json::CommentPlacement::commentBefore);
-
-
-  auto& jsonBodyActive = jsonBody["active"];
-  jsonBodyActive = ValueType::booleanValue;
-  jsonBodyActive.setComment("// body 'active' must be a JSON boolean"s,
-                            Json::CommentPlacement::commentBefore);
-
-  auto& jsonBodySleeping = jsonBody["sleeping"];
-  jsonBodySleeping = ValueType::booleanValue;
-  jsonBodySleeping.setComment("// body 'sleeping' must be a JSON boolean"s,
-                              Json::CommentPlacement::commentBefore);
-
-  auto& jsonBodySleepAllowed = jsonBody["sleepAllowed"];
-  jsonBodySleepAllowed = ValueType::booleanValue;
-  jsonBodySleepAllowed.setComment("// body 'sleepAllowed' must be a JSON boolean"s,
-                                  Json::CommentPlacement::commentBefore);
-
-  auto& jsonBodyType = jsonBody["type"];
-  jsonBodyType = ValueType::stringValue;
-  jsonBodyType.setComment("// body 'type' must be a JSON string"s,
-                          Json::CommentPlacement::commentBefore);
-
-
-  auto& jsonMassProperties = jsonBody["massPropsFromColliders"];
-  jsonMassProperties = ValueType::booleanValue;
-  jsonMassProperties.setComment("// body 'massPropsFromColliders' must be a JSON boolean"s,
-                                Json::CommentPlacement::commentBefore);
-
-  auto& jsonMass = jsonBody["mass"];
-  jsonMass = ValueType::realValue;
-  jsonMass.setComment("// body 'mass' must be a JSON float"s,
-                      Json::CommentPlacement::commentBefore);
-
-
-  auto& jsonDamp = jsonBody["damp"];
-  jsonDamp = ValueType::objectValue;
-  jsonDamp.setComment("// body 'damp' must be a JSON object"s,
-                      Json::CommentPlacement::commentBefore);
-
-  auto& jsonDampLinear = jsonDamp["linear"];
-  jsonDampLinear = ValueType::realValue;
-  jsonDampLinear.setComment("// 'linear' body damp must be a JSON float"s,
-                            Json::CommentPlacement::commentBefore);
-
-  auto& jsonDampAngular = jsonDamp["angular"];
-  jsonDampAngular = ValueType::realValue;
-  jsonDampAngular.setComment("// 'angular' body damp must be a JSON float"s,
-                              Json::CommentPlacement::commentBefore);
-
-
-  auto& jsonAxisFactor = jsonBody["axisFactor"];
-  jsonAxisFactor = ValueType::objectValue;
-  jsonAxisFactor.setComment("// body 'axisFactor' must be a JSON object"s,
-                            Json::CommentPlacement::commentBefore);
-
-
-  auto& jsonVelocity = jsonBody["velocity"];
-  jsonVelocity = ValueType::objectValue;
-  jsonVelocity.setComment("// body 'velocity' must be a JSON object"s,
-                          Json::CommentPlacement::commentBefore);
-
-
-  auto& jsonForce = jsonBody["force"];
-  jsonForce = ValueType::arrayValue;
-  jsonForce.setComment("// body 'force' must be a JSON array"s,
+  auto& colliders = root["colliders"];
+  colliders = Json::arrayValue;
+  colliders.setComment("// 'colliders' must be a JSON array"s,
                         Json::CommentPlacement::commentBefore);
 
-  auto& jsonTorque = jsonBody["torque"];
-  jsonTorque = ValueType::arrayValue;
-  jsonTorque.setComment("// body 'torque' must be a JSON array"s,
+  auto& collider = colliders.append(ValueType::objectValue);
+  collider.setComment("// 'colliders' element must be a JSON object"s,
+                          Json::CommentPlacement::commentBefore);
+
+  auto& colliderShape = collider["shape"];
+  colliderShape = Json::objectValue;
+  colliderShape.setComment("// collider 'shape' must be a JSON object"s,
+                            Json::CommentPlacement::commentBefore);
+
+  auto& colliderType = collider["type"];
+  colliderType = Json::stringValue;
+  colliderType.setComment("// collider 'type' must be a JSON string"s,
+                          Json::CommentPlacement::commentBefore);
+
+
+  auto& active = body["active"];
+  active = ValueType::booleanValue;
+  active.setComment("// body 'active' must be a JSON boolean"s,
+                    Json::CommentPlacement::commentBefore);
+
+  auto& sleeping = body["sleeping"];
+  sleeping = ValueType::booleanValue;
+  sleeping.setComment("// body 'sleeping' must be a JSON boolean"s,
+                      Json::CommentPlacement::commentBefore);
+
+  auto& sleepAllowed = body["sleepAllowed"];
+  sleepAllowed = ValueType::booleanValue;
+  sleepAllowed.setComment("// body 'sleepAllowed' must be a JSON boolean"s,
+                          Json::CommentPlacement::commentBefore);
+
+  auto& type = body["type"];
+  type = ValueType::stringValue;
+  type.setComment("// body 'type' must be a JSON string"s,
+                  Json::CommentPlacement::commentBefore);
+
+
+  auto& massPropsFromColliders = body["massPropsFromColliders"];
+  massPropsFromColliders = ValueType::booleanValue;
+  massPropsFromColliders.setComment("// body 'massPropsFromColliders' must be a JSON boolean"s,
+                                    Json::CommentPlacement::commentBefore);
+
+  auto& mass = body["mass"];
+  mass = ValueType::realValue;
+  mass.setComment("// body 'mass' must be a JSON float"s,
+                  Json::CommentPlacement::commentBefore);
+
+
+  auto& damp = body["damp"];
+  damp = ValueType::objectValue;
+  damp.setComment("// body 'damp' must be a JSON object"s,
+                  Json::CommentPlacement::commentBefore);
+
+  auto& dampLinear = damp["linear"];
+  dampLinear = ValueType::realValue;
+  dampLinear.setComment("// 'linear' body damp must be a JSON float"s,
                         Json::CommentPlacement::commentBefore);
 
-  auto& jsonInertia = jsonBody["inertia"];
-  jsonInertia = ValueType::arrayValue;
-  jsonInertia.setComment("// body 'inertia' must be a JSON array"s,
+  auto& dampAngular = damp["angular"];
+  dampAngular = ValueType::realValue;
+  dampAngular.setComment("// 'angular' body damp must be a JSON float"s,
                           Json::CommentPlacement::commentBefore);
+
+
+  auto& axisFactor = body["axisFactor"];
+  axisFactor = ValueType::objectValue;
+  axisFactor.setComment("// body 'axisFactor' must be a JSON object"s,
+                        Json::CommentPlacement::commentBefore);
+
+
+  auto& velocity = body["velocity"];
+  velocity = ValueType::objectValue;
+  velocity.setComment("// body 'velocity' must be a JSON object"s,
+                      Json::CommentPlacement::commentBefore);
+
+
+  auto& force = body["force"];
+  force = ValueType::arrayValue;
+  force.setComment("// body 'force' must be a JSON array"s,
+                    Json::CommentPlacement::commentBefore);
+
+  auto& torque = body["torque"];
+  torque = ValueType::arrayValue;
+  torque.setComment("// body 'torque' must be a JSON array"s,
+                    Json::CommentPlacement::commentBefore);
+
+  auto& inertia = body["inertia"];
+  inertia = ValueType::arrayValue;
+  inertia.setComment("// body 'inertia' must be a JSON array"s,
+                      Json::CommentPlacement::commentBefore);
 
   return root;
 }();

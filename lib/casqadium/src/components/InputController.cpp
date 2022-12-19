@@ -61,8 +61,10 @@ InputController::deserialize(
 
   auto& comp = registry.emplace_or_replace <InputController> (entity);
 
-  for ( const auto& axisId : json["axes"].getMemberNames() )
-    comp.axes[axisId] = ControlAxis(json["axes"][axisId]);
+  auto& jsonAxes = json["axes"];
+
+  for ( const auto& axisId : jsonAxes.getMemberNames() )
+    comp.axes[axisId] = ControlAxis(jsonAxes[axisId]);
 }
 
 } // namespace cqde::compos

@@ -356,26 +356,32 @@ editorEntitySelect(
 
   const auto cController = std::any_cast <InputController*> (args.at(1));
 
-  const auto& viewportManagerUi = registry.ctx().at <ViewportManagerUi> ();
+  const auto cursorPosX = cController->axes.find("CursorPosX");
+  const auto cursorPosY = cController->axes.find("CursorPosY");
+
+  if ( cursorPosX == cController->axes.end() ||
+       cursorPosY == cController->axes.end() )
+    return;
+
+  const glm::vec2 cursorPos
+  {
+    cursorPosX->second.value,
+    cursorPosY->second.value,
+  };
+
+  auto& viewportManagerUi = registry.ctx().at <const ViewportManagerUi> ();
+  auto& entityManagerUi = registry.ctx().at <EntityManagerUi> ();
+
+  const bool multipleSelectionEnabled = entityManagerUi.entitiesMultipleSelection();
 
   for ( const auto&& [eCamera, cTag, cCamera]
           : registry.view <Tag, Camera, CasqadiumEditorInternal> ().each() )
   {
-    if ( registry.ctx().at <ViewportManagerUi> ().mouseOverViewport(cTag.id) == false )
+    if ( viewportManagerUi.mouseOverViewport(cTag.id) == false )
       continue;
-
-    const glm::vec2 cursorPos
-    {
-      cController->axes["CursorPosX"].value,
-      cController->axes["CursorPosY"].value,
-    };
-
-    auto& entityManagerUi = registry.ctx().at <EntityManagerUi> ();
 
     if ( registry.all_of <SubscriberInput> (eCamera) == true )
       return;
-
-    const bool multipleSelectionEnabled = entityManagerUi.entitiesMultipleSelection();
 
     for ( auto iter = cCamera.zBuffer.rbegin();
           iter != cCamera.zBuffer.rend();
