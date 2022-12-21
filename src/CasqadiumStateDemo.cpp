@@ -157,6 +157,8 @@ CasqadiumStateDemo::CasqadiumStateDemo(
 
   if ( configManager.editorMode() == true )
     cqde::callbacks::editorModeEnable(mRegistry);
+  else
+    entityManager.entryPointExecute(mRegistry);
 }
 
 CasqadiumStateDemo::~CasqadiumStateDemo()
