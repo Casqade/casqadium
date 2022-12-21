@@ -72,8 +72,12 @@ InteractionListener::deserialize(
   auto& jsonActions = json["actions"];
 
   for ( const auto& actionId : jsonActions.getMemberNames() )
+  {
+    comp.actions[actionId] = {};
+
     for ( const auto& callbackId : jsonActions[actionId] )
       comp.actions[actionId].push_back(callbackId.asString());
+  }
 }
 
 } // namespace cqde::compos
