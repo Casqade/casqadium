@@ -13,6 +13,10 @@ void interact(
   entt::registry&,
   const std::vector <std::any>& args = {} );
 
+void interactProbe(
+  entt::registry&,
+  const std::vector <std::any>& args = {} );
+
 
 void entityRemove(
   entt::registry&,

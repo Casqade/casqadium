@@ -297,9 +297,17 @@ target_sources(${TARGET} PRIVATE
   src/components/InteractionListenerColor_ui.cpp
   include/${CASQADIUM_SHORT}/components/InteractionListenerColor.hpp
 
+  src/components/InteractionProbe.cpp
+  src/components/InteractionProbe_ui.cpp
+  include/${CASQADIUM_SHORT}/components/InteractionProbe.hpp
+
   src/components/InteractionSource.cpp
   src/components/InteractionSource_ui.cpp
   include/${CASQADIUM_SHORT}/components/InteractionSource.hpp
+
+  src/components/InteractionSourceActiveAction.cpp
+  src/components/InteractionSourceActiveAction_ui.cpp
+  include/${CASQADIUM_SHORT}/components/InteractionSourceActiveAction.hpp
 
   src/components/LightSource.cpp
   src/components/LightSource_ui.cpp
@@ -420,6 +428,9 @@ target_sources(${TARGET} PRIVATE
 #  Systems
   src/systems/input.cpp
   include/${CASQADIUM_SHORT}/systems/input.hpp
+
+  src/systems/interaction.cpp
+  include/${CASQADIUM_SHORT}/systems/interaction.hpp
 
   src/systems/logic.cpp
   include/${CASQADIUM_SHORT}/systems/logic.hpp

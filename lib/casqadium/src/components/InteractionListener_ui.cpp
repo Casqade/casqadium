@@ -8,6 +8,7 @@
 #include <spdlog/fmt/bundled/format.h>
 
 #include <imgui.h>
+#include <imgui_stdlib.h>
 
 
 namespace cqde::compos
@@ -21,91 +22,165 @@ InteractionListener::ui_edit_props(
   using fmt::format;
   using types::CallbackManager;
 
-  if ( ImGui::CollapsingHeader("Callbacks", ImGuiTreeNodeFlags_DefaultOpen) == false )
-    return;
+  if ( ImGui::CollapsingHeader("Actions", ImGuiTreeNodeFlags_DefaultOpen) == false )
+      return;
 
-  if ( ImGui::SmallButton("+##callbackAdd") )
-    ImGui::OpenPopup("##callbackAddPopup");
+    static auto selectedActionId = null_id;
+    static bool actionWindowOpened {};
+    static std::string newActionId {"NewAction"};
 
-  if ( ImGui::BeginPopup("##callbackAddPopup") )
-  {
-    static ui::StringFilter callbackFilter {"Callback ID"};
+    const bool newActionIdInvalid =
+      newActionId.empty() == true ||
+      newActionId == null_id.str() ||
+      actions.count(newActionId) > 0;
 
-    if ( ImGui::IsWindowAppearing() )
-      ImGui::SetKeyboardFocusHere(2);
+    ImGui::BeginDisabled(newActionIdInvalid);
 
-    callbackFilter.search({}, ImGuiInputTextFlags_AutoSelectAll);
+    if ( ImGui::Button("+##actionAdd") )
+      actions[newActionId] = {};
 
-    auto& callbackManager = registry.ctx().at <CallbackManager> ();
-
-    for ( const auto& callbackId : callbackManager.callbacksSorted() )
-    {
-      if ( callbackFilter.query(callbackId.str()) == false )
-        continue;
-
-      if ( ImGui::Selectable(callbackId.str().c_str(), false) )
-      {
-        callbacks.push_back(callbackId);
-        ImGui::CloseCurrentPopup();
-        break;
-      }
-    }
-
-    ImGui::EndPopup(); // callbackAddPopup
-  }
-
-  ImGui::Separator();
-
-  for ( auto iter = callbacks.begin();
-        iter < callbacks.end();
-        ++iter )
-  {
-    ImGui::PushID(std::distance(callbacks.begin(), iter));
-
-    if ( ImGui::SmallButton("-##callbackDel") )
-      iter = callbacks.erase(iter);
-
-    if ( iter == callbacks.end() )
-    {
-      ImGui::PopID();
-      break;
-    }
-
-    const auto flags =  ImGuiSelectableFlags_SpanAllColumns |
-                        ImGuiSelectableFlags_AllowItemOverlap;
+    ImGui::EndDisabled();
 
     ImGui::SameLine();
-    ImGui::Selectable(format("{}###", iter->str()).c_str(),
-                      false, flags);
 
-    static auto iter_dragged = callbacks.end();
+    ImGui::InputTextWithHint("##newActionId", "New action ID", &newActionId,
+                             ImGuiInputTextFlags_AutoSelectAll);
 
-    if ( ImGui::IsItemHovered() == true )
-      ImGui::SetTooltip("Drag to reorder");
+    ImGui::Separator();
 
-    if ( ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenBlockedByActiveItem) == true &&
-         ImGui::IsMouseDown(ImGuiMouseButton_Left) == true )
+    const auto tableFlags = ImGuiTableFlags_ScrollX |
+                            ImGuiTableFlags_ScrollY;
+
+    if ( ImGui::BeginTable( "ActionsList", 1, tableFlags) == false )
+      return;
+
+    ImGui::TableNextColumn();
+
+    ActionId actionToRemove {};
+
+    for ( const auto& [actionId, action] : actions )
     {
-      auto mouseClickPos = ImGui::GetIO().MouseClickedPos[ImGuiMouseButton_Left];
+      ImGui::PushID(actionId.str().c_str());
 
-      if (  mouseClickPos.x > ImGui::GetItemRectMin().x &&
-            mouseClickPos.x < ImGui::GetItemRectMax().x )
+      if ( ImGui::SmallButton("-##actionRemove") )
+        actionToRemove = actionId;
+
+      const bool selected = actionId == selectedActionId;
+
+      const auto flags =  ImGuiSelectableFlags_SpanAllColumns |
+                          ImGuiSelectableFlags_AllowItemOverlap;
+
+      ImGui::SameLine();
+      if ( ImGui::Selectable(actionId.str().c_str(),
+                             selected, flags) )
       {
-        if ( iter_dragged != iter &&
-             iter_dragged >= callbacks.begin() &&
-             iter_dragged < callbacks.end() )
-          std::swap(*iter, *iter_dragged);
+        selectedActionId = actionId;
 
-        iter_dragged = iter;
+        actionWindowOpened = true;
+        ImGui::SetWindowFocus("###actionEditWindow");
       }
+
+      ImGui::PopID(); // actionId
     }
 
-    if ( iter_dragged != callbacks.end() &&
-         ImGui::IsMouseReleased(ImGuiMouseButton_Left) == true )
-      iter_dragged = callbacks.end();
+    ImGui::EndTable(); // ActionsList
 
-    ImGui::PopID();
-  }
+    if ( actionToRemove != null_id )
+      actions.erase(actionToRemove);
+
+    if ( actionWindowOpened == false )
+      return;
+
+    if ( selectedActionId == null_id )
+      return;
+
+    if ( actions.count(selectedActionId) == 0 )
+      return;
+
+    const auto windowTitle = format("Action '{}'###actionEditWindow",
+                                    selectedActionId.str());
+
+    if ( ImGui::Begin(windowTitle.c_str(),
+                      &actionWindowOpened, ImGuiWindowFlags_MenuBar) == false )
+      return ImGui::End(); // windowTitle
+
+    auto& actionCallbacks = actions.at(selectedActionId);
+
+    const auto callbacks = registry.ctx().at <CallbackManager> ().callbacks();
+
+    static ui::StringFilter callbackFilter {"Callback ID"};
+
+    if ( ImGui::SmallButton("+##callbackAdd") )
+      ImGui::OpenPopup("##callbackAddPopup");
+
+    if ( ImGui::BeginPopup("##callbackAddPopup") )
+    {
+      if ( ImGui::IsWindowAppearing() )
+        ImGui::SetKeyboardFocusHere(2);
+
+      callbackFilter.search({}, ImGuiInputTextFlags_AutoSelectAll);
+
+      bool callbackFound {};
+
+      for ( const auto& callbackId : actionCallbacks )
+      {
+        if ( callbackFilter.query(callbackId.str()) == false )
+          continue;
+
+        if ( std::find( actionCallbacks.begin(), actionCallbacks.end(),
+                        callbackId ) != actionCallbacks.end() )
+          continue;
+
+        callbackFound = true;
+
+        if ( ImGui::Selectable(callbackId.str().c_str(), false) )
+        {
+          actionCallbacks.push_back(callbackId.str());
+          ImGui::CloseCurrentPopup();
+          break;
+        }
+      }
+
+      if ( callbackFound == false )
+        ImGui::Text("No callbacks matching filter");
+
+      ImGui::EndPopup(); // callbackAddPopup
+    }
+
+    ImGui::Separator();
+
+    if ( ImGui::BeginTable( "CallbackList", 1, tableFlags) == false )
+      return ImGui::End(); // windowTitle;
+
+    ImGui::TableNextColumn();
+
+    for ( auto iter = actionCallbacks.begin();
+          iter != actionCallbacks.end();
+          ++iter )
+    {
+      ImGui::PushID(std::distance(actionCallbacks.begin(), iter));
+
+      if ( ImGui::SmallButton("-##callbackDel") )
+        iter = actionCallbacks.erase(iter);
+
+      if ( iter == actionCallbacks.end() )
+      {
+        ImGui::PopID();
+        break;
+      }
+
+      const auto flags =  ImGuiSelectableFlags_SpanAllColumns |
+                          ImGuiSelectableFlags_AllowItemOverlap;
+
+      ImGui::SameLine();
+      ImGui::Selectable(iter->str().c_str(), false, flags);
+
+      ImGui::PopID();
+    }
+
+    ImGui::EndTable(); // CallbackList
+
+    ImGui::End(); // windowTitle
 }
 
 } // namespace cqde::compos

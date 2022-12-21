@@ -3,8 +3,11 @@
 #include <cqde/alias.hpp>
 
 #include <entt/fwd.hpp>
+#include <entt/entity/entity.hpp>
 
 #include <json/forwards.h>
+
+#include <unordered_set>
 
 
 namespace cqde::compos
@@ -12,15 +15,19 @@ namespace cqde::compos
 
 struct InteractionSource
 {
-  float radius {-1.0f};
+  std::unordered_set <ActionId, identifier_hash> actions {};
+
+  entt::entity listener {entt::null};
 
   enum class Type
   {
-    ClosestVisible,
-    MousePos,
+    PhysicsProbe,
     ViewportCenter,
+    MousePos,
 
-  } type {Type::ClosestVisible};
+  } type {Type::PhysicsProbe};
+
+  float radius {-1.0f};
 
 
   InteractionSource() = default;

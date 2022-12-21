@@ -10,15 +10,12 @@
 namespace cqde::compos
 {
 
-struct InteractionListener
+struct InteractionProbe
 {
-  using ActionCallbacks = std::vector <CallbackId>;
-
-  std::unordered_map <ActionId, ActionCallbacks,
-                      identifier_hash> actions {};
+  EntityId listenerId {};
 
 
-  InteractionListener() = default;
+  InteractionProbe() = default;
 
 
   void ui_edit_props( const entt::entity,

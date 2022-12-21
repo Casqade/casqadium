@@ -15,10 +15,6 @@ namespace cqde
 
 void engineInit( entt::registry& registry );
 
-entt::entity findInteractionTarget(
-  const entt::registry&,
-  const entt::entity eInteractionSource );
-
 std::string toLowerCase( const std::string& );
 
 std::vector <std::string> stringSplit(

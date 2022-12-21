@@ -21,14 +21,14 @@ InteractionSource::InteractionTypeToString(
 
   switch (type)
   {
-    case InteractionType::ClosestVisible:
-      return "closestVisible";
-
-    case InteractionType::MousePos:
-      return "mousePos";
+    case InteractionType::PhysicsProbe:
+      return "physicsProbe";
 
     case InteractionType::ViewportCenter:
       return "viewportCenter";
+
+    case InteractionType::MousePos:
+      return "mousePos";
   }
 
   CQDE_ASSERT_DEBUG(false, return "");
@@ -41,14 +41,14 @@ InteractionSource::InteractionTypeFromString(
   using fmt::format;
   using InteractionType = InteractionSource::Type;
 
-  if ( type == InteractionTypeToString(InteractionType::ClosestVisible) )
-    return InteractionType::ClosestVisible;
-
-  if ( type == InteractionTypeToString(InteractionType::MousePos) )
-    return InteractionType::MousePos;
+  if ( type == InteractionTypeToString(InteractionType::PhysicsProbe) )
+    return InteractionType::PhysicsProbe;
 
   if ( type == InteractionTypeToString(InteractionType::ViewportCenter) )
     return InteractionType::ViewportCenter;
+
+  if ( type == InteractionTypeToString(InteractionType::MousePos) )
+    return InteractionType::MousePos;
 
   throw std::runtime_error(
     format("'{}' is not a valid interaction type", type));
@@ -74,6 +74,15 @@ const static Json::Value interactionSourceJsonReference =
   type.setComment("// 'type' must be a JSON string"s,
                   Json::CommentPlacement::commentBefore);
 
+  auto& actions = root["actions"];
+  actions = ValueType::arrayValue;
+  actions.setComment("// 'actions' entry must be a JSON array"s,
+                      Json::CommentPlacement::commentBefore);
+
+  actions.append(ValueType::stringValue);
+  actions.begin()->setComment("// 'actions' entry element must be a JSON string"s,
+                              Json::CommentPlacement::commentBefore);
+
   return root;
 }();
 
@@ -84,6 +93,12 @@ InteractionSource::serialize() const
 
   json["radius"] = radius;
   json["type"] = InteractionTypeToString(type);
+
+  auto& jsonActions = json["actions"];
+  jsonActions = Json::arrayValue;
+
+  for ( const auto& actionId : actions )
+    jsonActions.append(actionId.str());
 
   return json;
 }
@@ -102,6 +117,9 @@ InteractionSource::deserialize(
 
   comp.radius = json["radius"].asFloat();
   comp.type = InteractionTypeFromString(json["type"].asString());
+
+  for ( const auto& actionId : json["actions"] )
+    comp.actions.insert(actionId.asString());
 }
 
 } // namespace cqde::compos

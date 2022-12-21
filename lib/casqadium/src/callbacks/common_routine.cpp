@@ -10,7 +10,9 @@
 #include <cqde/types/UserManager.hpp>
 
 #include <cqde/components/InteractionListener.hpp>
+#include <cqde/components/InteractionProbe.hpp>
 #include <cqde/components/InteractionSource.hpp>
+#include <cqde/components/InteractionSourceActiveAction.hpp>
 #include <cqde/components/SubscriberInput.hpp>
 #include <cqde/components/SubscriberUpdate.hpp>
 #include <cqde/components/EntityList.hpp>
@@ -29,20 +31,69 @@ interact(
 {
   using types::CallbackManager;
   using compos::InteractionSource;
+  using compos::InteractionSourceActiveAction;
   using compos::InteractionListener;
 
-  const auto eInteractionSource = std::any_cast <entt::entity> (args.at(0));
-  const auto eListener = findInteractionTarget(registry, eInteractionSource);
+  const auto eSource = std::any_cast <entt::entity> (args.at(0));
 
-  if ( eListener == entt::null )
+  auto&& [cSource, cSourceAction]
+    = registry.get <const InteractionSource, const InteractionSourceActiveAction> (eSource);
+
+  if ( cSourceAction.actionId == null_id )
     return;
 
-  const auto& cListener = registry.get <InteractionListener> (eListener);
+  auto& callbackManager = registry.ctx().at <const CallbackManager> ();
 
-  auto& callbackManager = registry.ctx().at <CallbackManager> ();
+  const auto eListener = cSource.listener;
 
-  for ( const auto& callback : cListener.callbacks )
-    callbackManager.execute(callback, registry, {eListener, eInteractionSource});
+  if ( entity_valid(eListener, registry) == false )
+    return;
+
+  auto& cListener = registry.get <const InteractionListener> (eListener);
+
+  if ( cListener.actions.count(cSourceAction.actionId) == 0 )
+    return;
+
+  for ( const auto& callbackId : cListener.actions.at(cSourceAction.actionId) )
+    callbackManager.execute(callbackId, registry, {eListener, eSource});
+}
+
+void
+interactProbe(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using types::EntityManager;
+  using types::CallbackManager;
+  using compos::InteractionProbe;
+  using compos::InteractionSource;
+  using compos::InteractionListener;
+
+  const auto eProbe = std::any_cast <entt::entity> (args.at(0));
+  const auto eListener = std::any_cast <entt::entity> (args.at(1));
+
+  if ( eProbe == entt::null ||
+       eListener == entt::null )
+    return;
+
+  auto& cListener = registry.get <const InteractionListener> (eListener);
+  auto& cProbe = registry.get <const InteractionProbe> (eListener);
+
+  auto& entityManager = registry.ctx().at <EntityManager> ();
+
+  const auto eSource = entityManager.get_if_valid(cProbe.listenerId, registry);
+
+  if ( eSource == entt::null )
+    return;
+
+  auto& cSource = registry.get <InteractionSource> (eSource);
+
+  for ( const auto& action : cSource.actions )
+    if ( cListener.actions.count(action) > 0 )
+    {
+      cSource.listener = eListener;
+      return;
+    }
 }
 
 

@@ -20,13 +20,18 @@ const static Json::Value interactionListenerJsonReference =
   root.setComment("// root must be a JSON object"s,
                    Json::CommentPlacement::commentBefore);
 
-  auto& callbacks = root["callbacks"];
+  auto& actions = root["actions"];
+  actions = ValueType::objectValue;
+  actions.setComment("// 'actions' must be a JSON object"s,
+                      Json::CommentPlacement::commentBefore);
+
+  auto& callbacks = actions["cqde_json_anykey"];
   callbacks = ValueType::arrayValue;
-  callbacks.setComment("// 'callbacks' must be a JSON array"s,
+  callbacks.setComment("// 'actions' entry must be a JSON array"s,
                         Json::CommentPlacement::commentBefore);
 
   callbacks.append(ValueType::stringValue);
-  callbacks.begin()->setComment("// 'callbacks' element must be a JSON string"s,
+  callbacks.begin()->setComment("// 'actions' entry element must be a JSON string"s,
                                 Json::CommentPlacement::commentBefore);
 
   return root;
@@ -37,11 +42,17 @@ InteractionListener::serialize() const
 {
   Json::Value json {};
 
-  auto& jsonCallbacks = json["callbacks"];
-  jsonCallbacks = Json::arrayValue;
+  auto& jsonActions = json["actions"];
+  jsonActions = Json::objectValue;
 
-  for ( const auto& callback : callbacks )
-    jsonCallbacks.append(callback.str());
+  for ( const auto& [actionId, callbacks] : actions )
+  {
+    auto& jsonCallbacks = jsonActions[actionId.str()];
+    jsonCallbacks = Json::arrayValue;
+
+    for ( const auto& callbackId : callbacks )
+      jsonCallbacks.append(callbackId.str());
+  }
 
   return json;
 }
@@ -58,8 +69,11 @@ InteractionListener::deserialize(
 
   auto& comp = registry.emplace_or_replace <InteractionListener> (entity);
 
-  for ( const auto& callback : json["callbacks"] )
-    comp.callbacks.push_back(callback.asString());
+  auto& jsonActions = json["actions"];
+
+  for ( const auto& actionId : jsonActions.getMemberNames() )
+    for ( const auto& callbackId : jsonActions[actionId] )
+      comp.actions[actionId].push_back(callbackId.asString());
 }
 
 } // namespace cqde::compos

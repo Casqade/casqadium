@@ -10,6 +10,7 @@ namespace cqde
 using ComponentType = entt::id_type;
 using EntityType = entt::id_type;
 
+using ActionId = identifier;
 using AudioId = identifier;
 using CallbackId = identifier;
 using SystemId = identifier;
