@@ -44,16 +44,25 @@ Delay::execute(
   entt::registry& registry,
   const entt::entity )
 {
-  using types::TickCurrent;
-
   const auto& tickCurrent = registry.ctx().at <TickCurrent> ();
 
-  mTime.first += tickCurrent.tickInterval;
+  mTime.elapsed += tickCurrent.tickInterval;
 
-  if ( mTime.first < mTime.second )
+  if ( mTime.elapsed < mTime.total )
     return false;
 
   return true;
+}
+
+double
+Delay::progress() const
+{
+  if ( mTime.total != Duration{} )
+    return
+      static_cast <double> (mTime.elapsed) /
+      static_cast <double> (mTime.total);
+
+  return static_cast <double> (mTime.elapsed);
 }
 
 Json::Value
@@ -61,8 +70,8 @@ Delay::toJson() const
 {
   Json::Value json {Json::objectValue};
 
-  json["timeElapsed"] = static_cast <double> (mTime.first);
-  json["timeTotal"] = static_cast <double> (mTime.second);
+  json["timeElapsed"] = static_cast <double> (mTime.elapsed);
+  json["timeTotal"] = static_cast <double> (mTime.total);
 
   return json;
 }
@@ -73,8 +82,8 @@ Delay::fromJson(
 {
   jsonValidateObject(json, delaySequenceStepJsonReference);
 
-  mTime.first = json["timeElapsed"].asFloat();
-  mTime.second = json["timeTotal"].asFloat();
+  mTime.elapsed = json["timeElapsed"].asFloat();
+  mTime.total = json["timeTotal"].asFloat();
 }
 
 } // namespace cqde::types

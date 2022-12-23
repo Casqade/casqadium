@@ -76,10 +76,7 @@ TransformInterpolated::execute(
 
   const bool timeExpired = Delay::execute(registry, entity);
 
-  const auto progress = static_cast <double> (mTime.first)
-                      / static_cast <double> (mTime.second);
-
-  const auto dt = mSpline.value(std::min(progress, 1.0));
+  const auto dt = mSpline.value(std::min(progress(), 1.0));
 
   auto transform
     = cqde::interpolate(mTransform.first,
