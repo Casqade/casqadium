@@ -76,6 +76,8 @@ Camera::ProjectionTypeToString(
     case ProjectionType::Perspective:
       return "perspective";
   }
+
+  CQDE_ASSERT_DEBUG(false, return "");
 }
 
 Camera::Projection

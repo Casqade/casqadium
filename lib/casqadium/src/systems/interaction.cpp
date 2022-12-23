@@ -1,5 +1,6 @@
 #include <cqde/systems/render.hpp>
 
+#include <cqde/common.hpp>
 #include <cqde/math_helpers.hpp>
 
 #include <cqde/components/Camera.hpp>
@@ -64,6 +65,9 @@ InteractionQuerySystem(
 
       case InteractionType::PhysicsProbe:
         continue;
+
+      default:
+        CQDE_ASSERT_DEBUG(false, continue);
     }
 
     cInteractionSource.listener = entt::null;

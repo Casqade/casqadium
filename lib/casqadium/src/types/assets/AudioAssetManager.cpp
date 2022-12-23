@@ -496,7 +496,7 @@ AssetManager <SoLoud::AudioSource>::ui_show_preview(
 
   if (  ImGui::DragFloat("Speed##audioSpeed", &audioSpeed,
                           0.01f, std::numeric_limits <float>::epsilon(),
-                         10.0f, "%.2f", flags) )
+                         2.5f, "%.2f", flags) )
     soloud.setRelativePlaySpeed(voiceHandle, audioSpeed);
 }
 

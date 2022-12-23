@@ -43,8 +43,6 @@
 
 #include <soloud.h>
 
-#include <glm/vec3.hpp>
-
 #include <json/value.h>
 #include <json/writer.h>
 
@@ -153,7 +151,6 @@ CasqadiumStateDemo::CasqadiumStateDemo(
   textures.insert("cqde_e", cqde::textureFromText("e", olc::BLUE, olc::BLANK, true));
 
   auto& entityManager = mRegistry.ctx().at <EntityManager> ();
-  entityManager.entryPointExecute(mRegistry);
 
   if ( configManager.editorMode() == true )
     cqde::callbacks::editorModeEnable(mRegistry);
