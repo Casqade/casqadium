@@ -190,4 +190,64 @@ jsonParse(
   return result;
 }
 
+void
+jsonClearComments(
+  Json::Value& json )
+{
+  Json::Value tmp {};
+
+  json.swapPayload(tmp);
+  json.swap(tmp);
+
+  for ( auto& member : json )
+    jsonClearComments(member);
+}
+
+Json::Value
+jsonClearComments(
+  const Json::Value& json )
+{
+  Json::Value result {json};
+  jsonClearComments(result);
+
+  return result;
+}
+
+
+namespace json_operators
+{
+
+Json::Value&
+operator << (
+  Json::Value& lhs,
+  const Json::Value& rhs )
+{
+  const bool compatibleTypes =
+    lhs.type() == rhs.type() &&
+    (lhs.isObject() == true || lhs.isArray() == true);
+
+  CQDE_ASSERT_DEBUG(compatibleTypes == true, return lhs);
+
+  if ( lhs.isObject() == true )
+    for ( const auto& key : rhs.getMemberNames() )
+      lhs[key] = rhs[key];
+
+  else
+    for ( const auto& element : rhs )
+      lhs.append(element);
+
+  return lhs;
+}
+
+Json::Value
+operator << (
+  const Json::Value& lhs,
+  const Json::Value& rhs )
+{
+  auto result {lhs};
+  return result << rhs;
+}
+
+} // namespace json_operators
+
 } // namespace cqde

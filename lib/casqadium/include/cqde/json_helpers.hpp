@@ -25,4 +25,16 @@ void jsonValidateObject(
 
 Json::Value jsonParse( std::istream& stream );
 
+void jsonClearComments( Json::Value& );
+Json::Value jsonClearComments( const Json::Value& );
+
+namespace json_operators
+{
+
+// merge json objects/arrays
+Json::Value& operator << ( Json::Value&, const Json::Value& );
+Json::Value operator << ( const Json::Value&, const Json::Value& );
+
+}
+
 } // namespace cqde
