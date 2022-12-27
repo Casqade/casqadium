@@ -23,10 +23,30 @@ void jsonValidateObject(
   const Json::Value&,
   const Json::Value& reference );
 
+bool jsonValidateValue(
+  const Json::Value&,
+  const Json::Value& reference );
+
 Json::Value jsonParse( std::istream& stream );
 
 void jsonClearComments( Json::Value& );
 Json::Value jsonClearComments( const Json::Value& );
+
+
+std::string jsonGetValidationErrorComment(
+  const Json::Value& reference,
+  const std::string& fallbackPostfix );
+
+void jsonThrowValidationError(
+  const Json::Value& reference );
+
+void jsonThrowValidationError(
+  const Json::Value& reference,
+  const std::string& key );
+
+void jsonThrowValidationError(
+  const Json::Value& reference,
+  const int index );
 
 namespace json_operators
 {

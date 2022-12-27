@@ -86,35 +86,24 @@ jsonValidateArray(
   using fmt::format;
 
   if ( array.type() != reference.type() )
-  {
-    const std::string comment = reference.getComment(Json::CommentPlacement::commentBefore);
-    CQDE_ASSERT_DEBUG(comment.size() > 3, throw std::runtime_error("expected different JSON value type"));
-    throw std::runtime_error(comment.substr(3));
-  }
+    jsonThrowValidationError(reference);
 
   if ( reference.size() == 0 )
     return;
 
-//  todo: perform check only for first element ?
-  for ( uint32_t i = 0;
+  for ( Json::ArrayIndex i = 0;
         i < array.size();
         ++i )
-    if ( array[i].type() != reference.begin()->type() )
-    {
-      if ( ( reference.begin()->isUInt() || reference.begin()->isUInt64() ) &&
-            array[i].isConvertibleTo(reference.begin()->type()) == true )
-        continue;
-
-      const std::string comment = reference.begin()->getComment(Json::CommentPlacement::commentBefore);
-      CQDE_ASSERT_DEBUG(comment.size() > 3, throw std::runtime_error(format("expected different JSON value type for array element {}", i)));
-      throw std::runtime_error(comment.substr(3));
-    }
+  {
+    if ( jsonValidateValue(array[i], *reference.begin()) == false )
+      jsonThrowValidationError(*reference.begin(), i);
 
     else if ( array[i].isObject() == true )
       jsonValidateObject( array[i], *reference.begin() );
 
     else if ( array[i].isArray() == true )
       jsonValidateArray( array[i], *reference.begin() );
+  }
 }
 
 void
@@ -125,11 +114,7 @@ jsonValidateObject(
   using fmt::format;
 
   if ( value.type() != reference.type() )
-  {
-    const std::string comment = reference.getComment(Json::CommentPlacement::commentBefore);
-    CQDE_ASSERT_DEBUG(comment.size() > 3, throw std::runtime_error("expected different JSON value type"));
-    throw std::runtime_error(comment.substr(3));
-  }
+    jsonThrowValidationError(reference);
 
   if ( reference.isMember("cqde_json_anykey") == true )
   {
@@ -137,15 +122,23 @@ jsonValidateObject(
 
     for ( const auto& key : value.getMemberNames() )
     {
-      if ( value[key].type() != valueReference.type() )
+      if ( jsonValidateValue(value[key], valueReference) == false )
       {
-        const std::string comment = valueReference.getComment(Json::CommentPlacement::commentBefore);
-        CQDE_ASSERT_DEBUG(comment.size() > 3, throw std::runtime_error(format("expected different JSON value type for key '{}'", key)));
-        throw std::runtime_error(comment.substr(3));
+        try
+        {
+          jsonThrowValidationError(valueReference);
+        }
+        catch ( const std::exception& e )
+        {
+          throw std::runtime_error(format(
+            "failed to parse '{}' value: {}",
+            key, e.what() ));
+        }
       }
 
-      if ( value[key].isObject() == true )
+      else if ( value[key].isObject() == true )
         jsonValidateObject(value[key], valueReference);
+
       else if ( value[key].isArray() == true )
         jsonValidateArray(value[key], valueReference);
     }
@@ -154,24 +147,33 @@ jsonValidateObject(
   }
 
   for ( const auto& key : reference.getMemberNames() )
-    if ( value[key].type() != reference[key].type() )
-    {
-//      treat negative integers as invalid type when reference is uint
-      if (  value.isMember(key) == true &&
-            ( reference[key].isUInt() || reference[key].isUInt64() ) &&
-            value[key].isConvertibleTo(reference[key].type()) == true )
-        continue;
-
-      const std::string comment = reference[key].getComment(Json::CommentPlacement::commentBefore);
-      CQDE_ASSERT_DEBUG(comment.size() > 3, throw std::runtime_error(format("expected different JSON value type for key '{}'", key)));
-      throw std::runtime_error(comment.substr(3));
-    }
+  {
+    if ( value.isMember(key) == false ||
+         jsonValidateValue(value[key], reference[key]) == false )
+      jsonThrowValidationError(reference[key], key);
 
     else if ( reference[key].isObject() == true )
       jsonValidateObject(value[key], reference[key]);
 
     else if ( reference[key].isArray() == true )
       jsonValidateArray(value[key], reference[key]);
+  }
+}
+
+bool
+jsonValidateValue(
+  const Json::Value& value,
+  const Json::Value& reference )
+{
+  if ( value.type() == reference.type() )
+    return true;
+
+//  treat negative integers as invalid type when reference is uint
+  if (  ( reference.isUInt() || reference.isUInt64() ) &&
+        value.isConvertibleTo(reference.type()) == true )
+    return true;
+
+  return false;
 }
 
 Json::Value
@@ -211,6 +213,54 @@ jsonClearComments(
   jsonClearComments(result);
 
   return result;
+}
+
+
+std::string
+jsonGetValidationErrorComment(
+  const Json::Value& reference,
+  const std::string& fallbackPostfix )
+{
+  const auto comment = reference.getComment(
+    Json::CommentPlacement::commentBefore );
+
+  CQDE_ASSERT_DEBUG(comment.size() > 3,
+    return "expected different JSON value type" + fallbackPostfix);
+
+  return comment.substr(3);
+}
+
+void
+jsonThrowValidationError(
+  const Json::Value& reference )
+{
+  throw std::runtime_error(
+    jsonGetValidationErrorComment(
+      reference, {} ));
+}
+
+void
+jsonThrowValidationError(
+  const Json::Value& reference,
+  const std::string& key )
+{
+  using fmt::format;
+
+  throw std::runtime_error(
+    jsonGetValidationErrorComment(
+      reference, format(" for key '{}'", key) ));
+}
+
+void
+jsonThrowValidationError(
+  const Json::Value& reference,
+  const int index )
+{
+  using fmt::format;
+
+  throw std::runtime_error(
+    jsonGetValidationErrorComment(
+      reference, format(" for array element {}", index) ));
 }
 
 
