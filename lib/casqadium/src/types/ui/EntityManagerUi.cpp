@@ -376,7 +376,10 @@ EntityManagerUi::ui_show_entities_table(
         const bool selected = mSelectedComponent == entityComponentPair;
 
         if ( ImGui::Selectable(componentName.c_str(), selected) )
+        {
           mSelectedComponent = {entity, componentType};
+          ImGui::SetWindowFocus("Component view");
+        }
 
         if (  ImGui::IsMouseReleased(ImGuiMouseButton_Right) &&
               ImGui::IsItemHovered() )
