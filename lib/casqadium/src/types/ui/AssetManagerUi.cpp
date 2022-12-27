@@ -10,6 +10,7 @@
 
 #include <cqde/common.hpp>
 #include <cqde/file_helpers.hpp>
+#include <cqde/json_helpers.hpp>
 #include <cqde/util/logger.hpp>
 
 #include <entt/entity/registry.hpp>
@@ -387,6 +388,7 @@ AssetManagerUi::ui_show_package_state(
         break;
     }
 
+    jsonClearComments(newAsset);
     assetDb[mNewAssetName] = newAsset;
   }
 
