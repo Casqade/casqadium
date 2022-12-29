@@ -44,6 +44,14 @@ struct TerrainAssetList;
 struct TextStringAssetList;
 struct TextureAssetList;
 
+struct Audio3dParams;
+struct AudioBus;
+struct AudioDrivenTransform;
+struct AudioGroupMap;
+struct AudioListener3d;
+struct AudioLoop;
+struct AudioSequence;
+
 struct CollisionBody;
 struct ForceEmitter;
 struct RigidBody;

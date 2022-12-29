@@ -35,20 +35,20 @@ class ConfigManager
   level mLogLevelFile {level::info};
   level mLogFlushLevel {level::warn};
 
-  uint32_t mWindowWidth {800u};
-  uint32_t mWindowHeight {600u};
+  uint32_t mWindowWidth {1600u};
+  uint32_t mWindowHeight {900u};
 
   bool mFullscreenEnabled {false};
 
   uint64_t mTickRate {60};
-  uint64_t mFrameRate {0};
+  uint64_t mFrameRate {60};
 
   BACKEND mAudioBackend {BACKEND::AUTO};
   RESAMPLER mAudioResampler {SOLOUD_DEFAULT_RESAMPLER};
 
   uint32_t mAudioBufferSize {};
   uint32_t mAudioSampleRate {};
-  uint32_t mAudioMaxActiveVoices {16};
+  uint32_t mAudioMaxActiveVoices {32};
 
   bool mAudioRoudoffClipping {true};
   bool mAudioNoFpuChange {};

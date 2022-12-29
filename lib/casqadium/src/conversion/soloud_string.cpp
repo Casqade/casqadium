@@ -77,3 +77,37 @@ SoLoudResamplerStringConverter::toResampler(
 
   return SOLOUD_DEFAULT_RESAMPLER;
 }
+
+
+SoLoudAttenuationModelStringConverter::SoLoudAttenuationModelStringConverter()
+{
+  mModels =
+  {
+    {AttenuationModel::NO_ATTENUATION, "none"},
+    {AttenuationModel::INVERSE_DISTANCE, "inverse"},
+    {AttenuationModel::LINEAR_DISTANCE, "linear"},
+    {AttenuationModel::EXPONENTIAL_DISTANCE, "exponential"},
+  };
+}
+
+std::string
+SoLoudAttenuationModelStringConverter::toString(
+  const AttenuationModel backend ) const
+{
+  for ( const auto& modelPair : mModels )
+    if ( modelPair.first == backend )
+      return modelPair.second;
+
+  return mModels.at(AttenuationModel::NO_ATTENUATION);
+}
+
+SoLoudAttenuationModelStringConverter::AttenuationModel
+SoLoudAttenuationModelStringConverter::toModel(
+  const std::string& backend ) const
+{
+  for ( const auto& modelPair : mModels )
+    if ( modelPair.second == backend )
+      return modelPair.first;
+
+  return AttenuationModel::NO_ATTENUATION;
+}

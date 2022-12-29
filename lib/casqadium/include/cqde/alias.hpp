@@ -12,6 +12,7 @@ using EntityType = entt::id_type;
 
 using ActionId = identifier;
 using AudioId = identifier;
+using AudioGroupId = identifier;
 using CallbackId = identifier;
 using SystemId = identifier;
 using EntityId = identifier;
@@ -27,6 +28,9 @@ using TextureId = identifier;
 using UserId = identifier;
 
 using InputHwCode = int32_t;
+using AudioHandle = uint32_t;
+
+constexpr AudioHandle AudioHandleInvalid{0xfffff000};
 
 
 } // namespace cqde

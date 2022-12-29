@@ -21,6 +21,9 @@ target_sources(${TARGET} PRIVATE
   include/${CASQADIUM_SHORT}/callbacks.hpp
   include/${CASQADIUM_SHORT}/systems.hpp
 
+  src/audio_helpers.cpp
+  include/${CASQADIUM_SHORT}/audio_helpers.hpp
+
   src/ecs_helpers.cpp
   include/${CASQADIUM_SHORT}/ecs_helpers.hpp
 
@@ -225,6 +228,14 @@ target_sources(${TARGET} PRIVATE
   include/${CASQADIUM_SHORT}/types/assets/TextureAssetManager.hpp
 
 
+#  Audio
+  src/types/audio/AudioFilterFactory.cpp
+  include/${CASQADIUM_SHORT}/types/audio/AudioFilterFactory.hpp
+
+  src/types/audio/SoloudQueue.cpp
+  include/${CASQADIUM_SHORT}/types/audio/SoloudQueue.hpp
+
+
 #  Input
   src/types/input/InputManager.cpp
   include/${CASQADIUM_SHORT}/types/input/InputManager.hpp
@@ -284,6 +295,32 @@ target_sources(${TARGET} PRIVATE
 
 
 #  Components
+  src/components/audio/Audio3dParams.cpp
+  src/components/audio/Audio3dParams_ui.cpp
+  include/${CASQADIUM_SHORT}/components/audio/Audio3dParams.hpp
+
+  src/components/audio/AudioBus.cpp
+  include/${CASQADIUM_SHORT}/components/audio/AudioBus.hpp
+
+  src/components/audio/AudioDrivenTransform.cpp
+  src/components/audio/AudioDrivenTransform_ui.cpp
+  include/${CASQADIUM_SHORT}/components/audio/AudioDrivenTransform.hpp
+
+  src/components/audio/AudioGroupMap.cpp
+  src/components/audio/AudioGroupMap_ui.cpp
+  include/${CASQADIUM_SHORT}/components/audio/AudioGroupMap.hpp
+
+  src/components/audio/AudioListener3d.cpp
+  include/${CASQADIUM_SHORT}/components/audio/AudioListener3d.hpp
+
+  src/components/audio/AudioLoop.cpp
+  src/components/audio/AudioLoop_ui.cpp
+  include/${CASQADIUM_SHORT}/components/audio/AudioLoop.hpp
+
+  src/components/audio/AudioSequence.cpp
+  include/${CASQADIUM_SHORT}/components/audio/AudioSequence.hpp
+
+
   src/components/Camera.cpp
   src/components/Camera_ui.cpp
   include/${CASQADIUM_SHORT}/components/Camera.hpp
@@ -425,6 +462,9 @@ target_sources(${TARGET} PRIVATE
 
 
 #  Callbacks
+  src/callbacks/audio.cpp
+  include/${CASQADIUM_SHORT}/callbacks/audio.hpp
+
   src/callbacks/assets_routine.cpp
   include/${CASQADIUM_SHORT}/callbacks/assets_routine.hpp
 
@@ -451,6 +491,9 @@ target_sources(${TARGET} PRIVATE
 
 
 #  Systems
+  src/systems/audio.cpp
+  include/${CASQADIUM_SHORT}/systems/audio.hpp
+
   src/systems/input.cpp
   include/${CASQADIUM_SHORT}/systems/input.hpp
 

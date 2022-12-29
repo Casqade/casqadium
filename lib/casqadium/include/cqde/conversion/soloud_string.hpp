@@ -31,3 +31,16 @@ public:
   std::string toString( const RESAMPLER ) const;
   RESAMPLER toResampler( const std::string& ) const;
 };
+
+class SoLoudAttenuationModelStringConverter
+{
+  using AttenuationModel = SoLoud::AudioSource::ATTENUATION_MODELS;
+
+  std::map <AttenuationModel, std::string> mModels {};
+
+public:
+  SoLoudAttenuationModelStringConverter();
+
+  std::string toString( const AttenuationModel ) const;
+  AttenuationModel toModel( const std::string& ) const;
+};

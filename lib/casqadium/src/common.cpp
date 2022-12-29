@@ -40,6 +40,14 @@
 #include <cqde/components/assets/TextStringAssetList.hpp>
 #include <cqde/components/assets/TextureAssetList.hpp>
 
+#include <cqde/components/audio/Audio3dParams.hpp>
+#include <cqde/components/audio/AudioBus.hpp>
+#include <cqde/components/audio/AudioDrivenTransform.hpp>
+#include <cqde/components/audio/AudioGroupMap.hpp>
+#include <cqde/components/audio/AudioListener3d.hpp>
+#include <cqde/components/audio/AudioLoop.hpp>
+#include <cqde/components/audio/AudioSequence.hpp>
+
 #include <cqde/components/physics/CollisionBody.hpp>
 #include <cqde/components/physics/RigidBody.hpp>
 #include <cqde/components/physics/ForceEmitter.hpp>
@@ -74,6 +82,8 @@
 #include <cqde/types/TickCurrent.hpp>
 #include <cqde/types/FrameCurrent.hpp>
 
+#include <cqde/types/audio/AudioFilterFactory.hpp>
+
 #include <cqde/types/assets/AudioAssetManager.hpp>
 #include <cqde/types/assets/FontAssetManager.hpp>
 #include <cqde/types/assets/GeometryAssetManager.hpp>
@@ -84,6 +94,17 @@
 #include <entt/entity/registry.hpp>
 
 #include <ctpl/ctpl_stl.h>
+
+#include <soloud_bassboostfilter.h>
+#include <soloud_biquadresonantfilter.h>
+#include <soloud_duckfilter.h>
+#include <soloud_echofilter.h>
+#include <soloud_eqfilter.h>
+#include <soloud_flangerfilter.h>
+#include <soloud_freeverbfilter.h>
+#include <soloud_lofifilter.h>
+#include <soloud_robotizefilter.h>
+#include <soloud_waveshaperfilter.h>
 
 #include <locale>
 #include <codecvt>
@@ -114,12 +135,14 @@ engineInit(
   auto& inputManager = registry.ctx().emplace <InputManager> ();
   auto& packageManager = registry.ctx().emplace <PackageManager> ();
   auto& physicsManager = registry.ctx().emplace <PhysicsManager> (registry);
-  auto& colliderShapeFactory = registry.ctx().emplace <ColliderFactory> ();
   auto& prefabManager = registry.ctx().emplace <PrefabManager> ();
   auto& systemManager = registry.ctx().emplace <SystemManager> ();
-  auto& sequenceFactory = registry.ctx().emplace <SequenceFactory> ();
   auto& snapshotManager = registry.ctx().emplace <SnapshotManager> ();
   auto& userManager = registry.ctx().emplace <UserManager> ();
+
+  auto& audioFilterFactory = registry.ctx().emplace <AudioFilterFactory> ();
+  auto& colliderShapeFactory = registry.ctx().emplace <ColliderFactory> ();
+  auto& sequenceFactory = registry.ctx().emplace <SequenceFactory> ();
 
   auto& tp = registry.ctx().emplace <ctpl::thread_pool> (std::thread::hardware_concurrency() | 1);
 
@@ -162,6 +185,15 @@ engineInit(
   entityManager.registerComponent <CollisionBody> ("CollisionBody");
   entityManager.registerComponent <RigidBody> ("RigidBody");
   entityManager.registerComponent <ForceEmitter> ("ForceEmitter");
+
+  entityManager.registerEmptyComponent <AudioBus> ("AudioBus");
+  entityManager.registerEmptyComponent <AudioListener3d> ("AudioListener3d");
+  entityManager.registerEmptyComponent <AudioSequence> ("AudioSequence");
+
+  entityManager.registerComponent <Audio3dParams> ("Audio3dParams");
+  entityManager.registerComponent <AudioDrivenTransform> ("AudioDrivenTransform");
+  entityManager.registerComponent <AudioGroupMap> ("AudioGroupMap");
+  entityManager.registerComponent <AudioLoop> ("AudioLoop");
 
 //  Components-tags
   entityManager.registerEmptyComponent <CasqadiumEntryPoint> ("CasqadiumEntryPoint");
@@ -291,6 +323,14 @@ engineInit(
                          SequenceSystem,
                          Phase::Logic);
 
+  systemManager.Register("Audio3dSystem",
+                         Audio3dSystem,
+                         Phase::Logic);
+
+  systemManager.Register("AudioDrivenTransformSystem",
+                         AudioDrivenTransformSystem,
+                         Phase::Logic);
+
   systemManager.Register("InteractionQuerySystem",
                          InteractionQuerySystem,
                          Phase::Logic);
@@ -348,6 +388,18 @@ engineInit(
   systemManager.Register("InteractionHighlightSystem",
                          InteractionHighlightSystem,
                          Phase::Render);
+
+
+  audioFilterFactory.registerFilter <SoLoud::BassboostFilter> ("BassboostFilter");
+  audioFilterFactory.registerFilter <SoLoud::BiquadResonantFilter> ("BiquadResonantFilter");
+  audioFilterFactory.registerFilter <SoLoud::DuckFilter> ("DuckFilter");
+  audioFilterFactory.registerFilter <SoLoud::EchoFilter> ("EchoFilter");
+  audioFilterFactory.registerFilter <SoLoud::EqFilter> ("EqFilter");
+  audioFilterFactory.registerFilter <SoLoud::FlangerFilter> ("FlangerFilter");
+  audioFilterFactory.registerFilter <SoLoud::FreeverbFilter> ("FreeverbFilter");
+  audioFilterFactory.registerFilter <SoLoud::LofiFilter> ("LofiFilter");
+  audioFilterFactory.registerFilter <SoLoud::RobotizeFilter> ("RobotizeFilter");
+  audioFilterFactory.registerFilter <SoLoud::WaveShaperFilter> ("WaveShaperFilter");
 
 
   colliderShapeFactory.registerCollider <ColliderBox> ("BoxShape");
