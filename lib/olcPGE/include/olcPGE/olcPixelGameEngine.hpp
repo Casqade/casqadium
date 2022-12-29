@@ -1,282 +1,282 @@
 #pragma region license_and_help
 /*
-	olcPixelGameEngine.h
+  olcPixelGameEngine.h
 
-	+-------------------------------------------------------------+
-	|           OneLoneCoder Pixel Game Engine v2.16              |
-	|  "What do you need? Pixels... Lots of Pixels..." - javidx9  |
-	+-------------------------------------------------------------+
+  +-------------------------------------------------------------+
+  |           OneLoneCoder Pixel Game Engine v2.16              |
+  |  "What do you need? Pixels... Lots of Pixels..." - javidx9  |
+  +-------------------------------------------------------------+
 
-	What is this?
-	~~~~~~~~~~~~~
-	olc::PixelGameEngine is a single file, cross platform graphics and userinput
-	framework used for games, visualisations, algorithm exploration and learning.
-	It was developed by YouTuber "javidx9" as an assistive tool for many of his
-	videos. The goal of this project is to provide high speed graphics with
-	minimal project setup complexity, to encourage new programmers, younger people,
-	and anyone else that wants to make fun things.
+  What is this?
+  ~~~~~~~~~~~~~
+  olc::PixelGameEngine is a single file, cross platform graphics and userinput
+  framework used for games, visualisations, algorithm exploration and learning.
+  It was developed by YouTuber "javidx9" as an assistive tool for many of his
+  videos. The goal of this project is to provide high speed graphics with
+  minimal project setup complexity, to encourage new programmers, younger people,
+  and anyone else that wants to make fun things.
 
-	However, olc::PixelGameEngine is not a toy! It is a powerful and fast utility
-	capable of delivering high resolution, high speed, high quality applications
-	which behave the same way regardless of the operating system or platform.
+  However, olc::PixelGameEngine is not a toy! It is a powerful and fast utility
+  capable of delivering high resolution, high speed, high quality applications
+  which behave the same way regardless of the operating system or platform.
 
-	This file provides the core utility set of the olc::PixelGameEngine, including
-	window creation, keyboard/mouse input, main game thread, timing, pixel drawing
-	routines, image/sprite loading and drawing routines, and a bunch of utility
-	types to make rapid development of games/visualisations possible.
-
-
-	License (OLC-3)
-	~~~~~~~~~~~~~~~
-
-	Copyright 2018 - 2021 OneLoneCoder.com
-
-	Redistribution and use in source and binary forms, with or without modification,
-	are permitted provided that the following conditions are met:
-
-	1. Redistributions or derivations of source code must retain the above copyright
-	notice, this list of conditions and the following disclaimer.
-
-	2. Redistributions or derivative works in binary form must reproduce the above
-	copyright notice. This list of conditions and the following	disclaimer must be
-	reproduced in the documentation and/or other materials provided with the distribution.
-
-	3. Neither the name of the copyright holder nor the names of its contributors may
-	be used to endorse or promote products derived from this software without specific
-	prior written permission.
-
-	THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS	"AS IS" AND ANY
-	EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
-	OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
-	SHALL THE COPYRIGHT	HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
-	INCIDENTAL,	SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
-	TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
-	BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
-	CONTRACT, STRICT LIABILITY, OR TORT	(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
-	ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
-	SUCH DAMAGE.
-
-	Links
-	~~~~~
-	YouTube:	https://www.youtube.com/javidx9
-				https://www.youtube.com/javidx9extra
-	Discord:	https://discord.gg/WhwHUMV
-	Twitter:	https://www.twitter.com/javidx9
-	Twitch:		https://www.twitch.tv/javidx9
-	GitHub:		https://www.github.com/onelonecoder
-	Homepage:	https://www.onelonecoder.com
-	Patreon:	https://www.patreon.com/javidx9
-	Community:  https://community.onelonecoder.com
+  This file provides the core utility set of the olc::PixelGameEngine, including
+  window creation, keyboard/mouse input, main game thread, timing, pixel drawing
+  routines, image/sprite loading and drawing routines, and a bunch of utility
+  types to make rapid development of games/visualisations possible.
 
 
+  License (OLC-3)
+  ~~~~~~~~~~~~~~~
 
-	Compiling in Linux
-	~~~~~~~~~~~~~~~~~~
-	You will need a modern C++ compiler, so update yours!
-	To compile use the command:
+  Copyright 2018 - 2021 OneLoneCoder.com
 
-	g++ -o YourProgName YourSource.cpp -lX11 -lGL -lpthread -lpng -lstdc++fs -std=c++17
+  Redistribution and use in source and binary forms, with or without modification,
+  are permitted provided that the following conditions are met:
 
-	On some Linux configurations, the frame rate is locked to the refresh
-	rate of the monitor. This engine tries to unlock it but may not be
-	able to, in which case try launching your program like this:
+  1. Redistributions or derivations of source code must retain the above copyright
+  notice, this list of conditions and the following disclaimer.
 
-	vblank_mode=0 ./YourProgName
+  2. Redistributions or derivative works in binary form must reproduce the above
+  copyright notice. This list of conditions and the following	disclaimer must be
+  reproduced in the documentation and/or other materials provided with the distribution.
+
+  3. Neither the name of the copyright holder nor the names of its contributors may
+  be used to endorse or promote products derived from this software without specific
+  prior written permission.
+
+  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS	"AS IS" AND ANY
+  EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES
+  OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+  SHALL THE COPYRIGHT	HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT,
+  INCIDENTAL,	SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED
+  TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+  BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+  CONTRACT, STRICT LIABILITY, OR TORT	(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN
+  ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
+  SUCH DAMAGE.
+
+  Links
+  ~~~~~
+  YouTube:	https://www.youtube.com/javidx9
+        https://www.youtube.com/javidx9extra
+  Discord:	https://discord.gg/WhwHUMV
+  Twitter:	https://www.twitter.com/javidx9
+  Twitch:		https://www.twitch.tv/javidx9
+  GitHub:		https://www.github.com/onelonecoder
+  Homepage:	https://www.onelonecoder.com
+  Patreon:	https://www.patreon.com/javidx9
+  Community:  https://community.onelonecoder.com
 
 
 
-	Compiling in Code::Blocks on Windows
-	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	Well I wont judge you, but make sure your Code::Blocks installation
-	is really up to date - you may even consider updating your C++ toolchain
-	to use MinGW32-W64.
+  Compiling in Linux
+  ~~~~~~~~~~~~~~~~~~
+  You will need a modern C++ compiler, so update yours!
+  To compile use the command:
 
-	Guide for installing recent GCC for Windows:
-	https://www.msys2.org/
-	Guide for configuring code::blocks:
-	https://solarianprogrammer.com/2019/11/05/install-gcc-windows/
-	https://solarianprogrammer.com/2019/11/16/install-codeblocks-gcc-windows-build-c-cpp-fortran-programs/
+  g++ -o YourProgName YourSource.cpp -lX11 -lGL -lpthread -lpng -lstdc++fs -std=c++17
 
-	Add these libraries to "Linker Options":
-	user32 gdi32 opengl32 gdiplus Shlwapi dwmapi stdc++fs
+  On some Linux configurations, the frame rate is locked to the refresh
+  rate of the monitor. This engine tries to unlock it but may not be
+  able to, in which case try launching your program like this:
 
-	Set these compiler options: -std=c++17
+  vblank_mode=0 ./YourProgName
 
 
 
-	Compiling on Mac - EXPERIMENTAL! PROBABLY HAS BUGS
-	~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	Yes yes, people use Macs for C++ programming! Who knew? Anyway, enough
-	arguing, thanks to Mumflr the PGE is now supported on Mac. Now I know nothing
-	about Mac, so if you need support, I suggest checking out the instructions
-	here: https://github.com/MumflrFumperdink/olcPGEMac
+  Compiling in Code::Blocks on Windows
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Well I wont judge you, but make sure your Code::Blocks installation
+  is really up to date - you may even consider updating your C++ toolchain
+  to use MinGW32-W64.
 
-	clang++ -arch x86_64 -std=c++17 -mmacosx-version-min=10.15 -Wall -framework OpenGL
-		-framework GLUT -framework Carbon -lpng YourSource.cpp -o YourProgName
+  Guide for installing recent GCC for Windows:
+  https://www.msys2.org/
+  Guide for configuring code::blocks:
+  https://solarianprogrammer.com/2019/11/05/install-gcc-windows/
+  https://solarianprogrammer.com/2019/11/16/install-codeblocks-gcc-windows-build-c-cpp-fortran-programs/
 
+  Add these libraries to "Linker Options":
+  user32 gdi32 opengl32 gdiplus Shlwapi dwmapi stdc++fs
 
-
-	Compiling with Emscripten (New & Experimental)
-	~~~~~~~~~~~~~~~~~~~~~~~~~
-	Emscripten compiler will turn your awesome C++ PixelGameEngine project into WASM!
-	This means you can run your application in teh browser, great for distributing
-	and submission in to jams and things! It's a bit new at the moment.
-
-	em++ -std=c++17 -O2 -s ALLOW_MEMORY_GROWTH=1 -s MAX_WEBGL_VERSION=2 -s MIN_WEBGL_VERSION=2 -s USE_LIBPNG=1 ./YourSource.cpp -o pge.html
+  Set these compiler options: -std=c++17
 
 
 
-	Using stb_image.h
-	~~~~~~~~~~~~~~~~~
-	The PGE will load png images by default (with help from libpng on non-windows systems).
-	However, the excellent "stb_image.h" can be used instead, supporting a variety of
-	image formats, and has no library dependence - something we like at OLC studios ;)
-	To use stb_image.h, make sure it's in your code base, and simply:
+  Compiling on Mac - EXPERIMENTAL! PROBABLY HAS BUGS
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  Yes yes, people use Macs for C++ programming! Who knew? Anyway, enough
+  arguing, thanks to Mumflr the PGE is now supported on Mac. Now I know nothing
+  about Mac, so if you need support, I suggest checking out the instructions
+  here: https://github.com/MumflrFumperdink/olcPGEMac
 
-	#define OLC_IMAGE_STB
-
-	Before including the olcPixelGameEngine.h header file. stb_image.h works on many systems
-	and can be downloaded here: https://github.com/nothings/stb/blob/master/stb_image.h
+  clang++ -arch x86_64 -std=c++17 -mmacosx-version-min=10.15 -Wall -framework OpenGL
+    -framework GLUT -framework Carbon -lpng YourSource.cpp -o YourProgName
 
 
 
-	Multiple cpp file projects?
-	~~~~~~~~~~~~~~~~~~~~~~~~~~~
-	As a single header solution, the OLC_PGE_APPLICATION definition is used to
-	insert the engine implementation at a project location of your choosing.
-	The simplest way to setup multifile projects is to create a file called
-	"olcPixelGameEngine.cpp" which includes the following:
+  Compiling with Emscripten (New & Experimental)
+  ~~~~~~~~~~~~~~~~~~~~~~~~~
+  Emscripten compiler will turn your awesome C++ PixelGameEngine project into WASM!
+  This means you can run your application in teh browser, great for distributing
+  and submission in to jams and things! It's a bit new at the moment.
 
-	#define OLC_PGE_APPLICATION
-	#include "olcPixelGameEngine.h"
-
-	That's all it should include. You can also include PGEX includes and
-	defines in here too. With this in place, you dont need to
-	#define OLC_PGE_APPLICATION anywhere, and can simply include this
-	header file as an when you need to.
+  em++ -std=c++17 -O2 -s ALLOW_MEMORY_GROWTH=1 -s MAX_WEBGL_VERSION=2 -s MIN_WEBGL_VERSION=2 -s USE_LIBPNG=1 ./YourSource.cpp -o pge.html
 
 
 
-	Ports
-	~~~~~
-	olc::PixelGameEngine has been ported and tested with varying degrees of
-	success to: WinXP, Win7, Win8, Win10, Various Linux, Raspberry Pi,
-	Chromebook, Playstation Portable (PSP) and Nintendo Switch. If you are
-	interested in the details of these ports, come and visit the Discord!
+  Using stb_image.h
+  ~~~~~~~~~~~~~~~~~
+  The PGE will load png images by default (with help from libpng on non-windows systems).
+  However, the excellent "stb_image.h" can be used instead, supporting a variety of
+  image formats, and has no library dependence - something we like at OLC studios ;)
+  To use stb_image.h, make sure it's in your code base, and simply:
+
+  #define OLC_IMAGE_STB
+
+  Before including the olcPixelGameEngine.h header file. stb_image.h works on many systems
+  and can be downloaded here: https://github.com/nothings/stb/blob/master/stb_image.h
 
 
 
-	Thanks
-	~~~~~~
-	I'd like to extend thanks to Ian McKay, Bispoo, Eremiell, slavka, gurkanctn, Phantim,
-	IProgramInCPP, JackOJC, KrossX, Huhlig, Dragoneye, Appa, JustinRichardsMusic, SliceNDice,
-	dandistine,	Ralakus, Gorbit99, raoul, joshinils, benedani, Moros1138, Alexio, SaladinAkara
-	& MagetzUb for advice, ideas and testing, and I'd like to extend my appreciation to the
-	230K YouTube followers,	80+ Patreons and 10K Discord server members who give me
-	the motivation to keep going with all this :D
+  Multiple cpp file projects?
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+  As a single header solution, the OLC_PGE_APPLICATION definition is used to
+  insert the engine implementation at a project location of your choosing.
+  The simplest way to setup multifile projects is to create a file called
+  "olcPixelGameEngine.cpp" which includes the following:
 
-	Significant Contributors: @Moros1138, @SaladinAkara, @MaGetzUb, @slavka,
-							  @Dragoneye, @Gorbit99, @dandistine & @Mumflr
+  #define OLC_PGE_APPLICATION
+  #include "olcPixelGameEngine.h"
 
-	Special thanks to those who bring gifts!
-	GnarGnarHead.......Domina
-	Gorbit99...........Bastion, Ori & The Blind Forest, Terraria, Spelunky 2, Skully
-	Marti Morta........Gris
-	Danicron...........Terraria
-	SaladinAkara.......Aseprite, Inside, Quern: Undying Thoughts, Outer Wilds
-	AlterEgo...........Final Fantasy XII - The Zodiac Age
-	SlicEnDicE.........Noita, Inside
-
-	Special thanks to my Patreons too - I wont name you on here, but I've
-	certainly enjoyed my tea and flapjacks :D
+  That's all it should include. You can also include PGEX includes and
+  defines in here too. With this in place, you dont need to
+  #define OLC_PGE_APPLICATION anywhere, and can simply include this
+  header file as an when you need to.
 
 
 
-	Author
-	~~~~~~
-	David Barr, aka javidx9, ©OneLoneCoder 2018, 2019, 2020, 2021
+  Ports
+  ~~~~~
+  olc::PixelGameEngine has been ported and tested with varying degrees of
+  success to: WinXP, Win7, Win8, Win10, Various Linux, Raspberry Pi,
+  Chromebook, Playstation Portable (PSP) and Nintendo Switch. If you are
+  interested in the details of these ports, come and visit the Discord!
+
+
+
+  Thanks
+  ~~~~~~
+  I'd like to extend thanks to Ian McKay, Bispoo, Eremiell, slavka, gurkanctn, Phantim,
+  IProgramInCPP, JackOJC, KrossX, Huhlig, Dragoneye, Appa, JustinRichardsMusic, SliceNDice,
+  dandistine,	Ralakus, Gorbit99, raoul, joshinils, benedani, Moros1138, Alexio, SaladinAkara
+  & MagetzUb for advice, ideas and testing, and I'd like to extend my appreciation to the
+  230K YouTube followers,	80+ Patreons and 10K Discord server members who give me
+  the motivation to keep going with all this :D
+
+  Significant Contributors: @Moros1138, @SaladinAkara, @MaGetzUb, @slavka,
+                @Dragoneye, @Gorbit99, @dandistine & @Mumflr
+
+  Special thanks to those who bring gifts!
+  GnarGnarHead.......Domina
+  Gorbit99...........Bastion, Ori & The Blind Forest, Terraria, Spelunky 2, Skully
+  Marti Morta........Gris
+  Danicron...........Terraria
+  SaladinAkara.......Aseprite, Inside, Quern: Undying Thoughts, Outer Wilds
+  AlterEgo...........Final Fantasy XII - The Zodiac Age
+  SlicEnDicE.........Noita, Inside
+
+  Special thanks to my Patreons too - I wont name you on here, but I've
+  certainly enjoyed my tea and flapjacks :D
+
+
+
+  Author
+  ~~~~~~
+  David Barr, aka javidx9, ©OneLoneCoder 2018, 2019, 2020, 2021
 */
 #pragma endregion
 
 #pragma region version_history
 /*
-	2.01: Made renderer and platform static for multifile projects
-	2.02: Added Decal destructor, optimised Pixel constructor
-	2.03: Added FreeBSD flags, Added DrawStringDecal()
-	2.04: Windows Full-Screen bug fixed
-	2.05: +DrawPartialWarpedDecal() - draws a warped decal from a subset image
-		  +DrawPartialRotatedDecal() - draws a rotated decal from a subset image
-	2.06: +GetTextSize() - returns area occupied by multiline string
-		  +GetWindowSize() - returns actual window size
-		  +GetElapsedTime() - returns last calculated fElapsedTime
-		  +GetWindowMouse() - returns actual mouse location in window
-		  +DrawExplicitDecal() - bow-chikka-bow-bow
-		  +DrawPartialDecal(pos, size) - draws a partial decal to specified area
-		  +FillRectDecal() - draws a flat shaded rectangle as a decal
-		  +GradientFillRectDecal() - draws a rectangle, with unique colour corners
-		  +Modified DrawCircle() & FillCircle() - Thanks IanM-Matrix1 (#PR121)
-		  +Gone someway to appeasing pedants
-	2.07: +GetPixelSize() - returns user specified pixel size
-		  +GetScreenPixelSize() - returns actual size in monitor pixels
-		  +Pixel Cohesion Mode (flag in Construct()) - disallows arbitrary window scaling
-		  +Working VSYNC in Windows windowed application - now much smoother
-		  +Added string conversion for olc::vectors
-		  +Added comparator operators for olc::vectors
-		  +Added DestroyWindow() on windows platforms for serial PGE launches
-		  +Added GetMousePos() to stop TarriestPython whinging
-	2.08: Fix SetScreenSize() aspect ratio pre-calculation
-		  Fix DrawExplicitDecal() - stupid oversight with multiple decals
-		  Disabled olc::Sprite copy constructor
-		  +olc::Sprite Duplicate() - produces a new clone of the sprite
-		  +olc::Sprite Duplicate(pos, size) - produces a new sprite from the region defined
-		  +Unary operators for vectors
-		  +More pedant mollification - Thanks TheLandfill
-		  +ImageLoader modules - user selectable image handling core, gdi+, libpng, stb_image
-		  +Mac Support via GLUT - thanks Mumflr!
-	2.09: Fix olc::Renderable Image load error - Thanks MaGetzUb & Zij-IT for finding and moaning about it
-		  Fix file rejection in image loaders when using resource packs
-		  Tidied Compiler defines per platform - Thanks slavka
-		  +Pedant fixes, const correctness in parts
-		  +DecalModes - Normal, Additive, Multiplicative blend modes
-		  +Pixel Operators & Lerping
-		  +Filtered Decals - If you hate pixels, then erase this file
-		  +DrawStringProp(), GetTextSizeProp(), DrawStringPropDecal() - Draws non-monospaced font
-	2.10: Fix PixelLerp() - oops my bad, lerped the wrong way :P
-		  Fix "Shader" support for strings - thanks Megarev for crying about it
-		  Fix GetTextSizeProp() - Height was just plain wrong...
-		  +vec2d operator overloads (element wise *=, /=)
-		  +vec2d comparison operators... :| yup... hmmmm...
-		  +vec2d ceil(), floor(), min(), max() functions - surprising how often I do it manually
-		  +DrawExplicitDecal(... uint32_t elements) - complete control over convex polygons and lines
-		  +DrawPolygonDecal() - to keep Bispoo happy, required significant rewrite of EVERYTHING, but hey ho
-		  +Complete rewrite of decal renderer
-		  +OpenGL 3.3 Renderer (also supports Raspberry Pi)
-		  +PGEX Break-In Hooks - with a push from Dandistine
-		  +Wireframe Decal Mode - For debug overlays
-	2.11: Made PGEX hooks optional - (provide true to super constructor)
-	2.12: Fix for MinGW compiler non-compliance :( - why is its sdk structure different?? why???
-	2.13: +GetFontSprite() - allows access to font data
-	2.14: Fix WIN32 Definition reshuffle
-		  Fix DrawPartialDecal() - messed up dimension during renderer experiment, didnt remove junk code, thanks Alexio
-		  Fix? Strange error regarding GDI+ Image Loader not knowing about COM, SDK change?
-	2.15: Big Reformat
-		  +WASM Platform (via Emscripten) - Big Thanks to OLC Community - See Platform for details
-		  +Sample Mode for Decals
-		  +Made olc_ConfigureSystem() accessible
-		  +Added OLC_----_CUSTOM_EX for externalised platforms, renderers and image loaders
-		  =Refactored olc::Sprite pixel data store
-		  -Deprecating LoadFromPGESprFile()
-		  -Deprecating SaveToPGESprFile()
-		  Fix Pixel -= operator (thanks Au Lit)
-	2.16: FIX Emscripten JS formatting in VS IDE (thanks Moros)
-		  +"Headless" Mode
-		  +DrawLineDecal()
-		  +Mouse Button Constants
-		  +Move Constructor for olc::Renderable
-		  +Polar/Cartesian conversion for v2d_generic
-		  +DrawRotatedStringDecal()/DrawRotatedStringPropDecal() (thanks Oso-Grande/Sopadeoso (PR #209))
-		  =Using olc::Renderable for layer surface
-		  +Major Mac and GLUT Update (thanks Mumflr)
+  2.01: Made renderer and platform static for multifile projects
+  2.02: Added Decal destructor, optimised Pixel constructor
+  2.03: Added FreeBSD flags, Added DrawStringDecal()
+  2.04: Windows Full-Screen bug fixed
+  2.05: +DrawPartialWarpedDecal() - draws a warped decal from a subset image
+      +DrawPartialRotatedDecal() - draws a rotated decal from a subset image
+  2.06: +GetTextSize() - returns area occupied by multiline string
+      +GetWindowSize() - returns actual window size
+      +GetElapsedTime() - returns last calculated fElapsedTime
+      +GetWindowMouse() - returns actual mouse location in window
+      +DrawExplicitDecal() - bow-chikka-bow-bow
+      +DrawPartialDecal(pos, size) - draws a partial decal to specified area
+      +FillRectDecal() - draws a flat shaded rectangle as a decal
+      +GradientFillRectDecal() - draws a rectangle, with unique colour corners
+      +Modified DrawCircle() & FillCircle() - Thanks IanM-Matrix1 (#PR121)
+      +Gone someway to appeasing pedants
+  2.07: +GetPixelSize() - returns user specified pixel size
+      +GetScreenPixelSize() - returns actual size in monitor pixels
+      +Pixel Cohesion Mode (flag in Construct()) - disallows arbitrary window scaling
+      +Working VSYNC in Windows windowed application - now much smoother
+      +Added string conversion for olc::vectors
+      +Added comparator operators for olc::vectors
+      +Added DestroyWindow() on windows platforms for serial PGE launches
+      +Added GetMousePos() to stop TarriestPython whinging
+  2.08: Fix SetScreenSize() aspect ratio pre-calculation
+      Fix DrawExplicitDecal() - stupid oversight with multiple decals
+      Disabled olc::Sprite copy constructor
+      +olc::Sprite Duplicate() - produces a new clone of the sprite
+      +olc::Sprite Duplicate(pos, size) - produces a new sprite from the region defined
+      +Unary operators for vectors
+      +More pedant mollification - Thanks TheLandfill
+      +ImageLoader modules - user selectable image handling core, gdi+, libpng, stb_image
+      +Mac Support via GLUT - thanks Mumflr!
+  2.09: Fix olc::Renderable Image load error - Thanks MaGetzUb & Zij-IT for finding and moaning about it
+      Fix file rejection in image loaders when using resource packs
+      Tidied Compiler defines per platform - Thanks slavka
+      +Pedant fixes, const correctness in parts
+      +DecalModes - Normal, Additive, Multiplicative blend modes
+      +Pixel Operators & Lerping
+      +Filtered Decals - If you hate pixels, then erase this file
+      +DrawStringProp(), GetTextSizeProp(), DrawStringPropDecal() - Draws non-monospaced font
+  2.10: Fix PixelLerp() - oops my bad, lerped the wrong way :P
+      Fix "Shader" support for strings - thanks Megarev for crying about it
+      Fix GetTextSizeProp() - Height was just plain wrong...
+      +vec2d operator overloads (element wise *=, /=)
+      +vec2d comparison operators... :| yup... hmmmm...
+      +vec2d ceil(), floor(), min(), max() functions - surprising how often I do it manually
+      +DrawExplicitDecal(... uint32_t elements) - complete control over convex polygons and lines
+      +DrawPolygonDecal() - to keep Bispoo happy, required significant rewrite of EVERYTHING, but hey ho
+      +Complete rewrite of decal renderer
+      +OpenGL 3.3 Renderer (also supports Raspberry Pi)
+      +PGEX Break-In Hooks - with a push from Dandistine
+      +Wireframe Decal Mode - For debug overlays
+  2.11: Made PGEX hooks optional - (provide true to super constructor)
+  2.12: Fix for MinGW compiler non-compliance :( - why is its sdk structure different?? why???
+  2.13: +GetFontSprite() - allows access to font data
+  2.14: Fix WIN32 Definition reshuffle
+      Fix DrawPartialDecal() - messed up dimension during renderer experiment, didnt remove junk code, thanks Alexio
+      Fix? Strange error regarding GDI+ Image Loader not knowing about COM, SDK change?
+  2.15: Big Reformat
+      +WASM Platform (via Emscripten) - Big Thanks to OLC Community - See Platform for details
+      +Sample Mode for Decals
+      +Made olc_ConfigureSystem() accessible
+      +Added OLC_----_CUSTOM_EX for externalised platforms, renderers and image loaders
+      =Refactored olc::Sprite pixel data store
+      -Deprecating LoadFromPGESprFile()
+      -Deprecating SaveToPGESprFile()
+      Fix Pixel -= operator (thanks Au Lit)
+  2.16: FIX Emscripten JS formatting in VS IDE (thanks Moros)
+      +"Headless" Mode
+      +DrawLineDecal()
+      +Mouse Button Constants
+      +Move Constructor for olc::Renderable
+      +Polar/Cartesian conversion for v2d_generic
+      +DrawRotatedStringDecal()/DrawRotatedStringPropDecal() (thanks Oso-Grande/Sopadeoso (PR #209))
+      =Using olc::Renderable for layer surface
+      +Major Mac and GLUT Update (thanks Mumflr)
 
 
 
@@ -293,23 +293,16 @@
 // O------------------------------------------------------------------------------O
 // | STANDARD INCLUDES                                                            |
 // O------------------------------------------------------------------------------O
-#include <cmath>
-#include <cstdint>
-#include <string>
-#include <iostream>
-#include <streambuf>
-#include <sstream>
-#include <chrono>
-#include <vector>
-#include <list>
-#include <thread>
-#include <atomic>
-#include <fstream>
 #include <map>
+#include <cmath>
+#include <chrono>
+#include <fstream>
+#include <memory>
+#include <string>
+#include <vector>
+#include <cstdint>
+#include <streambuf>
 #include <functional>
-#include <algorithm>
-#include <array>
-#include <cstring>
 #pragma endregion
 
 #define PGE_VER 216
@@ -328,18 +321,6 @@
 #if __cplusplus >= 201703L
 #undef USE_EXPERIMENTAL_FS
 #endif
-#endif
-
-
-#if defined(USE_EXPERIMENTAL_FS) || defined(FORCE_EXPERIMENTAL_FS)
-// C++14
-#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
-#include <experimental/filesystem>
-namespace _gfs = std::experimental::filesystem::v1;
-#else
-// C++17
-#include <filesystem>
-namespace _gfs = std::filesystem;
 #endif
 
 #if defined(UNICODE) || defined(_UNICODE)
@@ -423,32 +404,12 @@ namespace _gfs = std::filesystem;
 #define _WIN32_WINNT 0x0500 // Windows 2000
 #endif
 #endif
-
-#include <windows.h>
-#undef _WINSOCKAPI_
 #endif
 
-#if defined(OLC_PLATFORM_X11)
-namespace X11
-{
-#include <X11/X.h>
-#include <X11/Xlib.h>
-}
-#endif
-
-#if defined(OLC_PLATFORM_GLUT)
-#if defined(__linux__)
-#include <GL/glut.h>
-#include <GL/freeglut_ext.h>
-#endif
-#if defined(__APPLE__)
-#include <GLUT/glut.h>
-#include <objc/message.h>
-#include <objc/NSObjCRuntime.h>
-#endif
-#endif
 #endif
 #pragma endregion
+
+#include <olcPGE/olcPGE_export.hpp>
 
 // O------------------------------------------------------------------------------O
 // | olcPixelGameEngine INTERFACE DECLARATION                                     |
@@ -468,7 +429,7 @@ enum rcode { FAIL = 0, OK = 1, NO_FILE = -1 };
 // O------------------------------------------------------------------------------O
 // | olc::Pixel - Represents a 32-Bit RGBA colour                                 |
 // O------------------------------------------------------------------------------O
-struct Pixel
+struct OLCPGE_EXPORT Pixel
 {
   union
   {
@@ -495,8 +456,8 @@ struct Pixel
   Pixel  inv() const;
 };
 
-Pixel PixelF(float red, float green, float blue, float alpha = 1.0f);
-Pixel PixelLerp(const olc::Pixel& p1, const olc::Pixel& p2, float t);
+OLCPGE_EXPORT Pixel PixelF(float red, float green, float blue, float alpha = 1.0f);
+OLCPGE_EXPORT Pixel PixelLerp(const olc::Pixel& p1, const olc::Pixel& p2, float t);
 
 
 // O------------------------------------------------------------------------------O
@@ -527,7 +488,9 @@ enum Key
   NP_MUL, NP_DIV, NP_ADD, NP_SUB, NP_DECIMAL, PERIOD,
   EQUALS, COMMA, MINUS,
   OEM_1, OEM_2, OEM_3, OEM_4, OEM_5, OEM_6, OEM_7, OEM_8,
-  CAPS_LOCK, ENUM_END
+  CAPS_LOCK,
+  MENU, // ALT
+  ENUM_END
 };
 
 namespace Mouse
@@ -555,14 +518,14 @@ struct HWButton
 // O------------------------------------------------------------------------------O
 #if !defined(OLC_IGNORE_VEC2D)
 template <class T>
-struct v2d_generic
+struct OLCPGE_EXPORT v2d_generic
 {
-  T x = 0;
-  T y = 0;
-  v2d_generic() : x(0), y(0) {}
+  T x {};
+  T y {};
+  v2d_generic() = default;
   v2d_generic(T _x, T _y) : x(_x), y(_y) {}
-  v2d_generic(const v2d_generic& v) : x(v.x), y(v.y) {}
-  v2d_generic& operator=(const v2d_generic& v) = default;
+  v2d_generic(const v2d_generic&) = default;
+  v2d_generic& operator=(const v2d_generic&) = default;
   T mag() const { return T(std::sqrt(x * x + y * y)); }
   T mag2() const { return x * x + y * y; }
   v2d_generic  norm() const { T r = 1 / mag(); return v2d_generic(x * r, y * r); }
@@ -633,13 +596,13 @@ typedef v2d_generic<double> vd2d;
 // O------------------------------------------------------------------------------O
 // | olc::ResourcePack - A virtual scrambled filesystem to pack your assets into  |
 // O------------------------------------------------------------------------------O
-struct ResourceBuffer : public std::streambuf
+struct OLCPGE_EXPORT ResourceBuffer : public std::streambuf
 {
   ResourceBuffer(std::ifstream& ifs, uint32_t offset, uint32_t size);
   std::vector<char> vMemory;
 };
 
-class ResourcePack : public std::streambuf
+class OLCPGE_EXPORT ResourcePack : public std::streambuf
 {
 public:
   ResourcePack();
@@ -658,7 +621,7 @@ private:
 };
 
 
-class ImageLoader
+class OLCPGE_EXPORT ImageLoader
 {
 public:
   ImageLoader() = default;
@@ -671,7 +634,7 @@ public:
 // O------------------------------------------------------------------------------O
 // | olc::Sprite - An image represented by a 2D array of olc::Pixel               |
 // O------------------------------------------------------------------------------O
-class Sprite
+class OLCPGE_EXPORT Sprite
 {
 public:
   Sprite();
@@ -703,13 +666,13 @@ public:
   std::vector<olc::Pixel> pColData;
   Mode modeSample = Mode::NORMAL;
 
-  static std::unique_ptr<olc::ImageLoader> loader;
+  static std::unique_ptr<olc::ImageLoader> OLCPGE_EXPORT loader;
 };
 
 // O------------------------------------------------------------------------------O
 // | olc::Decal - A GPU resident storage of an olc::Sprite                        |
 // O------------------------------------------------------------------------------O
-class Decal
+class OLCPGE_EXPORT Decal
 {
 public:
   Decal(olc::Sprite* spr, bool filter = false, bool clamp = true);
@@ -737,7 +700,7 @@ enum class DecalMode
 // O------------------------------------------------------------------------------O
 // | olc::Renderable - Convenience class to keep a sprite and decal together      |
 // O------------------------------------------------------------------------------O
-class Renderable
+class OLCPGE_EXPORT Renderable
 {
 public:
   Renderable() = default;
@@ -745,6 +708,8 @@ public:
   Renderable(const Renderable&) = delete;
   olc::rcode Load(const std::string& sFile, ResourcePack* pack = nullptr, bool filter = false, bool clamp = true);
   void Create(uint32_t width, uint32_t height, bool filter = false, bool clamp = true);
+  void SetDecal(olc::Decal* decal);
+  void SetSprite(olc::Sprite* spr);
   olc::Decal* Decal() const;
   olc::Sprite* Sprite() const;
 
@@ -782,7 +747,16 @@ struct LayerDesc
   std::function<void()> funcHook = nullptr;
 };
 
-class Renderer
+namespace Mouse
+{
+struct Cursor
+{
+  std::shared_ptr <Renderable> bitmap {std::make_shared<Renderable>()};
+  olc::vi2d hotspot {};
+};
+}
+
+class OLCPGE_EXPORT Renderer
 {
 public:
   virtual ~Renderer() = default;
@@ -804,8 +778,11 @@ public:
   static olc::PixelGameEngine* ptrPGE;
 };
 
-class Platform
+class OLCPGE_EXPORT Platform
 {
+protected:
+  bool bMouseCursorHidden {};
+
 public:
   virtual ~Platform() = default;
   virtual olc::rcode ApplicationStartUp() = 0;
@@ -817,20 +794,24 @@ public:
   virtual olc::rcode SetWindowTitle(const std::string& s) = 0;
   virtual olc::rcode StartSystemEventLoop() = 0;
   virtual olc::rcode HandleSystemEvent() = 0;
+
+  virtual olc::rcode CenterMouseCursor() = 0;
+  virtual olc::rcode SetMouseCursorHidden(const bool) = 0;
+
   static olc::PixelGameEngine* ptrPGE;
 };
 
 class PGEX;
 
 // The Static Twins (plus one)
-static std::unique_ptr<Renderer> renderer;
-static std::unique_ptr<Platform> platform;
-static std::map<size_t, uint8_t> mapKeys;
+extern std::unique_ptr<Renderer> OLCPGE_EXPORT renderer;
+extern std::unique_ptr<Platform> OLCPGE_EXPORT platform;
+extern std::map<size_t, uint8_t> OLCPGE_EXPORT mapKeys;
 
 // O------------------------------------------------------------------------------O
 // | olc::PixelGameEngine - The main BASE class for your application              |
 // O------------------------------------------------------------------------------O
-class PixelGameEngine
+class OLCPGE_EXPORT PixelGameEngine
 {
 public:
   PixelGameEngine();
@@ -893,6 +874,15 @@ public: // Utility
   // Gets actual pixel scale
   const olc::vi2d& GetScreenPixelSize() const;
 
+  void SetKeepMouseCentered(const bool);
+  bool GetKeepMouseCentered() const;
+
+  void ResetMouseCursor();
+  void SetMouseCursor(const Mouse::Cursor&);
+  Mouse::Cursor GetMouseCursor() const;
+
+  static std::string GetFontData();
+
 public: // CONFIGURATION ROUTINES
   // Layer targeting functions
   void SetDrawTarget(uint8_t layer);
@@ -921,6 +911,7 @@ public: // CONFIGURATION ROUTINES
 
 
 public: // DRAWING ROUTINES
+  void NewFrame();
   // Draws a single Pixel
   virtual bool Draw(int32_t x, int32_t y, Pixel p = olc::WHITE);
   bool Draw(const olc::vi2d& pos, Pixel p = olc::WHITE);
@@ -992,6 +983,8 @@ public: // DRAWING ROUTINES
   void DrawPolygonDecal(olc::Decal* decal, const std::vector<olc::vf2d>& pos, const std::vector<olc::vf2d>& uv, const olc::Pixel tint = olc::WHITE);
   // Draws a line in Decal Space
   void DrawLineDecal(const olc::vf2d& pos1, const olc::vf2d& pos2, Pixel p = olc::WHITE);
+  void DrawPolyLineDecal(const std::vector<olc::vf2d>& pos, Pixel p = olc::WHITE);
+  void DrawRectDecal(const olc::vf2d& pos, const olc::vf2d& size, Pixel p = olc::WHITE);
   void DrawRotatedStringDecal(const olc::vf2d& pos, const std::string& sText, const float fAngle, const olc::vf2d& center = { 0.0f, 0.0f }, const olc::Pixel col = olc::WHITE, const olc::vf2d& scale = { 1.0f, 1.0f });
   void DrawRotatedStringPropDecal(const olc::vf2d& pos, const std::string& sText, const float fAngle, const olc::vf2d& center = { 0.0f, 0.0f }, const olc::Pixel col = olc::WHITE, const olc::vf2d& scale = { 1.0f, 1.0f });
   // Clears entire draw target to Pixel
@@ -1024,6 +1017,9 @@ private: // Inner mysterious workings
   olc::vf2d	vPixel = { 1.0f, 1.0f };
   bool		bHasInputFocus = false;
   bool		bHasMouseFocus = false;
+  bool		bKeepMouseCentered = false;
+  Mouse::Cursor bMouseCursor {};
+  bool    bNewFrame = false;
   bool		bEnableVSYNC = false;
   float		fFrameTimer = 1.0f;
   float		fLastElapsed = 0.0f;
@@ -1042,12 +1038,12 @@ private: // Inner mysterious workings
   // State of keyboard
   bool		pKeyNewState[256] = { 0 };
   bool		pKeyOldState[256] = { 0 };
-  HWButton	pKeyboardState[256] = { 0 };
+  HWButton	pKeyboardState[256] = {};
 
   // State of mouse
   bool		pMouseNewState[nMouseButtons] = { 0 };
   bool		pMouseOldState[nMouseButtons] = { 0 };
-  HWButton	pMouseState[nMouseButtons] = { 0 };
+  HWButton	pMouseState[nMouseButtons] = {};
 
   // The main engine thread
   void		EngineThread();
@@ -1055,7 +1051,7 @@ private: // Inner mysterious workings
 
   // If anything sets this flag to false, the engine
   // "should" shut down gracefully
-  static std::atomic<bool> bAtomActive;
+  static std::atomic<bool> OLCPGE_NO_EXPORT bAtomActive;
 
 public:
   // "Break In" Functions
@@ -1095,7 +1091,7 @@ private:
 // O------------------------------------------------------------------------------O
 // | PGE EXTENSION BASE CLASS - Permits access to PGE functions from extension    |
 // O------------------------------------------------------------------------------O
-class PGEX
+class OLCPGE_EXPORT PGEX
 {
   friend class olc::PixelGameEngine;
 public:

@@ -1,6 +1,63 @@
 #define UNICODE
 #include <olcPGE/olcPixelGameEngine.hpp>
 
+#if !defined(OLC_PGE_HEADLESS)
+#if defined(OLC_PLATFORM_WINAPI)
+
+#include <windows.h>
+#include <windowsx.h>
+#undef _WINSOCKAPI_
+
+#endif
+
+#if defined(OLC_PLATFORM_X11)
+namespace X11
+{
+#include <X11/X.h>
+#include <X11/Xlib.h>
+}
+#endif
+
+#if defined(OLC_PLATFORM_GLUT)
+#if defined(__linux__)
+#include <GL/glut.h>
+#include <GL/freeglut_ext.h>
+#endif
+#if defined(__APPLE__)
+#include <GLUT/glut.h>
+#include <objc/message.h>
+#include <objc/NSObjCRuntime.h>
+#endif
+#endif
+
+#endif
+
+#if defined(USE_EXPERIMENTAL_FS) || defined(FORCE_EXPERIMENTAL_FS)
+// C++14
+#define _SILENCE_EXPERIMENTAL_FILESYSTEM_DEPRECATION_WARNING
+#include <experimental/filesystem>
+namespace _gfs = std::experimental::filesystem::v1;
+#else
+// C++17
+#include <filesystem>
+namespace _gfs = std::filesystem;
+#endif
+
+#pragma region std_includes
+// O------------------------------------------------------------------------------O
+// | STANDARD INCLUDES                                                            |
+// O------------------------------------------------------------------------------O
+#include <iostream>
+#include <sstream>
+#include <list>
+#include <thread>
+#include <atomic>
+#include <algorithm>
+#include <array>
+#include <cstring>
+#include <cassert>
+#pragma endregion
+
 
 // O------------------------------------------------------------------------------O
 // | olcPixelGameEngine INTERFACE IMPLEMENTATION (CORE)                           |
@@ -277,6 +334,22 @@ olc::rcode Renderable::Load(const std::string& sFile, ResourcePack* pack, bool f
       pSprite = nullptr;
       return olc::rcode::NO_FILE;
     }
+}
+
+void Renderable::SetDecal(olc::Decal* decal)
+{
+  pDecal.reset(decal);
+}
+
+void Renderable::SetSprite(olc::Sprite* spr)
+{
+  pSprite.reset(spr);
+
+  if (pDecal == nullptr)
+    return;
+
+  pDecal->sprite = spr;
+  pDecal->Update();
 }
 
 olc::Decal* Renderable::Decal() const
@@ -653,6 +726,59 @@ const olc::vi2d& PixelGameEngine::GetScreenPixelSize() const
 
 const olc::vi2d& PixelGameEngine::GetWindowMouse() const
 { return vMouseWindowPos; }
+
+bool PixelGameEngine::GetKeepMouseCentered() const
+{ return bKeepMouseCentered; }
+
+void PixelGameEngine::SetKeepMouseCentered(const bool centered)
+{
+  if ( IsFocused() == true && centered == true )
+    platform->CenterMouseCursor();
+
+  bKeepMouseCentered = centered;
+}
+
+void PixelGameEngine::ResetMouseCursor()
+{
+  bMouseCursor = Mouse::Cursor{};
+  olc::platform->SetMouseCursorHidden(false);
+}
+
+Mouse::Cursor PixelGameEngine::GetMouseCursor() const
+{ return bMouseCursor; }
+
+void PixelGameEngine::SetMouseCursor(const Mouse::Cursor& cursor)
+{
+  bMouseCursor = cursor;
+  olc::platform->SetMouseCursorHidden(true);
+}
+
+std::string PixelGameEngine::GetFontData()
+{
+  return
+  {
+    "?Q`0001oOch0o01o@F40o0<AGD4090LAGD<090@A7ch0?00O7Q`0600>00000000"
+    "O000000nOT0063Qo4d8>?7a14Gno94AA4gno94AaOT0>o3`oO400o7QN00000400"
+    "Of80001oOg<7O7moBGT7O7lABET024@aBEd714AiOdl717a_=TH013Q>00000000"
+    "720D000V?V5oB3Q_HdUoE7a9@DdDE4A9@DmoE4A;Hg]oM4Aj8S4D84@`00000000"
+    "OaPT1000Oa`^13P1@AI[?g`1@A=[OdAoHgljA4Ao?WlBA7l1710007l100000000"
+    "ObM6000oOfMV?3QoBDD`O7a0BDDH@5A0BDD<@5A0BGeVO5ao@CQR?5Po00000000"
+    "Oc``000?Ogij70PO2D]??0Ph2DUM@7i`2DTg@7lh2GUj?0TO0C1870T?00000000"
+    "70<4001o?P<7?1QoHg43O;`h@GT0@:@LB@d0>:@hN@L0@?aoN@<0O7ao0000?000"
+    "OcH0001SOglLA7mg24TnK7ln24US>0PL24U140PnOgl0>7QgOcH0K71S0000A000"
+    "00H00000@Dm1S007@DUSg00?OdTnH7YhOfTL<7Yh@Cl0700?@Ah0300700000000"
+    "<008001QL00ZA41a@6HnI<1i@FHLM81M@@0LG81?O`0nC?Y7?`0ZA7Y300080000"
+    "O`082000Oh0827mo6>Hn?Wmo?6HnMb11MP08@C11H`08@FP0@@0004@000000000"
+    "00P00001Oab00003OcKP0006@6=PMgl<@440MglH@000000`@000001P00000000"
+    "Ob@8@@00Ob@8@Ga13R@8Mga172@8?PAo3R@827QoOb@820@0O`0007`0000007P0"
+    "O`000P08Od400g`<3V=P0G`673IP0`@3>1`00P@6O`P00g`<O`000GP800000000"
+    "?P9PL020O`<`N3R0@E4HC7b0@ET<ATB0@@l6C4B0O`H3N7b0?P01L3R000000020"
+  };
+}
+
+
+void PixelGameEngine::NewFrame()
+{bNewFrame = true;}
 
 bool PixelGameEngine::Draw(const olc::vi2d& pos, Pixel p)
 { return Draw(pos.x, pos.y, p); }
@@ -1270,6 +1396,34 @@ void PixelGameEngine::DrawLineDecal(const olc::vf2d& pos1, const olc::vf2d& pos2
   vLayers[nTargetLayer].vecDecalInstance.push_back(di);
 }
 
+void PixelGameEngine::DrawPolyLineDecal(const std::vector<olc::vf2d>& pos, Pixel p)
+{
+  DecalInstance di;
+  di.decal = nullptr;
+  di.points = uint32_t(pos.size());
+  di.pos.resize(di.points);
+  di.uv.resize(di.points);
+  di.w.resize(di.points);
+  di.tint.resize(di.points);
+  for (uint32_t i = 0; i < di.points; i++)
+    {
+      di.pos[i] = { (pos[i].x * vInvScreenSize.x) * 2.0f - 1.0f, ((pos[i].y * vInvScreenSize.y) * 2.0f - 1.0f) * -1.0f };
+      di.uv[i] = { 0.0f, 0.0f };
+      di.tint[i] = p;
+      di.w[i] = 1.0f;
+    }
+  di.mode = olc::DecalMode::WIREFRAME;
+  vLayers[nTargetLayer].vecDecalInstance.push_back(di);
+}
+
+void PixelGameEngine::DrawRectDecal(const olc::vf2d& pos, const olc::vf2d& size, const olc::Pixel col)
+{
+  DrawLineDecal(pos, {pos.x + size.x, pos.y}, col);
+  DrawLineDecal({pos.x + size.x, pos.y}, pos + size, col);
+  DrawLineDecal(pos + size, {pos.x, pos.y + size.y}, col);
+  DrawLineDecal({pos.x, pos.y + size.y}, pos, col);
+}
+
 void PixelGameEngine::FillRectDecal(const olc::vf2d& pos, const olc::vf2d& size, const olc::Pixel col)
 {
   std::array<olc::vf2d, 4> points = { { {pos}, {pos.x, pos.y + size.y}, {pos + size}, {pos.x + size.x, pos.y} } };
@@ -1684,9 +1838,9 @@ void PixelGameEngine::olc_UpdateMouseWheel(int32_t delta)
 
 void PixelGameEngine::olc_UpdateMouse(int32_t x, int32_t y)
 {
+  bHasMouseFocus = true;
   // Mouse coords come in screen space
   // But leave in pixel space
-  bHasMouseFocus = true;
   vMouseWindowPos = { x, y };
   // Full Screen mode may have a weird viewport we must clamp to
   x -= vViewPos.x;
@@ -1706,10 +1860,29 @@ void PixelGameEngine::olc_UpdateKeyState(int32_t key, bool state)
 { pKeyNewState[key] = state; }
 
 void PixelGameEngine::olc_UpdateMouseFocus(bool state)
-{ bHasMouseFocus = state; }
+{
+  bHasMouseFocus = state;
+
+  if (bHasMouseFocus == true)
+    return;
+
+  for (auto& button : pMouseNewState)
+    button = false;
+}
 
 void PixelGameEngine::olc_UpdateKeyFocus(bool state)
-{ bHasInputFocus = state; }
+{
+  bHasInputFocus = state;
+
+  if (bHasInputFocus == true)
+    return;
+
+  for (auto& key : pKeyNewState)
+    key = false;
+
+  for (auto& button : pMouseNewState)
+    button = false;
+}
 
 void PixelGameEngine::olc_Reanimate()
 { bAtomActive = true; }
@@ -1810,6 +1983,9 @@ void PixelGameEngine::olc_CoreUpdate()
   ScanHardware(pKeyboardState, pKeyOldState, pKeyNewState, 256);
   ScanHardware(pMouseState, pMouseOldState, pMouseNewState, nMouseButtons);
 
+  if (GetKeepMouseCentered() == true && IsFocused() == true)
+    platform->CenterMouseCursor();
+
   // Cache mouse coordinates so they remain consistent during frame
   vMousePos = vMousePosCache;
   nMouseWheelDelta = nMouseWheelDeltaCache;
@@ -1819,8 +1995,20 @@ void PixelGameEngine::olc_CoreUpdate()
 
   // Handle Frame Update
   for (auto& ext : vExtensions) ext->OnBeforeUserUpdate(fElapsedTime);
+
   if (!OnUserUpdate(fElapsedTime)) bAtomActive = false;
+
+  if (bMouseCursor.bitmap != nullptr && bMouseCursor.bitmap->Decal() != nullptr)
+    DrawDecal(vMousePos - bMouseCursor.hotspot, bMouseCursor.bitmap->Decal());
+
   for (auto& ext : vExtensions) ext->OnAfterUserUpdate(fElapsedTime);
+
+  fFrameTimer += fElapsedTime;
+
+  if (bNewFrame == false)
+    return;
+
+  bNewFrame = false;
 
   // Display Frame
   renderer->UpdateViewport(vViewPos, vViewSize);
@@ -1832,10 +2020,13 @@ void PixelGameEngine::olc_CoreUpdate()
   SetDecalMode(DecalMode::NORMAL);
   renderer->PrepareDrawing();
 
+  size_t nDecalsCount {};
+
   for (auto layer = vLayers.rbegin(); layer != vLayers.rend(); ++layer)
     {
       if (layer->bShow)
         {
+          nDecalsCount += layer->vecDecalInstance.size();
           if (layer->funcHook == nullptr)
             {
               renderer->ApplyTexture(layer->pDrawTarget.Decal()->id);
@@ -1864,37 +2055,22 @@ void PixelGameEngine::olc_CoreUpdate()
   renderer->DisplayFrame();
 
   // Update Title Bar
-  fFrameTimer += fElapsedTime;
   nFrameCount++;
   if (fFrameTimer >= 1.0f)
     {
       nLastFPS = nFrameCount;
       fFrameTimer -= 1.0f;
-      std::string sTitle = sAppName + " - FPS: " + std::to_string(nFrameCount);
-      platform->SetWindowTitle(sTitle);
       nFrameCount = 0;
     }
+
+  auto sTitle = sAppName + " - FPS: " + std::to_string(nLastFPS)
+                        + " Decals: " + std::to_string(nDecalsCount);
+  platform->SetWindowTitle(sTitle);
 }
 
 void PixelGameEngine::olc_ConstructFontSheet()
 {
-  std::string data;
-  data += "?Q`0001oOch0o01o@F40o0<AGD4090LAGD<090@A7ch0?00O7Q`0600>00000000";
-  data += "O000000nOT0063Qo4d8>?7a14Gno94AA4gno94AaOT0>o3`oO400o7QN00000400";
-  data += "Of80001oOg<7O7moBGT7O7lABET024@aBEd714AiOdl717a_=TH013Q>00000000";
-  data += "720D000V?V5oB3Q_HdUoE7a9@DdDE4A9@DmoE4A;Hg]oM4Aj8S4D84@`00000000";
-  data += "OaPT1000Oa`^13P1@AI[?g`1@A=[OdAoHgljA4Ao?WlBA7l1710007l100000000";
-  data += "ObM6000oOfMV?3QoBDD`O7a0BDDH@5A0BDD<@5A0BGeVO5ao@CQR?5Po00000000";
-  data += "Oc``000?Ogij70PO2D]??0Ph2DUM@7i`2DTg@7lh2GUj?0TO0C1870T?00000000";
-  data += "70<4001o?P<7?1QoHg43O;`h@GT0@:@LB@d0>:@hN@L0@?aoN@<0O7ao0000?000";
-  data += "OcH0001SOglLA7mg24TnK7ln24US>0PL24U140PnOgl0>7QgOcH0K71S0000A000";
-  data += "00H00000@Dm1S007@DUSg00?OdTnH7YhOfTL<7Yh@Cl0700?@Ah0300700000000";
-  data += "<008001QL00ZA41a@6HnI<1i@FHLM81M@@0LG81?O`0nC?Y7?`0ZA7Y300080000";
-  data += "O`082000Oh0827mo6>Hn?Wmo?6HnMb11MP08@C11H`08@FP0@@0004@000000000";
-  data += "00P00001Oab00003OcKP0006@6=PMgl<@440MglH@000000`@000001P00000000";
-  data += "Ob@8@@00Ob@8@Ga13R@8Mga172@8?PAo3R@827QoOb@820@0O`0007`0000007P0";
-  data += "O`000P08Od400g`<3V=P0G`673IP0`@3>1`00P@6O`P00g`<O`000GP800000000";
-  data += "?P9PL020O`<`N3R0@E4HC7b0@ET<ATB0@@l6C4B0O`H3N7b0?P01L3R000000020";
+  std::string data = GetFontData();
 
   fontSprite = new olc::Sprite(128, 48);
   int px = 0, py = 0;
@@ -1943,6 +2119,9 @@ void PGEX::OnAfterUserUpdate(float fElapsedTime) {}
 
 // Need a couple of statics as these are singleton instances
 // read from multiple locations
+std::unique_ptr<Renderer> renderer{};
+std::unique_ptr<Platform> platform{};
+std::map<size_t, uint8_t> mapKeys{};
 std::atomic<bool> PixelGameEngine::bAtomActive{ false };
 olc::PixelGameEngine* olc::PGEX::pge = nullptr;
 olc::PixelGameEngine* olc::Platform::ptrPGE = nullptr;
@@ -2096,11 +2275,11 @@ namespace olc
       if (!bVSYNC)
         {
 #if defined(__APPLE__)
-	  GLint sync = 0;
-	  CGLContextObj ctx = CGLGetCurrentContext();
-	  if (ctx) CGLSetParameter(ctx, kCGLCPSwapInterval, &sync);
+    GLint sync = 0;
+    CGLContextObj ctx = CGLGetCurrentContext();
+    if (ctx) CGLSetParameter(ctx, kCGLCPSwapInterval, &sync);
 #endif
-	}
+  }
 #else
       glEnable(GL_TEXTURE_2D); // Turn on texturing
       glHint(GL_PERSPECTIVE_CORRECTION_HINT, GL_NICEST);
@@ -2148,7 +2327,7 @@ namespace olc
       glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
     }
 
-    void SetDecalMode(const olc::DecalMode& mode)
+    void SetDecalMode(const olc::DecalMode& mode) override
     {
       if (mode != nDecalMode)
         {
@@ -2218,6 +2397,16 @@ namespace olc
 
     uint32_t CreateTexture(const uint32_t width, const uint32_t height, const bool filtered, const bool clamp) override
     {
+#if defined(OLC_PLATFORM_WINAPI)
+      auto currentContext = wglGetCurrentContext();
+#endif
+
+#if defined(OLC_PLATFORM_X11)
+      auto currentContext = X11::glXGetCurrentContext();
+#endif
+
+      assert(currentContext != nullptr);
+
       UNUSED(width);
       UNUSED(height);
       uint32_t id = 0;
@@ -2531,11 +2720,11 @@ namespace olc
       if (!bVSYNC)
         {
 #if defined(__APPLE__)
-	  GLint sync = 0;
-	  CGLContextObj ctx = CGLGetCurrentContext();
-	  if (ctx) CGLSetParameter(ctx, kCGLCPSwapInterval, &sync);
+    GLint sync = 0;
+    CGLContextObj ctx = CGLGetCurrentContext();
+    if (ctx) CGLSetParameter(ctx, kCGLCPSwapInterval, &sync);
 #endif
-	}
+  }
 #else
 #if !defined(OLC_PLATFORM_EMSCRIPTEN)
       glEnable(GL_TEXTURE_2D); // Turn on texturing
@@ -3145,6 +3334,8 @@ namespace olc
   {
   private:
     HWND olc_hWnd = nullptr;
+    HCURSOR olc_hCursor;
+    HCURSOR olc_hCursorDefault;
     std::wstring wsAppName;
 
     std::wstring ConvertS2W(std::string s)
@@ -3188,6 +3379,8 @@ namespace olc
 
     virtual olc::rcode CreateWindowPane(const olc::vi2d& vWindowPos, olc::vi2d& vWindowSize, bool bFullScreen) override
     {
+      SetProcessDPIAware(); // Dear ImGui compatibility
+
       WNDCLASS wc;
       wc.hIcon = LoadIcon(NULL, IDI_APPLICATION);
       wc.hCursor = LoadCursor(NULL, IDC_ARROW);
@@ -3201,9 +3394,11 @@ namespace olc
       wc.lpszClassName = olcT("OLC_PIXEL_GAME_ENGINE");
       RegisterClass(&wc);
 
+      olc_hCursor = olc_hCursorDefault = wc.hCursor;
+
       // Define window furniture
       DWORD dwExStyle = WS_EX_APPWINDOW | WS_EX_WINDOWEDGE;
-      DWORD dwStyle = WS_CAPTION | WS_SYSMENU | WS_VISIBLE | WS_THICKFRAME;
+      DWORD dwStyle = WS_CAPTION | WS_SYSMENU | WS_VISIBLE;
 
       olc::vi2d vTopLeft = vWindowPos;
 
@@ -3272,6 +3467,7 @@ namespace olc
       mapKeys[VK_OEM_MINUS] = Key::MINUS;		// the minus key on any keyboard
       mapKeys[VK_OEM_PERIOD] = Key::PERIOD;	// the period key on any keyboard
       mapKeys[VK_CAPITAL] = Key::CAPS_LOCK;
+      mapKeys[VK_MENU] = Key::MENU;
       return olc::OK;
     }
 
@@ -3301,35 +3497,103 @@ namespace olc
     // Windows Event Handler - this is statically connected to the windows event system
     static LRESULT CALLBACK olc_WindowEvent(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam)
     {
+      const HCURSOR cursor = static_cast <Platform_Windows*> (platform.get())->olc_hCursor;
       switch (uMsg)
         {
         case WM_MOUSEMOVE:
-          {
-            // Thanks @ForAbby (Discord)
-            uint16_t x = lParam & 0xFFFF; uint16_t y = (lParam >> 16) & 0xFFFF;
-            int16_t ix = *(int16_t*)&x;   int16_t iy = *(int16_t*)&y;
-            ptrPGE->olc_UpdateMouse(ix, iy);
-            return 0;
-          }
-        case WM_SIZE:       ptrPGE->olc_UpdateWindowSize(lParam & 0xFFFF, (lParam >> 16) & 0xFFFF);	return 0;
-        case WM_MOUSEWHEEL:	ptrPGE->olc_UpdateMouseWheel(GET_WHEEL_DELTA_WPARAM(wParam));           return 0;
-        case WM_MOUSELEAVE: ptrPGE->olc_UpdateMouseFocus(false);                                    return 0;
-        case WM_SETFOCUS:	ptrPGE->olc_UpdateKeyFocus(true);                                       return 0;
-        case WM_KILLFOCUS:	ptrPGE->olc_UpdateKeyFocus(false);                                      return 0;
-        case WM_KEYDOWN:	ptrPGE->olc_UpdateKeyState(mapKeys[wParam], true);                      return 0;
-        case WM_KEYUP:		ptrPGE->olc_UpdateKeyState(mapKeys[wParam], false);                     return 0;
-        case WM_SYSKEYDOWN: ptrPGE->olc_UpdateKeyState(mapKeys[wParam], true);						return 0;
-        case WM_SYSKEYUP:	ptrPGE->olc_UpdateKeyState(mapKeys[wParam], false);						return 0;
-        case WM_LBUTTONDOWN:ptrPGE->olc_UpdateMouseState(0, true);                                  return 0;
-        case WM_LBUTTONUP:	ptrPGE->olc_UpdateMouseState(0, false);                                 return 0;
-        case WM_RBUTTONDOWN:ptrPGE->olc_UpdateMouseState(1, true);                                  return 0;
-        case WM_RBUTTONUP:	ptrPGE->olc_UpdateMouseState(1, false);                                 return 0;
-        case WM_MBUTTONDOWN:ptrPGE->olc_UpdateMouseState(2, true);                                  return 0;
-        case WM_MBUTTONUP:	ptrPGE->olc_UpdateMouseState(2, false);                                 return 0;
-        case WM_CLOSE:		ptrPGE->olc_Terminate();                                                return 0;
-        case WM_DESTROY:	PostQuitMessage(0); DestroyWindow(hWnd);								return 0;
+          ptrPGE->olc_UpdateMouse(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+          return 0;
+        case WM_SIZE:
+          ptrPGE->olc_UpdateWindowSize(lParam & 0xFFFF, (lParam >> 16) & 0xFFFF);
+          return 0;
+        case WM_MOUSEWHEEL:
+          ptrPGE->olc_UpdateMouseWheel(GET_WHEEL_DELTA_WPARAM(wParam));
+          return 0;
+        case WM_SETCURSOR:
+          if (LOWORD(lParam) != HTCLIENT)
+            break;
+          SetCursor(cursor);
+          return 0;
+        case WM_MOUSELEAVE:
+          ptrPGE->olc_UpdateMouseFocus(false);
+          return 0;
+        case WM_SETFOCUS:
+          ptrPGE->olc_UpdateKeyFocus(true);
+          return 0;
+        case WM_KILLFOCUS:
+          ptrPGE->olc_UpdateKeyFocus(false);
+          return 0;
+        case WM_KEYDOWN:
+          ptrPGE->olc_UpdateKeyState(mapKeys[wParam], true);
+          return 0;
+        case WM_KEYUP:
+          ptrPGE->olc_UpdateKeyState(mapKeys[wParam], false);
+          return 0;
+        case WM_SYSKEYDOWN:
+          ptrPGE->olc_UpdateKeyState(mapKeys[wParam], true);
+          return 0;
+        case WM_SYSKEYUP:
+          ptrPGE->olc_UpdateKeyState(mapKeys[wParam], false);
+          return 0;
+        case WM_LBUTTONDOWN:
+          SetCapture(hWnd);
+          ptrPGE->olc_UpdateMouseState(0, true);
+          return 0;
+        case WM_LBUTTONUP:
+          ReleaseCapture();
+          ptrPGE->olc_UpdateMouseState(0, false);
+          return 0;
+        case WM_RBUTTONDOWN:
+          ptrPGE->olc_UpdateMouseState(1, true);
+          return 0;
+        case WM_RBUTTONUP:
+          ptrPGE->olc_UpdateMouseState(1, false);
+          return 0;
+        case WM_MBUTTONDOWN:
+          ptrPGE->olc_UpdateMouseState(2, true);
+          return 0;
+        case WM_MBUTTONUP:
+          ptrPGE->olc_UpdateMouseState(2, false);
+          return 0;
+        case WM_CLOSE:
+          ptrPGE->olc_Terminate();
+          return 0;
+        case WM_DESTROY:
+          PostQuitMessage(0);
+          DestroyWindow(hWnd);
+          return 0;
         }
       return DefWindowProc(hWnd, uMsg, wParam, lParam);
+    }
+
+    virtual olc::rcode CenterMouseCursor() override
+    {
+      RECT rc;
+      GetClientRect(olc_hWnd, &rc);
+
+      POINT pt {rc.right / 2, rc.bottom / 2};
+      ClientToScreen(olc_hWnd, &pt);
+
+      SetCursorPos(pt.x, pt.y);
+
+      return olc::OK;
+    }
+
+    virtual olc::rcode SetMouseCursorHidden(const bool hidden) override
+    {
+      if (hidden == bMouseCursorHidden)
+        return olc::OK;
+
+      bMouseCursorHidden = hidden;
+
+      if (hidden == true)
+        olc_hCursor = NULL;
+      else
+        olc_hCursor = olc_hCursorDefault;
+
+      SetCursor(olc_hCursor);
+
+      return olc::OK;
     }
   };
 }
@@ -3580,6 +3844,45 @@ namespace olc
               ptrPGE->olc_Terminate();
             }
         }
+
+      return olc::OK;
+    }
+
+    virtual olc::rcode CenterMouseCursor() override
+    {
+      X11::XWindowAttributes gwa;
+      XGetWindowAttributes(olc_Display, olc_Window, &gwa);
+      XWarpPointer(olc_Display, 0, olc_Window, 0, 0, 0, 0, gwa.width / 2, gwa.height / 2);
+
+      return olc::OK;
+    }
+
+    virtual olc::rcode SetMouseCursorHidden(const bool hidden) override
+    {
+      using namespace X11;
+
+      if (hidden == bMouseCursorHidden)
+        return olc::OK;
+
+      bMouseCursorHidden = hidden;
+
+      if (hidden == false)
+      {
+        XUndefineCursor(olc_Display, olc_Window);
+        return olc::OK;
+      }
+
+      XColor color  = { 0 };
+      const char data[] = { 0 };
+
+      Pixmap pixmap = XCreateBitmapFromData(olc_Display, olc_Window, data, 1, 1);
+      Cursor nullCursor = XCreatePixmapCursor(olc_Display, pixmap, pixmap, &color, &color, 0, 0);
+
+      XDefineCursor(olc_Display, olc_Window, nullCursor);
+
+      XFreePixmap(olc_Display, pixmap);
+      XFreeCursor(olc_Display, nullCursor);
+
       return olc::OK;
     }
   };

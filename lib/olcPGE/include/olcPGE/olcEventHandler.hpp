@@ -1,7 +1,8 @@
-#ifndef OLC_PGE_EVENT_HANDLER
-#define OLC_PGE_EVENT_HANDLER
+#pragma once
 
+#include <olcPGE/olcPGE_export.hpp>
 #include <olcPGE/olcEvent.hpp>
+
 #include <deque>
 
 
@@ -9,11 +10,14 @@ namespace olc
 {
 class Event;
 
-class EventHandler
+class OLCPGE_EXPORT EventHandler
 {
   const PixelGameEngine* const mPGE;
 
-  std::deque <olc::Event> mEvents;
+  std::deque <olc::Event> mEvents {};
+
+  bool acceptKeyHeldEvent( const Event& ) const;
+  bool acceptButtonHeldEvent( const Event& ) const;
 
 public:
   EventHandler() = delete;
@@ -24,5 +28,3 @@ public:
 };
 
 } // namespace olc
-
-#endif

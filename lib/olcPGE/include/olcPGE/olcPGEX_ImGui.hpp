@@ -188,7 +188,7 @@ int main() {
 #define OLC_PGEX_IMGUI_IMPL_PGE_H
 
 #include <olcPGE/olcPixelGameEngine.hpp>
-#include "imgui/imgui.h"
+#include "imgui.h"
 
 #include <vector>
 
@@ -206,7 +206,7 @@ struct keyCharMap
   char upper;
 };
 
-class PGE_ImGUI : public PGEX
+class OLCPGE_EXPORT PGE_ImGUI : public PGEX
 {
 public:
   //_register_handler set to true will automatically register this plugin to draw on layer 0

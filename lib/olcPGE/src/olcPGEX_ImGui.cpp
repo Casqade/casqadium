@@ -5,10 +5,13 @@
 #define GLEW_STATIC
 #include <GL/glew.h>
 #undef GLEW_STATIC
-#include "imgui/backends/imgui_impl_opengl3.h"
+#include "backends/imgui_impl_opengl3.h"
 #else
-#include "imgui/backends/imgui_impl_opengl2.h"
+#include "backends/imgui_impl_opengl2.h"
 #endif
+
+#include <ImGuizmo.h>
+
 
 namespace olc
 {
@@ -26,16 +29,26 @@ PGE_ImGUI::PGE_ImGUI(bool _register_handler)
 olc::rcode PGE_ImGUI::ImGui_ImplPGE_Init()
 {
   ImGui::CreateContext();
+  ImGuizmo::SetImGuiContext(ImGui::GetCurrentContext());
+  ImGui::GetIO().IniFilename = {};
 
 #ifdef OLC_GFX_OPENGL33
   GLenum err = glewInit();
-  ImGui_ImplOpenGL3_Init();
+  if ( err != GLEW_OK )
+    return rcode::FAIL;
+
+  if ( ImGui_ImplOpenGL3_Init() == false )
+    return rcode::FAIL;
 #else
-  ImGui_ImplOpenGL2_Init();
+  if ( ImGui_ImplOpenGL2_Init() == false )
+    return rcode::FAIL;
 #endif
   ImGuiIO& io = ImGui::GetIO();
 
   io.BackendPlatformName = "imgui_impl_pge";
+  io.ConfigDockingWithShift = true;
+  io.ConfigWindowsMoveFromTitleBarOnly = true;
+  io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 
   io.KeyMap[ImGuiKey_Tab] = olc::TAB;
   io.KeyMap[ImGuiKey_LeftArrow] = olc::LEFT;
@@ -52,7 +65,7 @@ olc::rcode PGE_ImGUI::ImGui_ImplPGE_Init()
   io.KeyMap[ImGuiKey_Space] = olc::SPACE;
   io.KeyMap[ImGuiKey_Enter] = olc::ENTER;
   io.KeyMap[ImGuiKey_Escape] = olc::ESCAPE;
-  io.KeyMap[ImGuiKey_KeyPadEnter] = olc::RETURN;
+  io.KeyMap[ImGuiKey_KeypadEnter] = olc::RETURN;
   io.KeyMap[ImGuiKey_A] = olc::A;
   io.KeyMap[ImGuiKey_C] = olc::C;
   io.KeyMap[ImGuiKey_V] = olc::V;
@@ -141,17 +154,35 @@ olc::rcode PGE_ImGUI::ImGui_ImplPGE_Init()
     {olc::MINUS, '-', '_'}
   };
 
-  return olc::OK;
+  return rcode::OK;
 }
 
 //This currently does nothing, but is defined in the event that it needs to eventually do something
 void PGE_ImGUI::ImGui_ImplPGE_Shutdown(void)
 {
+  ImGui_ImplOpenGL2_Shutdown();
+  ImGui::DestroyContext();
   return;
 }
 
 void PGE_ImGUI::ImGui_ImplPGE_UpdateMouse(void)
 {
+  if ( olc::platform->ptrPGE->GetKeepMouseCentered() == true )
+  {
+    ImGuiIO& io = ImGui::GetIO();
+
+    io.MouseDown[0] = false;
+    io.MouseDown[1] = false;
+    io.MouseDown[2] = false;
+    io.MouseDown[3] = false;
+    io.MouseDown[4] = false;
+
+    io.MousePos = {-100.0f, -100.0f};
+    io.MouseWheel = 0.0f;
+
+    return;
+  }
+
   ImGuiIO& io = ImGui::GetIO();
   olc::vi2d windowMouse = pge->GetWindowMouse();
 
@@ -196,11 +227,15 @@ void PGE_ImGUI::ImGui_ImplPGE_UpdateKeys(void)
 
 void PGE_ImGUI::ImGui_ImplPGE_NewFrame(void)
 {
+  if ( pge->GetElapsedTime() <= 0.0f )
+    return;
+
 #ifdef OLC_GFX_OPENGL33
   ImGui_ImplOpenGL3_NewFrame();
 #else
   ImGui_ImplOpenGL2_NewFrame();
 #endif
+
   ImGuiIO& io = ImGui::GetIO();
   olc::vi2d windowSize = pge->GetWindowSize();
   IM_ASSERT(io.Fonts->IsBuilt() && "Font atlas not built! It is generally built by the renderer back-end. Missing call to renderer _NewFrame() function? e.g. ImGui_ImplOpenGL2_NewFrame().");
@@ -221,12 +256,25 @@ void PGE_ImGUI::ImGui_ImplPGE_SetScrollSensitivity(float val)
 
 void PGE_ImGUI::ImGui_ImplPGE_Render(void)
 {
-  //This finishes the Dear ImGui and renders it to the screen
-  ImGui::Render();
+  const auto context = ImGui::GetCurrentContext();
+
+  static int32_t frameCountPrev {};
+  const auto frameCount = ImGui::GetFrameCount();
+
+  if (frameCountPrev != frameCount)
+    ImGui::Render();
+
+  frameCountPrev = frameCount;
+
+  const auto drawData = ImGui::GetDrawData();
+
+  if (drawData == nullptr)
+    return;
+
 #ifdef OLC_GFX_OPENGL33
-  ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+  ImGui_ImplOpenGL3_RenderDrawData(drawData);
 #else
-  ImGui_ImplOpenGL2_RenderDrawData(ImGui::GetDrawData());
+  ImGui_ImplOpenGL2_RenderDrawData(drawData);
 #endif
 }
 
@@ -249,10 +297,7 @@ void PGE_ImGUI::OnAfterUserCreate()
 
 //Before the OnUserUpdate runs, do the pre-frame ImGui intialization
 void PGE_ImGUI::OnBeforeUserUpdate(float& fElapsedTime)
-{
-  ImGui_ImplPGE_NewFrame();
-  ImGui::NewFrame();
-}
+{}
 
 //There is currently no "after update" logic to run for ImGui
 void PGE_ImGUI::OnAfterUserUpdate(float fElapsedTime)

@@ -1,5 +1,4 @@
-#ifndef OLC_PGE_EVENT
-#define OLC_PGE_EVENT
+#pragma once
 
 #include <olcPGE/olcPixelGameEngine.hpp>
 
@@ -50,19 +49,28 @@ public:
     int y;
   };
 
+  struct WindowResizeEvent
+  {
+    vi2d newSize;
+    vi2d oldSize;
+  };
+
   enum EventType
   {
     LostFocus,
     GainedFocus,
     TextEntered,
-    KeyPressed,
     KeyReleased,
+    KeyHeld,
+    KeyPressed,
     MouseWheelScrolled,
-    MouseButtonPressed,
     MouseButtonReleased,
+    MouseButtonHeld,
+    MouseButtonPressed,
     MouseMoved,
     MouseEntered,
     MouseLeft,
+    WindowResized,
 
     Count
   };
@@ -76,9 +84,8 @@ public:
     MouseMoveEvent        mouseMove;
     MouseButtonEvent      mouseButton;
     MouseWheelScrollEvent mouseWheelScroll;
+    WindowResizeEvent     windowResize {};
   };
 };
 
 } // namespace olc
-
-#endif

@@ -8,7 +8,7 @@
 
 namespace olc
 {
-class CustomFont : public olc::PGEX
+class OLCPGE_EXPORT CustomFont : public olc::PGEX
 {
 public:
   CustomFont() = default;

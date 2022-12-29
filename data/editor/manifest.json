@@ -1,0 +1,6 @@
+{
+  "title": "editor",
+  "description": "GUI framework for editing casqadium packages",
+  "dependencies": [],
+  "version": "1.0.0",
+}
