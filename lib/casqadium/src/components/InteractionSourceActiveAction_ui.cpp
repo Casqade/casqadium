@@ -12,10 +12,10 @@ InteractionSourceActiveAction::ui_edit_props(
   const entt::entity,
   const entt::registry& )
 {
-  std::string action = actionId.str();
-
   if ( ImGui::CollapsingHeader("Action", ImGuiTreeNodeFlags_DefaultOpen) )
   {
+    std::string action = actionId.str();
+
     ImGui::InputText("##actionId", &action);
     actionId = action;
   }

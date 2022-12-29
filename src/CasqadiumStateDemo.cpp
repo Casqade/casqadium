@@ -2,10 +2,7 @@
 
 #include <TimeUtils/Duration.hpp>
 
-#include <cqde/alias.hpp>
 #include <cqde/common.hpp>
-#include <cqde/file_helpers.hpp>
-#include <cqde/json_helpers.hpp>
 #include <cqde/render_helpers.hpp>
 
 #include <cqde/types/ConfigManager.hpp>
@@ -21,9 +18,7 @@
 
 #include <cqde/types/assets/AudioAssetManager.hpp>
 #include <cqde/types/assets/FontAssetManager.hpp>
-#include <cqde/types/assets/GeometryAssetManager.hpp>
 #include <cqde/types/assets/TextureAssetManager.hpp>
-#include <cqde/types/assets/TextStringAssetManager.hpp>
 
 #include <cqde/types/input/InputManager.hpp>
 
@@ -42,9 +37,6 @@
 #include <olcPGE/olcPGEX_ImGui.hpp>
 
 #include <soloud.h>
-
-#include <json/value.h>
-#include <json/writer.h>
 
 
 CasqadiumStateDemo::CasqadiumStateDemo(

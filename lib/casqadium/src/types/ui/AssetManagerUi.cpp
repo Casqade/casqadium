@@ -309,35 +309,29 @@ AssetManagerUi::ui_show_package_state(
   switch (mSelectedAssetType)
   {
     case ContentType::Audio:
-    {
       AudioAssetManager::Validate(assetDb);
       break;
-    }
+
     case ContentType::Fonts:
-    {
       FontAssetManager::Validate(assetDb);
       break;
-    }
+
     case ContentType::Geometry:
-    {
       GeometryAssetManager::Validate(assetDb);
       break;
-    }
+
     case ContentType::Terrain:
-    {
       TerrainAssetManager::Validate(assetDb);
       break;
-    }
+
     case ContentType::Text:
-    {
       TextStringAssetManager::Validate(assetDb);
       break;
-    }
+
     case ContentType::Textures:
-    {
       TextureAssetManager::Validate(assetDb);
       break;
-    }
+
     default:
       CQDE_ASSERT_DEBUG(false, return);
   }
@@ -384,7 +378,7 @@ AssetManagerUi::ui_show_package_state(
         break;
 
       defaut:
-        CQDE_ASSERT_DEBUG(false, newAsset = Json::objectValue);
+        CQDE_ASSERT_DEBUG(false, return);
         break;
     }
 

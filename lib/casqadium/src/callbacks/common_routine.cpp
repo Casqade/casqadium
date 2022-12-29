@@ -132,7 +132,11 @@ entityUpdateOff(
   const auto entity = std::any_cast <entt::entity> (args.at(0));
 
   auto& entityManager = registry.ctx().at <EntityManager> ();
-  entityManager.removeLater(entity, entityManager.componentType <SubscriberUpdate> ());
+
+  const auto componentType =
+    entityManager.componentType <SubscriberUpdate> ();
+
+  entityManager.removeLater(entity, componentType);
 };
 
 void
@@ -241,7 +245,11 @@ entityInputOff(
   const auto entity = std::any_cast <entt::entity> (args.at(0));
 
   auto& entityManager = registry.ctx().at <EntityManager> ();
-  entityManager.removeLater(entity, entityManager.componentType <SubscriberInput> ());
+
+  const auto componentType =
+    entityManager.componentType <SubscriberInput> ();
+
+  entityManager.removeLater(entity, componentType);
 };
 
 void

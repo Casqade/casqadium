@@ -2,7 +2,9 @@
 
 #include <cqde/types/physics/colliders/Collider.hpp>
 
-#include <functional>
+#include <memory>
+#include <string>
+#include <vector>
 #include <unordered_map>
 
 

@@ -37,14 +37,14 @@ bool
 EntityReference::operator == (
   const EntityReference& other ) const
 {
-  return id.hash() == other.id.hash();
+  return id == other.id;
 }
 
 bool
 EntityReference::operator < (
   const EntityReference& other ) const
 {
-  return id.hash() < other.id.hash();
+  return id < other.id;
 }
 
 } // namespace cqde::types
