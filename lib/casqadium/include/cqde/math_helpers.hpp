@@ -2,6 +2,7 @@
 
 #include <glm/fwd.hpp>
 
+#include <random>
 #include <vector>
 
 
@@ -57,6 +58,50 @@ Rect boundingBox(
   }
 
   return result;
+}
+
+template <typename Number,
+  typename std::enable_if <sizeof(Number) <= 4, bool>::type = true>
+std::mt19937
+randomNumberGenerator()
+{
+  return std::mt19937 { std::random_device {}() };
+}
+
+template <typename Number,
+  typename std::enable_if <sizeof(Number) >= 8, bool>::type = true>
+std::mt19937_64
+randomNumberGenerator()
+{
+  return std::mt19937_64 { std::random_device {}() };
+}
+
+template <typename Number,
+  typename std::enable_if <std::is_integral_v <Number>, bool>::type = true>
+Number
+random(
+  const Number min,
+  const Number max )
+{
+  using Distribution = std::uniform_int_distribution <Number>;
+
+  auto rng = randomNumberGenerator <Number> ();
+
+  return Distribution{min, max} (rng);
+}
+
+template <typename Number,
+  typename std::enable_if <std::is_floating_point_v <Number>, bool>::type = true>
+Number
+random(
+  const Number min,
+  const Number max )
+{
+  using Distribution = std::uniform_real_distribution <Number>;
+
+  auto rng = randomNumberGenerator <Number> ();
+
+  return Distribution{min, max} (rng);
 }
 
 } // namespace cqde
