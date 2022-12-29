@@ -122,7 +122,7 @@ InteractionListener::ui_edit_props(
 
       bool callbackFound {};
 
-      for ( const auto& callbackId : actionCallbacks )
+      for ( const auto& callbackId : callbacks )
       {
         if ( callbackFilter.query(callbackId.str()) == false )
           continue;
