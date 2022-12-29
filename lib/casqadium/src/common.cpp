@@ -223,12 +223,14 @@ engineInit(
   callbackManager.Register("EntityUpdateToggle", entityUpdateToggle);
   callbackManager.Register("EntitiesUpdateOn", entitiesUpdateOn);
   callbackManager.Register("EntitiesUpdateOff", entitiesUpdateOff);
+  callbackManager.Register("EntitiesUpdateToggle", entitiesUpdateToggle);
 
   callbackManager.Register("EntityInputOn", entityInputOn);
   callbackManager.Register("EntityInputOff", entityInputOff);
   callbackManager.Register("EntityInputToggle", entityInputToggle);
   callbackManager.Register("EntitiesInputOn", entitiesInputOn);
   callbackManager.Register("EntitiesInputOff", entitiesInputOff);
+  callbackManager.Register("EntitiesInputToggle", entitiesInputToggle);
 
   callbackManager.Register("SystemsActivate", systemsActivate);
   callbackManager.Register("SystemsDeactivate", systemsDeactivate);

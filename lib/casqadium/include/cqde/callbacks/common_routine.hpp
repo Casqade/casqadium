@@ -43,6 +43,10 @@ void entitiesUpdateOff(
   entt::registry&,
   const std::vector <std::any>& args );
 
+void entitiesUpdateToggle(
+  entt::registry&,
+  const std::vector <std::any>& args );
+
 
 void entityInputOn(
   entt::registry&,
@@ -61,6 +65,10 @@ void entitiesInputOn(
   const std::vector <std::any>& args );
 
 void entitiesInputOff(
+  entt::registry&,
+  const std::vector <std::any>& args );
+
+void entitiesInputToggle(
   entt::registry&,
   const std::vector <std::any>& args );
 

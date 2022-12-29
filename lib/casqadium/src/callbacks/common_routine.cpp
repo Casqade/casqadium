@@ -192,9 +192,30 @@ entitiesUpdateOff(
   for ( const auto& entityId : entityList.entities )
   {
     const auto entity = entityManager.get_if_valid(entityId, registry);
+    entityManager.removeLater(entity, componentType);
+  }
+}
+
+void
+entitiesUpdateToggle(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using types::EntityManager;
+  using compos::SubscriberUpdate;
+  using compos::EntityList;
+
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+
+  auto& entityManager = registry.ctx().at <EntityManager> ();
+  auto& entityList = registry.get <const EntityList> (entity);
+
+  for ( const auto& entityId : entityList.entities )
+  {
+    const auto entity = entityManager.get_if_valid(entityId, registry);
 
     if ( entity != entt::null )
-      entityManager.removeLater(entity, componentType);
+      entityUpdateToggle(registry, {entity});
   }
 }
 
@@ -283,6 +304,29 @@ entitiesInputOff(
 
     if ( entity != entt::null )
       entityManager.removeLater(entity, componentType);
+  }
+}
+
+void
+entitiesInputToggle(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using types::EntityManager;
+  using compos::SubscriberInput;
+  using compos::EntityList;
+
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+
+  auto& entityManager = registry.ctx().at <EntityManager> ();
+  auto& entityList = registry.get <const EntityList> (entity);
+
+  for ( const auto& entityId : entityList.entities )
+  {
+    const auto entity = entityManager.get_if_valid(entityId, registry);
+
+    if ( entity != entt::null )
+      entityInputToggle(registry, {entity});
   }
 }
 
