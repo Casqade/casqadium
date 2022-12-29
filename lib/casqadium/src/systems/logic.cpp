@@ -87,8 +87,6 @@ SequenceSystem(
         break;
 
       step = cSequenceController.steps.front().get();
-
-      step->init(registry, entity);
     }
   }
 }

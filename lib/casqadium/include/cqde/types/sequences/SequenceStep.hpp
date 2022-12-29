@@ -30,4 +30,18 @@ public:
   virtual void fromJson( const Json::Value& );
 };
 
+class SequenceInitializationStatus
+{
+  bool mInitialized {};
+
+public:
+  SequenceInitializationStatus() = default;
+
+  void init();
+  bool initialized() const;
+
+  Json::Value toJson() const;
+  void fromJson( const Json::Value& );
+};
+
 } // namespace cqde::types

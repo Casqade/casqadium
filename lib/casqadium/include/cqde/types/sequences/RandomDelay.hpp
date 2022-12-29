@@ -1,7 +1,6 @@
 #pragma once
 
-#include <cqde/types/TimeProgress.hpp>
-#include <cqde/types/sequences/SequenceStep.hpp>
+#include <cqde/types/sequences/Delay.hpp>
 
 #include <entt/fwd.hpp>
 
@@ -9,16 +8,27 @@
 namespace cqde::types
 {
 
-class Delay : virtual public SequenceStep
+class RandomDelay : public Delay
 {
 protected:
-  TimeProgress mTime {};
+  using Duration = TimeUtils::Duration;
+
+  struct
+  {
+    Duration min {};
+    Duration max {};
+
+  } mDelayRange {};
+
+  SequenceInitializationStatus mInitStatus {};
 
 public:
-  Delay() = default;
-  ~Delay() override = default;
+  RandomDelay() = default;
+  ~RandomDelay() override = default;
 
   std::string name() const override;
+
+  void init( entt::registry&, const entt::entity ) override;
 
   bool execute( entt::registry&, const entt::entity ) override;
 

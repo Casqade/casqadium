@@ -1,7 +1,8 @@
 #pragma once
 
 #include <cqde/types/SplineCurve.hpp>
-#include <cqde/types/sequences/Delay.hpp>
+#include <cqde/types/TimeProgress.hpp>
+#include <cqde/types/sequences/SequenceStep.hpp>
 
 #include <glm/vec4.hpp>
 
@@ -9,19 +10,24 @@
 namespace cqde::types
 {
 
-class TextureTintInterpolated : public Delay
+class TextureTintInterpolated : public SequenceStep
 {
+  SequenceInitializationStatus mInitStatus {};
+
+  bool mInitFromTextureTint {};
+
+  TimeProgress mTime {};
+
   std::pair <glm::vec4, glm::vec4> mTint {1.0f, 1.0f};
 
   SplineCurve mSpline {{}, {1.0f, 1.0f}};
 
-  bool mInitFromTextureTint {};
 
 public:
   TextureTintInterpolated() = default;
   ~TextureTintInterpolated() override = default;
 
-  virtual std::string name() const override;
+  std::string name() const override;
 
   void init( entt::registry&, const entt::entity ) override;
 

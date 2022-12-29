@@ -11,7 +11,7 @@
 namespace cqde::types
 {
 
-class CallbackExecute : public SequenceStep
+class CallbackExecute : virtual public SequenceStep
 {
 protected:
   std::vector <CallbackId> mCallbacks {};
@@ -20,7 +20,7 @@ public:
   CallbackExecute() = default;
   ~CallbackExecute() override = default;
 
-  virtual std::string name() const override;
+  std::string name() const override;
 
   bool execute( entt::registry&, const entt::entity ) override;
 

@@ -1,25 +1,30 @@
 #pragma once
 
 #include <cqde/types/SplineCurve.hpp>
-#include <cqde/types/sequences/Delay.hpp>
+#include <cqde/types/TimeProgress.hpp>
+#include <cqde/types/sequences/SequenceStep.hpp>
 
 
 namespace cqde::types
 {
 
-class CameraFovInterpolated : public Delay
+class CameraFovInterpolated : public SequenceStep
 {
+  SequenceInitializationStatus mInitStatus {};
+
+  bool mInitFromCurrentFov {};
+
+  TimeProgress mTime {};
+
   std::pair <float, float> mFov {1.0f, 1.0f};
 
   SplineCurve mSpline {{}, {1.0f, 1.0f}};
-
-  bool mInitFromCurrentFov {};
 
 public:
   CameraFovInterpolated() = default;
   ~CameraFovInterpolated() override = default;
 
-  virtual std::string name() const override;
+  std::string name() const override;
 
   void init( entt::registry&, const entt::entity ) override;
 

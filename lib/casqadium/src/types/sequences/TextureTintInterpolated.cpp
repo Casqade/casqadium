@@ -49,6 +49,8 @@ TextureTintInterpolated::init(
 {
   using compos::TextureTint;
 
+  mInitStatus.init();
+
   if ( mInitFromTextureTint == false )
     return;
 
@@ -70,9 +72,12 @@ TextureTintInterpolated::execute(
 {
   using compos::TextureTint;
 
-  const bool timeExpired = Delay::execute(registry, entity);
+  if ( mInitStatus.initialized() == false )
+    init(registry, entity);
 
-  const auto dt = mSpline.value(std::min(progress(), 1.0));
+  const bool timeExpired = mTime.expired(registry);
+
+  const auto dt = mSpline.value(std::min(mTime.progress(), 1.0));
 
   const auto tint = glm::mix(mTint.first, mTint.second, dt);
 
@@ -86,7 +91,10 @@ TextureTintInterpolated::execute(
 Json::Value
 TextureTintInterpolated::toJson() const
 {
-  auto json = Delay::toJson();
+  using namespace json_operators;
+
+  auto json = mInitStatus.toJson();
+  json << mTime.toJson();
 
   json["tintInitial"] << mTint.first;
   json["tintTarget"] << mTint.second;
@@ -103,9 +111,10 @@ TextureTintInterpolated::fromJson(
 {
   using fmt::format;
 
-  Delay::fromJson(json);
-
   jsonValidateObject(json, textureTintInterpolatedSequenceStepJsonReference);
+
+  mInitStatus.fromJson(json);
+  mTime.fromJson(json);
 
   mInitFromTextureTint = json["initFromTextureTint"].asBool();
 

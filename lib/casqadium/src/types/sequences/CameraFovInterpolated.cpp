@@ -49,6 +49,8 @@ CameraFovInterpolated::init(
 {
   using compos::Camera;
 
+  mInitStatus.init();
+
   if ( mInitFromCurrentFov == false )
     return;
 
@@ -64,9 +66,12 @@ CameraFovInterpolated::execute(
 {
   using compos::Camera;
 
-  const bool timeExpired = Delay::execute(registry, entity);
+  if ( mInitStatus.initialized() == false )
+    init(registry, entity);
 
-  const auto dt = mSpline.value(std::min(progress(), 1.0));
+  const bool timeExpired = mTime.expired(registry);
+
+  const auto dt = mSpline.value(std::min(mTime.progress(), 1.0));
 
   auto& cCamera = registry.get <Camera> (entity);
   cCamera.fov = glm::mix(mFov.first, mFov.second, dt);
@@ -77,7 +82,11 @@ CameraFovInterpolated::execute(
 Json::Value
 CameraFovInterpolated::toJson() const
 {
-  auto json = Delay::toJson();
+  using namespace json_operators;
+
+  auto json = mInitStatus.toJson();
+
+  json << mTime.toJson();
 
   json["fovInitial"] = mFov.first;
   json["fovTarget"] = mFov.second;
@@ -94,9 +103,10 @@ CameraFovInterpolated::fromJson(
 {
   using fmt::format;
 
-  Delay::fromJson(json);
-
   jsonValidateObject(json, cameraFovInterpolatedSequenceStepJsonReference);
+
+  mInitStatus.fromJson(json);
+  mTime.fromJson(json);
 
   mInitFromCurrentFov = json["initFromCurrentFov"].asBool();
 

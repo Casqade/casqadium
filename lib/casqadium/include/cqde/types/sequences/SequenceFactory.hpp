@@ -6,6 +6,7 @@
 
 #include <memory>
 #include <string>
+#include <vector>
 #include <unordered_map>
 
 
@@ -14,8 +15,6 @@ namespace cqde::types
 
 class SequenceFactory
 {
-  using SequenceStep = types::SequenceStep;
-
   using SequenceCreator = std::function <std::shared_ptr <SequenceStep> ()>;
 
   std::unordered_map <std::string, SequenceCreator> mSequences {};

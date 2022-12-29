@@ -30,7 +30,7 @@ TransformInterpolated::ui_show(
   using compos::Transform;
   using ui::StringFilter;
 
-  Delay::ui_show(registry, entity);
+  mTime.ui_show();
 
   if ( ImGui::CollapsingHeader("Interpolation curve", ImGuiTreeNodeFlags_DefaultOpen) )
   {

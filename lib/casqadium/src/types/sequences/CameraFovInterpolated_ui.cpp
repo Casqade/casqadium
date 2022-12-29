@@ -23,7 +23,7 @@ CameraFovInterpolated::ui_show(
   const auto flags = ImGuiSliderFlags_AlwaysClamp |
                      ImGuiSliderFlags_NoRoundToFormat;
 
-  Delay::ui_show(registry, entity);
+  mTime.ui_show();
 
   if ( ImGui::CollapsingHeader("Interpolation curve", ImGuiTreeNodeFlags_DefaultOpen) )
   {

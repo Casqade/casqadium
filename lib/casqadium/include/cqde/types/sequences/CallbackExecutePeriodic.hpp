@@ -1,7 +1,8 @@
 #pragma once
 
-#include <cqde/types/TimeProgress.hpp>
-#include <cqde/types/sequences/SequenceStep.hpp>
+#include <cqde/alias.hpp>
+#include <cqde/types/sequences/Delay.hpp>
+#include <cqde/types/sequences/CallbackExecute.hpp>
 
 #include <entt/fwd.hpp>
 
@@ -9,14 +10,11 @@
 namespace cqde::types
 {
 
-class Delay : virtual public SequenceStep
+class CallbackExecutePeriodic : public Delay, public CallbackExecute
 {
-protected:
-  TimeProgress mTime {};
-
 public:
-  Delay() = default;
-  ~Delay() override = default;
+  CallbackExecutePeriodic() = default;
+  ~CallbackExecutePeriodic() override = default;
 
   std::string name() const override;
 

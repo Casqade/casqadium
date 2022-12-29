@@ -36,7 +36,7 @@ const static Json::Value callbackExecuteSequenceStepJsonReference =
 std::string
 CallbackExecute::name() const
 {
-  return "Execute";
+  return "CallbackExecute";
 }
 
 bool
@@ -55,7 +55,7 @@ CallbackExecute::execute(
 Json::Value
 CallbackExecute::toJson() const
 {
-  Json::Value json {};
+  auto json = SequenceStep::toJson();
 
   auto& jsonCallbacks = json["callbacks"];
   jsonCallbacks = Json::arrayValue;
@@ -71,6 +71,8 @@ CallbackExecute::fromJson(
   const Json::Value& json )
 {
   jsonValidateObject(json, callbackExecuteSequenceStepJsonReference);
+
+  SequenceStep::fromJson(json);
 
   for ( const auto& callback : json["callbacks"] )
     mCallbacks.push_back(callback.asString());

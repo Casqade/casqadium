@@ -62,11 +62,16 @@ target_sources(${TARGET} PRIVATE
   include/${CASQADIUM_SHORT}/conversion/json_glm_bvec3.hpp
   include/${CASQADIUM_SHORT}/conversion/rp3d_glm.hpp
 
+  src/conversion/enum_strings.cpp
+  include/${CASQADIUM_SHORT}/conversion/enum_strings.hpp
+
   src/conversion/soloud_string.cpp
   include/${CASQADIUM_SHORT}/conversion/soloud_string.hpp
 
 
 #  Classes & PODs
+  include/${CASQADIUM_SHORT}/types/enums.hpp
+
   include/${CASQADIUM_SHORT}/types/FrameCurrent.hpp
   include/${CASQADIUM_SHORT}/types/System.hpp
   include/${CASQADIUM_SHORT}/types/Terrain.hpp
@@ -84,6 +89,10 @@ target_sources(${TARGET} PRIVATE
 
   src/types/SplineCurve.cpp
   include/${CASQADIUM_SHORT}/types/SplineCurve.hpp
+
+  src/types/TimeProgress.cpp
+  src/types/TimeProgress_ui.cpp
+  include/${CASQADIUM_SHORT}/types/TimeProgress.hpp
 
   src/types/VertexBuffer.cpp
   include/${CASQADIUM_SHORT}/types/VertexBuffer.hpp
@@ -134,6 +143,18 @@ target_sources(${TARGET} PRIVATE
   src/types/sequences/CallbackExecute_ui.cpp
   include/${CASQADIUM_SHORT}/types/sequences/CallbackExecute.hpp
 
+  src/types/sequences/CallbackExecuteAPeriodic.cpp
+  src/types/sequences/CallbackExecuteAPeriodic_ui.cpp
+  include/${CASQADIUM_SHORT}/types/sequences/CallbackExecuteAPeriodic.hpp
+
+  src/types/sequences/CallbackExecutePeriodic.cpp
+  src/types/sequences/CallbackExecutePeriodic_ui.cpp
+  include/${CASQADIUM_SHORT}/types/sequences/CallbackExecutePeriodic.hpp
+
+  src/types/sequences/RandomDelay.cpp
+  src/types/sequences/RandomDelay_ui.cpp
+  include/${CASQADIUM_SHORT}/types/sequences/RandomDelay.hpp
+
   src/types/sequences/TextureTintInterpolated.cpp
   src/types/sequences/TextureTintInterpolated_ui.cpp
   include/${CASQADIUM_SHORT}/types/sequences/TextureTintInterpolated.hpp
@@ -141,6 +162,10 @@ target_sources(${TARGET} PRIVATE
   src/types/sequences/TransformInterpolated.cpp
   src/types/sequences/TransformInterpolated_ui.cpp
   include/${CASQADIUM_SHORT}/types/sequences/TransformInterpolated.hpp
+
+  src/types/sequences/TransformManipulate.cpp
+  src/types/sequences/TransformManipulate_ui.cpp
+  include/${CASQADIUM_SHORT}/types/sequences/TransformManipulate.hpp
 
 
 #  Managers

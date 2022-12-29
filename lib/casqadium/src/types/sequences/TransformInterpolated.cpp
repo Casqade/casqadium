@@ -33,7 +33,7 @@ const static Json::Value transformInterpolatedSequenceStepJsonReference =
 
   root["useWorldSpace"] = ValueType::booleanValue;
   root["useWorldSpace"].setComment("// 'useWorldSpace' must be a JSON boolean"s,
-                                  Json::CommentPlacement::commentBefore);
+                                    Json::CommentPlacement::commentBefore);
 
   root["initFromTransform"] = ValueType::booleanValue;
   root["initFromTransform"].setComment("// 'initFromTransform' must be a JSON boolean"s,
@@ -55,6 +55,8 @@ TransformInterpolated::init(
 {
   using compos::Transform;
 
+  mInitStatus.init();
+
   if ( mInitFromTransform == false )
     return;
 
@@ -74,9 +76,12 @@ TransformInterpolated::execute(
 {
   using compos::Transform;
 
-  const bool timeExpired = Delay::execute(registry, entity);
+  if ( mInitStatus.initialized() == false )
+    init(registry, entity);
 
-  const auto dt = mSpline.value(std::min(progress(), 1.0));
+  const bool timeExpired = mTime.expired(registry);
+
+  const auto dt = mSpline.value(std::min(mTime.progress(), 1.0));
 
   auto transform
     = cqde::interpolate(mTransform.first,
@@ -104,7 +109,11 @@ TransformInterpolated::execute(
 Json::Value
 TransformInterpolated::toJson() const
 {
-  auto json = Delay::toJson();
+  using namespace json_operators;
+
+  auto json = mInitStatus.toJson();
+
+  json << mTime.toJson();
 
   json["transformInitial"][0] << mTransform.first[0];
   json["transformInitial"][1] << mTransform.first[1];
@@ -129,9 +138,10 @@ TransformInterpolated::fromJson(
 {
   using fmt::format;
 
-  Delay::fromJson(json);
-
   jsonValidateObject(json, transformInterpolatedSequenceStepJsonReference);
+
+  mInitStatus.fromJson(json);
+  mTime.fromJson(json);
 
   mUseWorldSpace = json["useWorldSpace"].asBool();
   mInitFromTransform = json["initFromTransform"].asBool();

@@ -1,7 +1,8 @@
 #pragma once
 
 #include <cqde/types/SplineCurve.hpp>
-#include <cqde/types/sequences/Delay.hpp>
+#include <cqde/types/TimeProgress.hpp>
+#include <cqde/types/sequences/SequenceStep.hpp>
 
 #include <glm/mat4x4.hpp>
 
@@ -9,20 +10,24 @@
 namespace cqde::types
 {
 
-class TransformInterpolated : public Delay
+class TransformInterpolated : public SequenceStep
 {
-  std::pair <glm::mat4, glm::mat4> mTransform {1.0f, 1.0f};
-
-  SplineCurve mSpline {{}, {1.0f, 1.0f}};
+  SequenceInitializationStatus mInitStatus {};
 
   bool mUseWorldSpace {};
   bool mInitFromTransform {};
+
+  TimeProgress mTime {};
+
+  std::pair <glm::mat4, glm::mat4> mTransform {1.0f, 1.0f};
+
+  SplineCurve mSpline {{}, {1.0f, 1.0f}};
 
 public:
   TransformInterpolated() = default;
   ~TransformInterpolated() override = default;
 
-  virtual std::string name() const override;
+  std::string name() const override;
 
   void init( entt::registry&, const entt::entity ) override;
 
