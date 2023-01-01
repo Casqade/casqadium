@@ -166,12 +166,6 @@ editorControllerCreate(
 
   auto& iEntityMultipleSelection = cInputController.axes["EditorEntityMultipleSelectionToggle"];
   iEntityMultipleSelection.callbacks.push_back("EditorEntityMultipleSelectionToggle");
-
-  auto& iCursorPosX = cInputController.axes["CursorPosX"];
-  auto& iCursorPosY = cInputController.axes["CursorPosY"];
-
-  iCursorPosX.constraint.first = 1.0f;
-  iCursorPosY.constraint.first = 1.0f;
 }
 
 void
@@ -354,19 +348,12 @@ editorEntitySelect(
   using compos::SubscriberInput;
   using compos::CasqadiumEditorInternal;
 
-  const auto cController = std::any_cast <InputController*> (args.at(1));
-
-  const auto cursorPosX = cController->axes.find("CursorPosX");
-  const auto cursorPosY = cController->axes.find("CursorPosY");
-
-  if ( cursorPosX == cController->axes.end() ||
-       cursorPosY == cController->axes.end() )
-    return;
+  auto&& [cursorPosX, cursorPosY] = olc::platform->ptrPGE->GetMousePos();
 
   const glm::vec2 cursorPos
   {
-    cursorPosX->second.value,
-    cursorPosY->second.value,
+    cursorPosX,
+    cursorPosY,
   };
 
   auto& viewportManagerUi = registry.ctx().at <const ViewportManagerUi> ();
