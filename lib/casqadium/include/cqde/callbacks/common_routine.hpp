@@ -81,6 +81,10 @@ void systemsDeactivate(
   entt::registry&,
   const std::vector <std::any>& args );
 
+void systemsToggle(
+  entt::registry&,
+  const std::vector <std::any>& args );
+
 
 void quickSave(
   entt::registry&,

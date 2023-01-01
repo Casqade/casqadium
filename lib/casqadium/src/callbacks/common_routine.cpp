@@ -373,6 +373,26 @@ systemsDeactivate(
     systemManager.deactivate(systemId);
 }
 
+void
+systemsToggle(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using types::SystemManager;
+  using compos::SystemList;
+
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+
+  auto& systemManager = registry.ctx().at <SystemManager> ();
+  auto& systemList = registry.get <const SystemList> (entity);
+
+  for ( const auto& systemId : systemList.systems )
+    if ( systemManager.isActive(systemId) == false )
+      systemManager.activate(systemId);
+    else
+      systemManager.deactivate(systemId);
+}
+
 
 void
 quickSave(

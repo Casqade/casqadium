@@ -270,6 +270,7 @@ engineInit(
 
   callbackManager.Register("SystemsActivate", systemsActivate);
   callbackManager.Register("SystemsDeactivate", systemsDeactivate);
+  callbackManager.Register("SystemsToggle", systemsToggle);
 
   callbackManager.Register("LoadAudioAssets", loadAudioAssets);
   callbackManager.Register("LoadFontAssets", loadFontAssets);
