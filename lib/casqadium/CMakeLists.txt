@@ -9,8 +9,17 @@ add_library(${TARGET}::${TARGET} ALIAS ${TARGET})
 
 set(CASQADIUM_SHORT cqde)
 
-option(CQDE_DISABLE_SIMD "Disable SIMD instructions usage in Casqadium" OFF)
+option(CQDE_DISABLE_SIMD "Disable SIMD instructions usage in Casqadium and all its dependencies" OFF)
+option(CQDE_DISABLE_TBB "Disable Intel TBB usage in Casqadium" OFF)
+option(GLM_DISABLE_SIMD "Disable SIMD instructions usage in GLM" ON)
 option(GLM_FORCE_INLINE "Force GLM functions inlining" OFF)
+option(SOLOUD_DISABLE_SIMD "Disable SIMD instructions usage in SoLoud" OFF)
+
+if(${CQDE_DISABLE_SIMD})
+  set(CQDE_DISABLE_TBB ON)
+  set(GLM_DISABLE_SIMD ON)
+  set(SOLOUD_DISABLE_SIMD ON)
+endif()
 
 target_sources(${TARGET} PRIVATE
 
@@ -601,7 +610,7 @@ FetchContent_Declare(spdlog
 FetchContent_MakeAvailable(spdlog)
 
 
-if (NOT ${CQDE_DISABLE_SIMD})
+if (NOT ${CQDE_DISABLE_TBB})
   FetchContent_Declare(tbb
     GIT_REPOSITORY https://github.com/oneapi-src/oneTBB
     GIT_TAG        v2021.7.0
@@ -646,13 +655,11 @@ target_compile_definitions(${GLM_LIB_TYPE} PUBLIC
   GLM_FORCE_DEPTH_ZERO_TO_ONE
 )
 
-if(${GLM_FORCE_INLINE})
+if(${GLM_DISABLE_SIMD})
   target_compile_definitions(${GLM_LIB_TYPE} PUBLIC
-    GLM_FORCE_INLINE
+    GLM_FORCE_PURE
   )
-endif()
-
-if(NOT ${CQDE_DISABLE_SIMD})
+else()
   target_compile_options(${GLM_LIB_TYPE} PUBLIC
     -msse4.1
   )
@@ -660,7 +667,21 @@ if(NOT ${CQDE_DISABLE_SIMD})
     GLM_FORCE_INTRINSICS
     GLM_FORCE_DEFAULT_ALIGNED_GENTYPES
   )
+endif()
 
+if(${GLM_FORCE_INLINE})
+  target_compile_definitions(${GLM_LIB_TYPE} PUBLIC
+    GLM_FORCE_INLINE
+  )
+endif()
+
+if(${SOLOUD_DISABLE_SIMD})
+  target_compile_definitions(soloud PUBLIC
+    DISABLE_SIMD
+  )
+endif()
+
+if(NOT ${CQDE_DISABLE_TBB})
   target_compile_options(tbb PUBLIC
     -msse4.1
   )
