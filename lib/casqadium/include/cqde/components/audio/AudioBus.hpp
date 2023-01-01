@@ -27,6 +27,9 @@ struct AudioBus
 
   void ensureIsPlaying( SoLoud::Soloud& );
 
+  AudioHandle handle() const;
+
+
   Json::Value serialize() const;
 
   static void deserialize(

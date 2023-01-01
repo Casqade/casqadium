@@ -46,6 +46,12 @@ AudioBus::ensureIsPlaying(
   bus->findBusHandle();
 }
 
+AudioHandle
+AudioBus::handle() const
+{
+  return bus->mChannelHandle;
+}
+
 Json::Value
 AudioBus::serialize() const
 {
