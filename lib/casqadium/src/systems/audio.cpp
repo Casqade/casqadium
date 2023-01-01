@@ -40,7 +40,8 @@ Audio3dSystem(
 
     for ( const auto& [handle, eSource] : cListener.instances )
     {
-      if ( soloud.isValidVoiceHandle(handle) == false )
+      if ( soloud.isValidVoiceHandle(handle) == false &&
+           soloud.isVoiceGroup(handle) == false )
       {
         instancesToRemove.push_back(handle);
         continue;
