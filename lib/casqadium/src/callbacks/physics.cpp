@@ -1,6 +1,8 @@
 #include <cqde/callbacks/physics.hpp>
 
 #include <cqde/conversion/rp3d_glm.hpp>
+#include <cqde/types/TickCurrent.hpp>
+#include <cqde/types/input/ControlAxis.hpp>
 
 #include <cqde/components/Transform.hpp>
 #include <cqde/components/physics/RigidBody.hpp>
@@ -105,6 +107,158 @@ gravityEmitterCallback(
 
   if ( glm::all(glm::isfinite(force)) == true )
     cBody->body->applyWorldForceAtCenterOfMass(glmToRp3d(force));
+}
+
+
+void
+forceXRelative(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using cqde::types::ControlAxis;
+  using cqde::types::TickCurrent;
+  using cqde::compos::RigidBody;
+
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+  const auto axis = std::any_cast <ControlAxis*> (args.at(2));
+
+  const auto& tick = registry.ctx().at <TickCurrent> ();
+  const auto ticks = tick.ticksElapsed;
+  const auto elapsed = tick.tickInterval;
+
+  const float dt = ticks * static_cast <double> (elapsed);
+
+  auto& cRigidBody = registry.get <RigidBody> (entity);
+
+  cRigidBody.body->applyLocalForceAtCenterOfMass({axis->value * dt, 0.0f, 0.0f});
+
+  axis->value = 0.0f;
+}
+
+void
+forceYRelative(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using cqde::types::ControlAxis;
+  using cqde::types::TickCurrent;
+  using cqde::compos::RigidBody;
+
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+  const auto axis = std::any_cast <ControlAxis*> (args.at(2));
+
+  const auto& tick = registry.ctx().at <TickCurrent> ();
+  const auto ticks = tick.ticksElapsed;
+  const auto elapsed = tick.tickInterval;
+
+  const float dt = ticks * static_cast <double> (elapsed);
+
+  auto& cRigidBody = registry.get <RigidBody> (entity);
+
+  cRigidBody.body->applyLocalForceAtCenterOfMass({0.0f, axis->value * dt, 0.0f});
+
+  axis->value = 0.0f;
+}
+
+void
+forceZRelative(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using cqde::types::ControlAxis;
+  using cqde::types::TickCurrent;
+  using cqde::compos::RigidBody;
+
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+  const auto axis = std::any_cast <ControlAxis*> (args.at(2));
+
+  const auto& tick = registry.ctx().at <TickCurrent> ();
+  const auto ticks = tick.ticksElapsed;
+  const auto elapsed = tick.tickInterval;
+
+  const float dt = ticks * static_cast <double> (elapsed);
+
+  auto& cRigidBody = registry.get <RigidBody> (entity);
+
+  cRigidBody.body->applyLocalForceAtCenterOfMass({0.0f, 0.0f, axis->value * dt});
+
+  axis->value = 0.0f;
+}
+
+
+void
+torqueXRelative(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using cqde::types::ControlAxis;
+  using cqde::types::TickCurrent;
+  using cqde::compos::RigidBody;
+
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+  const auto axis = std::any_cast <ControlAxis*> (args.at(2));
+
+  const auto& tick = registry.ctx().at <TickCurrent> ();
+  const auto ticks = tick.ticksElapsed;
+  const auto elapsed = tick.tickInterval;
+
+  const float dt = ticks * static_cast <double> (elapsed);
+
+  auto& cRigidBody = registry.get <RigidBody> (entity);
+
+  cRigidBody.body->applyLocalTorque({axis->value * dt, 0.0f, 0.0f});
+
+  axis->value = 0.0f;
+}
+
+void
+torqueYRelative(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using cqde::types::ControlAxis;
+  using cqde::types::TickCurrent;
+  using cqde::compos::RigidBody;
+
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+  const auto axis = std::any_cast <ControlAxis*> (args.at(2));
+
+  const auto& tick = registry.ctx().at <TickCurrent> ();
+  const auto ticks = tick.ticksElapsed;
+  const auto elapsed = tick.tickInterval;
+
+  const float dt = ticks * static_cast <double> (elapsed);
+
+  auto& cRigidBody = registry.get <RigidBody> (entity);
+
+  cRigidBody.body->applyLocalTorque({0.0f, axis->value * dt, 0.0f});
+
+  axis->value = 0.0f;
+}
+
+void
+torqueZRelative(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using cqde::types::ControlAxis;
+  using cqde::types::TickCurrent;
+  using cqde::compos::RigidBody;
+
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+  const auto axis = std::any_cast <ControlAxis*> (args.at(2));
+
+  const auto& tick = registry.ctx().at <TickCurrent> ();
+  const auto ticks = tick.ticksElapsed;
+  const auto elapsed = tick.tickInterval;
+
+  const float dt = ticks * static_cast <double> (elapsed);
+
+  auto& cRigidBody = registry.get <RigidBody> (entity);
+
+  cRigidBody.body->applyLocalTorque({0.0f, 0.0f, axis->value * dt});
+
+  axis->value = 0.0f;
 }
 
 } // namespace cqde::callbacks

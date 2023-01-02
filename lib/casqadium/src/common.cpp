@@ -297,6 +297,14 @@ engineInit(
   callbackManager.Register("ForceEmitterCallback", forceEmitterCallback);
   callbackManager.Register("GravityEmitterCallback", gravityEmitterCallback);
 
+  callbackManager.Register("ForceXRelative", forceXRelative);
+  callbackManager.Register("ForceYRelative", forceYRelative);
+  callbackManager.Register("ForceZRelative", forceZRelative);
+
+  callbackManager.Register("TorqueXRelative", torqueXRelative);
+  callbackManager.Register("TorqueYRelative", torqueYRelative);
+  callbackManager.Register("TorqueZRelative", torqueZRelative);
+
 
   using Phase = System::Phase;
 
