@@ -40,13 +40,13 @@ class ConfigManager
 
   bool mFullscreenEnabled {false};
 
-  uint64_t mTickRate {60};
-  uint64_t mFrameRate {60};
+  uint64_t mTickRate {120};
+  uint64_t mFrameRate {120};
 
   BACKEND mAudioBackend {BACKEND::AUTO};
   RESAMPLER mAudioResampler {SOLOUD_DEFAULT_RESAMPLER};
 
-  uint32_t mAudioBufferSize {};
+  uint32_t mAudioBufferSize {2048};
   uint32_t mAudioSampleRate {};
   uint32_t mAudioMaxActiveVoices {32};
 

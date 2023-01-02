@@ -1,0 +1,600 @@
+{
+  "drunkard_spin" :
+  {
+    "eDrunkardFootstepsTrigger" :
+    {
+      "Audio3dParams" :
+      {
+        "attenuation" :
+        {
+          "distanceMax" : 20.0,
+          "distanceMin" : 1.0,
+          "model" : "linear",
+          "rolloff" : 1.0
+        },
+        "dopplerFactor" : 1.0
+      },
+      "CollisionBody" :
+      {
+        "body" :
+        {
+          "active" : false
+        },
+        "colliders" :
+        [
+          {
+            "callbacks" :
+            {
+              "onEnter" :
+              [
+                "PlayFootstepSound"
+              ],
+              "onLeave" : [],
+              "onStay" : []
+            },
+            "collision" :
+            {
+              "group" : 1,
+              "mask" : 65535
+            },
+            "isTrigger" : false,
+            "material" :
+            {
+              "bounciness" : 0.5,
+              "density" : 1.0,
+              "friction" : 0.3000000225043209
+            },
+            "shape" :
+            {
+              "height" : 5.0,
+              "radius" : 0.10000000149011612
+            },
+            "transform" :
+            [
+              [
+                0.90630793571472168,
+                0.42261788249015808,
+                0.0,
+                0.0
+              ],
+              [
+                -0.42261788249015808,
+                0.90630793571472168,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                1.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ],
+            "type" : "CapsuleShape"
+          }
+        ]
+      },
+      "SceneNode" :
+      {
+        "children" : [],
+        "parent" : "eDrunkardLegsRoot"
+      },
+      "Tag" : {},
+      "Transform" :
+      {
+        "orientation" :
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" :
+        [
+          1.0,
+          1.0000017881393433,
+          1.0000017881393433
+        ],
+        "scaleWorld" :
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" :
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "eDrunkardHead" :
+    {
+      "AudioBus" : {},
+      "AudioDrivenTransform" :
+      {
+        "axis" :
+        [
+          0.0,
+          -1.0,
+          0.0
+        ],
+        "damp" : 0.80000001192092896,
+        "ignoreBusVolume" : false,
+        "magnitude" : 0.25,
+        "offset" : 0.0,
+        "operation" : "translate",
+        "sourceEntityId" : "eDrunkardHead",
+        "useWorldSpace" : false
+      },
+      "GeometryBuffer" :
+      {
+        "buffer" : "null"
+      },
+      "SceneNode" :
+      {
+        "children" : [],
+        "parent" : "eDrunkardTorso"
+      },
+      "Tag" : {},
+      "TextureBuffer" :
+      {
+        "textures" :
+        [
+          "drunkard_head",
+          "drunkard_head"
+        ]
+      },
+      "Transform" :
+      {
+        "orientation" :
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" :
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "scaleWorld" :
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" :
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "eDrunkardLegLeft" :
+    {
+      "GeometryBuffer" :
+      {
+        "buffer" : "null"
+      },
+      "SceneNode" :
+      {
+        "children" : [],
+        "parent" : "eDrunkardLegsRoot"
+      },
+      "Tag" : {},
+      "TextureBuffer" :
+      {
+        "textures" :
+        [
+          "drunkard_leg_left",
+          "drunkard_leg_right"
+        ]
+      },
+      "Transform" :
+      {
+        "orientation" :
+        [
+          -1.0,
+          4.3722319986727598e-08,
+          -0.00024420357658527792,
+          -4.3722064191342724e-08
+        ],
+        "scale" :
+        [
+          1.06,
+          2.0,
+          1.0
+        ],
+        "scaleWorld" :
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" :
+        [
+          -0.485,
+          1.0,
+          0.0
+        ]
+      }
+    },
+    "eDrunkardLegRight" :
+    {
+      "GeometryBuffer" :
+      {
+        "buffer" : "null"
+      },
+      "SceneNode" :
+      {
+        "children" : [],
+        "parent" : "eDrunkardLegsRoot"
+      },
+      "Tag" : {},
+      "TextureBuffer" :
+      {
+        "textures" :
+        [
+          "drunkard_leg_right",
+          "drunkard_leg_left"
+        ]
+      },
+      "Transform" :
+      {
+        "orientation" :
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" :
+        [
+          0.96,
+          2.0,
+          1.0
+        ],
+        "scaleWorld" :
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" :
+        [
+          0.525,
+          -1.0,
+          0.0
+        ]
+      }
+    },
+    "eDrunkardLegsRoot" :
+    {
+      "SceneNode" :
+      {
+        "children" :
+        [
+          "eDrunkardFootstepsTrigger",
+          "eDrunkardLegLeft",
+          "eDrunkardLegRight"
+        ],
+        "parent" : "eDrunkardRoot"
+      },
+      "SequenceController" :
+      {
+        "steps" :
+        [
+          {
+            "TransformPeriodic" :
+            {
+              "amplitude" : 1.5,
+              "axis" :
+              [
+                -1.0,
+                0.0,
+                0.0
+              ],
+              "function" : "sine",
+              "offset" : 4.5,
+              "operation" : "rotate",
+              "period" : 1.5,
+              "phase" : 0.0,
+              "timeElapsed" : 0.0,
+              "timeTotal" : 0.0,
+              "transformRelative" : true,
+              "useWorldSpace" : false
+            }
+          }
+        ]
+      },
+      "Tag" : {},
+      "Transform" :
+      {
+        "orientation" :
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" :
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "scaleWorld" :
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" :
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "eDrunkardRoot" :
+    {
+      "SceneNode" :
+      {
+        "children" :
+        [
+          "eDrunkardTorso",
+          "eDrunkardLegsRoot",
+          "eDrunkardWalkActivator"
+        ],
+        "parent" : "eDrunkardRotator"
+      },
+      "Tag" : {},
+      "Transform" :
+      {
+        "orientation" :
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" :
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "scaleWorld" :
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" :
+        [
+          -9.0,
+          -0.5,
+          0.0
+        ]
+      }
+    },
+    "eDrunkardRotator" :
+    {
+      "SceneNode" :
+      {
+        "children" :
+        [
+          "eDrunkardRoot"
+        ],
+        "parent" : "eConcertSurfaceRoot"
+      },
+      "SequenceController" :
+      {
+        "steps" :
+        [
+          {
+            "TransformPeriodic" :
+            {
+              "amplitude" : 0.14999999999999999,
+              "axis" :
+              [
+                0.0,
+                -1.0,
+                0.0
+              ],
+              "function" : "sine",
+              "offset" : 0.45000000000000001,
+              "operation" : "rotate",
+              "period" : 1.5,
+              "phase" : 0.0,
+              "timeElapsed" : 0.0,
+              "timeTotal" : 0.0,
+              "transformRelative" : true,
+              "useWorldSpace" : false
+            }
+          }
+        ]
+      },
+      "Tag" : {},
+      "Transform" :
+      {
+        "orientation" :
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" :
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "scaleWorld" :
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" :
+        [
+          0.0,
+          2.375,
+          0.0
+        ]
+      }
+    },
+    "eDrunkardTorso" :
+    {
+      "Audio3dParams" :
+      {
+        "attenuation" :
+        {
+          "distanceMax" : 1000000.0,
+          "distanceMin" : 1.0,
+          "model" : "linear",
+          "rolloff" : 1.0
+        },
+        "dopplerFactor" : 1.0
+      },
+      "AudioBus" : {},
+      "GeometryBuffer" :
+      {
+        "buffer" : "null"
+      },
+      "InteractionListener" :
+      {
+        "actions" :
+        {
+          "interact" : []
+        }
+      },
+      "InteractionListenerColor" :
+      {
+        "color" : 4278255615
+      },
+      "SceneNode" :
+      {
+        "children" :
+        [
+          "eDrunkardHead"
+        ],
+        "parent" : "eDrunkardRoot"
+      },
+      "Tag" : {},
+      "TextureBuffer" :
+      {
+        "textures" :
+        [
+          "drunkard_torso",
+          "drunkard_torso"
+        ]
+      },
+      "Transform" :
+      {
+        "orientation" :
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" :
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "scaleWorld" :
+        [
+          2.0,
+          2.0,
+          1.0
+        ],
+        "translation" :
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      }
+    },
+    "eDrunkardWalkActivator" :
+    {
+      "EntityList" :
+      {
+        "entities" :
+        [
+          "eDrunkardRotator",
+          "eDrunkardLegsRoot",
+          "eDrunkardFootstepsTrigger"
+        ]
+      },
+      "GeometryBuffer" :
+      {
+        "buffer" : "null"
+      },
+      "InteractionListener" :
+      {
+        "actions" :
+        {
+          "interact" :
+          [
+            "EntitiesUpdateToggle"
+          ]
+        }
+      },
+      "InteractionListenerColor" :
+      {
+        "color" : 4294967040
+      },
+      "SceneNode" :
+      {
+        "children" : [],
+        "parent" : "eDrunkardRoot"
+      },
+      "Tag" : {},
+      "Transform" :
+      {
+        "orientation" :
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" :
+        [
+          2.0,
+          2.0,
+          1.0
+        ],
+        "scaleWorld" :
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" :
+        [
+          0.0,
+          -1.0,
+          0.0
+        ]
+      }
+    }
+  }
+}

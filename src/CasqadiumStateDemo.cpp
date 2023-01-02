@@ -31,6 +31,8 @@
 
 #include <cqde/callbacks/editor_input.hpp>
 
+#include <demo/callbacks.hpp>
+#include <demo/components.hpp>
 #include <demo/sequences.hpp>
 
 #include <olcPGE/olcMouseInputId.hpp>
@@ -77,7 +79,40 @@ CasqadiumStateDemo::CasqadiumStateDemo(
   };
 
   auto& callbackMgr = mRegistry.ctx().at <CallbackManager> ();
+
   callbackMgr.Register("EngineShutdown", engineShutdown);
+
+  callbackMgr.Register("AudioDemoReset", demo::audioDemoReset);
+
+  callbackMgr.Register("AudioDemoConcertInit", demo::audioDemoConcertInit);
+  callbackMgr.Register("AudioDemoConcertShutdown", demo::audioDemoConcertShutdown);
+
+  callbackMgr.Register("AudioDemoDopplerInit", demo::audioDemoDopplerInit);
+  callbackMgr.Register("AudioDemoDopplerShutdown", demo::audioDemoDopplerShutdown);
+
+  callbackMgr.Register("AudioListenerFilterInit", demo::audioListenerFilterInit);
+
+  callbackMgr.Register("MusicConcertControllerInit", demo::musicConcertControllerInit);
+  callbackMgr.Register("MusicConcertControllerReset", demo::musicConcertControllerReset);
+
+  callbackMgr.Register("MusicInstrumentReset", demo::musicInstrumentReset);
+  callbackMgr.Register("MusicInstrumentToggle", demo::musicInstrumentToggle);
+
+  callbackMgr.Register("PlayDialogue", demo::playDialogue);
+  callbackMgr.Register("ToggleDialoguePause", demo::toggleDialoguePause);
+  callbackMgr.Register("PlayFootstepSound", demo::playFootstepSound);
+
+  callbackMgr.Register("CarReset", demo::carReset);
+  callbackMgr.Register("EngineCylinderHit", demo::engineCylinderHit);
+
+
+  auto& entityManager = mRegistry.ctx().at <EntityManager> ();
+
+  entityManager.registerComponent <demo::MusicalInstrument> ("MusicalInstrument");
+  entityManager.registerComponent <demo::PhysicsMaterial> ("PhysicsMaterial");
+  entityManager.registerComponent <demo::EngineController> ("EngineController");
+  entityManager.registerEmptyComponent <demo::MusicConcertController> ("MusicConcertController");
+  entityManager.registerEmptyComponent <demo::FootstepAudioBank> ("FootstepAudioBank");
 
 
   auto& packageManager = mRegistry.ctx().at <PackageManager> ();
@@ -100,49 +135,25 @@ CasqadiumStateDemo::CasqadiumStateDemo(
   auto& inputManager = mRegistry.ctx().at <InputManager> ();
   inputManager.load(userManager.inputConfigPath());
 
-  const cqde::identifier fontId = "munro";
-
-  auto& fonts = mRegistry.ctx().at <FontAssetManager> ();
-  fonts.load({fontId});
-
-  while ( fonts.status(fontId) != AssetStatus::Loaded )
-    if ( fonts.status(fontId) == AssetStatus::Error )
-    {
-      mRunning = false;
-      return;
-    }
-
-  auto pge = olc::renderer->ptrPGE;
-  const auto layer = pge->GetDrawTarget();
-
-  auto textRenderable = fonts.get(fontId)->RenderStringToRenderable(U"T", olc::WHITE, false);
-  auto textTexture = std::make_shared <olc::Renderable> (std::move(textRenderable));
-
-  auto skyBoxTexture = std::make_shared <olc::Renderable> ();
-  auto monolithTexture = std::make_shared <olc::Renderable> ();
-
-  skyBoxTexture->Create(1, 1);
-  pge->SetDrawTarget(skyBoxTexture->Sprite());
-  pge->Clear({140, 218, 255});
-  skyBoxTexture->Decal()->Update();
-
-  monolithTexture->Create(1, 1);
-  pge->SetDrawTarget(monolithTexture->Sprite());
-  pge->Clear({15, 15, 15});
-  monolithTexture->Decal()->Update();
-
-  pge->SetDrawTarget(layer);
 
   auto& textures = mRegistry.ctx().at <TextureAssetManager> ();
-  textures.insert("text_texture", textTexture);
-  textures.insert("skybox_n", skyBoxTexture);
-  textures.insert("monolith", monolithTexture);
-  textures.insert("cqde_c", cqde::textureFromText("c", olc::RED, olc::BLANK, true));
-  textures.insert("cqde_q", cqde::textureFromText("q", olc::GREEN, olc::BLANK, true));
-  textures.insert("cqde_d", cqde::textureFromText("d", olc::WHITE, olc::BLANK, true));
-  textures.insert("cqde_e", cqde::textureFromText("e", olc::BLUE, olc::BLANK, true));
 
-  auto& entityManager = mRegistry.ctx().at <EntityManager> ();
+  textures.insert("scene_concert", cqde::textureFromText("Concert", olc::WHITE, olc::BLANK, true));
+  textures.insert("scene_doppler", cqde::textureFromText("Doppler", olc::WHITE, olc::BLANK, true));
+  textures.insert("scene_engine", cqde::textureFromText("Engine", olc::WHITE, olc::BLANK, true));
+
+  textures.insert("mus_reset", cqde::textureFromText("RESET", olc::RED, olc::BLANK, true));
+
+  textures.insert("hint_move", cqde::textureFromText("[WASD] Move around", olc::WHITE, olc::BLANK, true));
+  textures.insert("hint_look", cqde::textureFromText("[Mouse] Look around", olc::WHITE, olc::BLANK, true));
+  textures.insert("hint_interact", cqde::textureFromText("[LMB] Interact", olc::YELLOW, olc::BLANK, true));
+  textures.insert("hint_physics_debug", cqde::textureFromText("[F] Draw physics debug layer", olc::DARK_GREEN, olc::BLANK, true));
+  textures.insert("hint_reset", cqde::textureFromText("[Esc] Reset demo", olc::GREY, olc::BLANK, true));
+  textures.insert("hint_quit", cqde::textureFromText("[Q] Quit", olc::DARK_GREY, olc::BLANK, true));
+
+  auto& audio = mRegistry.ctx().at <AudioAssetManager> ();
+  for ( const auto& audioId : audio.assetIdList() )
+    audio.load({audioId});
 
   if ( configManager.editorMode() == true )
     cqde::callbacks::editorModeEnable(mRegistry);

@@ -1,0 +1,57 @@
+{
+  "AudioDemoReset" : 
+  {
+    "+Key_Escape" : 
+    {
+      "absolute" : false,
+      "sensitivity" : 1.0
+    }
+  },
+  "EngineThrottle" : 
+  {
+    "~MouseButton_Left" : 
+    {
+      "absolute" : false,
+      "sensitivity" : 5.0
+    }
+  },
+  "FootstepsStop" : 
+  {
+    "-Key_A" : 
+    {
+      "absolute" : false,
+      "sensitivity" : 1.0
+    },
+    "-Key_D" : 
+    {
+      "absolute" : false,
+      "sensitivity" : 1.0
+    },
+    "-Key_S" : 
+    {
+      "absolute" : false,
+      "sensitivity" : 1.0
+    },
+    "-Key_W" : 
+    {
+      "absolute" : false,
+      "sensitivity" : 1.0
+    }
+  },
+  "Interact" : 
+  {
+    "+MouseButton_Left" : 
+    {
+      "absolute" : false,
+      "sensitivity" : 1.0
+    }
+  },
+  "PhysicsDebugDrawToggle" : 
+  {
+    "-Key_F" : 
+    {
+      "absolute" : false,
+      "sensitivity" : 1.0
+    }
+  }
+}

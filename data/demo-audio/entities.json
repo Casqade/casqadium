@@ -1,0 +1,5232 @@
+{
+  "eAudioDemoController" : 
+  {
+    "EntityList" : 
+    {
+      "entities" : 
+      [
+        "eSceneEngine",
+        "eSceneDoppler",
+        "eCameraInputHint",
+        "eCameraMenu",
+        "eSceneConcert"
+      ]
+    },
+    "InputController" : 
+    {
+      "axes" : 
+      {
+        "AudioDemoReset" : 
+        {
+          "callbacks" : 
+          [
+            "AudioDemoReset"
+          ],
+          "constraint" : 
+          [
+            0.0,
+            0.0
+          ],
+          "value" : 0.0
+        },
+        "EngineShutdown" : 
+        {
+          "callbacks" : 
+          [
+            "EngineShutdown"
+          ],
+          "constraint" : 
+          [
+            0.0,
+            0.0
+          ],
+          "value" : 0.0
+        },
+        "PhysicsDebugDrawToggle" : 
+        {
+          "callbacks" : 
+          [
+            "SystemsToggle"
+          ],
+          "constraint" : 
+          [
+            0.0,
+            0.0
+          ],
+          "value" : 0.0
+        }
+      }
+    },
+    "SubscriberInput" : {},
+    "SystemList" : 
+    {
+      "systems" : 
+      [
+        "PhysicsDebugRenderSystem"
+      ]
+    }
+  },
+  "eCameraConcert" : 
+  {
+    "AudioBus" : {},
+    "AudioListener3d" : {},
+    "Camera" : 
+    {
+      "fov" : 57.295780181884766,
+      "layer" : 0,
+      "lightingMode" : "diffuse",
+      "projection" : "perspective",
+      "renderMode" : "solid",
+      "textureMode" : "textured",
+      "viewport" : 
+      [
+        0.0,
+        0.0,
+        1.0,
+        1.0
+      ],
+      "z-range" : 
+      [
+        0.10000000149011612,
+        50.0
+      ]
+    },
+    "InputController" : 
+    {
+      "axes" : 
+      {
+        "Interact" : 
+        {
+          "callbacks" : 
+          [
+            "Interact"
+          ],
+          "constraint" : 
+          [
+            0.0,
+            0.0
+          ],
+          "value" : 0.0
+        },
+        "Pitch" : 
+        {
+          "callbacks" : 
+          [
+            "ControlPitchRelative"
+          ],
+          "constraint" : 
+          [
+            1.0,
+            0.0
+          ],
+          "value" : 0.0
+        }
+      }
+    },
+    "InteractionSource" : 
+    {
+      "actions" : 
+      [
+        "interact"
+      ],
+      "radius" : 5.0,
+      "type" : "viewportCenter"
+    },
+    "InteractionSourceActiveAction" : 
+    {
+      "actionId" : "interact"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eCameraConcertRoot"
+    },
+    "SubscriberInput" : {},
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "WantsMouseCentered" : {},
+    "WantsMouseHidden" : {}
+  },
+  "eCameraConcertFootstepsTrigger" : 
+  {
+    "Audio3dParams" : 
+    {
+      "attenuation" : 
+      {
+        "distanceMax" : 1.5,
+        "distanceMin" : 0.5,
+        "model" : "linear",
+        "rolloff" : 1.0
+      },
+      "dopplerFactor" : 1.0
+    },
+    "CollisionBody" : 
+    {
+      "body" : 
+      {
+        "active" : false
+      },
+      "colliders" : 
+      [
+        {
+          "callbacks" : 
+          {
+            "onEnter" : 
+            [
+              "PlayFootstepSound"
+            ],
+            "onLeave" : [],
+            "onStay" : []
+          },
+          "collision" : 
+          {
+            "group" : 1,
+            "mask" : 65535
+          },
+          "isTrigger" : false,
+          "material" : 
+          {
+            "bounciness" : 0.5,
+            "density" : 1.0,
+            "friction" : 0.3000000225043209
+          },
+          "shape" : 
+          {
+            "height" : 4.0,
+            "radius" : 0.10000000149011612
+          },
+          "transform" : 
+          [
+            [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              8.4293697000248358e-07,
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              -1.0,
+              8.4293697000248358e-07,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "type" : "CapsuleShape"
+        }
+      ]
+    },
+    "InputController" : 
+    {
+      "axes" : 
+      {
+        "FootstepsStop" : 
+        {
+          "callbacks" : 
+          [
+            "EntityUpdateOff"
+          ],
+          "constraint" : 
+          [
+            0.0,
+            0.0
+          ],
+          "value" : 0.0
+        }
+      }
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eCameraConcertLegsRoot"
+    },
+    "SequenceController" : 
+    {
+      "steps" : 
+      [
+        {
+          "TransformManipulate" : 
+          {
+            "amplitude" : 1.5,
+            "axis" : 
+            [
+              -1.0,
+              0.0,
+              0.0
+            ],
+            "function" : "sine",
+            "offset" : 0.0,
+            "operation" : "rotate",
+            "period" : 1.0,
+            "phase" : 0.5,
+            "timeElapsed" : 0.0,
+            "timeTotal" : 0.0,
+            "transformRelative" : false,
+            "useWorldSpace" : false
+          }
+        }
+      ]
+    },
+    "SubscriberInput" : {},
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        0.99999994039535522,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eCameraConcertLegsRoot" : 
+  {
+    "SceneNode" : 
+    {
+      "children" : 
+      [
+        "eCameraConcertFootstepsTrigger"
+      ],
+      "parent" : "eCameraConcertRoot"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        -1.0,
+        0.0
+      ]
+    }
+  },
+  "eCameraConcertRoot" : 
+  {
+    "EntityList" : 
+    {
+      "entities" : 
+      [
+        "eCameraConcertFootstepsTrigger"
+      ]
+    },
+    "InputController" : 
+    {
+      "axes" : 
+      {
+        "TranslateX" : 
+        {
+          "callbacks" : 
+          [
+            "ControlTranslateXRelative",
+            "EntitiesUpdateOn"
+          ],
+          "constraint" : 
+          [
+            1.0,
+            0.0
+          ],
+          "value" : 0.0
+        },
+        "TranslateZ" : 
+        {
+          "callbacks" : 
+          [
+            "ControlTranslateZRelative",
+            "EntitiesUpdateOn"
+          ],
+          "constraint" : 
+          [
+            1.0,
+            0.0
+          ],
+          "value" : 0.0
+        },
+        "Yaw" : 
+        {
+          "callbacks" : 
+          [
+            "ControlYawRelative"
+          ],
+          "constraint" : 
+          [
+            1.0,
+            0.0
+          ],
+          "value" : 0.0
+        }
+      }
+    },
+    "SceneNode" : 
+    {
+      "children" : 
+      [
+        "eCameraConcertLegsRoot",
+        "eCameraConcert"
+      ],
+      "parent" : "eConcertRoot"
+    },
+    "SubscriberInput" : {},
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eCameraDoppler" : 
+  {
+    "AudioBus" : {},
+    "AudioListener3d" : {},
+    "Camera" : 
+    {
+      "fov" : 57.295780181884766,
+      "layer" : 0,
+      "lightingMode" : "diffuse",
+      "projection" : "perspective",
+      "renderMode" : "solid",
+      "textureMode" : "textured",
+      "viewport" : 
+      [
+        0.0,
+        0.0,
+        1.0,
+        1.0
+      ],
+      "z-range" : 
+      [
+        0.10000000149011612,
+        50.0
+      ]
+    },
+    "InputController" : 
+    {
+      "axes" : 
+      {
+        "Pitch" : 
+        {
+          "callbacks" : 
+          [
+            "ControlPitchRelative"
+          ],
+          "constraint" : 
+          [
+            1.0,
+            0.0
+          ],
+          "value" : 0.0
+        },
+        "TranslateX" : 
+        {
+          "callbacks" : 
+          [
+            "ControlTranslateXRelative"
+          ],
+          "constraint" : 
+          [
+            1.0,
+            0.0
+          ],
+          "value" : 0.0
+        },
+        "TranslateY" : 
+        {
+          "callbacks" : 
+          [
+            "ControlTranslateYRelative"
+          ],
+          "constraint" : 
+          [
+            1.0,
+            0.0
+          ],
+          "value" : 0.0
+        },
+        "TranslateZ" : 
+        {
+          "callbacks" : 
+          [
+            "ControlTranslateZRelative"
+          ],
+          "constraint" : 
+          [
+            1.0,
+            0.0
+          ],
+          "value" : 0.0
+        },
+        "Yaw" : 
+        {
+          "callbacks" : 
+          [
+            "ControlYawRelative"
+          ],
+          "constraint" : 
+          [
+            1.0,
+            0.0
+          ],
+          "value" : 0.0
+        }
+      }
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eDopplerRoot"
+    },
+    "SubscriberInput" : {},
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "WantsMouseCentered" : {},
+    "WantsMouseHidden" : {}
+  },
+  "eCameraEngine" : 
+  {
+    "AudioBus" : {},
+    "AudioListener3d" : {},
+    "Camera" : 
+    {
+      "fov" : 57.295780181884766,
+      "layer" : 0,
+      "lightingMode" : "diffuse",
+      "projection" : "perspective",
+      "renderMode" : "solid",
+      "textureMode" : "textured",
+      "viewport" : 
+      [
+        0.0,
+        0.0,
+        1.0,
+        1.0
+      ],
+      "z-range" : 
+      [
+        0.10000000149011612,
+        5.0
+      ]
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eEngineRoot"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eCameraInputHint" : 
+  {
+    "Camera" : 
+    {
+      "fov" : 0.0010000000474974513,
+      "layer" : -1,
+      "lightingMode" : "diffuse",
+      "projection" : "orthographic",
+      "renderMode" : "solid",
+      "textureMode" : "textured",
+      "viewport" : 
+      [
+        0.0,
+        0.0,
+        1.0,
+        1.0
+      ],
+      "z-range" : 
+      [
+        0.10000000149011612,
+        5.0
+      ]
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eCameraInputHintRoot"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    }
+  },
+  "eCameraInputHintRoot" : 
+  {
+    "SceneNode" : 
+    {
+      "children" : 
+      [
+        "eInputHintInteract",
+        "eInputHintPhysDebug",
+        "eCameraInputHint",
+        "eInputHintMove",
+        "eInputHintLook",
+        "eInputHintDemoReset",
+        "eInputHintQuit"
+      ],
+      "parent" : "null"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        -10.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eCameraMenu" : 
+  {
+    "Camera" : 
+    {
+      "fov" : 57.295780181884766,
+      "layer" : 0,
+      "lightingMode" : "diffuse",
+      "projection" : "perspective",
+      "renderMode" : "solid",
+      "textureMode" : "textured",
+      "viewport" : 
+      [
+        0.0,
+        0.0,
+        1.0,
+        1.0
+      ],
+      "z-range" : 
+      [
+        0.10000000149011612,
+        5.0
+      ]
+    },
+    "InputController" : 
+    {
+      "axes" : 
+      {
+        "Interact" : 
+        {
+          "callbacks" : 
+          [
+            "Interact"
+          ],
+          "constraint" : 
+          [
+            0.0,
+            0.0
+          ],
+          "value" : 0.0
+        },
+        "Pitch" : 
+        {
+          "callbacks" : 
+          [
+            "ControlPitchRelative"
+          ],
+          "constraint" : 
+          [
+            1.0,
+            0.0
+          ],
+          "value" : 0.0
+        },
+        "Yaw" : 
+        {
+          "callbacks" : 
+          [
+            "ControlYawRelative"
+          ],
+          "constraint" : 
+          [
+            1.0,
+            0.0
+          ],
+          "value" : 0.0
+        }
+      }
+    },
+    "InteractionSource" : 
+    {
+      "actions" : 
+      [
+        "interact"
+      ],
+      "radius" : 5.0,
+      "type" : "viewportCenter"
+    },
+    "InteractionSourceActiveAction" : 
+    {
+      "actionId" : "interact"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eMenuRoot"
+    },
+    "SubscriberInput" : {},
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        0.0,
+        0.0
+      ]
+    },
+    "WantsMouseCentered" : {},
+    "WantsMouseHidden" : {}
+  },
+  "eCar" : 
+  {
+    "Audio3dParams" : 
+    {
+      "attenuation" : 
+      {
+        "distanceMax" : 100.0,
+        "distanceMin" : 1.0,
+        "model" : "linear",
+        "rolloff" : 1.0
+      },
+      "dopplerFactor" : 1.0
+    },
+    "AudioLoop" : 
+    {
+      "layers" : 
+      [
+        "car_loop"
+      ]
+    },
+    "GeometryBuffer" : 
+    {
+      "buffer" : "null"
+    },
+    "RigidBody" : 
+    {
+      "body" : 
+      {
+        "active" : false,
+        "axisFactor" : 
+        {
+          "angular" : 
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "linear" : 
+          [
+            1.0,
+            0.0,
+            0.0
+          ]
+        },
+        "damp" : 
+        {
+          "angular" : 0.0,
+          "linear" : 0.0
+        },
+        "force" : 
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "inertia" : 
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "mass" : 1.0,
+        "massCenter" : 
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "massPropsFromColliders" : false,
+        "sleepAllowed" : true,
+        "sleeping" : true,
+        "torque" : 
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "type" : "kinematic",
+        "velocity" : 
+        {
+          "angular" : 
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "linear" : 
+          [
+            -40.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "colliders" : 
+      [
+        {
+          "callbacks" : 
+          {
+            "onEnter" : [],
+            "onLeave" : [],
+            "onStay" : []
+          },
+          "collision" : 
+          {
+            "group" : 1,
+            "mask" : 65535
+          },
+          "isTrigger" : false,
+          "material" : 
+          {
+            "bounciness" : 0.5,
+            "density" : 1.0,
+            "friction" : 0.3000000225043209
+          },
+          "shape" : 
+          {
+            "radius" : 1.0
+          },
+          "transform" : 
+          [
+            [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "type" : "SphereShape"
+        }
+      ]
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eCarRoot"
+    },
+    "TextureBuffer" : 
+    {
+      "textures" : 
+      [
+        "null",
+        "null"
+      ]
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eCarResetter" : 
+  {
+    "CollisionBody" : 
+    {
+      "body" : 
+      {
+        "active" : false
+      },
+      "colliders" : 
+      [
+        {
+          "callbacks" : 
+          {
+            "onEnter" : 
+            [
+              "CarReset"
+            ],
+            "onLeave" : [],
+            "onStay" : []
+          },
+          "collision" : 
+          {
+            "group" : 1,
+            "mask" : 65535
+          },
+          "isTrigger" : false,
+          "material" : 
+          {
+            "bounciness" : 0.5,
+            "density" : 1.0,
+            "friction" : 0.3000000225043209
+          },
+          "shape" : 
+          {
+            "halfExtents" : 
+            [
+              1.0,
+              1.0,
+              1.0
+            ]
+          },
+          "transform" : 
+          [
+            [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "type" : "BoxShape"
+        }
+      ]
+    },
+    "EntityList" : 
+    {
+      "entities" : 
+      [
+        "eCar"
+      ]
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eDopplerRoot"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        -100.0,
+        0.0,
+        -5.0
+      ]
+    }
+  },
+  "eCarRoot" : 
+  {
+    "SceneNode" : 
+    {
+      "children" : 
+      [
+        "eCar"
+      ],
+      "parent" : "eDopplerRoot"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        100.0,
+        0.0,
+        -5.0
+      ]
+    }
+  },
+  "eConcertController" : 
+  {
+    "EntityList" : 
+    {
+      "entities" : 
+      [
+        "eMusPiano",
+        "eMusViolin",
+        "eMusBottle",
+        "eMusVargan",
+        "eMusBass",
+        "eMusBanjoRhythm",
+        "eMusGuitar",
+        "eMusBanjoMelody",
+        "eMusPerc",
+        "eMusViola"
+      ]
+    },
+    "GeometryBuffer" : 
+    {
+      "buffer" : "null"
+    },
+    "InteractionListener" : 
+    {
+      "actions" : 
+      {
+        "interact" : 
+        [
+          "MusicConcertControllerReset"
+        ]
+      }
+    },
+    "InteractionListenerColor" : 
+    {
+      "color" : 4278255615
+    },
+    "MusicConcertController" : {},
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eConcertRoot"
+    },
+    "TextureBuffer" : 
+    {
+      "textures" : 
+      [
+        "mus_reset",
+        "mus_reset"
+      ]
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        -2.0,
+        -5.0
+      ]
+    }
+  },
+  "eConcertRoot" : 
+  {
+    "SceneNode" : 
+    {
+      "children" : 
+      [
+        "eMusGuitar",
+        "eMusBanjoMelody",
+        "eMusPerc",
+        "eMusVargan",
+        "eMusBass",
+        "eConcertSurfaceRoot",
+        "eMusViola",
+        "eMusBanjoRhythm",
+        "eMusViolin",
+        "eMusBanjoRhythmSprite",
+        "eConcertController",
+        "eMusPiano",
+        "eCameraConcertRoot",
+        "eMusBottle"
+      ],
+      "parent" : "null"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        100.0,
+        0.0
+      ]
+    }
+  },
+  "eConcertSurfaceRoot" : 
+  {
+    "CollisionBody" : 
+    {
+      "body" : 
+      {
+        "active" : false
+      },
+      "colliders" : 
+      [
+        {
+          "callbacks" : 
+          {
+            "onEnter" : [],
+            "onLeave" : [],
+            "onStay" : []
+          },
+          "collision" : 
+          {
+            "group" : 2,
+            "mask" : 65534
+          },
+          "isTrigger" : false,
+          "material" : 
+          {
+            "bounciness" : 0.5,
+            "density" : 1.0,
+            "friction" : 0.3000000225043209
+          },
+          "shape" : 
+          {
+            "radius" : 35.0
+          },
+          "transform" : 
+          [
+            [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "type" : "SphereShape"
+        }
+      ]
+    },
+    "SceneNode" : 
+    {
+      "children" : 
+      [
+        "eSurfaceMetalSprite",
+        "eSurfaceWood",
+        "eDrunkardRotator",
+        "eSurface2",
+        "eSurface3",
+        "eSurface4",
+        "eSurface1"
+      ],
+      "parent" : "eConcertRoot"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        -3.0,
+        -3.0
+      ]
+    }
+  },
+  "eDemoAudioEntryPoint" : 
+  {
+    "CasqadiumEntryPoint" : {},
+    "EntityList" : 
+    {
+      "entities" : 
+      [
+        "eSceneConcert",
+        "eAudioDemoController",
+        "eCameraMenu",
+        "eSceneEngine",
+        "eSceneDoppler",
+        "eCameraInputHint"
+      ]
+    },
+    "SystemList" : 
+    {
+      "systems" : 
+      [
+        "Audio3dSystem",
+        "MouseCenteringSystem",
+        "InteractionQuerySystem",
+        "PhysicsSystem",
+        "AudioDrivenTransformSystem",
+        "SequenceSystem",
+        "CullingSystem",
+        "RenderSystem",
+        "MouseHidingSystem",
+        "InteractionHighlightSystem",
+        "RenderBufferClearSystem"
+      ]
+    }
+  },
+  "eDopplerRoot" : 
+  {
+    "SceneNode" : 
+    {
+      "children" : 
+      [
+        "eCarRoot",
+        "eCameraDoppler",
+        "eCarResetter"
+      ],
+      "parent" : "null"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        -100.0,
+        0.0
+      ]
+    }
+  },
+  "eDrunkardFootstepsTrigger" : 
+  {
+    "Audio3dParams" : 
+    {
+      "attenuation" : 
+      {
+        "distanceMax" : 100.0,
+        "distanceMin" : 5.0,
+        "model" : "exponential",
+        "rolloff" : 1.25
+      },
+      "dopplerFactor" : 1.0
+    },
+    "CollisionBody" : 
+    {
+      "body" : 
+      {
+        "active" : false
+      },
+      "colliders" : 
+      [
+        {
+          "callbacks" : 
+          {
+            "onEnter" : 
+            [
+              "PlayFootstepSound"
+            ],
+            "onLeave" : [],
+            "onStay" : []
+          },
+          "collision" : 
+          {
+            "group" : 1,
+            "mask" : 65535
+          },
+          "isTrigger" : false,
+          "material" : 
+          {
+            "bounciness" : 0.5,
+            "density" : 1.0,
+            "friction" : 0.3000000225043209
+          },
+          "shape" : 
+          {
+            "height" : 4.0,
+            "radius" : 0.10000000149011612
+          },
+          "transform" : 
+          [
+            [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "type" : "CapsuleShape"
+        }
+      ]
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eDrunkardRoot"
+    },
+    "SequenceController" : 
+    {
+      "steps" : 
+      [
+        {
+          "TransformManipulate" : 
+          {
+            "amplitude" : 1.5,
+            "axis" : 
+            [
+              -1.0,
+              0.0,
+              0.0
+            ],
+            "function" : "sine",
+            "offset" : 0.0,
+            "operation" : "rotate",
+            "period" : 2.0,
+            "phase" : 0.5,
+            "timeElapsed" : 0.0,
+            "timeTotal" : 0.0,
+            "transformRelative" : false,
+            "useWorldSpace" : false
+          }
+        }
+      ]
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0000017881393433,
+        1.0000017881393433
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eDrunkardHead" : 
+  {
+    "Audio3dParams" : 
+    {
+      "attenuation" : 
+      {
+        "distanceMax" : 100.0,
+        "distanceMin" : 7.5,
+        "model" : "exponential",
+        "rolloff" : 1.25
+      },
+      "dopplerFactor" : 1.0
+    },
+    "AudioAssetList" : 
+    {
+      "audio" : 
+      [
+        "dlg_drunk_07",
+        "dlg_drunk_14",
+        "dlg_drunk_17",
+        "dlg_drunk_04",
+        "dlg_drunk_20",
+        "dlg_drunk_13",
+        "dlg_drunk_03",
+        "dlg_drunk_10",
+        "dlg_drunk_09",
+        "dlg_drunk_12",
+        "dlg_drunk_01",
+        "dlg_drunk_15",
+        "dlg_drunk_06",
+        "dlg_drunk_18",
+        "dlg_drunk_21",
+        "dlg_drunk_08",
+        "dlg_drunk_11",
+        "dlg_drunk_02",
+        "dlg_drunk_22",
+        "dlg_drunk_16",
+        "dlg_drunk_05",
+        "dlg_drunk_19"
+      ]
+    },
+    "AudioBus" : {},
+    "AudioDrivenTransform" : 
+    {
+      "axis" : 
+      [
+        1.0,
+        1.0,
+        0.0
+      ],
+      "damp" : 0.80000001192092896,
+      "ignoreBusVolume" : false,
+      "magnitude" : 1.0,
+      "offset" : 1.0,
+      "operation" : "scale",
+      "sourceEntityId" : "eDrunkardHead",
+      "useWorldSpace" : false
+    },
+    "GeometryBuffer" : 
+    {
+      "buffer" : "null"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eDrunkardTorso"
+    },
+    "SequenceController" : 
+    {
+      "steps" : 
+      [
+        {
+          "CallbackExecuteAPeriodic" : 
+          {
+            "callbacks" : 
+            [
+              "PlayDialogue"
+            ],
+            "delayRangeMax" : 7.0,
+            "delayRangeMin" : 4.0,
+            "initialized" : false,
+            "timeElapsed" : 0.0,
+            "timeTotal" : 0.0
+          }
+        }
+      ]
+    },
+    "TextureBuffer" : 
+    {
+      "textures" : 
+      [
+        "drunkard_head",
+        "drunkard_head"
+      ]
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        0.32749998569488525,
+        0.0
+      ]
+    }
+  },
+  "eDrunkardLegLeft" : 
+  {
+    "GeometryBuffer" : 
+    {
+      "buffer" : "null"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eDrunkardLegLeftRoot"
+    },
+    "TextureBuffer" : 
+    {
+      "textures" : 
+      [
+        "drunkard_leg_left",
+        "drunkard_leg_right"
+      ]
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.059999942779541,
+        2.0000002384185791,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        -0.48500001430511475,
+        -1.0,
+        0.0
+      ]
+    }
+  },
+  "eDrunkardLegLeftRoot" : 
+  {
+    "SceneNode" : 
+    {
+      "children" : 
+      [
+        "eDrunkardLegLeft"
+      ],
+      "parent" : "eDrunkardRoot"
+    },
+    "SequenceController" : 
+    {
+      "steps" : 
+      [
+        {
+          "TransformManipulate" : 
+          {
+            "amplitude" : 1.5,
+            "axis" : 
+            [
+              -1.0,
+              0.0,
+              0.0
+            ],
+            "function" : "cosine",
+            "offset" : 0.0,
+            "operation" : "rotate",
+            "period" : 2.0,
+            "phase" : 0.0,
+            "timeElapsed" : 0.0,
+            "timeTotal" : 0.0,
+            "transformRelative" : true,
+            "useWorldSpace" : false
+          }
+        }
+      ]
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eDrunkardLegRight" : 
+  {
+    "GeometryBuffer" : 
+    {
+      "buffer" : "null"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eDrunkardLegRightRoot"
+    },
+    "TextureBuffer" : 
+    {
+      "textures" : 
+      [
+        "drunkard_leg_right",
+        "drunkard_leg_left"
+      ]
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        0.95999997854232788,
+        2.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.52499997615814209,
+        -1.0,
+        0.0
+      ]
+    }
+  },
+  "eDrunkardLegRightRoot" : 
+  {
+    "SceneNode" : 
+    {
+      "children" : 
+      [
+        "eDrunkardLegRight"
+      ],
+      "parent" : "eDrunkardRoot"
+    },
+    "SequenceController" : 
+    {
+      "steps" : 
+      [
+        {
+          "TransformManipulate" : 
+          {
+            "amplitude" : 1.5,
+            "axis" : 
+            [
+              1.0,
+              0.0,
+              0.0
+            ],
+            "function" : "cosine",
+            "offset" : 0.0,
+            "operation" : "rotate",
+            "period" : 2.0,
+            "phase" : 0.0,
+            "timeElapsed" : 0.0,
+            "timeTotal" : 0.0,
+            "transformRelative" : true,
+            "useWorldSpace" : false
+          }
+        }
+      ]
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eDrunkardRoot" : 
+  {
+    "SceneNode" : 
+    {
+      "children" : 
+      [
+        "eDrunkardFootstepsTrigger",
+        "eDrunkardLegLeftRoot",
+        "eDrunkardLegRightRoot",
+        "eDrunkardTorso",
+        "eDrunkardHead1",
+        "eDrunkardWalkActivator"
+      ],
+      "parent" : "eDrunkardRotator"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        -9.0,
+        -0.5,
+        0.0
+      ]
+    }
+  },
+  "eDrunkardRotator" : 
+  {
+    "SceneNode" : 
+    {
+      "children" : 
+      [
+        "eDrunkardRoot"
+      ],
+      "parent" : "eConcertSurfaceRoot"
+    },
+    "SequenceController" : 
+    {
+      "steps" : 
+      [
+        {
+          "TransformManipulate" : 
+          {
+            "amplitude" : 0.10000000000000001,
+            "axis" : 
+            [
+              0.0,
+              -1.0,
+              0.0
+            ],
+            "function" : "sine",
+            "offset" : 0.20000000000000001,
+            "operation" : "rotate",
+            "period" : 1.0,
+            "phase" : 0.5,
+            "timeElapsed" : 0.0,
+            "timeTotal" : 0.0,
+            "transformRelative" : true,
+            "useWorldSpace" : false
+          }
+        }
+      ]
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        2.375,
+        0.0
+      ]
+    }
+  },
+  "eDrunkardTorso" : 
+  {
+    "GeometryBuffer" : 
+    {
+      "buffer" : "null"
+    },
+    "SceneNode" : 
+    {
+      "children" : 
+      [
+        "eDrunkardHead"
+      ],
+      "parent" : "eDrunkardRoot"
+    },
+    "TextureBuffer" : 
+    {
+      "textures" : 
+      [
+        "drunkard_torso",
+        "drunkard_torso"
+      ]
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        2.0,
+        2.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        1.0,
+        0.0
+      ]
+    }
+  },
+  "eDrunkardWalkActivator" : 
+  {
+    "EntityList" : 
+    {
+      "entities" : 
+      [
+        "eDrunkardHead",
+        "eDrunkardLegRightRoot",
+        "eDrunkardLegLeftRoot",
+        "eDrunkardRotator",
+        "eDrunkardFootstepsTrigger"
+      ]
+    },
+    "GeometryBuffer" : 
+    {
+      "buffer" : "null"
+    },
+    "InteractionListener" : 
+    {
+      "actions" : 
+      {
+        "interact" : 
+        [
+          "EntitiesUpdateToggle",
+          "ToggleDialoguePause"
+        ]
+      }
+    },
+    "InteractionListenerColor" : 
+    {
+      "color" : 4294967040
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eDrunkardRoot"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        2.0,
+        4.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eEngine" : 
+  {
+    "EngineController" : 
+    {
+      "cylinderAudioId" : "engine_cylinder"
+    },
+    "InputController" : 
+    {
+      "axes" : 
+      {
+        "EngineThrottle" : 
+        {
+          "callbacks" : 
+          [
+            "TorqueXRelative"
+          ],
+          "constraint" : 
+          [
+            1.0,
+            0.0
+          ],
+          "value" : 0.0
+        }
+      }
+    },
+    "RigidBody" : 
+    {
+      "body" : 
+      {
+        "active" : false,
+        "axisFactor" : 
+        {
+          "angular" : 
+          [
+            1.0,
+            1.0,
+            1.0
+          ],
+          "linear" : 
+          [
+            1.0,
+            1.0,
+            1.0
+          ]
+        },
+        "damp" : 
+        {
+          "angular" : 0.25,
+          "linear" : 0.0
+        },
+        "force" : 
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "inertia" : 
+        [
+          0.025620738044381142,
+          0.00033091448131017387,
+          0.025620738044381142
+        ],
+        "mass" : 1.0,
+        "massCenter" : 
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "massPropsFromColliders" : false,
+        "sleepAllowed" : true,
+        "sleeping" : true,
+        "torque" : 
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        "type" : "dynamic",
+        "velocity" : 
+        {
+          "angular" : 
+          [
+            0.0,
+            0.0,
+            0.0
+          ],
+          "linear" : 
+          [
+            0.0,
+            0.0,
+            0.0
+          ]
+        }
+      },
+      "colliders" : 
+      [
+        {
+          "callbacks" : 
+          {
+            "onEnter" : 
+            [
+              "EngineCylinderHit"
+            ],
+            "onLeave" : [],
+            "onStay" : []
+          },
+          "collision" : 
+          {
+            "group" : 1,
+            "mask" : 65535
+          },
+          "isTrigger" : false,
+          "material" : 
+          {
+            "bounciness" : 0.5,
+            "density" : 1.0,
+            "friction" : 0.3000000225043209
+          },
+          "shape" : 
+          {
+            "height" : 2.0,
+            "radius" : 0.10000000149011612
+          },
+          "transform" : 
+          [
+            [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.96592581272125244,
+              0.25881904363632202,
+              0.0
+            ],
+            [
+              0.0,
+              -0.25881904363632202,
+              0.96592581272125244,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "type" : "CapsuleShape"
+        },
+        {
+          "callbacks" : 
+          {
+            "onEnter" : 
+            [
+              "EngineCylinderHit"
+            ],
+            "onLeave" : [],
+            "onStay" : []
+          },
+          "collision" : 
+          {
+            "group" : 1,
+            "mask" : 65535
+          },
+          "isTrigger" : false,
+          "material" : 
+          {
+            "bounciness" : 0.5,
+            "density" : 1.0,
+            "friction" : 0.3000000225043209
+          },
+          "shape" : 
+          {
+            "height" : 2.0,
+            "radius" : 0.10000000149011612
+          },
+          "transform" : 
+          [
+            [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.96592581272125244,
+              -0.25881904363632202,
+              0.0
+            ],
+            [
+              -0.0,
+              0.25881904363632202,
+              0.96592581272125244,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "type" : "CapsuleShape"
+        },
+        {
+          "callbacks" : 
+          {
+            "onEnter" : 
+            [
+              "EngineCylinderHit"
+            ],
+            "onLeave" : [],
+            "onStay" : []
+          },
+          "collision" : 
+          {
+            "group" : 1,
+            "mask" : 65535
+          },
+          "isTrigger" : false,
+          "material" : 
+          {
+            "bounciness" : 0.5,
+            "density" : 1.0,
+            "friction" : 0.3000000225043209
+          },
+          "shape" : 
+          {
+            "height" : 2.0,
+            "radius" : 0.10000000149011612
+          },
+          "transform" : 
+          [
+            [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.70710670948028564,
+              -0.7071068286895752,
+              0.0
+            ],
+            [
+              -0.0,
+              0.7071068286895752,
+              0.70710670948028564,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "type" : "CapsuleShape"
+        },
+        {
+          "callbacks" : 
+          {
+            "onEnter" : 
+            [
+              "EngineCylinderHit"
+            ],
+            "onLeave" : [],
+            "onStay" : []
+          },
+          "collision" : 
+          {
+            "group" : 1,
+            "mask" : 65535
+          },
+          "isTrigger" : false,
+          "material" : 
+          {
+            "bounciness" : 0.5,
+            "density" : 1.0,
+            "friction" : 0.3000000225043209
+          },
+          "shape" : 
+          {
+            "height" : 2.0,
+            "radius" : 0.10000000149011612
+          },
+          "transform" : 
+          [
+            [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.70710670948028564,
+              0.7071068286895752,
+              0.0
+            ],
+            [
+              0.0,
+              -0.7071068286895752,
+              0.70710670948028564,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "type" : "CapsuleShape"
+        }
+      ]
+    },
+    "SceneNode" : 
+    {
+      "children" : 
+      [
+        "eEngineSprite"
+      ],
+      "parent" : "eEngineRoot"
+    },
+    "SubscriberInput" : {},
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eEngineCollider" : 
+  {
+    "CollisionBody" : 
+    {
+      "body" : 
+      {
+        "active" : false
+      },
+      "colliders" : 
+      [
+        {
+          "callbacks" : 
+          {
+            "onEnter" : [],
+            "onLeave" : [],
+            "onStay" : []
+          },
+          "collision" : 
+          {
+            "group" : 1,
+            "mask" : 65535
+          },
+          "isTrigger" : false,
+          "material" : 
+          {
+            "bounciness" : 0.5,
+            "density" : 1.0,
+            "friction" : 0.3000000225043209
+          },
+          "shape" : 
+          {
+            "scale" : 
+            [
+              1.0,
+              1.0,
+              1.0
+            ],
+            "terrainId" : "null"
+          },
+          "transform" : 
+          [
+            [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "type" : "HeightFieldShape"
+        }
+      ]
+    },
+    "GeometryBuffer" : 
+    {
+      "buffer" : "null"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eEngineRoot"
+    },
+    "TextureBuffer" : 
+    {
+      "textures" : 
+      [
+        "null"
+      ]
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        0.0,
+        -1.0
+      ]
+    }
+  },
+  "eEngineRoot" : 
+  {
+    "SceneNode" : 
+    {
+      "children" : 
+      [
+        "eCameraEngine",
+        "eEngine",
+        "eEngineCollider"
+      ],
+      "parent" : "null"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        10.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eEngineSprite" : 
+  {
+    "GeometryBuffer" : 
+    {
+      "buffer" : "null"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eEngine"
+    },
+    "TextureBuffer" : 
+    {
+      "textures" : 
+      [
+        "error",
+        "error"
+      ]
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.7071068286895752,
+        0.0,
+        0.7071068286895752
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.25,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eFootstepAudioBank" : 
+  {
+    "AudioGroupMap" : 
+    {
+      "groups" : 
+      {
+        "concrete" : 
+        [
+          "step_concrete1",
+          "step_concrete2",
+          "step_concrete3",
+          "step_concrete4"
+        ],
+        "dirt" : 
+        [
+          "step_dirt1",
+          "step_dirt2",
+          "step_dirt3",
+          "step_dirt4"
+        ],
+        "metal" : 
+        [
+          "step_metal1",
+          "step_metal2",
+          "step_metal3",
+          "step_metal4"
+        ],
+        "tile" : 
+        [
+          "step_tile1",
+          "step_tile2",
+          "step_tile3",
+          "step_tile4",
+          "step_tile5"
+        ]
+      }
+    },
+    "FootstepAudioBank" : {}
+  },
+  "eInputHintDemoReset" : 
+  {
+    "GeometryBuffer" : 
+    {
+      "buffer" : "null"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eCameraInputHintRoot"
+    },
+    "TextureBuffer" : 
+    {
+      "textures" : 
+      [
+        "hint_reset"
+      ]
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        0.75499999523162842,
+        0.05000000074505806,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        -1.1000000238418579,
+        0.60000002384185791,
+        -1.0
+      ]
+    }
+  },
+  "eInputHintInteract" : 
+  {
+    "GeometryBuffer" : 
+    {
+      "buffer" : "null"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eCameraInputHintRoot"
+    },
+    "TextureBuffer" : 
+    {
+      "textures" : 
+      [
+        "hint_interact"
+      ]
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        0.6600000262260437,
+        0.05000000074505806,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        -1.1475000381469727,
+        0.69999998807907104,
+        -1.0
+      ]
+    }
+  },
+  "eInputHintLook" : 
+  {
+    "GeometryBuffer" : 
+    {
+      "buffer" : "null"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eCameraInputHintRoot"
+    },
+    "TextureBuffer" : 
+    {
+      "textures" : 
+      [
+        "hint_look"
+      ]
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        0.89999997615814209,
+        0.05000000074505806,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        -1.125,
+        0.75,
+        -1.0
+      ]
+    }
+  },
+  "eInputHintMove" : 
+  {
+    "GeometryBuffer" : 
+    {
+      "buffer" : "null"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eCameraInputHintRoot"
+    },
+    "TextureBuffer" : 
+    {
+      "textures" : 
+      [
+        "hint_move"
+      ]
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        0.85000002384185791,
+        0.05000000074505806,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        -1.1000000238418579,
+        0.80000001192092896,
+        -1.0
+      ]
+    }
+  },
+  "eInputHintPhysDebug" : 
+  {
+    "GeometryBuffer" : 
+    {
+      "buffer" : "null"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eCameraInputHintRoot"
+    },
+    "TextureBuffer" : 
+    {
+      "textures" : 
+      [
+        "hint_physics_debug"
+      ]
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.3250000476837158,
+        0.05000000074505806,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        -0.7225000262260437,
+        0.65000003576278687,
+        -1.0
+      ]
+    }
+  },
+  "eInputHintQuit" : 
+  {
+    "GeometryBuffer" : 
+    {
+      "buffer" : "null"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eCameraInputHintRoot"
+    },
+    "TextureBuffer" : 
+    {
+      "textures" : 
+      [
+        "hint_quit"
+      ]
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        0.37999999523162842,
+        0.05000000074505806,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        -1.1950000524520874,
+        0.55000001192092896,
+        -1.0
+      ]
+    }
+  },
+  "eMenuRoot" : 
+  {
+    "SceneNode" : 
+    {
+      "children" : 
+      [
+        "eCameraMenu",
+        "eSceneConcert",
+        "eSceneDoppler",
+        "eSceneEngine",
+        "eSceneAmbush"
+      ],
+      "parent" : "null"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eMusBanjoMelody" : 
+  {
+    "Audio3dParams" : 
+    {
+      "attenuation" : 
+      {
+        "distanceMax" : 20.0,
+        "distanceMin" : 1.0,
+        "model" : "linear",
+        "rolloff" : 1.0
+      },
+      "dopplerFactor" : 1.0
+    },
+    "AudioBus" : {},
+    "GeometryBuffer" : 
+    {
+      "buffer" : "null"
+    },
+    "InteractionListener" : 
+    {
+      "actions" : 
+      {
+        "interact" : 
+        [
+          "MusicInstrumentToggle"
+        ]
+      }
+    },
+    "InteractionListenerColor" : 
+    {
+      "color" : 4278190335
+    },
+    "MusicalInstrument" : 
+    {
+      "audioId" : "banjo_melody"
+    },
+    "SceneNode" : 
+    {
+      "children" : 
+      [
+        "eMusBanjoMelodySprite"
+      ],
+      "parent" : "eConcertRoot"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        0.75,
+        2.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        -2.0,
+        0.0,
+        -5.0
+      ]
+    }
+  },
+  "eMusBanjoMelodySprite" : 
+  {
+    "AudioDrivenTransform" : 
+    {
+      "axis" : 
+      [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "damp" : 0.80000001192092896,
+      "ignoreBusVolume" : false,
+      "magnitude" : 1.0,
+      "offset" : 0.0,
+      "operation" : "translate",
+      "sourceEntityId" : "eMusBanjoMelody",
+      "useWorldSpace" : false
+    },
+    "GeometryBuffer" : 
+    {
+      "buffer" : "null"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eMusBanjoMelody"
+    },
+    "TextureBuffer" : 
+    {
+      "textures" : 
+      [
+        "mus_banjo1",
+        "mus_banjo1"
+      ]
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eMusBanjoRhythm" : 
+  {
+    "Audio3dParams" : 
+    {
+      "attenuation" : 
+      {
+        "distanceMax" : 20.0,
+        "distanceMin" : 1.0,
+        "model" : "linear",
+        "rolloff" : 1.0
+      },
+      "dopplerFactor" : 1.0
+    },
+    "AudioBus" : {},
+    "GeometryBuffer" : 
+    {
+      "buffer" : "null"
+    },
+    "InteractionListener" : 
+    {
+      "actions" : 
+      {
+        "interact" : 
+        [
+          "MusicInstrumentToggle"
+        ]
+      }
+    },
+    "InteractionListenerColor" : 
+    {
+      "color" : 4278190335
+    },
+    "MusicalInstrument" : 
+    {
+      "audioId" : "banjo_rhythm"
+    },
+    "SceneNode" : 
+    {
+      "children" : 
+      [
+        "eMusBanjoRhythmSprite"
+      ],
+      "parent" : "eConcertRoot"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        2.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        3.0,
+        -1.0,
+        -6.0
+      ]
+    }
+  },
+  "eMusBanjoRhythmSprite" : 
+  {
+    "AudioDrivenTransform" : 
+    {
+      "axis" : 
+      [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "damp" : 0.80000001192092896,
+      "ignoreBusVolume" : false,
+      "magnitude" : 1.0,
+      "offset" : 0.0,
+      "operation" : "translate",
+      "sourceEntityId" : "eMusBanjoRhythm",
+      "useWorldSpace" : false
+    },
+    "GeometryBuffer" : 
+    {
+      "buffer" : "null"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eMusBanjoRhythm"
+    },
+    "TextureBuffer" : 
+    {
+      "textures" : 
+      [
+        "mus_banjo2",
+        "mus_banjo2"
+      ]
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eMusBass" : 
+  {
+    "Audio3dParams" : 
+    {
+      "attenuation" : 
+      {
+        "distanceMax" : 20.0,
+        "distanceMin" : 1.0,
+        "model" : "linear",
+        "rolloff" : 1.0
+      },
+      "dopplerFactor" : 1.0
+    },
+    "AudioBus" : {},
+    "GeometryBuffer" : 
+    {
+      "buffer" : "null"
+    },
+    "InteractionListener" : 
+    {
+      "actions" : 
+      {
+        "interact" : 
+        [
+          "MusicInstrumentToggle"
+        ]
+      }
+    },
+    "InteractionListenerColor" : 
+    {
+      "color" : 4278190335
+    },
+    "MusicalInstrument" : 
+    {
+      "audioId" : "bass"
+    },
+    "SceneNode" : 
+    {
+      "children" : 
+      [
+        "eMusBassSprite"
+      ],
+      "parent" : "eConcertRoot"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.5,
+        3.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        -1.0,
+        -1.0,
+        -8.0
+      ]
+    }
+  },
+  "eMusBassSprite" : 
+  {
+    "AudioDrivenTransform" : 
+    {
+      "axis" : 
+      [
+        1.0,
+        1.0,
+        0.0
+      ],
+      "damp" : 0.80000001192092896,
+      "ignoreBusVolume" : false,
+      "magnitude" : 1.0,
+      "offset" : 1.0,
+      "operation" : "scale",
+      "sourceEntityId" : "eMusBass",
+      "useWorldSpace" : false
+    },
+    "GeometryBuffer" : 
+    {
+      "buffer" : "null"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eMusBass"
+    },
+    "TextureBuffer" : 
+    {
+      "textures" : 
+      [
+        "mus_bass",
+        "mus_bass"
+      ]
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eMusBottle" : 
+  {
+    "Audio3dParams" : 
+    {
+      "attenuation" : 
+      {
+        "distanceMax" : 20.0,
+        "distanceMin" : 1.0,
+        "model" : "linear",
+        "rolloff" : 1.0
+      },
+      "dopplerFactor" : 1.0
+    },
+    "AudioBus" : {},
+    "GeometryBuffer" : 
+    {
+      "buffer" : "null"
+    },
+    "InteractionListener" : 
+    {
+      "actions" : 
+      {
+        "interact" : 
+        [
+          "MusicInstrumentToggle"
+        ]
+      }
+    },
+    "InteractionListenerColor" : 
+    {
+      "color" : 4278190335
+    },
+    "MusicalInstrument" : 
+    {
+      "audioId" : "bottle"
+    },
+    "SceneNode" : 
+    {
+      "children" : 
+      [
+        "eMusBottleSprite"
+      ],
+      "parent" : "eConcertRoot"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        0.5,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        2.0,
+        -1.0,
+        -9.0
+      ]
+    }
+  },
+  "eMusBottleSprite" : 
+  {
+    "AudioDrivenTransform" : 
+    {
+      "axis" : 
+      [
+        1.0,
+        0.0,
+        0.0
+      ],
+      "damp" : 0.80000001192092896,
+      "ignoreBusVolume" : false,
+      "magnitude" : 2.0,
+      "offset" : 1.0,
+      "operation" : "scale",
+      "sourceEntityId" : "eMusBottle",
+      "useWorldSpace" : false
+    },
+    "GeometryBuffer" : 
+    {
+      "buffer" : "null"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eMusBottle"
+    },
+    "TextureBuffer" : 
+    {
+      "textures" : 
+      [
+        "mus_bottle",
+        "mus_bottle"
+      ]
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eMusGuitar" : 
+  {
+    "Audio3dParams" : 
+    {
+      "attenuation" : 
+      {
+        "distanceMax" : 20.0,
+        "distanceMin" : 1.0,
+        "model" : "linear",
+        "rolloff" : 1.0
+      },
+      "dopplerFactor" : 1.0
+    },
+    "AudioBus" : {},
+    "GeometryBuffer" : 
+    {
+      "buffer" : "null"
+    },
+    "InteractionListener" : 
+    {
+      "actions" : 
+      {
+        "interact" : 
+        [
+          "MusicInstrumentToggle"
+        ]
+      }
+    },
+    "InteractionListenerColor" : 
+    {
+      "color" : 4278190335
+    },
+    "MusicalInstrument" : 
+    {
+      "audioId" : "guitar"
+    },
+    "SceneNode" : 
+    {
+      "children" : 
+      [
+        "eMusGuitarSprite"
+      ],
+      "parent" : "eConcertRoot"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.5,
+        1.5,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        0.0,
+        -7.0
+      ]
+    }
+  },
+  "eMusGuitarSprite" : 
+  {
+    "AudioDrivenTransform" : 
+    {
+      "axis" : 
+      [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "damp" : 0.80000001192092896,
+      "ignoreBusVolume" : false,
+      "magnitude" : 1.0,
+      "offset" : 0.0,
+      "operation" : "translate",
+      "sourceEntityId" : "eMusGuitar",
+      "useWorldSpace" : false
+    },
+    "GeometryBuffer" : 
+    {
+      "buffer" : "null"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eMusGuitar"
+    },
+    "TextureBuffer" : 
+    {
+      "textures" : 
+      [
+        "mus_guitar",
+        "mus_guitar"
+      ]
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eMusPerc" : 
+  {
+    "Audio3dParams" : 
+    {
+      "attenuation" : 
+      {
+        "distanceMax" : 20.0,
+        "distanceMin" : 1.0,
+        "model" : "linear",
+        "rolloff" : 1.0
+      },
+      "dopplerFactor" : 1.0
+    },
+    "AudioBus" : {},
+    "GeometryBuffer" : 
+    {
+      "buffer" : "null"
+    },
+    "InteractionListener" : 
+    {
+      "actions" : 
+      {
+        "interact" : 
+        [
+          "MusicInstrumentToggle"
+        ]
+      }
+    },
+    "InteractionListenerColor" : 
+    {
+      "color" : 4278190335
+    },
+    "MusicalInstrument" : 
+    {
+      "audioId" : "perc"
+    },
+    "SceneNode" : 
+    {
+      "children" : 
+      [
+        "eMusPercSprite"
+      ],
+      "parent" : "eConcertRoot"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        1.0,
+        -2.0,
+        -7.0
+      ]
+    }
+  },
+  "eMusPercSprite" : 
+  {
+    "AudioDrivenTransform" : 
+    {
+      "axis" : 
+      [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "damp" : 0.80000001192092896,
+      "ignoreBusVolume" : false,
+      "magnitude" : 1.0,
+      "offset" : 0.0,
+      "operation" : "translate",
+      "sourceEntityId" : "eMusPerc",
+      "useWorldSpace" : false
+    },
+    "GeometryBuffer" : 
+    {
+      "buffer" : "null"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eMusPerc"
+    },
+    "TextureBuffer" : 
+    {
+      "textures" : 
+      [
+        "mus_perc",
+        "mus_perc"
+      ]
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eMusPiano" : 
+  {
+    "Audio3dParams" : 
+    {
+      "attenuation" : 
+      {
+        "distanceMax" : 20.0,
+        "distanceMin" : 1.0,
+        "model" : "linear",
+        "rolloff" : 1.0
+      },
+      "dopplerFactor" : 1.0
+    },
+    "AudioBus" : {},
+    "GeometryBuffer" : 
+    {
+      "buffer" : "null"
+    },
+    "InteractionListener" : 
+    {
+      "actions" : 
+      {
+        "interact" : 
+        [
+          "MusicInstrumentToggle"
+        ]
+      }
+    },
+    "InteractionListenerColor" : 
+    {
+      "color" : 4278190335
+    },
+    "MusicalInstrument" : 
+    {
+      "audioId" : "piano"
+    },
+    "SceneNode" : 
+    {
+      "children" : 
+      [
+        "eMusPianoSprite"
+      ],
+      "parent" : "eConcertRoot"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        3.0,
+        3.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        -3.0,
+        0.0,
+        -8.0
+      ]
+    }
+  },
+  "eMusPianoSprite" : 
+  {
+    "AudioDrivenTransform" : 
+    {
+      "axis" : 
+      [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "damp" : 0.80000001192092896,
+      "ignoreBusVolume" : false,
+      "magnitude" : 1.0,
+      "offset" : 1.0,
+      "operation" : "scale",
+      "sourceEntityId" : "eMusPiano",
+      "useWorldSpace" : false
+    },
+    "GeometryBuffer" : 
+    {
+      "buffer" : "null"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eMusPiano"
+    },
+    "TextureBuffer" : 
+    {
+      "textures" : 
+      [
+        "mus_piano",
+        "mus_piano"
+      ]
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eMusVargan" : 
+  {
+    "Audio3dParams" : 
+    {
+      "attenuation" : 
+      {
+        "distanceMax" : 20.0,
+        "distanceMin" : 1.0,
+        "model" : "linear",
+        "rolloff" : 1.0
+      },
+      "dopplerFactor" : 1.0
+    },
+    "AudioBus" : {},
+    "GeometryBuffer" : 
+    {
+      "buffer" : "null"
+    },
+    "InteractionListener" : 
+    {
+      "actions" : 
+      {
+        "interact" : 
+        [
+          "MusicInstrumentToggle"
+        ]
+      }
+    },
+    "InteractionListenerColor" : 
+    {
+      "color" : 4278190335
+    },
+    "MusicalInstrument" : 
+    {
+      "audioId" : "vargan"
+    },
+    "SceneNode" : 
+    {
+      "children" : 
+      [
+        "eMusVarganSprite"
+      ],
+      "parent" : "eConcertRoot"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        -1.0,
+        2.0,
+        -7.0
+      ]
+    }
+  },
+  "eMusVarganSprite" : 
+  {
+    "AudioDrivenTransform" : 
+    {
+      "axis" : 
+      [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "damp" : 0.80000001192092896,
+      "ignoreBusVolume" : false,
+      "magnitude" : 1.0,
+      "offset" : 0.0,
+      "operation" : "translate",
+      "sourceEntityId" : "eMusVargan",
+      "useWorldSpace" : false
+    },
+    "GeometryBuffer" : 
+    {
+      "buffer" : "null"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eMusVargan"
+    },
+    "TextureBuffer" : 
+    {
+      "textures" : 
+      [
+        "mus_vargan",
+        "mus_vargan"
+      ]
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eMusViola" : 
+  {
+    "Audio3dParams" : 
+    {
+      "attenuation" : 
+      {
+        "distanceMax" : 20.0,
+        "distanceMin" : 1.0,
+        "model" : "linear",
+        "rolloff" : 1.0
+      },
+      "dopplerFactor" : 1.0
+    },
+    "AudioBus" : {},
+    "GeometryBuffer" : 
+    {
+      "buffer" : "null"
+    },
+    "InteractionListener" : 
+    {
+      "actions" : 
+      {
+        "interact" : 
+        [
+          "MusicInstrumentToggle"
+        ]
+      }
+    },
+    "InteractionListenerColor" : 
+    {
+      "color" : 4278190335
+    },
+    "MusicalInstrument" : 
+    {
+      "audioId" : "viola"
+    },
+    "SceneNode" : 
+    {
+      "children" : 
+      [
+        "eMusViolaSprite"
+      ],
+      "parent" : "eConcertRoot"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        2.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        -4.0,
+        -1.0,
+        -6.0
+      ]
+    }
+  },
+  "eMusViolaSprite" : 
+  {
+    "AudioDrivenTransform" : 
+    {
+      "axis" : 
+      [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "damp" : 0.80000001192092896,
+      "ignoreBusVolume" : false,
+      "magnitude" : 2.0,
+      "offset" : 1.0,
+      "operation" : "scale",
+      "sourceEntityId" : "eMusViola",
+      "useWorldSpace" : false
+    },
+    "GeometryBuffer" : 
+    {
+      "buffer" : "null"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eMusViola"
+    },
+    "TextureBuffer" : 
+    {
+      "textures" : 
+      [
+        "mus_viola",
+        "mus_viola"
+      ]
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eMusViolin" : 
+  {
+    "Audio3dParams" : 
+    {
+      "attenuation" : 
+      {
+        "distanceMax" : 20.0,
+        "distanceMin" : 1.0,
+        "model" : "linear",
+        "rolloff" : 1.0
+      },
+      "dopplerFactor" : 1.0
+    },
+    "AudioBus" : {},
+    "GeometryBuffer" : 
+    {
+      "buffer" : "null"
+    },
+    "InteractionListener" : 
+    {
+      "actions" : 
+      {
+        "interact" : 
+        [
+          "MusicInstrumentToggle"
+        ]
+      }
+    },
+    "InteractionListenerColor" : 
+    {
+      "color" : 4278190335
+    },
+    "MusicalInstrument" : 
+    {
+      "audioId" : "violin"
+    },
+    "SceneNode" : 
+    {
+      "children" : 
+      [
+        "eMusViolinSprite"
+      ],
+      "parent" : "eConcertRoot"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        2.0,
+        1.0,
+        -6.0
+      ]
+    }
+  },
+  "eMusViolinSprite" : 
+  {
+    "AudioDrivenTransform" : 
+    {
+      "axis" : 
+      [
+        0.0,
+        1.0,
+        0.0
+      ],
+      "damp" : 0.80000001192092896,
+      "ignoreBusVolume" : false,
+      "magnitude" : 2.0,
+      "offset" : 1.0,
+      "operation" : "scale",
+      "sourceEntityId" : "eMusViolin",
+      "useWorldSpace" : false
+    },
+    "GeometryBuffer" : 
+    {
+      "buffer" : "null"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eMusViolin"
+    },
+    "TextureBuffer" : 
+    {
+      "textures" : 
+      [
+        "mus_violin",
+        "mus_violin"
+      ]
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eSceneConcert" : 
+  {
+    "EntityList" : 
+    {
+      "entities" : 
+      [
+        "eMusViolaSprite",
+        "eMusBottleSprite",
+        "eSurface4",
+        "eDrunkardWalkActivator",
+        "eSurface2",
+        "eMusVarganSprite",
+        "eMusPianoSprite",
+        "eConcertController",
+        "eMusBanjoRhythmSprite",
+        "eMusVargan",
+        "eMusGuitarSprite",
+        "eSurface3",
+        "eMusGuitar",
+        "eMusBanjoMelodySprite",
+        "eMusBanjoRhythm",
+        "eCameraConcert",
+        "eMusViolinSprite",
+        "eCameraConcertRoot",
+        "eCameraInputHint",
+        "eMusBottle",
+        "eMusPercSprite",
+        "eMusBass",
+        "eMusPerc",
+        "eMusPiano",
+        "eAudioDemoController",
+        "eMusBanjoMelody",
+        "eMusViola",
+        "eSurface1",
+        "eMusViolin",
+        "eMusBassSprite"
+      ]
+    },
+    "GeometryBuffer" : 
+    {
+      "buffer" : "null"
+    },
+    "InteractionListener" : 
+    {
+      "actions" : 
+      {
+        "interact" : 
+        [
+          "AudioDemoConcertInit"
+        ]
+      }
+    },
+    "InteractionListenerColor" : 
+    {
+      "color" : 4278255588
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eMenuRoot"
+    },
+    "TextureBuffer" : 
+    {
+      "textures" : 
+      [
+        "scene_concert",
+        "scene_concert"
+      ]
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        0.99999982118606567,
+        1.0,
+        0.9999997615814209
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        0.0,
+        -2.0
+      ]
+    }
+  },
+  "eSceneDoppler" : 
+  {
+    "EntityList" : 
+    {
+      "entities" : 
+      [
+        "eCarResetter",
+        "eCameraDoppler",
+        "eCameraInputHint",
+        "eCar",
+        "eAudioDemoController"
+      ]
+    },
+    "GeometryBuffer" : 
+    {
+      "buffer" : "null"
+    },
+    "InteractionListener" : 
+    {
+      "actions" : 
+      {
+        "interact" : 
+        [
+          "AudioDemoDopplerInit"
+        ]
+      }
+    },
+    "InteractionListenerColor" : 
+    {
+      "color" : 4278255588
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eMenuRoot"
+    },
+    "TextureBuffer" : 
+    {
+      "textures" : 
+      [
+        "scene_doppler",
+        "scene_doppler"
+      ]
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.38268345594406128,
+        0.0,
+        0.92387950420379639
+      ],
+      "scale" : 
+      [
+        0.99999970197677612,
+        1.0,
+        0.99999970197677612
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        -1.6000000238418579,
+        0.0,
+        -1.25
+      ]
+    }
+  },
+  "eSceneEngine" : 
+  {
+    "EntityList" : 
+    {
+      "entities" : 
+      [
+        "eCameraEngine",
+        "eEngineCollider",
+        "eEngine",
+        "eAudioDemoController",
+        "eCameraInputHint"
+      ]
+    },
+    "GeometryBuffer" : 
+    {
+      "buffer" : "null"
+    },
+    "InteractionListener" : 
+    {
+      "actions" : 
+      {
+        "interact" : 
+        [
+          "AudioDemoConcertInit"
+        ]
+      }
+    },
+    "InteractionListenerColor" : 
+    {
+      "color" : 4278255588
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eMenuRoot"
+    },
+    "TextureBuffer" : 
+    {
+      "textures" : 
+      [
+        "scene_engine",
+        "scene_engine"
+      ]
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        -0.38268345594406128,
+        0.0,
+        0.92387950420379639
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        1.6000000238418579,
+        0.0,
+        -1.25
+      ]
+    }
+  },
+  "eSurface1" : 
+  {
+    "CollisionBody" : 
+    {
+      "body" : 
+      {
+        "active" : false
+      },
+      "colliders" : 
+      [
+        {
+          "callbacks" : 
+          {
+            "onEnter" : [],
+            "onLeave" : [],
+            "onStay" : []
+          },
+          "collision" : 
+          {
+            "group" : 1,
+            "mask" : 65535
+          },
+          "isTrigger" : false,
+          "material" : 
+          {
+            "bounciness" : 0.5,
+            "density" : 1.0,
+            "friction" : 0.3000000225043209
+          },
+          "shape" : 
+          {
+            "scale" : 
+            [
+              20.0,
+              1.0,
+              20.0
+            ],
+            "terrainId" : "null"
+          },
+          "transform" : 
+          [
+            [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "type" : "HeightFieldShape"
+        }
+      ]
+    },
+    "PhysicsMaterial" : 
+    {
+      "materialId" : "tile"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eConcertSurfaceRoot"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        -10.0,
+        0.0,
+        -10.0
+      ]
+    }
+  },
+  "eSurface2" : 
+  {
+    "CollisionBody" : 
+    {
+      "body" : 
+      {
+        "active" : false
+      },
+      "colliders" : 
+      [
+        {
+          "callbacks" : 
+          {
+            "onEnter" : [],
+            "onLeave" : [],
+            "onStay" : []
+          },
+          "collision" : 
+          {
+            "group" : 1,
+            "mask" : 65535
+          },
+          "isTrigger" : false,
+          "material" : 
+          {
+            "bounciness" : 0.5,
+            "density" : 1.0,
+            "friction" : 0.3000000225043209
+          },
+          "shape" : 
+          {
+            "scale" : 
+            [
+              20.0,
+              1.0,
+              20.0
+            ],
+            "terrainId" : "null"
+          },
+          "transform" : 
+          [
+            [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "type" : "HeightFieldShape"
+        }
+      ]
+    },
+    "PhysicsMaterial" : 
+    {
+      "materialId" : "concrete"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eConcertSurfaceRoot"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        10.0,
+        0.0,
+        -10.0
+      ]
+    }
+  },
+  "eSurface3" : 
+  {
+    "CollisionBody" : 
+    {
+      "body" : 
+      {
+        "active" : false
+      },
+      "colliders" : 
+      [
+        {
+          "callbacks" : 
+          {
+            "onEnter" : [],
+            "onLeave" : [],
+            "onStay" : []
+          },
+          "collision" : 
+          {
+            "group" : 1,
+            "mask" : 65535
+          },
+          "isTrigger" : false,
+          "material" : 
+          {
+            "bounciness" : 0.5,
+            "density" : 1.0,
+            "friction" : 0.3000000225043209
+          },
+          "shape" : 
+          {
+            "scale" : 
+            [
+              20.0,
+              1.0,
+              20.0
+            ],
+            "terrainId" : "null"
+          },
+          "transform" : 
+          [
+            [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "type" : "HeightFieldShape"
+        }
+      ]
+    },
+    "PhysicsMaterial" : 
+    {
+      "materialId" : "dirt"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eConcertSurfaceRoot"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        10.0,
+        0.0,
+        10.0
+      ]
+    }
+  },
+  "eSurface4" : 
+  {
+    "CollisionBody" : 
+    {
+      "body" : 
+      {
+        "active" : false
+      },
+      "colliders" : 
+      [
+        {
+          "callbacks" : 
+          {
+            "onEnter" : [],
+            "onLeave" : [],
+            "onStay" : []
+          },
+          "collision" : 
+          {
+            "group" : 1,
+            "mask" : 65535
+          },
+          "isTrigger" : false,
+          "material" : 
+          {
+            "bounciness" : 0.5,
+            "density" : 1.0,
+            "friction" : 0.3000000225043209
+          },
+          "shape" : 
+          {
+            "scale" : 
+            [
+              20.0,
+              1.0,
+              20.0
+            ],
+            "terrainId" : "null"
+          },
+          "transform" : 
+          [
+            [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              1.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              1.0,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "type" : "HeightFieldShape"
+        }
+      ]
+    },
+    "PhysicsMaterial" : 
+    {
+      "materialId" : "metal"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eConcertSurfaceRoot"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        -10.0,
+        0.0,
+        10.0
+      ]
+    }
+  }
+}

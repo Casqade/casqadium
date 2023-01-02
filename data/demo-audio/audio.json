@@ -1,0 +1,257 @@
+{
+  "banjo_melody" : 
+  {
+    "path" : "audio/mus/banjo_melody.ogg",
+    "type" : "wavstream"
+  },
+  "banjo_rhythm" : 
+  {
+    "path" : "audio/mus/banjo_rhythm.ogg",
+    "type" : "wavstream"
+  },
+  "bass" : 
+  {
+    "path" : "audio/mus/bass.ogg",
+    "type" : "wavstream"
+  },
+  "bottle" : 
+  {
+    "path" : "audio/mus/bottle.ogg",
+    "type" : "wavstream"
+  },
+  "car_loop" : 
+  {
+    "path" : "audio/bra.wav",
+    "type" : "wav"
+  },
+  "dlg_drunk_01" : 
+  {
+    "path" : "audio/drunkard/callout01.ogg",
+    "type" : "wav"
+  },
+  "dlg_drunk_02" : 
+  {
+    "path" : "audio/drunkard/callout02.ogg",
+    "type" : "wav"
+  },
+  "dlg_drunk_03" : 
+  {
+    "path" : "audio/drunkard/callout03.ogg",
+    "type" : "wav"
+  },
+  "dlg_drunk_04" : 
+  {
+    "path" : "audio/drunkard/callout04.ogg",
+    "type" : "wav"
+  },
+  "dlg_drunk_05" : 
+  {
+    "path" : "audio/drunkard/callout05.ogg",
+    "type" : "wav"
+  },
+  "dlg_drunk_06" : 
+  {
+    "path" : "audio/drunkard/callout06.ogg",
+    "type" : "wav"
+  },
+  "dlg_drunk_07" : 
+  {
+    "path" : "audio/drunkard/callout07.ogg",
+    "type" : "wav"
+  },
+  "dlg_drunk_08" : 
+  {
+    "path" : "audio/drunkard/callout08.ogg",
+    "type" : "wav"
+  },
+  "dlg_drunk_09" : 
+  {
+    "path" : "audio/drunkard/callout09.ogg",
+    "type" : "wav"
+  },
+  "dlg_drunk_10" : 
+  {
+    "path" : "audio/drunkard/callout10.ogg",
+    "type" : "wav"
+  },
+  "dlg_drunk_11" : 
+  {
+    "path" : "audio/drunkard/lost1.ogg",
+    "type" : "wav"
+  },
+  "dlg_drunk_12" : 
+  {
+    "path" : "audio/drunkard/lost2.ogg",
+    "type" : "wav"
+  },
+  "dlg_drunk_13" : 
+  {
+    "path" : "audio/drunkard/lost3.ogg",
+    "type" : "wav"
+  },
+  "dlg_drunk_14" : 
+  {
+    "path" : "audio/drunkard/lost4.ogg",
+    "type" : "wav"
+  },
+  "dlg_drunk_15" : 
+  {
+    "path" : "audio/drunkard/lost5.ogg",
+    "type" : "wav"
+  },
+  "dlg_drunk_16" : 
+  {
+    "path" : "audio/drunkard/lost6.ogg",
+    "type" : "wav"
+  },
+  "dlg_drunk_17" : 
+  {
+    "path" : "audio/drunkard/lost7.ogg",
+    "type" : "wav"
+  },
+  "dlg_drunk_18" : 
+  {
+    "path" : "audio/drunkard/lost8.ogg",
+    "type" : "wav"
+  },
+  "dlg_drunk_19" : 
+  {
+    "path" : "audio/drunkard/shoutout1.ogg",
+    "type" : "wav"
+  },
+  "dlg_drunk_20" : 
+  {
+    "path" : "audio/drunkard/shoutout2.ogg",
+    "type" : "wav"
+  },
+  "dlg_drunk_21" : 
+  {
+    "path" : "audio/drunkard/shoutout3.ogg",
+    "type" : "wav"
+  },
+  "dlg_drunk_22" : 
+  {
+    "path" : "audio/drunkard/shoutout4.ogg",
+    "type" : "wav"
+  },
+  "engine_cylinder" : 
+  {
+    "path" : "audio/cbar_hit1.ogg",
+    "type" : "wav"
+  },
+  "guitar" : 
+  {
+    "path" : "audio/mus/guitar.ogg",
+    "type" : "wavstream"
+  },
+  "perc" : 
+  {
+    "path" : "audio/mus/perc.ogg",
+    "type" : "wavstream"
+  },
+  "piano" : 
+  {
+    "path" : "audio/mus/piano.ogg",
+    "type" : "wavstream"
+  },
+  "step_concrete1" : 
+  {
+    "path" : "audio/steps/concrete1.ogg",
+    "type" : "wav"
+  },
+  "step_concrete2" : 
+  {
+    "path" : "audio/steps/concrete2.ogg",
+    "type" : "wav"
+  },
+  "step_concrete3" : 
+  {
+    "path" : "audio/steps/concrete3.ogg",
+    "type" : "wav"
+  },
+  "step_concrete4" : 
+  {
+    "path" : "audio/steps/concrete4.ogg",
+    "type" : "wav"
+  },
+  "step_dirt1" : 
+  {
+    "path" : "audio/steps/dirt1.ogg",
+    "type" : "wav"
+  },
+  "step_dirt2" : 
+  {
+    "path" : "audio/steps/dirt2.ogg",
+    "type" : "wav"
+  },
+  "step_dirt3" : 
+  {
+    "path" : "audio/steps/dirt3.ogg",
+    "type" : "wav"
+  },
+  "step_dirt4" : 
+  {
+    "path" : "audio/steps/dirt4.ogg",
+    "type" : "wav"
+  },
+  "step_metal1" : 
+  {
+    "path" : "audio/steps/metal1.ogg",
+    "type" : "wav"
+  },
+  "step_metal2" : 
+  {
+    "path" : "audio/steps/metal2.ogg",
+    "type" : "wav"
+  },
+  "step_metal3" : 
+  {
+    "path" : "audio/steps/metal3.ogg",
+    "type" : "wav"
+  },
+  "step_metal4" : 
+  {
+    "path" : "audio/steps/metal4.ogg",
+    "type" : "wav"
+  },
+  "step_tile1" : 
+  {
+    "path" : "audio/steps/tile1.ogg",
+    "type" : "wav"
+  },
+  "step_tile2" : 
+  {
+    "path" : "audio/steps/tile2.ogg",
+    "type" : "wav"
+  },
+  "step_tile3" : 
+  {
+    "path" : "audio/steps/tile3.ogg",
+    "type" : "wav"
+  },
+  "step_tile4" : 
+  {
+    "path" : "audio/steps/tile4.ogg",
+    "type" : "wav"
+  },
+  "step_tile5" : 
+  {
+    "path" : "audio/steps/tile5.ogg",
+    "type" : "wav"
+  },
+  "vargan" : 
+  {
+    "path" : "audio/mus/vargan.ogg",
+    "type" : "wavstream"
+  },
+  "viola" : 
+  {
+    "path" : "audio/mus/viola.ogg",
+    "type" : "wavstream"
+  },
+  "violin" : 
+  {
+    "path" : "audio/mus/violin.ogg",
+    "type" : "wavstream"
+  }
+}

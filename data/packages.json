@@ -1,8 +1,7 @@
 {
-  "entry_point" : "editor",
+  "entry_point" : "demo-audio",
   "load_order" :
   [
-    "editor",
-    "demo"
+    "demo-audio"
   ]
 }

@@ -1,0 +1,86 @@
+{
+  "drunkard_head" : 
+  {
+    "clamp" : false,
+    "filter" : false,
+    "path" : "textures/drunkard_head.png"
+  },
+  "drunkard_leg_left" : 
+  {
+    "clamp" : false,
+    "filter" : false,
+    "path" : "textures/drunkard_leg_left.png"
+  },
+  "drunkard_leg_right" : 
+  {
+    "clamp" : false,
+    "filter" : false,
+    "path" : "textures/drunkard_leg_right.png"
+  },
+  "drunkard_torso" : 
+  {
+    "clamp" : false,
+    "filter" : false,
+    "path" : "textures/drunkard_torso.png"
+  },
+  "mus_banjo1" : 
+  {
+    "clamp" : false,
+    "filter" : false,
+    "path" : "textures/banjo1.png"
+  },
+  "mus_banjo2" : 
+  {
+    "clamp" : false,
+    "filter" : false,
+    "path" : "textures/banjo2.png"
+  },
+  "mus_bass" : 
+  {
+    "clamp" : false,
+    "filter" : false,
+    "path" : "textures/bass.png"
+  },
+  "mus_bottle" : 
+  {
+    "clamp" : false,
+    "filter" : false,
+    "path" : "textures/bottle.png"
+  },
+  "mus_guitar" : 
+  {
+    "clamp" : false,
+    "filter" : false,
+    "path" : "textures/guitar.png"
+  },
+  "mus_perc" : 
+  {
+    "clamp" : false,
+    "filter" : false,
+    "path" : "textures/perc.png"
+  },
+  "mus_piano" : 
+  {
+    "clamp" : false,
+    "filter" : false,
+    "path" : "textures/piano.png"
+  },
+  "mus_vargan" : 
+  {
+    "clamp" : false,
+    "filter" : false,
+    "path" : "textures/vargan.png"
+  },
+  "mus_viola" : 
+  {
+    "clamp" : false,
+    "filter" : false,
+    "path" : "textures/viola.png"
+  },
+  "mus_violin" : 
+  {
+    "clamp" : false,
+    "filter" : false,
+    "path" : "textures/violin.png"
+  }
+}
