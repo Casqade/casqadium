@@ -16,32 +16,25 @@ namespace cqde::compos
 
 struct Camera
 {
-  enum class Projection : bool
+  enum class Projection : uint8_t
   {
     Perspective,
     Orthographic,
   };
 
-  enum ViewMatrixVector
-  {
-    Right,
-    Up,
-    Front,
-  };
-
-  enum class RenderMode
+  enum class RenderMode : uint8_t
   {
     Solid,
     Wireframe,
   };
 
-  enum class TextureMode
+  enum class TextureMode : uint8_t
   {
     Textured,
     NoTexture,
   };
 
-  enum class LightingMode
+  enum class LightingMode : uint8_t
   {
     Diffuse,
     FullBright,
@@ -50,16 +43,16 @@ struct Camera
   std::multimap < types::VertexBuffer, entt::entity,
                   types::VertexBufferComparator> zBuffer {};
 
-  glm::vec4 viewport {0.0, 0.0, 1.0, 1.0};
   std::pair <float, float> zRange {0.1f, 1000.0f};
+  glm::vec4 viewport {0.0, 0.0, 1.0, 1.0};
 
   union
   {
-    float fov {1.0f}; // = 57 degrees
+    float fov {1.0f}; // 1 radian (57 degrees)
     float zoom;
   };
 
-  int32_t layer {};
+  int32_t layer {}; // closer layers have smaller indices
 
   Projection    projectionType = Projection::Perspective;
   RenderMode    renderMode = RenderMode::Solid;

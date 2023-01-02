@@ -80,7 +80,7 @@ CullingSystem(
       if ( gBuffer == nullptr )
         return;
 
-      const glm::mat4 modelView = camView * GetWorldMatrix(registry, eDrawable, cTransform);
+      const auto modelView = camView * GetWorldMatrix(registry, eDrawable, cTransform);
 
       const auto vBuffer = vertexShader(
         *gBuffer,
@@ -151,7 +151,7 @@ EditorCullingSystem(
       if ( gBuffer == nullptr )
         return;
 
-      const glm::mat4 modelView = camView * GetWorldMatrix(registry, eDrawable, cTransform);
+      const auto modelView = camView * GetWorldMatrix(registry, eDrawable, cTransform);
 
       const auto vBuffer = vertexShader(
         *gBuffer,

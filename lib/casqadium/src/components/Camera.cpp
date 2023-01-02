@@ -26,22 +26,20 @@ Camera::Camera(
 glm::vec4
 Camera::viewportScaled() const
 {
-  const float viewportW = olc::renderer->ptrPGE->GetWindowSize().x;
-  const float viewportH = olc::renderer->ptrPGE->GetWindowSize().y;
+  auto&& [viewportW, viewportH] = olc::renderer->ptrPGE->GetWindowSize();
 
-  return
+  return viewport * glm::vec4
   {
-    viewport.x * viewportW,
-    viewport.y * viewportH,
-    viewport.z * viewportW,
-    viewport.w * viewportH,
+    viewportW, viewportH,
+    viewportW, viewportH,
+
   };
 }
 
 glm::mat4
 Camera::projMatrix() const
 {
-  const glm::vec4 viewport = viewportScaled();
+  const auto viewport = viewportScaled();
 
   if ( projectionType == Projection::Perspective )
     return glm::perspectiveFov( fov, viewport.z, viewport.w,
