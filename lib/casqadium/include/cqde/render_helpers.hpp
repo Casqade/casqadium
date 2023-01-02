@@ -15,13 +15,6 @@ class Font;
 namespace cqde
 {
 
-enum class LineRenderMode
-{
-  Strip,
-  Loop,
-};
-
-
 std::array <olc::vf2d, 4>
 vec_to_array(
   const std::vector <olc::vf2d>& );
@@ -45,11 +38,6 @@ vertexShader(
   const glm::mat4& modelView,
   const glm::mat4& projection,
   const glm::vec4& viewport );
-
-void drawLines(
-  const std::vector <olc::vf2d>&,
-  const olc::Pixel& color,
-  const LineRenderMode );
 
 std::shared_ptr <olc::Renderable> textureFromText(
   const std::string& text,

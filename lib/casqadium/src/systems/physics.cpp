@@ -155,6 +155,8 @@ PhysicsDebugRenderSystem(
        triangles.size() == 0 )
     return;
 
+  auto pge = olc::renderer->ptrPGE;
+
   for ( const auto&& [eCamera, cCamera, cCameraTransform]
           : registry.view <Camera, Transform, SubscriberUpdate> ().each() )
   {
@@ -181,7 +183,8 @@ PhysicsDebugRenderSystem(
 
       olc::Pixel color = line.color1;
       color.a = 255;
-      drawLines(vBuffer.vertices, color, LineRenderMode::Strip);
+
+      pge->DrawLineStripDecal(vBuffer.vertices, color);
     }
 
     for ( const auto& triangle : triangles )
@@ -204,7 +207,8 @@ PhysicsDebugRenderSystem(
 
       olc::Pixel color = triangle.color1;
       color.a = 255;
-      olc::renderer->ptrPGE->DrawPolyLineDecal(vBuffer.vertices, color);
+
+      pge->DrawPolyLineDecal(vBuffer.vertices, color);
     }
   }
 }
@@ -240,6 +244,8 @@ EditorPhysicsDebugRenderSystem(
   if ( lines.size() == 0 &&
        triangles.size() == 0 )
     return;
+
+  auto pge = olc::renderer->ptrPGE;
 
   for ( const auto& viewport : viewportManagerUi.viewports() )
   {
@@ -279,7 +285,7 @@ EditorPhysicsDebugRenderSystem(
       olc::Pixel color = line.color1;
       color.a = 255;
 
-      drawLines(vBuffer.vertices, color, LineRenderMode::Strip);
+      pge->DrawLineStripDecal(vBuffer.vertices, color);
     }
 
     for ( const auto& triangle : triangles )
@@ -303,7 +309,7 @@ EditorPhysicsDebugRenderSystem(
       olc::Pixel color = triangle.color1;
       color.a = 255;
 
-      olc::renderer->ptrPGE->DrawPolyLineDecal(vBuffer.vertices, color);
+      pge->DrawPolyLineDecal(vBuffer.vertices, color);
     }
   }
 };

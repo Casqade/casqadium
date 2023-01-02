@@ -1396,6 +1396,12 @@ void PixelGameEngine::DrawLineDecal(const olc::vf2d& pos1, const olc::vf2d& pos2
   vLayers[nTargetLayer].vecDecalInstance.push_back(di);
 }
 
+void PixelGameEngine::DrawLineStripDecal(const std::vector<olc::vf2d>& pos, Pixel p)
+{
+  for ( size_t i = 0, iNext = 1; iNext < pos.size(); ++i, ++iNext )
+    DrawLineDecal(pos[i], pos[iNext], p);
+}
+
 void PixelGameEngine::DrawPolyLineDecal(const std::vector<olc::vf2d>& pos, Pixel p)
 {
   DecalInstance di;
@@ -1418,10 +1424,14 @@ void PixelGameEngine::DrawPolyLineDecal(const std::vector<olc::vf2d>& pos, Pixel
 
 void PixelGameEngine::DrawRectDecal(const olc::vf2d& pos, const olc::vf2d& size, const olc::Pixel col)
 {
-  DrawLineDecal(pos, {pos.x + size.x, pos.y}, col);
-  DrawLineDecal({pos.x + size.x, pos.y}, pos + size, col);
-  DrawLineDecal(pos + size, {pos.x, pos.y + size.y}, col);
-  DrawLineDecal({pos.x, pos.y + size.y}, pos, col);
+  const std::vector<olc::vf2d> points
+  {
+    pos,
+    {pos.x, pos.y + size.y},
+    {pos + size},
+    {pos.x + size.x, pos.y},
+  };
+  DrawPolyLineDecal(points, col);
 }
 
 void PixelGameEngine::FillRectDecal(const olc::vf2d& pos, const olc::vf2d& size, const olc::Pixel col)
