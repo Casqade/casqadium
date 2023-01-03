@@ -1,8 +1,8 @@
 {
-  "entry_point" : "editor",
+  "entry_point" : "demo",
   "load_order" :
   [
-    "editor",
+    "cqde-templates",
     "demo"
   ]
 }

@@ -1,4 +1,480 @@
 {
+  "cloud" : 
+  {
+    "eCloud" : 
+    {
+      "GeometryBuffer" : 
+      {
+        "buffer" : "null"
+      },
+      "LightTarget" : {},
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "null"
+      },
+      "Tag" : {},
+      "TextureBuffer" : 
+      {
+        "textures" : 
+        [
+          "cloud_1"
+        ]
+      },
+      "TextureTint" : 
+      {
+        "tint" : 2717908991
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" : 
+        [
+          2.5,
+          1.0,
+          1.0
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    }
+  },
+  "clouds" : 
+  {
+    "eCloud" : 
+    {
+      "GeometryBuffer" : 
+      {
+        "buffer" : "null"
+      },
+      "LightTarget" : {},
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eClouds"
+      },
+      "Tag" : {},
+      "TextureBuffer" : 
+      {
+        "textures" : 
+        [
+          "cloud_1"
+        ]
+      },
+      "TextureTint" : 
+      {
+        "tint" : 2717421055
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.38268342614173889,
+          0.0,
+          0.0,
+          0.92387956380844116
+        ],
+        "scale" : 
+        [
+          2.5,
+          0.99999994039535522,
+          0.99999994039535522
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          2.0,
+          11.175168037414551,
+          -3.7609555721282959
+        ]
+      }
+    },
+    "eCloud_0" : 
+    {
+      "GeometryBuffer" : 
+      {
+        "buffer" : "null"
+      },
+      "LightTarget" : {},
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eClouds"
+      },
+      "Tag" : {},
+      "TextureBuffer" : 
+      {
+        "textures" : 
+        [
+          "cloud_2"
+        ]
+      },
+      "TextureTint" : 
+      {
+        "tint" : 2717421055
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.38268342614173889,
+          0.0,
+          0.0,
+          0.92387956380844116
+        ],
+        "scale" : 
+        [
+          2.5,
+          0.99999994039535522,
+          0.99999994039535522
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          -1.9694180488586426,
+          10.783779144287109,
+          -4.3877849578857422
+        ]
+      }
+    },
+    "eCloud_1" : 
+    {
+      "GeometryBuffer" : 
+      {
+        "buffer" : "null"
+      },
+      "LightTarget" : {},
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eClouds"
+      },
+      "Tag" : {},
+      "TextureBuffer" : 
+      {
+        "textures" : 
+        [
+          "cloud_3"
+        ]
+      },
+      "TextureTint" : 
+      {
+        "tint" : 2717421055
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.38268342614173889,
+          0.0,
+          0.0,
+          0.92387956380844116
+        ],
+        "scale" : 
+        [
+          3.5050556659698486,
+          0.99999994039535522,
+          0.99999994039535522
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          0.63288772106170654,
+          12.060303688049316,
+          -3.1112766265869141
+        ]
+      }
+    },
+    "eCloud_2" : 
+    {
+      "GeometryBuffer" : 
+      {
+        "buffer" : "null"
+      },
+      "LightTarget" : {},
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eClouds"
+      },
+      "Tag" : {},
+      "TextureBuffer" : 
+      {
+        "textures" : 
+        [
+          "cloud_4"
+        ]
+      },
+      "TextureTint" : 
+      {
+        "tint" : 2717421055
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.38268342614173889,
+          0.0,
+          0.0,
+          0.92387956380844116
+        ],
+        "scale" : 
+        [
+          2.5,
+          0.99999994039535522,
+          0.99999994039535522
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          -0.86537802219390869,
+          11.415359497070312,
+          -4.1537647247314453
+        ]
+      }
+    },
+    "eCloud_3" : 
+    {
+      "GeometryBuffer" : 
+      {
+        "buffer" : "null"
+      },
+      "LightTarget" : {},
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eClouds"
+      },
+      "Tag" : {},
+      "TextureBuffer" : 
+      {
+        "textures" : 
+        [
+          "cloud_5"
+        ]
+      },
+      "TextureTint" : 
+      {
+        "tint" : 2717421055
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.38268342614173889,
+          0.0,
+          0.0,
+          0.92387956380844116
+        ],
+        "scale" : 
+        [
+          2.5,
+          0.99999994039535522,
+          0.99999994039535522
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          2.6280415058135986,
+          10.292302131652832,
+          -3.8639378547668457
+        ]
+      }
+    },
+    "eCloud_4" : 
+    {
+      "GeometryBuffer" : 
+      {
+        "buffer" : "null"
+      },
+      "LightTarget" : {},
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eClouds"
+      },
+      "Tag" : {},
+      "TextureBuffer" : 
+      {
+        "textures" : 
+        [
+          "cloud_6"
+        ]
+      },
+      "TextureTint" : 
+      {
+        "tint" : 2717421055
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.38268342614173889,
+          0.0,
+          0.0,
+          0.92387956380844116
+        ],
+        "scale" : 
+        [
+          2.5,
+          0.99999994039535522,
+          0.99999994039535522
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          4.1886129379272461,
+          13.047914505004883,
+          -3.7319755554199219
+        ]
+      }
+    },
+    "eCloud_5" : 
+    {
+      "GeometryBuffer" : 
+      {
+        "buffer" : "null"
+      },
+      "LightTarget" : {},
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eClouds"
+      },
+      "Tag" : {},
+      "TextureBuffer" : 
+      {
+        "textures" : 
+        [
+          "cloud_7"
+        ]
+      },
+      "TextureTint" : 
+      {
+        "tint" : 2717421055
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.38268342614173889,
+          0.0,
+          0.0,
+          0.92387956380844116
+        ],
+        "scale" : 
+        [
+          2.5,
+          0.99999994039535522,
+          0.99999994039535522
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          -2.1954946517944336,
+          11.898242950439453,
+          -3.2733306884765625
+        ]
+      }
+    },
+    "eClouds" : 
+    {
+      "SceneNode" : 
+      {
+        "children" : 
+        [
+          "eCloud_4",
+          "eCloud_3",
+          "eCloud_2",
+          "eCloud_1",
+          "eCloud_0",
+          "eCloud_5",
+          "eCloud"
+        ],
+        "parent" : "null"
+      },
+      "Tag" : {},
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    }
+  },
   "cqde_logo" : 
   {
     "eC" : 

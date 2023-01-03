@@ -4,4 +4,4 @@
 namespace demo
 {
 
-}
+} // namespace demo
