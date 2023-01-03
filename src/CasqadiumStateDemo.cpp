@@ -79,7 +79,6 @@ CasqadiumStateDemo::CasqadiumStateDemo(
   auto& callbackMgr = mRegistry.ctx().at <CallbackManager> ();
   callbackMgr.Register("EngineShutdown", engineShutdown);
 
-
   auto& packageManager = mRegistry.ctx().at <PackageManager> ();
 
   try
@@ -99,48 +98,6 @@ CasqadiumStateDemo::CasqadiumStateDemo(
 
   auto& inputManager = mRegistry.ctx().at <InputManager> ();
   inputManager.load(userManager.inputConfigPath());
-
-  const cqde::identifier fontId = "munro";
-
-  auto& fonts = mRegistry.ctx().at <FontAssetManager> ();
-  fonts.load({fontId});
-
-  while ( fonts.status(fontId) != AssetStatus::Loaded )
-    if ( fonts.status(fontId) == AssetStatus::Error )
-    {
-      mRunning = false;
-      return;
-    }
-
-  auto pge = olc::renderer->ptrPGE;
-  const auto layer = pge->GetDrawTarget();
-
-  auto textRenderable = fonts.get(fontId)->RenderStringToRenderable(U"T", olc::WHITE, false);
-  auto textTexture = std::make_shared <olc::Renderable> (std::move(textRenderable));
-
-  auto skyBoxTexture = std::make_shared <olc::Renderable> ();
-  auto monolithTexture = std::make_shared <olc::Renderable> ();
-
-  skyBoxTexture->Create(1, 1);
-  pge->SetDrawTarget(skyBoxTexture->Sprite());
-  pge->Clear({140, 218, 255});
-  skyBoxTexture->Decal()->Update();
-
-  monolithTexture->Create(1, 1);
-  pge->SetDrawTarget(monolithTexture->Sprite());
-  pge->Clear({15, 15, 15});
-  monolithTexture->Decal()->Update();
-
-  pge->SetDrawTarget(layer);
-
-  auto& textures = mRegistry.ctx().at <TextureAssetManager> ();
-  textures.insert("text_texture", textTexture);
-  textures.insert("skybox_n", skyBoxTexture);
-  textures.insert("monolith", monolithTexture);
-  textures.insert("cqde_c", cqde::textureFromText("c", olc::RED, olc::BLANK, true));
-  textures.insert("cqde_q", cqde::textureFromText("q", olc::GREEN, olc::BLANK, true));
-  textures.insert("cqde_d", cqde::textureFromText("d", olc::WHITE, olc::BLANK, true));
-  textures.insert("cqde_e", cqde::textureFromText("e", olc::BLUE, olc::BLANK, true));
 
   auto& entityManager = mRegistry.ctx().at <EntityManager> ();
 

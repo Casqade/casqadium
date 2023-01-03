@@ -1,14 +1,15 @@
+@@ -1,133 +0,0 @@
 {
-  "CursorPosX" : 
+  "CursorPosX" :
   {
-    "+MousePos_X" : 
+    "+MousePos_X" :
     {
       "absolute" : true,
       "curve" : 0.0,
       "deadzone" : 0.0,
       "sensitivity" : 1.0
     },
-    "-MousePos_X" : 
+    "-MousePos_X" :
     {
       "absolute" : true,
       "curve" : 0.0,
@@ -16,16 +17,16 @@
       "sensitivity" : 1.0
     }
   },
-  "CursorPosY" : 
+  "CursorPosY" :
   {
-    "+MousePos_Y" : 
+    "+MousePos_Y" :
     {
       "absolute" : true,
       "curve" : 0.0,
       "deadzone" : 0.0,
       "sensitivity" : 1.0
     },
-    "-MousePos_Y" : 
+    "-MousePos_Y" :
     {
       "absolute" : true,
       "curve" : 0.0,
@@ -33,98 +34,98 @@
       "sensitivity" : 1.0
     }
   },
-  "EditorModeToggle" : 
+  "EditorModeToggle" :
   {
-    "-Key_F12" : 
+    "-Key_F12" :
     {
       "absolute" : false,
       "sensitivity" : 0.0
     }
   },
-  "EngineShutdown" : 
+  "EngineShutdown" :
   {
-    "-Key_Q" : 
+    "-Key_Q" :
     {
       "absolute" : false,
       "sensitivity" : 0.0
     }
   },
-  "Pitch" : 
+  "Pitch" :
   {
-    "+MouseMove_Y" : 
+    "+MouseMove_Y" :
     {
       "absolute" : false,
       "sensitivity" : -5.0
     },
-    "-MouseMove_Y" : 
+    "-MouseMove_Y" :
     {
       "absolute" : false,
       "sensitivity" : 5.0
     }
   },
-  "QuickLoad" : 
+  "QuickLoad" :
   {
-    "-Key_F2" : 
+    "-Key_F2" :
     {
       "absolute" : false,
       "sensitivity" : 0.0
     }
   },
-  "QuickSave" : 
+  "QuickSave" :
   {
-    "-Key_F1" : 
+    "-Key_F1" :
     {
       "absolute" : false,
       "sensitivity" : 0.0
     }
   },
-  "TranslateX" : 
+  "TranslateX" :
   {
-    "~Key_A" : 
+    "~Key_A" :
     {
       "absolute" : false,
       "sensitivity" : -10.0
     },
-    "~Key_D" : 
+    "~Key_D" :
     {
       "absolute" : false,
       "sensitivity" : 10.0
     }
   },
-  "TranslateY" : 
+  "TranslateY" :
   {
-    "~Key_Shift" : 
+    "~Key_Shift" :
     {
       "absolute" : false,
       "sensitivity" : -10.0
     },
-    "~Key_Space" : 
+    "~Key_Space" :
     {
       "absolute" : false,
       "sensitivity" : 10.0
     }
   },
-  "TranslateZ" : 
+  "TranslateZ" :
   {
-    "~Key_S" : 
+    "~Key_S" :
     {
       "absolute" : false,
       "sensitivity" : -10.0
     },
-    "~Key_W" : 
+    "~Key_W" :
     {
       "absolute" : false,
       "sensitivity" : 10.0
     }
   },
-  "Yaw" : 
+  "Yaw" :
   {
-    "+MouseMove_X" : 
+    "+MouseMove_X" :
     {
       "absolute" : false,
       "sensitivity" : -5.0
     },
-    "-MouseMove_X" : 
+    "-MouseMove_X" :
     {
       "absolute" : false,
       "sensitivity" : 5.0
