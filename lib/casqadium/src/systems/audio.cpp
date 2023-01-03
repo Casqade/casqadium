@@ -8,8 +8,6 @@
 #include <cqde/components/audio/AudioDrivenTransform.hpp>
 #include <cqde/components/audio/AudioListener3d.hpp>
 
-#include <cqde/types/EntityManager.hpp>
-
 #include <entt/entity/registry.hpp>
 
 #include <soloud.h>
@@ -25,10 +23,8 @@ Audio3dSystem(
   using compos::Transform;
   using compos::AudioListener3d;
   using compos::SubscriberUpdate;
-  using types::EntityManager;
 
   auto& soloud = registry.ctx().at <SoLoud::Soloud> ();
-  const auto& entityManager = registry.ctx().at <EntityManager> ();
 
   for ( auto&& [eListener, cListener, cListenerTransform]
     : registry.view <AudioListener3d, const Transform, SubscriberUpdate> ().each() )
@@ -86,10 +82,8 @@ AudioDrivenTransformSystem(
   using compos::SubscriberUpdate;
   using compos::AudioBus;
   using compos::AudioDrivenTransform;
-  using types::EntityManager;
   using types::TransformType;
 
-  auto& entityManager = registry.ctx().at <EntityManager> ();
   auto& soloud = registry.ctx().at <SoLoud::Soloud> ();
 
   for ( auto&& [eAudioTransform, cAudioTransform]
@@ -99,7 +93,7 @@ AudioDrivenTransformSystem(
   for ( auto&& [eAudioTransform, cAudioTransform, cTransform]
           : registry.view <AudioDrivenTransform, Transform, SubscriberUpdate> ().each() )
   {
-    const auto eSource = entityManager.get_if_valid(cAudioTransform.sourceEntityId, registry);
+    const auto eSource = cAudioTransform.sourceEntity.get(registry);
 
     const auto transformSet =
     [&registry,

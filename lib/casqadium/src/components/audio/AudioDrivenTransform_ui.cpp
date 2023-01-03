@@ -29,7 +29,7 @@ AudioDrivenTransform::ui_edit_props(
 
     static StringFilter entityFilter {"Entity ID"};
 
-    if ( ImGui::BeginCombo("##entitySourceId", sourceEntityId.str().c_str()) )
+    if ( ImGui::BeginCombo("##entitySourceId", sourceEntity.id.str().c_str()) )
     {
       if ( ImGui::IsWindowAppearing() )
         ImGui::SetKeyboardFocusHere(2);
@@ -41,10 +41,10 @@ AudioDrivenTransform::ui_edit_props(
         if ( entityFilter.query(entityId.str()) == false )
           continue;
 
-        const bool selected = (sourceEntityId == entityId);
+        const bool selected = (sourceEntity == entityId);
 
         if ( ImGui::Selectable(entityId.str().c_str(), selected) )
-          sourceEntityId = entityId;
+          sourceEntity = entityId;
       }
       ImGui::EndCombo();
     }

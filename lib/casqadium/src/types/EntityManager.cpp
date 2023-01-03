@@ -534,7 +534,7 @@ EntityManager::entryPointExecute(
     if ( cEntities != nullptr )
       for ( const auto& entityId : cEntities->entities )
       {
-        const auto entity = get_if_valid(entityId, registry);
+        const auto entity = entityId.get(registry);
 
         if ( entity != entt::null )
           registry.emplace_or_replace <SubscriberUpdate> (entity);

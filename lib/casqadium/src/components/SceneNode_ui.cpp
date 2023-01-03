@@ -103,7 +103,7 @@ SceneNode::ui_edit_props(
 
     for ( const auto& child : childrenToRemove )
     {
-      DetachChildNode(registry, entity, child.get_if_valid(registry));
+      DetachChildNode(registry, entity, child.get(registry));
       children.erase(child);
     }
 

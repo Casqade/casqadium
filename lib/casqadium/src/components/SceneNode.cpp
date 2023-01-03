@@ -64,11 +64,7 @@ SceneNode::deserialize(
   const Json::Value& json,
   const std::unordered_map <EntityId, EntityId, identifier_hash>& idMap )
 {
-  using types::EntityManager;
-
   jsonValidateObject(json, SceneNodeJsonReference);
-
-  auto& entityManager = registry.ctx().at <EntityManager> ();
 
   auto& comp = registry.emplace_or_replace <SceneNode> (entity);
 
@@ -79,10 +75,11 @@ SceneNode::deserialize(
 
   else
   {
-    const auto parent = entityManager.get_if_valid(comp.parent.id, registry);
-    if ( parent != entt::null )
+    const auto eParent = comp.parent.get(registry);
+
+    if ( eParent != entt::null )
     {
-      auto& cNode = registry.get <SceneNode> (parent);
+      auto& cNode = registry.get <SceneNode> (eParent);
       cNode.children.insert(registry.get <Tag> (entity).id);
     }
   }
@@ -113,7 +110,7 @@ ChildNodeDepth(
   if ( node == nullptr )
     return 0;
 
-  const auto eParent = node->parent.get_if_valid(registry);
+  const auto eParent = node->parent.get(registry);
 
   if ( eParent == entt::null )
     return 1;
@@ -142,7 +139,7 @@ CanAddChildNode(
 
   const auto& cNode = registry.get <SceneNode> (eParent);
 
-  const auto ancestor = cNode.parent.get_if_valid(registry);
+  const auto ancestor = cNode.parent.get(registry);
 
   return CanAddChildNode(registry, ancestor, childId);
 }
@@ -160,7 +157,7 @@ AttachChildNode(
 
   SceneNode& cChildNode = registry.get <SceneNode> (eChild);
 
-  DetachChildNode(registry, cChildNode.parent.get_if_valid(registry), eChild);
+  DetachChildNode(registry, cChildNode.parent.get(registry), eChild);
 
   if ( eParent == entt::null )
   {
@@ -220,7 +217,7 @@ DestroyChildNode(
   const auto children = cNode.children;
 
   for ( const auto& child : children )
-    DestroyChildNode(registry, eChild, child.get_if_valid(registry));
+    DestroyChildNode(registry, eChild, child.get(registry));
 
   registry.ctx().at <EntityManager> ().removeLater(eChild);
 }
@@ -235,14 +232,14 @@ RootifyChildNode(
   const auto& cNode = registry.get <SceneNode> (entity);
 
   DetachChildNode(registry,
-                  cNode.parent.get_if_valid(registry),
+                  cNode.parent.get(registry),
                   entity);
 
   const auto children = cNode.children;
 
   for ( const auto& child : children )
     DetachChildNode(registry, entity,
-                    child.get_if_valid(registry));
+                    child.get(registry));
 }
 
 void SerializeChildNode(
@@ -263,7 +260,7 @@ void SerializeChildNode(
 
   for ( const auto& child : cNode.children )
   {
-    const auto childEntity = child.get_if_valid(registry);
+    const auto childEntity = child.get(registry);
 
     if ( childEntity != entt::null )
       SerializeChildNode(registry, json, childEntity,

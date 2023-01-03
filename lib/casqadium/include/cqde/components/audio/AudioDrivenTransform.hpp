@@ -2,6 +2,7 @@
 
 #include <cqde/alias.hpp>
 #include <cqde/types/enums.hpp>
+#include <cqde/types/EntityReference.hpp>
 
 #include <entt/fwd.hpp>
 
@@ -16,6 +17,7 @@ namespace cqde::compos
 struct AudioDrivenTransform
 {
   using TransformType = types::TransformType;
+  using EntityReference = types::EntityReference;
 
   glm::vec3 axis {};
   float magnitude {1.0f};
@@ -30,7 +32,7 @@ struct AudioDrivenTransform
 
 //  pick audio amplitude
 //  from this entity
-  EntityId sourceEntityId {}; // todo: use parent as source ?
+  EntityReference sourceEntity {}; // todo: use parent as source ?
 
 
   AudioDrivenTransform() = default;

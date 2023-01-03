@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cqde/alias.hpp>
+#include <cqde/types/EntityReference.hpp>
 
 #include <entt/fwd.hpp>
 
@@ -12,7 +13,9 @@ namespace cqde::compos
 
 struct InteractionProbe
 {
-  EntityId listenerId {};
+  using EntityReference = types::EntityReference;
+
+  EntityReference listener {};
 
 
   InteractionProbe() = default;

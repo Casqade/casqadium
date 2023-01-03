@@ -584,14 +584,14 @@ EntityManagerUi::ui_show_nodes_table(
     if ( mRegistryFilter.query(registry, eParent) == false )
     {
       for ( const auto& childRef : cNode->children )
-        each_node( mEntityMgr->get_if_valid(childRef.id, registry) );
+        each_node( childRef.get(registry) );
 
       ImGui::PopID(); // nodeId
       return;
     }
 
     if ( ImGui::SmallButton("-##nodeDestroy") )
-      nodeToDestroy = {cNode->parent.get_if_valid(registry), eParent};
+      nodeToDestroy = {cNode->parent.get(registry), eParent};
 
     auto flags =  ImGuiTreeNodeFlags_OpenOnArrow |
                   ImGuiTreeNodeFlags_OpenOnDoubleClick |
@@ -672,7 +672,7 @@ EntityManagerUi::ui_show_nodes_table(
       return ImGui::PopID(); // nodeId
 
     for ( const auto& childRef : cNode->children )
-      each_node( mEntityMgr->get_if_valid(childRef.id, registry) );
+      each_node( childRef.get(registry) );
 
     if ( cNode->children.empty() == false )
       ImGui::TreePop(); // cTag.id
