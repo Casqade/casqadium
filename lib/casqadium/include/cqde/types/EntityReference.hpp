@@ -3,7 +3,7 @@
 #include <cqde/alias.hpp>
 #include <cqde/fwd.hpp>
 
-#include <entt/fwd.hpp>
+#include <entt/entity/entity.hpp>
 
 
 namespace cqde::types
@@ -12,6 +12,7 @@ namespace cqde::types
 struct EntityReference
 {
   EntityId id {};
+  mutable entt::entity entity {entt::null};
 
 
   EntityReference() = default;
@@ -19,7 +20,6 @@ struct EntityReference
   EntityReference( const compos::Tag& );
 
   entt::entity get( const entt::registry& ) const;
-  entt::entity get_if_valid( const entt::registry& ) const;
 
   bool operator == ( const EntityReference& ) const;
   bool operator < ( const EntityReference& ) const;

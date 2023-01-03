@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cqde/alias.hpp>
+#include <cqde/types/EntityReference.hpp>
 
 #include <entt/fwd.hpp>
 
@@ -14,7 +15,9 @@ namespace cqde::compos
 
 struct EntityList
 {
-  std::unordered_set <EntityId, identifier_hash> entities {};
+  using EntityReference = types::EntityReference;
+
+  std::unordered_set <EntityReference, identifier_hash> entities {};
 
 
   EntityList() = default;

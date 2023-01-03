@@ -79,9 +79,7 @@ interactProbe(
   auto& cListener = registry.get <const InteractionListener> (eListener);
   auto& cProbe = registry.get <const InteractionProbe> (eListener);
 
-  auto& entityManager = registry.ctx().at <EntityManager> ();
-
-  const auto eSource = entityManager.get_if_valid(cProbe.listenerId, registry);
+  const auto eSource = cProbe.listener.get(registry);
 
   if ( eSource == entt::null )
     return;
@@ -170,7 +168,7 @@ entitiesUpdateOn(
 
   for ( const auto& entityId : entityList.entities )
   {
-    const auto entity = entityManager.get_if_valid(entityId, registry);
+    const auto entity = entityId.get(registry);
 
     if ( entity != entt::null )
       registry.emplace_or_replace <SubscriberUpdate> (entity);
@@ -195,7 +193,7 @@ entitiesUpdateOff(
 
   for ( const auto& entityId : entityList.entities )
   {
-    const auto entity = entityManager.get_if_valid(entityId, registry);
+    const auto entity = entityId.get(registry);
     entityManager.removeLater(entity, componentType);
   }
 }
@@ -211,12 +209,11 @@ entitiesUpdateToggle(
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
 
-  auto& entityManager = registry.ctx().at <EntityManager> ();
   auto& entityList = registry.get <const EntityList> (entity);
 
   for ( const auto& entityId : entityList.entities )
   {
-    const auto entity = entityManager.get_if_valid(entityId, registry);
+    const auto entity = entityId.get(registry);
 
     if ( entity != entt::null )
       entityUpdateToggle(registry, {entity});
@@ -277,13 +274,12 @@ entitiesInputOn(
   using compos::EntityList;
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
-  auto& entityManager = registry.ctx().at <const EntityManager> ();
 
   auto& entityList = registry.get <const EntityList> (entity);
 
   for ( const auto& entityId : entityList.entities )
   {
-    const auto entity = entityManager.get_if_valid(entityId, registry);
+    const auto entity = entityId.get(registry);
 
     if ( entity != entt::null )
       registry.emplace_or_replace <SubscriberInput> (entity);
@@ -308,7 +304,7 @@ entitiesInputOff(
 
   for ( const auto& entityId : entityList.entities )
   {
-    const auto entity = entityManager.get_if_valid(entityId, registry);
+    const auto entity = entityId.get(registry);
 
     if ( entity != entt::null )
       entityManager.removeLater(entity, componentType);
@@ -326,12 +322,11 @@ entitiesInputToggle(
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
 
-  auto& entityManager = registry.ctx().at <EntityManager> ();
   auto& entityList = registry.get <const EntityList> (entity);
 
   for ( const auto& entityId : entityList.entities )
   {
-    const auto entity = entityManager.get_if_valid(entityId, registry);
+    const auto entity = entityId.get(registry);
 
     if ( entity != entt::null )
       entityInputToggle(registry, {entity});

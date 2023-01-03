@@ -33,7 +33,7 @@ InteractionProbe::serialize() const
 {
   Json::Value json {};
 
-  json["listenerId"] = listenerId.str();
+  json["listenerId"] = listener.id.str();
 
   return json;
 }
@@ -50,7 +50,7 @@ InteractionProbe::deserialize(
 
   auto& comp = registry.emplace_or_replace <InteractionProbe> (entity);
 
-  comp.listenerId = json["listenerId"].asString();
+  comp.listener.id = json["listenerId"].asString();
 }
 
 } // namespace cqde::compos

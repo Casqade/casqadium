@@ -28,7 +28,7 @@ InteractionProbe::ui_edit_props(
 
     static StringFilter entityFilter {"Entity ID"};
 
-    if ( ImGui::BeginCombo("##listenerId", listenerId.str().c_str()) )
+    if ( ImGui::BeginCombo("##listenerId", listener.id.str().c_str()) )
     {
       if ( ImGui::IsWindowAppearing() )
         ImGui::SetKeyboardFocusHere(2);
@@ -40,10 +40,10 @@ InteractionProbe::ui_edit_props(
         if ( entityFilter.query(entityId.str()) == false )
           continue;
 
-        const bool selected = (listenerId == entityId);
+        const bool selected = (listener == entityId);
 
         if ( ImGui::Selectable(entityId.str().c_str(), selected) )
-          listenerId = entityId;
+          listener = entityId;
       }
       ImGui::EndCombo();
     }
