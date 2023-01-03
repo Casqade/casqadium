@@ -94,7 +94,7 @@ EntityList::ui_edit_props(
                         ImGuiSelectableFlags_AllowItemOverlap;
 
     ImGui::SameLine();
-    ImGui::Selectable(iter->str().c_str(), false, flags);
+    ImGui::Selectable(iter->id.str().c_str(), false, flags);
 
     ImGui::PopID();
   }

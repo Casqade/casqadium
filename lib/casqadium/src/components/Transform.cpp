@@ -255,7 +255,7 @@ GetParentMatrix(
   const std::function <glm::mat4(const SceneNode&)> parentModelWorld =
   [&] ( const SceneNode& child ) -> glm::mat4
   {
-    const entt::entity eParent = child.parent.get_if_valid(registry);
+    const entt::entity eParent = child.parent.get(registry);
 
     if ( eParent == entt::null )
       return glm::mat4{1.0f};

@@ -115,7 +115,7 @@ EditorCullingSystem(
 
   for ( const auto& viewport : viewportManagerUi.viewports() )
   {
-    const auto eCamera = viewport.camera.get_if_valid(registry);
+    const auto eCamera = viewport.camera.get(registry);
 
     if ( eCamera == entt::null )
       continue;

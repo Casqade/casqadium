@@ -9,6 +9,8 @@
 #include <imgui.h>
 #include <imgui_stdlib.h>
 
+#include <json/value.h>
+
 
 namespace cqde::compos
 {
@@ -96,21 +98,32 @@ Tag::ui_edit_props(
 
   if ( cNode != nullptr )
   {
-    parent = cNode->parent.get_if_valid(registry);
+    parent = cNode->parent.get(registry);
     DetachChildNode(registry, parent, entity);
   }
 
-  entityManager.idInvalidate(this->id);
-  entityManager.idRegister(idInputBuffer, entity);
+  Json::Value jsonEntity {};
 
-  this->id = idInputBuffer;
+  id = idInputBuffer;
+  entityManager.entitySerialize(registry, jsonEntity, entity);
+  id = idCurrent;
+
+  std::unordered_map <EntityId, EntityId, identifier_hash> idMap {};
+  idMap[id] = idInputBuffer;
+
+  const auto renamedEntity = entityManager.entityDeserialize(
+    registry, idInputBuffer, jsonEntity[idInputBuffer], idMap );
+
+  entityManager.removeLater(entity);
 
   if ( cNode != nullptr )
   {
-    AttachChildNode(registry, parent, entity);
+    cNode = &registry.get <SceneNode> (renamedEntity);
+
+    AttachChildNode(registry, parent, renamedEntity);
 
     for ( auto& child : cNode->children )
-      AttachChildNode(registry, entity, child.get_if_valid(registry));
+      AttachChildNode(registry, renamedEntity, child.get(registry));
   }
 }
 

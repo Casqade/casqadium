@@ -41,7 +41,7 @@ EntityList::serialize() const
   jsonEntities = Json::arrayValue;
 
   for ( const auto& entity : entities )
-    jsonEntities.append(entity.str());
+    jsonEntities.append(entity.id.str());
 
   return json;
 }
@@ -59,7 +59,7 @@ EntityList::deserialize(
   auto& comp = registry.emplace_or_replace <EntityList> (entity);
 
   for ( const auto& entity : json["entities"] )
-    comp.entities.insert(entity.asString());
+    comp.entities.insert({entity.asString()});
 }
 
 } // namespace cqde::compos

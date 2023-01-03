@@ -70,7 +70,7 @@ AudioDrivenTransform::serialize() const
 
   Json::Value json {};
 
-  json["sourceEntityId"] = sourceEntityId.str();
+  json["sourceEntityId"] = sourceEntity.id.str();
   json["axis"] << axis;
   json["magnitude"] = magnitude;
   json["offset"] = offset;
@@ -97,7 +97,7 @@ AudioDrivenTransform::deserialize(
 
   auto& comp = registry.emplace_or_replace <AudioDrivenTransform> (entity);
 
-  comp.sourceEntityId = json["sourceEntityId"].asString();
+  comp.sourceEntity.id = json["sourceEntityId"].asString();
   comp.magnitude = json["magnitude"].asFloat();
   comp.offset = json["offset"].asFloat();
   comp.damp = json["damp"].asFloat();

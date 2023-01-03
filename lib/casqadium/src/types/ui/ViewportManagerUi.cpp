@@ -216,7 +216,7 @@ ViewportManagerUi::ui_show_viewport_windows(
 
     bool windowOpened {true};
 
-    auto eCamera = cameraRef.get_if_valid(registry);
+    auto eCamera = cameraRef.get(registry);
 
     if ( eCamera == entt::null )
       cameraRef = null_id;
