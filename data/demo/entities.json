@@ -1441,8 +1441,8 @@
     {
       "textures" :
       [
-        "text_texture",
-        "text_texture"
+        "null",
+        "null"
       ]
     },
     "Transform" :
