@@ -76,7 +76,7 @@ MusicalInstrument::ui_edit_props(
 
   static StringFilter audioFilter {"Audio ID"};
 
-  const auto audioList = registry.ctx().at <AudioAssetManager> ().assetIdList();
+  const auto audioList = registry.ctx().get <AudioAssetManager> ().assetIdList();
 
   if ( ImGui::BeginCombo("##audioId", audioId.str().c_str()) )
   {
@@ -256,7 +256,7 @@ EngineController::ui_edit_props(
 
   static StringFilter audioFilter {"Audio ID"};
 
-  const auto assets = registry.ctx().at <AudioAssetManager> ().assetIdList();
+  const auto assets = registry.ctx().get <AudioAssetManager> ().assetIdList();
 
   if ( ImGui::BeginCombo("##cylinderAudioId", cylinderAudioId.str().c_str()) )
   {

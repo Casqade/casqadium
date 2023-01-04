@@ -81,7 +81,7 @@ CasqadiumStateDemo::CasqadiumStateDemo(
     mRunning = false;
   };
 
-  auto& callbackMgr = mRegistry.ctx().at <CallbackManager> ();
+  auto& callbackMgr = mRegistry.ctx().get <CallbackManager> ();
 
   callbackMgr.Register("EngineShutdown", engineShutdown);
 
@@ -109,7 +109,7 @@ CasqadiumStateDemo::CasqadiumStateDemo(
   callbackMgr.Register("EngineCylinderHit", demo::engineCylinderHit);
 
 
-  auto& entityManager = mRegistry.ctx().at <EntityManager> ();
+  auto& entityManager = mRegistry.ctx().get <EntityManager> ();
 
   entityManager.registerComponent <demo::MusicalInstrument> ("MusicalInstrument");
   entityManager.registerComponent <demo::PhysicsMaterial> ("PhysicsMaterial");
@@ -139,7 +139,7 @@ CasqadiumStateDemo::CasqadiumStateDemo(
   inputManager.load(userManager.inputConfigPath());
 
 
-  auto& textures = mRegistry.ctx().at <TextureAssetManager> ();
+  auto& textures = mRegistry.ctx().get <TextureAssetManager> ();
 
   textures.insert("scene_concert", cqde::textureFromText("Concert", olc::WHITE, olc::BLANK, true));
   textures.insert("scene_doppler", cqde::textureFromText("Doppler", olc::WHITE, olc::BLANK, true));
@@ -154,7 +154,7 @@ CasqadiumStateDemo::CasqadiumStateDemo(
   textures.insert("hint_reset", cqde::textureFromText("[Esc] Reset demo", olc::GREY, olc::BLANK, true));
   textures.insert("hint_quit", cqde::textureFromText("[Q] Quit", olc::DARK_GREY, olc::BLANK, true));
 
-  auto& audio = mRegistry.ctx().at <AudioAssetManager> ();
+  auto& audio = mRegistry.ctx().get <AudioAssetManager> ();
   for ( const auto& audioId : audio.assetIdList() )
     audio.load({audioId});
 

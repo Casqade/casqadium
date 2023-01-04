@@ -59,7 +59,7 @@ audioDemoReset(
           : registry.view <InputController, Transform> ().each() )
     cTransform = {};
 
-  auto& callbackManager = registry.ctx().at <CallbackManager> ();
+  auto& callbackManager = registry.ctx().get <CallbackManager> ();
 
   callbackManager.executeLater(
   [] (  entt::registry& registry,
@@ -81,7 +81,7 @@ audioDemoConcertInit(
   using cqde::types::CallbackManager;
   using cqde::callbacks::entitiesUpdateOn;
 
-  auto& callbackManager = registry.ctx().at <CallbackManager> ();
+  auto& callbackManager = registry.ctx().get <CallbackManager> ();
 
   callbackManager.executeLater(
   [] (  entt::registry& registry,
@@ -126,7 +126,7 @@ audioDemoDopplerInit(
   using cqde::updateAudio3dParams;
   using cqde::calcAudioListenerParams;
 
-  auto& callbackManager = registry.ctx().at <CallbackManager> ();
+  auto& callbackManager = registry.ctx().get <CallbackManager> ();
 
   callbackManager.executeLater(
   [] (  entt::registry& registry,
@@ -138,8 +138,8 @@ audioDemoDopplerInit(
 
     carReset(registry, args);
 
-    auto& soloud = registry.ctx().at <SoLoud::Soloud> ();
-    const auto& audioManager = registry.ctx().at <AudioAssetManager> ();
+    auto& soloud = registry.ctx().get <SoLoud::Soloud> ();
+    const auto& audioManager = registry.ctx().get <AudioAssetManager> ();
 
     for ( const auto&& [eCar, cCarLoop, cCarTransform]
             : registry.view <AudioLoop, const Transform, SubscriberUpdate> ().each() )
@@ -207,7 +207,7 @@ audioDemoDopplerShutdown(
   using cqde::compos::Transform;
   using cqde::compos::Transform;
 
-  auto& soloud = registry.ctx().at <SoLoud::Soloud> ();
+  auto& soloud = registry.ctx().get <SoLoud::Soloud> ();
 
   for ( const auto&& [eCar, cCarLoop, cCarTransform]
           : registry.view <AudioLoop, const Transform> ().each() )
@@ -224,9 +224,9 @@ audioListenerFilterInit(
   using cqde::compos::SubscriberUpdate;
   using cqde::types::AudioFilterFactory;
 
-  auto& soloud = registry.ctx().at <SoLoud::Soloud> ();
+  auto& soloud = registry.ctx().get <SoLoud::Soloud> ();
 
-  const auto& filterFactory = registry.ctx().at <AudioFilterFactory> ();
+  const auto& filterFactory = registry.ctx().get <AudioFilterFactory> ();
 
   const auto filter = filterFactory.get("FreeverbFilter");
 
@@ -275,8 +275,8 @@ musicConcertControllerInit(
 
   const auto eConcertController = std::any_cast <entt::entity> (args.at(0));
 
-  auto& soloud = registry.ctx().at <SoLoud::Soloud> ();
-  const auto& audioManager = registry.ctx().at <AudioAssetManager> ();
+  auto& soloud = registry.ctx().get <SoLoud::Soloud> ();
+  const auto& audioManager = registry.ctx().get <AudioAssetManager> ();
 
   auto& cConcertController = registry.get <MusicConcertController> (eConcertController);
   auto& cInstrumentList = registry.get <const EntityList> (eConcertController);
@@ -335,7 +335,7 @@ musicConcertControllerReset(
   using cqde::AudioHandleInvalid;
   using cqde::compos::InteractionListenerColor;
 
-  auto& soloud = registry.ctx().at <SoLoud::Soloud> ();
+  auto& soloud = registry.ctx().get <SoLoud::Soloud> ();
 
   for ( auto&& [eInstrument, cInstrument, cInstrumentColor]
           : registry.view <MusicalInstrument, InteractionListenerColor> ().each() )
@@ -377,7 +377,7 @@ musicInstrumentToggle(
   using cqde::compos::SubscriberUpdate;
   using cqde::compos::InteractionListenerColor;
 
-  auto& soloud = registry.ctx().at <SoLoud::Soloud> ();
+  auto& soloud = registry.ctx().get <SoLoud::Soloud> ();
 
   for ( auto&& [eController, cController]
           : registry.view <MusicConcertController, SubscriberUpdate> ().each() )
@@ -425,7 +425,7 @@ playDialogue(
 
   auto& cDrunkardTransform = registry.get <const Transform> (eDrunkard);
 
-  auto& soloud = registry.ctx().at <SoLoud::Soloud> ();
+  auto& soloud = registry.ctx().get <SoLoud::Soloud> ();
 
   auto& cDrunkardBus = registry.get <AudioBus> (eDrunkard);
 
@@ -479,7 +479,7 @@ playDialogue(
   if ( iter == dialogueList.audio.end() )
     return;
 
-  const auto& audioManager = registry.ctx().at <AudioAssetManager> ();
+  const auto& audioManager = registry.ctx().get <AudioAssetManager> ();
 
   const auto audio = audioManager.try_get(*iter);
 
@@ -505,7 +505,7 @@ toggleDialoguePause(
 
   auto& cEntityList = registry.get <const EntityList> (eDrunkard);
 
-  auto& soloud = registry.ctx().at <SoLoud::Soloud> ();
+  auto& soloud = registry.ctx().get <SoLoud::Soloud> ();
 
   for ( const auto& bus : cEntityList.entities )
   {
@@ -558,8 +558,8 @@ playFootstepSound(
 
   auto& cActorTransform = registry.get <const Transform> (eActor);
 
-  auto& soloud = registry.ctx().at <SoLoud::Soloud> ();
-  const auto& audioManager = registry.ctx().at <AudioAssetManager> ();
+  auto& soloud = registry.ctx().get <SoLoud::Soloud> ();
+  const auto& audioManager = registry.ctx().get <AudioAssetManager> ();
 
   for ( auto&& [eAudioBank, cAudioMap]
           : registry.view <const AudioGroupMap, const FootstepAudioBank> ().each() )
@@ -696,14 +696,14 @@ engineCylinderHit(
     cBody->body->setAngularVelocity(velocity);
   }
 
-  const auto& audioManager = registry.ctx().at <AudioAssetManager> ();
+  const auto& audioManager = registry.ctx().get <AudioAssetManager> ();
 
   const auto audio = audioManager.try_get(cController->cylinderAudioId);
 
   if ( audio == nullptr )
     return;
 
-  auto& soloud = registry.ctx().at <SoLoud::Soloud> ();
+  auto& soloud = registry.ctx().get <SoLoud::Soloud> ();
 
   const auto playSpeed =
     glm::mix(0.0f, 0.4f, std::pow(velocity.x / pi2, 2.5f));
