@@ -9,7 +9,6 @@
 #include <cqde/callbacks/audio.hpp>
 #include <cqde/callbacks/common_routine.hpp>
 
-#include <cqde/types/EntityManager.hpp>
 #include <cqde/types/CallbackManager.hpp>
 #include <cqde/types/assets/AudioAssetManager.hpp>
 #include <cqde/types/audio/AudioFilterFactory.hpp>
@@ -271,14 +270,12 @@ musicConcertControllerInit(
   using cqde::compos::EntityList;
   using cqde::compos::Transform;
   using cqde::compos::SubscriberUpdate;
-  using cqde::types::EntityManager;
   using cqde::types::AudioAssetManager;
   using cqde::AudioHandleInvalid;
 
   const auto eConcertController = std::any_cast <entt::entity> (args.at(0));
 
   auto& soloud = registry.ctx().at <SoLoud::Soloud> ();
-  const auto& entityManager = registry.ctx().at <EntityManager> ();
   const auto& audioManager = registry.ctx().at <AudioAssetManager> ();
 
   auto& cConcertController = registry.get <MusicConcertController> (eConcertController);
@@ -292,9 +289,9 @@ musicConcertControllerInit(
     if ( soloud.isVoiceGroup(cConcertController.groupHandle) == false )
       cConcertController.groupHandle = soloud.createVoiceGroup();
 
-    for ( const auto& instrumentId : cInstrumentList.entities )
+    for ( const auto& instrument : cInstrumentList.entities )
     {
-      const auto eInstrument = entityManager.get_if_valid(instrumentId, registry);
+      const auto eInstrument = instrument.get(registry);
 
       if ( eInstrument == entt::null )
         continue;
@@ -503,7 +500,6 @@ toggleDialoguePause(
 {
   using cqde::compos::AudioBus;
   using cqde::compos::EntityList;
-  using cqde::types::EntityManager;
 
   const auto eDrunkard = std::any_cast <entt::entity> (args.at(0));
 
@@ -511,11 +507,10 @@ toggleDialoguePause(
 
   auto& soloud = registry.ctx().at <SoLoud::Soloud> ();
 
-  const auto& entityManager = registry.ctx().at <EntityManager> ();
-
-  for ( const auto& entityId : cEntityList.entities )
+  for ( const auto& bus : cEntityList.entities )
   {
-    const auto eBus = entityManager.get_if_valid(entityId, registry);
+    const auto eBus = bus.get(registry);
+
     if ( eBus == entt::null )
       continue;
 
@@ -634,7 +629,6 @@ carReset(
   using cqde::compos::Transform;
   using cqde::compos::RigidBody;
   using cqde::compos::EntityList;
-  using cqde::types::EntityManager;
 
   const auto eTrigger = std::any_cast <entt::entity> (args.at(0));
 
@@ -643,11 +637,9 @@ carReset(
   if ( cCarList == nullptr )
     return;
 
-  const auto& entityManager = registry.ctx().at <EntityManager> ();
-
-  for ( const auto& carId : cCarList->entities )
+  for ( const auto& car : cCarList->entities )
   {
-    const auto eCar = entityManager.get_if_valid(carId, registry);
+    const auto eCar = car.get(registry);
 
     if ( eCar == entt::null )
       continue;
