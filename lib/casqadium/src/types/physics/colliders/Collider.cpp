@@ -128,7 +128,7 @@ Collider::init(
   CQDE_ASSERT_DEBUG(mCommon == nullptr, return);
   CQDE_ASSERT_DEBUG(mCollider == nullptr, return);
 
-  auto& physicsManager = registry.ctx().at <PhysicsManager> ();
+  auto& physicsManager = registry.ctx().get <PhysicsManager> ();
   mCommon = &physicsManager.common();
 
   shapeInit(registry);
@@ -172,7 +172,7 @@ Collider::onEnter(
   if ( mCallbacks.onEnter.empty() == true )
     return;
 
-  const auto& callbackManager = registry.ctx().at <CallbackManager> ();
+  const auto& callbackManager = registry.ctx().get <CallbackManager> ();
 
   for ( const auto& callback : mCallbacks.onEnter )
     callbackManager.execute(callback, registry, args);
@@ -186,7 +186,7 @@ Collider::onStay(
   if ( mCallbacks.onStay.empty() == true )
     return;
 
-  const auto& callbackManager = registry.ctx().at <CallbackManager> ();
+  const auto& callbackManager = registry.ctx().get <CallbackManager> ();
 
   for ( const auto& callback : mCallbacks.onStay )
     callbackManager.execute(callback, registry, args);
@@ -200,7 +200,7 @@ Collider::onLeave(
   if ( mCallbacks.onLeave.empty() == true )
     return;
 
-  const auto& callbackManager = registry.ctx().at <CallbackManager> ();
+  const auto& callbackManager = registry.ctx().get <CallbackManager> ();
 
   for ( const auto& callback : mCallbacks.onLeave )
     callbackManager.execute(callback, registry, args);

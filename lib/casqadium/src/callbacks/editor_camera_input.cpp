@@ -31,7 +31,7 @@ editorCameraControlOn(
   for ( const auto&& [eCamera, cTag, cCamera]
           : registry.view <Tag, Camera, CasqadiumEditorInternal> ().each() )
   {
-    if ( registry.ctx().at <ViewportManagerUi> ().mouseOverViewport(cTag.id) == false )
+    if ( registry.ctx().get <ViewportManagerUi> ().mouseOverViewport(cTag.id) == false )
       continue;
 
     if ( registry.all_of <SubscriberInput> (eCamera) == true )
@@ -58,7 +58,7 @@ editorCameraControlOff(
 
   entityInputOff(registry, args);
 
-  auto& entityManager = registry.ctx().at <EntityManager> ();
+  auto& entityManager = registry.ctx().get <EntityManager> ();
   entityManager.removeLater(eCamera, entityManager.componentType <WantsMouseCentered> ());
   entityManager.removeLater(eCamera, entityManager.componentType <WantsMouseHidden> ());
 };
@@ -110,7 +110,7 @@ editorCameraSpeedControl(
   const auto entity = std::any_cast <entt::entity> (args.at(0));
   const auto axis = std::any_cast <ControlAxis*> (args.at(2));
 
-  const auto& tick = registry.ctx().at <TickCurrent> ();
+  const auto& tick = registry.ctx().get <TickCurrent> ();
   const auto ticks = tick.ticksElapsed;
   const auto elapsed = tick.tickInterval;
 
@@ -135,7 +135,7 @@ editorCameraTranslateXRelative(
   const auto entity = std::any_cast <entt::entity> (args.at(0));
   const auto axis = std::any_cast <ControlAxis*> (args.at(2));
 
-  const auto& tick = registry.ctx().at <TickCurrent> ();
+  const auto& tick = registry.ctx().get <TickCurrent> ();
   const auto ticks = tick.ticksElapsed;
   const auto elapsed = tick.tickInterval;
 
@@ -161,7 +161,7 @@ editorCameraTranslateYRelative(
   const auto entity = std::any_cast <entt::entity> (args.at(0));
   const auto axis = std::any_cast <ControlAxis*> (args.at(2));
 
-  const auto& tick = registry.ctx().at <TickCurrent> ();
+  const auto& tick = registry.ctx().get <TickCurrent> ();
   const auto ticks = tick.ticksElapsed;
   const auto elapsed = tick.tickInterval;
 
@@ -188,7 +188,7 @@ editorCameraTranslateZRelative(
   const auto entity = std::any_cast <entt::entity> (args.at(0));
   const auto axis = std::any_cast <ControlAxis*> (args.at(2));
 
-  const auto& tick = registry.ctx().at <TickCurrent> ();
+  const auto& tick = registry.ctx().get <TickCurrent> ();
   const auto ticks = tick.ticksElapsed;
   const auto elapsed = tick.tickInterval;
 

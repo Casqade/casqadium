@@ -92,7 +92,7 @@ TransformManipulate::execute(
 
   const float factor = value(static_cast <double> (mTime.elapsed));
 
-  const auto& tickCurrent = registry.ctx().at <TickCurrent> ();
+  const auto& tickCurrent = registry.ctx().get <TickCurrent> ();
   const auto dt = static_cast <float> (tickCurrent.tickInterval);
 
   auto& cTransform = registry.get <Transform> (entity);

@@ -24,7 +24,7 @@ SystemList::ui_edit_props(
   if ( ImGui::CollapsingHeader("Systems", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
 
-  const auto systemList = registry.ctx().at <SystemManager> ().systems();
+  const auto systemList = registry.ctx().get <SystemManager> ().systems();
 
   static ui::StringFilter systemFilter {"System ID"};
 

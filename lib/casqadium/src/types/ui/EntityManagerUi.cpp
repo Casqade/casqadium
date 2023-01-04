@@ -718,7 +718,7 @@ EntityManagerUi::ui_show_menu_bar(
   if ( ImGui::BeginMenuBar() == false )
     return;
 
-  const auto& packageManager = registry.ctx().at <PackageManager> ();
+  const auto& packageManager = registry.ctx().get <PackageManager> ();
 
   const auto selectedPackage = mRegistryFilter.package();
 
@@ -783,7 +783,7 @@ EntityManagerUi::entitiesSave(
   using types::PackageManager;
   using ContentType = types::Package::ContentType;
 
-  const auto& packageManager = registry.ctx().at <PackageManager> ();
+  const auto& packageManager = registry.ctx().get <PackageManager> ();
 
   const auto package = packageManager.package(packageId);
 

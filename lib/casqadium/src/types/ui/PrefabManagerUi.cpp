@@ -43,7 +43,7 @@ PrefabManagerUi::prefabsApply(
 
   try
   {
-    const auto& pkgMgr = registry.ctx().at <PackageManager> ();
+    const auto& pkgMgr = registry.ctx().get <PackageManager> ();
 
     for ( const auto& packageId : pkgMgr.packages() )
     {
@@ -76,7 +76,7 @@ PrefabManagerUi::prefabsSave(
 
   LOG_TRACE("Writing package '{}' input config", packageId.str());
 
-  const auto& pkgMgr = registry.ctx().at <PackageManager> ();
+  const auto& pkgMgr = registry.ctx().get <PackageManager> ();
 
   const auto package = pkgMgr.package(packageId);
 
@@ -131,7 +131,7 @@ PrefabManagerUi::ui_show(
   {
     if ( selectedPackage.str().empty() == false )
     {
-      auto& pkgMgr = registry.ctx().at <PackageManager> ();
+      auto& pkgMgr = registry.ctx().get <PackageManager> ();
 
       auto package = pkgMgr.package(selectedPackage);
 
@@ -246,7 +246,7 @@ PrefabManagerUi::ui_show(
 
         const auto entities = *(const std::vector <entt::entity>*) entitiesPayload->Data;
 
-        const auto& entityManager = registry.ctx().at <EntityManager> ();
+        const auto& entityManager = registry.ctx().get <EntityManager> ();
 
         for ( const auto entity : entities )
           entityManager.entitySerialize(registry, prefabsState[prefabId], entity,
@@ -259,7 +259,7 @@ PrefabManagerUi::ui_show(
       {
         IM_ASSERT(nodePayload->DataSize == sizeof(entt::entity));
 
-        const auto& entityManager = registry.ctx().at <EntityManager> ();
+        const auto& entityManager = registry.ctx().get <EntityManager> ();
 
         const auto eDragged = *(const entt::entity*) nodePayload->Data;
         SerializeChildNode(registry, prefabsState[prefabId], eDragged,
@@ -315,7 +315,7 @@ PrefabManagerUi::ui_show(
     {
       if ( ImGui::Selectable(format("Copy '{}'", prefabId).c_str()) )
       {
-        auto& entityManagerUi = registry.ctx().at <EntityManagerUi> ();
+        auto& entityManagerUi = registry.ctx().get <EntityManagerUi> ();
         entityManagerUi.setClipboard("entities", prefabsState[prefabId]);
       }
 

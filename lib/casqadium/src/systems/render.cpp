@@ -51,7 +51,7 @@ CullingSystem(
 
   const auto& const_registry = registry;
 
-  auto& geometry = registry.ctx().at <GeometryAssetManager> ();
+  auto& geometry = registry.ctx().get <GeometryAssetManager> ();
 
   for ( const auto&& [eCamera, cCamera, cCameraTransform]
           : registry.view <Camera, const Transform, const SubscriberUpdate> ().each() )
@@ -110,8 +110,8 @@ EditorCullingSystem(
 
   const auto& const_registry = registry;
 
-  auto& geometry = registry.ctx().at <GeometryAssetManager> ();
-  auto& viewportManagerUi = const_registry.ctx().at <ViewportManagerUi> ();
+  auto& geometry = registry.ctx().get <GeometryAssetManager> ();
+  auto& viewportManagerUi = const_registry.ctx().get <ViewportManagerUi> ();
 
   for ( const auto& viewport : viewportManagerUi.viewports() )
   {
@@ -365,7 +365,7 @@ RenderSystem(
                  (textureBuffer->textures.size() > 1 &&
                   buffer.windingOrder == VertexBuffer::WindingOrder::ClockWise) )
             {
-              auto& textures  = registry.ctx().at <TextureAssetManager> ();
+              auto& textures  = registry.ctx().get <TextureAssetManager> ();
               const TextureId textureId = textureBuffer->textures.at((int) buffer.windingOrder);
 
               const auto texture = textures.get(textureId);
@@ -409,8 +409,8 @@ EditorEntityHighlightSystem(
   using types::EntityManager;
   using ui::EntityManagerUi;
 
-  auto& entityManager   = registry.ctx().at <EntityManager> ();
-  auto& entityManagerUi = registry.ctx().at <EntityManagerUi> ();
+  auto& entityManager   = registry.ctx().get <EntityManager> ();
+  auto& entityManagerUi = registry.ctx().get <EntityManagerUi> ();
 
   for ( const auto selectedEntity : entityManagerUi.selectedEntities() )
   {

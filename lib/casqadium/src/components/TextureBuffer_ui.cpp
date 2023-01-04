@@ -24,7 +24,7 @@ TextureBuffer::ui_edit_props(
   if ( ImGui::CollapsingHeader("Textures", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
 
-  const auto textureList = registry.ctx().at <TextureAssetManager> ().assetIdList();
+  const auto textureList = registry.ctx().get <TextureAssetManager> ().assetIdList();
 
   static ui::StringFilter textureFilter {"Texture ID"};
 

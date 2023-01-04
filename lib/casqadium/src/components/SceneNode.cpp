@@ -219,7 +219,7 @@ DestroyChildNode(
   for ( const auto& child : children )
     DestroyChildNode(registry, eChild, child.get(registry));
 
-  registry.ctx().at <EntityManager> ().removeLater(eChild);
+  registry.ctx().get <EntityManager> ().removeLater(eChild);
 }
 
 void
@@ -251,7 +251,7 @@ void SerializeChildNode(
   using compos::SceneNode;
   using types::EntityManager;
 
-  const auto& entityManager = registry.ctx().at <EntityManager> ();
+  const auto& entityManager = registry.ctx().get <EntityManager> ();
 
   entityManager.entitySerialize(registry, json, entity,
                                 excludedComponents);

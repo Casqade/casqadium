@@ -78,10 +78,10 @@ PhysicsSystem(
       cBody.body->setTransform(glmToRp3d(transformCurrent));
   }
 
-  auto& tick = const_registry.ctx().at <TickCurrent> ();
+  auto& tick = const_registry.ctx().get <TickCurrent> ();
   const auto elapsed = tick.tickInterval;
 
-  auto& physicsManager = const_registry.ctx().at <PhysicsManager> ();
+  auto& physicsManager = const_registry.ctx().get <PhysicsManager> ();
 
   physicsManager.world()->update(static_cast <rp3d::decimal> (elapsed));
 
@@ -134,7 +134,7 @@ PhysicsDebugRenderSystem(
   using types::PhysicsManager;
   using DebugItem = rp3d::DebugRenderer::DebugItem;
 
-  auto& physicsManager = registry.ctx().at <PhysicsManager> ();
+  auto& physicsManager = registry.ctx().get <PhysicsManager> ();
 
   const auto world = physicsManager.world();
   auto& debugRenderer = world->getDebugRenderer();
@@ -223,8 +223,8 @@ EditorPhysicsDebugRenderSystem(
   using ui::ViewportManagerUi;
   using DebugItem = rp3d::DebugRenderer::DebugItem;
 
-  auto& physicsManager = registry.ctx().at <PhysicsManager> ();
-  auto& viewportManagerUi = registry.ctx().at <ViewportManagerUi> ();
+  auto& physicsManager = registry.ctx().get <PhysicsManager> ();
+  auto& viewportManagerUi = registry.ctx().get <ViewportManagerUi> ();
 
   const auto world = physicsManager.world();
   auto& debugRenderer = world->getDebugRenderer();

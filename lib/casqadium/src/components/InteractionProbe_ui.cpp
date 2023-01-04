@@ -24,7 +24,7 @@ InteractionProbe::ui_edit_props(
 
   if ( ImGui::CollapsingHeader("Listener entity", ImGuiTreeNodeFlags_DefaultOpen) )
   {
-    const auto entityList = registry.ctx().at <EntityManager> ().entities();
+    const auto entityList = registry.ctx().get <EntityManager> ().entities();
 
     static StringFilter entityFilter {"Entity ID"};
 

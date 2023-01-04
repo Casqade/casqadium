@@ -122,7 +122,7 @@ forceXRelative(
   const auto entity = std::any_cast <entt::entity> (args.at(0));
   const auto axis = std::any_cast <ControlAxis*> (args.at(2));
 
-  const auto& tick = registry.ctx().at <TickCurrent> ();
+  const auto& tick = registry.ctx().get <TickCurrent> ();
   const auto ticks = tick.ticksElapsed;
   const auto elapsed = tick.tickInterval;
 
@@ -147,7 +147,7 @@ forceYRelative(
   const auto entity = std::any_cast <entt::entity> (args.at(0));
   const auto axis = std::any_cast <ControlAxis*> (args.at(2));
 
-  const auto& tick = registry.ctx().at <TickCurrent> ();
+  const auto& tick = registry.ctx().get <TickCurrent> ();
   const auto ticks = tick.ticksElapsed;
   const auto elapsed = tick.tickInterval;
 
@@ -172,7 +172,7 @@ forceZRelative(
   const auto entity = std::any_cast <entt::entity> (args.at(0));
   const auto axis = std::any_cast <ControlAxis*> (args.at(2));
 
-  const auto& tick = registry.ctx().at <TickCurrent> ();
+  const auto& tick = registry.ctx().get <TickCurrent> ();
   const auto ticks = tick.ticksElapsed;
   const auto elapsed = tick.tickInterval;
 
@@ -198,7 +198,7 @@ torqueXRelative(
   const auto entity = std::any_cast <entt::entity> (args.at(0));
   const auto axis = std::any_cast <ControlAxis*> (args.at(2));
 
-  const auto& tick = registry.ctx().at <TickCurrent> ();
+  const auto& tick = registry.ctx().get <TickCurrent> ();
   const auto ticks = tick.ticksElapsed;
   const auto elapsed = tick.tickInterval;
 
@@ -223,7 +223,7 @@ torqueYRelative(
   const auto entity = std::any_cast <entt::entity> (args.at(0));
   const auto axis = std::any_cast <ControlAxis*> (args.at(2));
 
-  const auto& tick = registry.ctx().at <TickCurrent> ();
+  const auto& tick = registry.ctx().get <TickCurrent> ();
   const auto ticks = tick.ticksElapsed;
   const auto elapsed = tick.tickInterval;
 
@@ -248,7 +248,7 @@ torqueZRelative(
   const auto entity = std::any_cast <entt::entity> (args.at(0));
   const auto axis = std::any_cast <ControlAxis*> (args.at(2));
 
-  const auto& tick = registry.ctx().at <TickCurrent> ();
+  const auto& tick = registry.ctx().get <TickCurrent> ();
   const auto ticks = tick.ticksElapsed;
   const auto elapsed = tick.tickInterval;
 

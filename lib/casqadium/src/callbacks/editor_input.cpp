@@ -25,7 +25,7 @@ editorModeEnable(
   entt::registry& registry,
   const std::vector <std::any>& args )
 {
-  registry.ctx().at <SoLoud::Soloud> ().stopAll();
+  registry.ctx().get <SoLoud::Soloud> ().stopAll();
 
   using ui::AssetManagerUi;
   if ( registry.ctx().contains <AssetManagerUi> () == false )
@@ -39,7 +39,7 @@ editorModeEnable(
   using types::EntityManager;
   if ( registry.ctx().contains <EntityManagerUi> () == false )
   {
-    auto& entityManager = registry.ctx().at <EntityManager> ();
+    auto& entityManager = registry.ctx().get <EntityManager> ();
     registry.ctx().emplace <EntityManagerUi> (&entityManager);
   }
 
@@ -47,7 +47,7 @@ editorModeEnable(
   using types::InputManager;
   if ( registry.ctx().contains <InputManagerUi> () == false )
   {
-    auto& inputManager = registry.ctx().at <InputManager> ();
+    auto& inputManager = registry.ctx().get <InputManager> ();
     registry.ctx().emplace <InputManagerUi> (&inputManager);
   }
 
@@ -55,7 +55,7 @@ editorModeEnable(
   using types::PackageManager;
   if ( registry.ctx().contains <PackageManagerUi> () == false )
   {
-    auto& packageManager = registry.ctx().at <PackageManager> ();
+    auto& packageManager = registry.ctx().get <PackageManager> ();
     registry.ctx().emplace <PackageManagerUi> (&packageManager);
   }
 
@@ -63,14 +63,14 @@ editorModeEnable(
   using types::PrefabManager;
   if ( registry.ctx().contains <PrefabManagerUi> () == false )
   {
-    auto& prefabManager = registry.ctx().at <PrefabManager> ();
+    auto& prefabManager = registry.ctx().get <PrefabManager> ();
     registry.ctx().emplace <PrefabManagerUi> (&prefabManager);
   }
 
   using ui::SystemManagerUi;
   using types::SystemManager;
 
-  auto& systemManager = registry.ctx().at <SystemManager> ();
+  auto& systemManager = registry.ctx().get <SystemManager> ();
 
   if ( registry.ctx().contains <SystemManagerUi> () == false )
     registry.ctx().emplace <SystemManagerUi> (&systemManager);
@@ -78,7 +78,7 @@ editorModeEnable(
   editorCameraCreate(registry, args);
   editorControllerCreate(registry, args);
 
-  registry.ctx().at <SystemManagerUi> ().init(registry);
+  registry.ctx().get <SystemManagerUi> ().init(registry);
 
   systemManager.deactivate();
 
@@ -99,10 +99,10 @@ editorModeDisable(
 
   using Phase = types::System::Phase;
 
-  registry.ctx().at <SoLoud::Soloud> ().stopAll();
+  registry.ctx().get <SoLoud::Soloud> ().stopAll();
 
-  auto& entityManager = registry.ctx().at <EntityManager> ();
-  auto& systemManager = registry.ctx().at <SystemManager> ();
+  auto& entityManager = registry.ctx().get <EntityManager> ();
+  auto& systemManager = registry.ctx().get <SystemManager> ();
 
   for ( const auto&& [entity] : registry.view <CasqadiumEditorInternal> ().each() )
     entityManager.removeLater(entity);
@@ -131,7 +131,7 @@ editorEntityMultipleSelectionEnable(
   {
   using ui::EntityManagerUi;
 
-  registry.ctx().at <EntityManagerUi> ().setEntitiesMultipleSelection(true);
+  registry.ctx().get <EntityManagerUi> ().setEntitiesMultipleSelection(true);
 };
 
 void
@@ -141,7 +141,7 @@ editorEntityMultipleSelectionDisable(
 {
   using ui::EntityManagerUi;
 
-  registry.ctx().at <EntityManagerUi> ().setEntitiesMultipleSelection(false);
+  registry.ctx().get <EntityManagerUi> ().setEntitiesMultipleSelection(false);
 };
 
 void
@@ -151,7 +151,7 @@ editorEntityMultipleSelectionToggle(
 {
   using ui::EntityManagerUi;
 
-  auto& entityManagerUi = registry.ctx().at <EntityManagerUi> ();
+  auto& entityManagerUi = registry.ctx().get <EntityManagerUi> ();
 
   const bool multipleSelectionEnabled = entityManagerUi.entitiesMultipleSelection();
 

@@ -153,31 +153,31 @@ Package::load(
 
   LOG_DEBUG("Loading package '{}' ('{}')", mId.str(), manifestPath.string());
 
-  auto& audio = registry.ctx().at <AudioAssetManager> ();
+  auto& audio = registry.ctx().get <AudioAssetManager> ();
   audio.parseAssetDbFile(contentPath(ContentType::Audio));
 
-  auto& fonts = registry.ctx().at <FontAssetManager> ();
+  auto& fonts = registry.ctx().get <FontAssetManager> ();
   fonts.parseAssetDbFile(contentPath(ContentType::Fonts));
 
-  auto& geometry = registry.ctx().at <GeometryAssetManager> ();
+  auto& geometry = registry.ctx().get <GeometryAssetManager> ();
   geometry.parseAssetDbFile(contentPath(ContentType::Geometry));
 
-  auto& terrain = registry.ctx().at <TerrainAssetManager> ();
+  auto& terrain = registry.ctx().get <TerrainAssetManager> ();
   terrain.parseAssetDbFile(contentPath(ContentType::Terrain));
 
-  auto& textures = registry.ctx().at <TextureAssetManager> ();
+  auto& textures = registry.ctx().get <TextureAssetManager> ();
   textures.parseAssetDbFile(contentPath(ContentType::Textures));
 
-  auto& text = registry.ctx().at <TextStringAssetManager> ();
+  auto& text = registry.ctx().get <TextStringAssetManager> ();
   text.parseAssetDbFile(contentPath(ContentType::Text));
 
-  auto& input = registry.ctx().at <InputManager> ();
+  auto& input = registry.ctx().get <InputManager> ();
   input.load(contentPath(ContentType::Input));
 
-  auto& prefabs = registry.ctx().at <PrefabManager> ();
+  auto& prefabs = registry.ctx().get <PrefabManager> ();
   prefabs.load(contentPath(ContentType::Prefabs));
 
-  auto& entityManager = registry.ctx().at <EntityManager> ();
+  auto& entityManager = registry.ctx().get <EntityManager> ();
   entityManager.load( contentPath(ContentType::Entities),
                       mId, registry );
 }

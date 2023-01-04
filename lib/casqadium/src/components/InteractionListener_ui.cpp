@@ -106,7 +106,7 @@ InteractionListener::ui_edit_props(
 
     auto& actionCallbacks = actions.at(selectedActionId);
 
-    const auto callbacks = registry.ctx().at <CallbackManager> ().callbacks();
+    const auto callbacks = registry.ctx().get <CallbackManager> ().callbacks();
 
     static ui::StringFilter callbackFilter {"Callback ID"};
 

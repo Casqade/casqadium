@@ -130,12 +130,12 @@ CollisionBody::deserialize(
 
   auto& comp = registry.emplace_or_replace <CollisionBody> (entity);
 
-  comp.world = registry.ctx().at <PhysicsManager> ().world();
+  comp.world = registry.ctx().get <PhysicsManager> ().world();
 
   comp.body = comp.world->createCollisionBody({});
   comp.body->setUserData(&comp);
 
-  const auto& colliderFactory = registry.ctx().at <ColliderFactory> ();
+  const auto& colliderFactory = registry.ctx().get <ColliderFactory> ();
   const auto& jsonColliders = json["colliders"];
 
   for ( const auto& jsonCollider : jsonColliders )
