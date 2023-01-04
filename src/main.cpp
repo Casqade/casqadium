@@ -29,47 +29,63 @@ main( int argc, char* argv[] )
 
   const ConfigManager configManager (executableName.string(), editorMode);
 
-  std::vector <std::shared_ptr <spdlog::sinks::sink>> sinks {};
-
-  if ( configManager.logLevelCmd() < log_level::off )
   {
-    auto stdoutSink = std::make_shared <stdout_color_sink_mt> ();
-    stdoutSink->set_level(configManager.logLevelCmd());
+    std::vector <std::shared_ptr <spdlog::sinks::sink>> sinks {};
 
-    sinks.push_back(stdoutSink);
+    if ( configManager.logLevelCmd() < log_level::off )
+    {
+      auto stdoutSink = std::make_shared <stdout_color_sink_mt> ();
+      stdoutSink->set_level(configManager.logLevelCmd());
+
+      sinks.push_back(stdoutSink);
+    }
+
+    if ( configManager.logLevelFile() < log_level::off )
+    {
+      try
+      {
+        auto fileSink = std::make_shared <basic_file_sink_mt> (logFilename, true);
+        fileSink->set_level(configManager.logLevelFile());
+        sinks.push_back(fileSink);
+      }
+      catch ( const std::exception& e )
+      {
+        using fmt::format;
+        std::cerr <<
+          format( "Error: Can't create file sink for logger ({}). "
+                  "Log output to file will be turned off\n",
+                  e.what());
+      }
+    }
+
+    const auto logger = cqde::loggerInit(
+      configManager.logPattern(),
+      configManager.logFlushLevel(),
+      sinks );
+
+    if ( spdlog::get(logger->name()) == nullptr )
+      spdlog::register_logger(logger);
+
+    spdlog::set_default_logger(logger);
   }
 
-  if ( configManager.logLevelFile() < log_level::off )
+  olc::rcode result {};
+
   {
-    try
-    {
-      auto fileSink = std::make_shared <basic_file_sink_mt> (logFilename, true);
-      fileSink->set_level(configManager.logLevelFile());
-      sinks.push_back(fileSink);
-    }
-    catch ( const std::exception& e )
-    {
-      using fmt::format;
-      std::cerr <<
-        format( "Error: Can't create file sink for logger ({}). "
-                "Log output to file will be turned off\n",
-                e.what());
-    }
+    Casqadium engine (configManager);
+
+    result = engine.Construct(
+      configManager.windowWidth(),
+      configManager.windowHeight(),
+      1, 1,
+      configManager.fullscreenEnabled(),
+      false, true );
+
+    if ( result == olc::rcode::OK )
+      result = engine.Start();
   }
 
-  cqde::loggerInit( configManager.logPattern(),
-                    configManager.logFlushLevel(),
-                    sinks );
+  spdlog::shutdown();
 
-  Casqadium engine (configManager);
-
-  const olc::rcode result = engine.Construct(
-    configManager.windowWidth(),
-    configManager.windowHeight(),
-    1, 1,
-    configManager.fullscreenEnabled(),
-    false, true );
-
-  return  result != olc::rcode::OK ||
-          engine.Start() != olc::rcode::OK;
+  return result != olc::rcode::OK;
 }
