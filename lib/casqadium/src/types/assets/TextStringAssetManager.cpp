@@ -2,6 +2,7 @@
 
 #include <cqde/common.hpp>
 #include <cqde/json_helpers.hpp>
+#include <cqde/string_helpers.hpp>
 
 #include <cqde/util/logger.hpp>
 

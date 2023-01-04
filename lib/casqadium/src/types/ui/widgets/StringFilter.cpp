@@ -1,6 +1,6 @@
 #include <cqde/types/ui/widgets/StringFilter.hpp>
 
-#include <cqde/common.hpp>
+#include <cqde/string_helpers.hpp>
 
 #include <imgui.h>
 #include <imgui_stdlib.h>
