@@ -8,7 +8,7 @@
 namespace cqde
 {
 
-void
+std::shared_ptr<spdlog::logger>
 loggerInit(
   const std::string& pattern,
   const spdlog::level::level_enum flushLevel,
@@ -30,6 +30,8 @@ loggerInit(
   spdlog::set_default_logger(logger);
 
   LOG_INFO("casqadium logger initialized");
+
+  return logger;
 }
 
 } // namespace cqde

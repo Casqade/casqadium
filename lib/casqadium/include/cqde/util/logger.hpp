@@ -10,9 +10,10 @@
 namespace cqde
 {
 
-void loggerInit( const std::string& pattern,
-                 const spdlog::level::level_enum flushLevel,
-                 const std::vector <std::shared_ptr <spdlog::sinks::sink>>& );
+std::shared_ptr <spdlog::logger> loggerInit(
+  const std::string& pattern,
+  const spdlog::level::level_enum flushLevel,
+  const std::vector <std::shared_ptr <spdlog::sinks::sink>>& );
 
 } // namespace cqde
 
