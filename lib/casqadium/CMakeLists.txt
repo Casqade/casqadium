@@ -45,6 +45,9 @@ target_sources(${TARGET} PRIVATE
   src/math_helpers.cpp
   include/${CASQADIUM_SHORT}/math_helpers.hpp
 
+  src/string_helpers.cpp
+  include/${CASQADIUM_SHORT}/string_helpers.hpp
+
   src/render_helpers.cpp
   include/${CASQADIUM_SHORT}/render_helpers.hpp
 

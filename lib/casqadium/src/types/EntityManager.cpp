@@ -4,6 +4,7 @@
 #include <cqde/ecs_helpers.hpp>
 #include <cqde/file_helpers.hpp>
 #include <cqde/json_helpers.hpp>
+#include <cqde/string_helpers.hpp>
 
 #include <cqde/util/logger.hpp>
 
