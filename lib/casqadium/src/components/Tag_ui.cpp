@@ -48,7 +48,7 @@ Tag::ui_edit_props(
     ImGui::EndPopup(); // tag_exists_popup
   }
 
-  auto& entityManager = registry.ctx().at <EntityManager> ();
+  auto& entityManager = registry.ctx().get <EntityManager> ();
 
   if ( ImGui::Button("%##entityIdGen") )
   {

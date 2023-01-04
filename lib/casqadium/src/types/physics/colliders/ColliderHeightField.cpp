@@ -57,7 +57,7 @@ ColliderHeightField::shapeInit(
 
   CQDE_ASSERT_DEBUG(mShape == nullptr, return);
 
-  const auto terrain = registry.ctx().at <TerrainAssetManager> ().try_get({});
+  const auto terrain = registry.ctx().get <TerrainAssetManager> ().try_get({});
 
   mShape = mCommon->createHeightFieldShape(2, 2, 0.0, 0.0,
                                            terrain->data.data(),
@@ -115,7 +115,7 @@ ColliderHeightField::shapeDeserialize(
 
   mTerrainId = json["terrainId"].asString();
 
-  const auto& terrainManager = registry.ctx().at <TerrainAssetManager> ();
+  const auto& terrainManager = registry.ctx().get <TerrainAssetManager> ();
 
   const auto terrain = terrainManager.try_get(mTerrainId);
 

@@ -24,7 +24,7 @@ TerrainAssetList::ui_edit_props(
   if ( ImGui::CollapsingHeader("Terrain", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
 
-  const auto terrainList = registry.ctx().at <TerrainAssetManager> ().assetIdList();
+  const auto terrainList = registry.ctx().get <TerrainAssetManager> ().assetIdList();
 
   static ui::StringFilter terrainFilter {"Terrain ID"};
 

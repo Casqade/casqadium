@@ -50,7 +50,7 @@ CollisionBody::ui_edit_props(
 
     shapeFilter.search({}, ImGuiInputTextFlags_AutoSelectAll);
 
-    const auto& colliderFactory = registry.ctx().at <ColliderFactory> ();
+    const auto& colliderFactory = registry.ctx().get <ColliderFactory> ();
 
     for ( const auto& shapeId : colliderFactory.colliders() )
     {

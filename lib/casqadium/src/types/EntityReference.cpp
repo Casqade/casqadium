@@ -24,7 +24,7 @@ EntityReference::get(
 {
   if ( entity_valid(entity, registry) == false )
   {
-    const auto& entityManager = registry.ctx().at <EntityManager> ();
+    const auto& entityManager = registry.ctx().get <EntityManager> ();
     entity = entityManager.get_if_valid(id, registry);
   }
 

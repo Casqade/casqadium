@@ -17,7 +17,7 @@ audioStopAll(
   entt::registry& registry,
   const std::vector <std::any>& )
 {
-  registry.ctx().at <SoLoud::Soloud> ().stopAll();
+  registry.ctx().get <SoLoud::Soloud> ().stopAll();
 }
 
 } // namespace cqde::callbacks

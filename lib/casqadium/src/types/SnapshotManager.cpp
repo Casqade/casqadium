@@ -92,7 +92,7 @@ SnapshotManager::refreshSnapshotList(
 {
   mSnapshots.clear();
 
-  const auto& userManager = registry.ctx().at <UserManager> ();
+  const auto& userManager = registry.ctx().get <UserManager> ();
 
   const auto rootPath = userManager.snapshotsRoot();
 
@@ -123,8 +123,8 @@ SnapshotManager::Create(
 {
   using namespace compos;
 
-  const auto& entityManager = registry.ctx().at <EntityManager> ();
-  const auto& systemManager = registry.ctx().at <SystemManager> ();
+  const auto& entityManager = registry.ctx().get <EntityManager> ();
+  const auto& systemManager = registry.ctx().get <SystemManager> ();
 
   const std::unordered_set <ComponentType> excludedComponents
   {
@@ -150,7 +150,7 @@ SnapshotManager::Write(
   const entt::registry& registry,
   const std::string& filename )
 {
-  const auto& userManager = registry.ctx().at <UserManager> ();
+  const auto& userManager = registry.ctx().get <UserManager> ();
 
   const auto snapshotPath = userManager.snapshotsRoot() / filename;
 
@@ -218,13 +218,13 @@ SnapshotManager::Load(
               snapshotPath.string(), e.what()));
   }
 
-  registry.ctx().at <SoLoud::Soloud> ().stopAll();
+  registry.ctx().get <SoLoud::Soloud> ().stopAll();
 
-  auto& entityManager = registry.ctx().at <EntityManager> ();
+  auto& entityManager = registry.ctx().get <EntityManager> ();
 
   if ( registry.ctx().contains <EntityManagerUi> () == true )
   {
-    auto& entityManagerUi = registry.ctx().at <EntityManagerUi> ();
+    auto& entityManagerUi = registry.ctx().get <EntityManagerUi> ();
 
     entityManagerUi.entitiesDeselect();
     entityManagerUi.componentDeselect();
@@ -238,7 +238,7 @@ SnapshotManager::Load(
 
   try
   {
-    const auto& packageManager = registry.ctx().at <PackageManager> ();
+    const auto& packageManager = registry.ctx().get <PackageManager> ();
 
     for ( const auto& packageId : packageManager.packages() )
     {
@@ -287,7 +287,7 @@ SnapshotManager::Load(
               snapshotPath.string(), e.what()));
   }
 
-  auto& systemManager = registry.ctx().at <SystemManager> ();
+  auto& systemManager = registry.ctx().get <SystemManager> ();
 
   try
   {
@@ -301,7 +301,7 @@ SnapshotManager::Load(
   }
 
   if ( registry.ctx().contains <SystemManagerUi> () == true )
-    registry.ctx().at <SystemManagerUi> ().init(registry);
+    registry.ctx().get <SystemManagerUi> ().init(registry);
 
   if ( systemManager.systemsActive(Phase::Editor).empty() == true )
     return;

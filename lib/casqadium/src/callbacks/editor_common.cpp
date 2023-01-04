@@ -37,7 +37,7 @@ editorCameraCreate(
           : registry.view <Camera, CasqadiumEditorInternal> ().each() )
     return;
 
-  auto& entityManager = registry.ctx().at <EntityManager> ();
+  auto& entityManager = registry.ctx().get <EntityManager> ();
 
   auto cameraId = "cqde_editor_camera"_id;
 
@@ -113,7 +113,7 @@ editorControllerCreate(
           : registry.view <InputController, CasqadiumEditorInternal> (entt::exclude <Camera>).each() )
     return;
 
-  auto& entityManager = registry.ctx().at <EntityManager> ();
+  auto& entityManager = registry.ctx().get <EntityManager> ();
 
   auto controllerId = "cqde_editor_controller"_id;
 
@@ -176,7 +176,7 @@ editorBindingsAssign(
   using types::InputManager;
   using types::InputBindingRelative;
 
-  auto& inputManager = registry.ctx().at <InputManager> ();
+  auto& inputManager = registry.ctx().get <InputManager> ();
 
   if ( inputManager.axisAssigned("EngineShutdown") == false )
   {
@@ -356,8 +356,8 @@ editorEntitySelect(
     cursorPosY,
   };
 
-  auto& viewportManagerUi = registry.ctx().at <const ViewportManagerUi> ();
-  auto& entityManagerUi = registry.ctx().at <EntityManagerUi> ();
+  auto& viewportManagerUi = registry.ctx().get <const ViewportManagerUi> ();
+  auto& entityManagerUi = registry.ctx().get <EntityManagerUi> ();
 
   const bool multipleSelectionEnabled = entityManagerUi.entitiesMultipleSelection();
 

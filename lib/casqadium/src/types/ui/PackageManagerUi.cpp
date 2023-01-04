@@ -290,15 +290,15 @@ PackageManagerUi::ui_show_menu_bar(
 
       mPackageMgr->mPackages.clear();
 
-      registry.ctx().at <EntityManager> ().clear();
-      registry.ctx().at <InputManager> ().clear();
+      registry.ctx().get <EntityManager> ().clear();
+      registry.ctx().get <InputManager> ().clear();
       registry.clear();
 
-      registry.ctx().at <AudioAssetManager> ().clear();
-      registry.ctx().at <FontAssetManager> ().clear();
-      registry.ctx().at <GeometryAssetManager> ().clear();
-      registry.ctx().at <TextStringAssetManager> ().clear();
-      registry.ctx().at <TextureAssetManager> ().clear();
+      registry.ctx().get <AudioAssetManager> ().clear();
+      registry.ctx().get <FontAssetManager> ().clear();
+      registry.ctx().get <GeometryAssetManager> ().clear();
+      registry.ctx().get <TextStringAssetManager> ().clear();
+      registry.ctx().get <TextureAssetManager> ().clear();
 
       try
       {

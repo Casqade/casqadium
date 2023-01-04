@@ -42,7 +42,7 @@ interact(
   if ( cSourceAction.actionId == null_id )
     return;
 
-  auto& callbackManager = registry.ctx().at <const CallbackManager> ();
+  auto& callbackManager = registry.ctx().get <const CallbackManager> ();
 
   const auto eListener = cSource.listener;
 
@@ -104,7 +104,7 @@ entityRemove(
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
 
-  auto& entityManager = registry.ctx().at <EntityManager> ();
+  auto& entityManager = registry.ctx().get <EntityManager> ();
   entityManager.removeLater(entity);
 }
 
@@ -129,7 +129,7 @@ entityUpdateOff(
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
 
-  auto& entityManager = registry.ctx().at <EntityManager> ();
+  auto& entityManager = registry.ctx().get <EntityManager> ();
 
   const auto componentType =
     entityManager.componentType <SubscriberUpdate> ();
@@ -162,7 +162,7 @@ entitiesUpdateOn(
   using compos::EntityList;
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
-  auto& entityManager = registry.ctx().at <const EntityManager> ();
+  auto& entityManager = registry.ctx().get <const EntityManager> ();
 
   auto& entityList = registry.get <const EntityList> (entity);
 
@@ -186,7 +186,7 @@ entitiesUpdateOff(
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
 
-  auto& entityManager = registry.ctx().at <EntityManager> ();
+  auto& entityManager = registry.ctx().get <EntityManager> ();
   auto& entityList = registry.get <const EntityList> (entity);
 
   const auto componentType = entityManager.componentType <SubscriberUpdate> ();
@@ -241,7 +241,7 @@ entityInputOff(
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
 
-  auto& entityManager = registry.ctx().at <EntityManager> ();
+  auto& entityManager = registry.ctx().get <EntityManager> ();
 
   const auto componentType =
     entityManager.componentType <SubscriberInput> ();
@@ -297,7 +297,7 @@ entitiesInputOff(
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
 
-  auto& entityManager = registry.ctx().at <EntityManager> ();
+  auto& entityManager = registry.ctx().get <EntityManager> ();
   auto& entityList = registry.get <const EntityList> (entity);
 
   const auto componentType = entityManager.componentType <SubscriberInput> ();
@@ -344,7 +344,7 @@ systemsActivate(
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
 
-  auto& systemManager = registry.ctx().at <SystemManager> ();
+  auto& systemManager = registry.ctx().get <SystemManager> ();
   auto& systemList = registry.get <const SystemList> (entity);
 
   for ( const auto& systemId : systemList.systems )
@@ -361,7 +361,7 @@ systemsDeactivate(
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
 
-  auto& systemManager = registry.ctx().at <SystemManager> ();
+  auto& systemManager = registry.ctx().get <SystemManager> ();
   auto& systemList = registry.get <const SystemList> (entity);
 
   for ( const auto& systemId : systemList.systems )
@@ -378,7 +378,7 @@ systemsToggle(
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
 
-  auto& systemManager = registry.ctx().at <SystemManager> ();
+  auto& systemManager = registry.ctx().get <SystemManager> ();
   auto& systemList = registry.get <const SystemList> (entity);
 
   for ( const auto& systemId : systemList.systems )
@@ -408,13 +408,13 @@ quickLoad(
   using types::SnapshotManager;
   using types::UserManager;
 
-  registry.ctx().at <CallbackManager> ().executeLater(
+  registry.ctx().get <CallbackManager> ().executeLater(
   [] (  entt::registry& registry,
         const CallbackManager::CallbackArgs& )
   {
     try
     {
-      const auto snapshotPath = registry.ctx().at <UserManager> ().snapshotsRoot();
+      const auto snapshotPath = registry.ctx().get <UserManager> ().snapshotsRoot();
       SnapshotManager::Load(registry, snapshotPath / "quick.json");
     }
     catch ( const std::exception& e )

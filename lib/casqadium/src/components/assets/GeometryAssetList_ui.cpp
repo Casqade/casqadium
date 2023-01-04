@@ -24,7 +24,7 @@ GeometryAssetList::ui_edit_props(
   if ( ImGui::CollapsingHeader("Geometry", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
 
-  const auto geometryList = registry.ctx().at <GeometryAssetManager> ().assetIdList();
+  const auto geometryList = registry.ctx().get <GeometryAssetManager> ().assetIdList();
 
   static ui::StringFilter geometryFilter {"Geometry ID"};
 

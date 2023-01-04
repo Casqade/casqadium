@@ -14,7 +14,7 @@ editorGizmoSetModeTranslate(
   const std::vector <std::any>& args )
 {
   using ui::ViewportManagerUi;
-  auto& viewportManagerUi = registry.ctx().at <ViewportManagerUi> ();
+  auto& viewportManagerUi = registry.ctx().get <ViewportManagerUi> ();
   viewportManagerUi.setGizmoOperation(ImGuizmo::OPERATION::TRANSLATE);
 }
 
@@ -24,7 +24,7 @@ editorGizmoSetModeRotate(
   const std::vector <std::any>& args )
 {
   using ui::ViewportManagerUi;
-  auto& viewportManagerUi = registry.ctx().at <ViewportManagerUi> ();
+  auto& viewportManagerUi = registry.ctx().get <ViewportManagerUi> ();
   viewportManagerUi.setGizmoOperation(ImGuizmo::OPERATION::ROTATE);
 }
 
@@ -34,7 +34,7 @@ editorGizmoSetModeScale(
   const std::vector <std::any>& args )
 {
   using ui::ViewportManagerUi;
-  auto& viewportManagerUi = registry.ctx().at <ViewportManagerUi> ();
+  auto& viewportManagerUi = registry.ctx().get <ViewportManagerUi> ();
   viewportManagerUi.setGizmoOperation(ImGuizmo::OPERATION::SCALE);
   viewportManagerUi.setGizmoSpace(ImGuizmo::MODE::LOCAL);
 }
@@ -45,7 +45,7 @@ editorGizmoSetSpaceLocal(
   const std::vector <std::any>& args )
 {
   using ui::ViewportManagerUi;
-  auto& viewportManagerUi = registry.ctx().at <ViewportManagerUi> ();
+  auto& viewportManagerUi = registry.ctx().get <ViewportManagerUi> ();
   viewportManagerUi.setGizmoSpace(ImGuizmo::MODE::LOCAL);
 }
 
@@ -55,7 +55,7 @@ editorGizmoSetSpaceWorld(
   const std::vector <std::any>& args )
 {
   using ui::ViewportManagerUi;
-  auto& viewportManagerUi = registry.ctx().at <ViewportManagerUi> ();
+  auto& viewportManagerUi = registry.ctx().get <ViewportManagerUi> ();
   viewportManagerUi.setGizmoSpace(ImGuizmo::MODE::WORLD);
 }
 

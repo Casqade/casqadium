@@ -27,7 +27,7 @@ ColliderHeightField::ui_show(
   {
     static StringFilter terrainFilter {"Terrain ID"};
 
-    const auto& terrainManager = registry.ctx().at <TerrainAssetManager> ();
+    const auto& terrainManager = registry.ctx().get <TerrainAssetManager> ();
 
     if ( ImGui::BeginCombo("##terrainId", mTerrainId.str().c_str()) )
     {

@@ -20,7 +20,7 @@ EntityMetaInfo::ui_edit_props(
   if ( ImGui::CollapsingHeader("Package ID", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
 
-  const auto& pkgMgr = registry.ctx().at <PackageManager> ();
+  const auto& pkgMgr = registry.ctx().get <PackageManager> ();
   const auto packages = pkgMgr.packages();
 
   if ( ImGui::BeginCombo("##packageId", packageId.str().c_str(),

@@ -24,7 +24,7 @@ EntityList::ui_edit_props(
   if ( ImGui::CollapsingHeader("Entities", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
 
-  const auto entityList = registry.ctx().at <EntityManager> ().entities();
+  const auto entityList = registry.ctx().get <EntityManager> ().entities();
 
   static ui::StringFilter entityFilter {"Entity ID"};
 

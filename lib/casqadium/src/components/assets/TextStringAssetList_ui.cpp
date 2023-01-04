@@ -24,7 +24,7 @@ TextStringAssetList::ui_edit_props(
   if ( ImGui::CollapsingHeader("Text strings", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
 
-  const auto textStringList = registry.ctx().at <TextStringAssetManager> ().assetIdList();
+  const auto textStringList = registry.ctx().get <TextStringAssetManager> ().assetIdList();
 
   static ui::StringFilter textStringFilter {"String ID"};
 

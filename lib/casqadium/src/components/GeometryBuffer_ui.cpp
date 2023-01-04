@@ -24,7 +24,7 @@ GeometryBuffer::ui_edit_props(
 
   static StringFilter geometryFilter {"Geometry ID"};
 
-  const auto assets = registry.ctx().at <GeometryAssetManager> ().assetIdList();
+  const auto assets = registry.ctx().get <GeometryAssetManager> ().assetIdList();
 
   if ( ImGui::BeginCombo("##geometryId", buffer.str().c_str()) )
   {

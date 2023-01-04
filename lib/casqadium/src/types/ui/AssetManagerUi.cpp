@@ -61,12 +61,12 @@ AssetManagerUi::stateApply(
   using PackageManager = types::PackageManager;
   using ContentType = types::Package::ContentType;
 
-  auto& audioMgr = registry.ctx().at <AudioAssetManager> ();
-  auto& fontMgr = registry.ctx().at <FontAssetManager> ();
-  auto& geometryMgr = registry.ctx().at <GeometryAssetManager> ();
-  auto& terrainMgr = registry.ctx().at <TerrainAssetManager> ();
-  auto& textMgr = registry.ctx().at <TextStringAssetManager> ();
-  auto& textureMgr = registry.ctx().at <TextureAssetManager> ();
+  auto& audioMgr = registry.ctx().get <AudioAssetManager> ();
+  auto& fontMgr = registry.ctx().get <FontAssetManager> ();
+  auto& geometryMgr = registry.ctx().get <GeometryAssetManager> ();
+  auto& terrainMgr = registry.ctx().get <TerrainAssetManager> ();
+  auto& textMgr = registry.ctx().get <TextStringAssetManager> ();
+  auto& textureMgr = registry.ctx().get <TextureAssetManager> ();
 
   mAssetsState.clear();
 
@@ -77,7 +77,7 @@ AssetManagerUi::stateApply(
   textMgr.clear();
   textureMgr.clear();
 
-  const auto& pkgMgr = registry.ctx().at <PackageManager> ();
+  const auto& pkgMgr = registry.ctx().get <PackageManager> ();
 
   for ( const auto& packageId : pkgMgr.packages() )
   {
@@ -112,7 +112,7 @@ AssetManagerUi::stateSave(
 
   LOG_TRACE("Writing package '{}' input config", packageId.str());
 
-  auto& pkgMgr = registry.ctx().at <PackageManager> ();
+  auto& pkgMgr = registry.ctx().get <PackageManager> ();
 
   auto package = pkgMgr.package(packageId);
 
@@ -195,7 +195,7 @@ AssetManagerUi::ui_show(
 
   ImGui::Separator();
 
-  const auto& pkgMgr = registry.ctx().at <PackageManager> ();
+  const auto& pkgMgr = registry.ctx().get <PackageManager> ();
 
   auto package = pkgMgr.package(mPackageFilter.package());
 
@@ -288,7 +288,7 @@ AssetManagerUi::ui_show_package_state(
 
   if ( assetDb.isNull() == true )
   {
-    const auto& pkgMgr = registry.ctx().at <PackageManager> ();
+    const auto& pkgMgr = registry.ctx().get <PackageManager> ();
 
     auto package = pkgMgr.package(mPackageFilter.package());
 
@@ -592,32 +592,32 @@ AssetManagerUi::ui_show_asset_window(
   {
     case ContentType::Audio:
     {
-      registry.ctx().at <AudioAssetManager> ().ui_show(assetEntry);
+      registry.ctx().get <AudioAssetManager> ().ui_show(assetEntry);
       break;
     }
     case ContentType::Fonts:
     {
-      registry.ctx().at <FontAssetManager> ().ui_show(assetEntry);
+      registry.ctx().get <FontAssetManager> ().ui_show(assetEntry);
       break;
     }
     case ContentType::Geometry:
     {
-      registry.ctx().at <GeometryAssetManager> ().ui_show(assetEntry);
+      registry.ctx().get <GeometryAssetManager> ().ui_show(assetEntry);
       break;
     }
     case ContentType::Terrain:
     {
-      registry.ctx().at <TerrainAssetManager> ().ui_show(assetEntry);
+      registry.ctx().get <TerrainAssetManager> ().ui_show(assetEntry);
       break;
     }
     case ContentType::Text:
     {
-      registry.ctx().at <TextStringAssetManager> ().ui_show(assetEntry);
+      registry.ctx().get <TextStringAssetManager> ().ui_show(assetEntry);
       break;
     }
     case ContentType::Textures:
     {
-      registry.ctx().at <TextureAssetManager> ().ui_show(assetEntry);
+      registry.ctx().get <TextureAssetManager> ().ui_show(assetEntry);
       break;
     }
     default:
@@ -639,7 +639,7 @@ AssetManagerUi::ui_show_live_audio(
   using fmt::format;
   using AudioAssetManager = types::AudioAssetManager;
 
-  auto& audioMgr = registry.ctx().at <AudioAssetManager> ();
+  auto& audioMgr = registry.ctx().get <AudioAssetManager> ();
   auto assets = audioMgr.assetIdList();
 
   for ( const auto& asset : assets )
@@ -692,7 +692,7 @@ AssetManagerUi::ui_show_live_font(
   using fmt::format;
   using FontAssetManager = types::FontAssetManager;
 
-  auto& fontMgr = registry.ctx().at <FontAssetManager> ();
+  auto& fontMgr = registry.ctx().get <FontAssetManager> ();
   auto assets = fontMgr.assetIdList();
 
   for ( const auto& asset : assets )
@@ -745,7 +745,7 @@ AssetManagerUi::ui_show_live_geometry(
   using fmt::format;
   using GeometryAssetManager = types::GeometryAssetManager;
 
-  auto& geometryMgr = registry.ctx().at <GeometryAssetManager> ();
+  auto& geometryMgr = registry.ctx().get <GeometryAssetManager> ();
   auto assets = geometryMgr.assetIdList();
 
   for ( const auto& asset : assets )
@@ -798,7 +798,7 @@ AssetManagerUi::ui_show_live_terrain(
   using fmt::format;
   using TerrainAssetManager = types::TerrainAssetManager;
 
-  auto& terrainMgr = registry.ctx().at <TerrainAssetManager> ();
+  auto& terrainMgr = registry.ctx().get <TerrainAssetManager> ();
   auto assets = terrainMgr.assetIdList();
 
   for ( const auto& asset : assets )
@@ -851,7 +851,7 @@ AssetManagerUi::ui_show_live_text(
   using fmt::format;
   using TextStringAssetManager = types::TextStringAssetManager;
 
-  auto& textMgr = registry.ctx().at <TextStringAssetManager> ();
+  auto& textMgr = registry.ctx().get <TextStringAssetManager> ();
   auto assets = textMgr.assetIdList();
 
   for ( const auto& asset : assets )
@@ -904,7 +904,7 @@ AssetManagerUi::ui_show_live_texture(
   using fmt::format;
   using TextureAssetManager = types::TextureAssetManager;
 
-  auto& textureMgr = registry.ctx().at <TextureAssetManager> ();
+  auto& textureMgr = registry.ctx().get <TextureAssetManager> ();
   auto assets = textureMgr.assetIdList();
 
   for ( const auto& asset : assets )

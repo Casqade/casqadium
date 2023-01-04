@@ -41,8 +41,8 @@ InputManagerUi::configApply(
   mInputConfigs.clear();
   mInputMgr->clear();
 
-  const auto& packageManager = registry.ctx().at <PackageManager> ();
-  const auto& userManager = registry.ctx().at <UserManager> ();
+  const auto& packageManager = registry.ctx().get <PackageManager> ();
+  const auto& userManager = registry.ctx().get <UserManager> ();
 
   for ( const auto& packageId : packageManager.packages() )
   {
@@ -76,7 +76,7 @@ InputManagerUi::configSave(
   {
     LOG_TRACE("Writing user input config");
 
-    const auto& userManager = registry.ctx().at <UserManager> ();
+    const auto& userManager = registry.ctx().get <UserManager> ();
 
     const auto userInputPath = userManager.inputConfigPath();
 
@@ -103,7 +103,7 @@ InputManagerUi::configSave(
 
   LOG_TRACE("Writing package '{}' input config", packageId.str());
 
-  const auto& pkgMgr = registry.ctx().at <PackageManager> ();
+  const auto& pkgMgr = registry.ctx().get <PackageManager> ();
 
   const auto package = pkgMgr.package(packageId);
 
@@ -162,7 +162,7 @@ InputManagerUi::ui_show(
   {
     if ( selectedPackage.str().empty() == false )
     {
-      auto& packageManager = registry.ctx().at <PackageManager> ();
+      auto& packageManager = registry.ctx().get <PackageManager> ();
 
       auto package = packageManager.package(selectedPackage);
 
@@ -179,7 +179,7 @@ InputManagerUi::ui_show(
     }
     else
     {
-      auto& userManager = registry.ctx().at <UserManager> ();
+      auto& userManager = registry.ctx().get <UserManager> ();
 
       const auto inputConfigPath = userManager.inputConfigPath();
 

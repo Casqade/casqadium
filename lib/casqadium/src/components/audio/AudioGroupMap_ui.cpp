@@ -108,7 +108,7 @@ AudioGroupMap::ui_edit_props(
 
   auto& audioGroupList = groups.at(selectedGroupId);
 
-  const auto audioList = registry.ctx().at <AudioAssetManager> ().assetIdList();
+  const auto audioList = registry.ctx().get <AudioAssetManager> ().assetIdList();
 
   static ui::StringFilter audioFilter {"Audio ID"};
 

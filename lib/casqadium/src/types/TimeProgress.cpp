@@ -39,7 +39,7 @@ bool
 TimeProgress::expired(
   entt::registry& registry )
 {
-  const auto& tickCurrent = registry.ctx().at <TickCurrent> ();
+  const auto& tickCurrent = registry.ctx().get <TickCurrent> ();
 
   elapsed += tickCurrent.tickInterval;
 

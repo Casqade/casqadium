@@ -30,7 +30,7 @@ SequenceController::ui_edit_props(
   if ( ImGui::CollapsingHeader("Sequence steps", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
 
-  auto& sequenceFactory = registry.ctx().at <SequenceFactory> ();
+  auto& sequenceFactory = registry.ctx().get <SequenceFactory> ();
 
   static ui::StringFilter sequenceFilter {"Sequence ID"};
 

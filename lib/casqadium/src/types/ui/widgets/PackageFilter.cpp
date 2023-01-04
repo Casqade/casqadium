@@ -18,7 +18,7 @@ PackageFilter::select(
 
   bool selected {};
 
-  auto packages = registry.ctx().at <PackageManager> ().packages();
+  auto packages = registry.ctx().get <PackageManager> ().packages();
   packages.insert(packages.begin(), "");
 
   ImGui::PushItemWidth(-1.0f);

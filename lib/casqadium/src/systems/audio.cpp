@@ -24,7 +24,7 @@ Audio3dSystem(
   using compos::AudioListener3d;
   using compos::SubscriberUpdate;
 
-  auto& soloud = registry.ctx().at <SoLoud::Soloud> ();
+  auto& soloud = registry.ctx().get <SoLoud::Soloud> ();
 
   for ( auto&& [eListener, cListener, cListenerTransform]
     : registry.view <AudioListener3d, const Transform, SubscriberUpdate> ().each() )
@@ -84,7 +84,7 @@ AudioDrivenTransformSystem(
   using compos::AudioDrivenTransform;
   using types::TransformType;
 
-  auto& soloud = registry.ctx().at <SoLoud::Soloud> ();
+  auto& soloud = registry.ctx().get <SoLoud::Soloud> ();
 
   for ( auto&& [eAudioTransform, cAudioTransform]
           : registry.view <AudioDrivenTransform> (entt::exclude <SubscriberUpdate>).each() )
