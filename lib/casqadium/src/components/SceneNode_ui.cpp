@@ -22,7 +22,7 @@ SceneNode::ui_edit_props(
 
   static StringFilter entityFilter {"Entity ID"};
 
-  auto& entityManager = registry.ctx().at <EntityManager> ();
+  auto& entityManager = registry.ctx().get <EntityManager> ();
 
   const auto id = registry.get <Tag> (entity).id;
 

@@ -429,7 +429,7 @@ AssetManager <SoLoud::AudioSource>::ui_show_preview(
 
   static auto audioPrev = audioId;
 
-  auto& soloud = registry.ctx().at <SoLoud::Soloud> ();
+  auto& soloud = registry.ctx().get <SoLoud::Soloud> ();
 
   static float audioVolume {1.0f};
   static float audioSpeed {1.0f};

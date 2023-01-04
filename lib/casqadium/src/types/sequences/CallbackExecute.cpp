@@ -44,7 +44,7 @@ CallbackExecute::execute(
   entt::registry& registry,
   const entt::entity entity )
 {
-  auto& callbackManager = registry.ctx().at <CallbackManager> ();
+  auto& callbackManager = registry.ctx().get <CallbackManager> ();
 
   for ( const auto& callback : mCallbacks )
     callbackManager.execute(callback, registry, {entity});

@@ -75,7 +75,7 @@ SequenceController::deserialize(
 
   auto& comp = registry.emplace_or_replace <SequenceController> (entity);
 
-  auto& sequenceFactory = registry.ctx().at <SequenceFactory> ();
+  auto& sequenceFactory = registry.ctx().get <SequenceFactory> ();
 
   for ( const auto& stepJson : json["steps"] )
   {

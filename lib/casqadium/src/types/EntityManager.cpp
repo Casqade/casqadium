@@ -518,7 +518,7 @@ EntityManager::entryPointExecute(
   using compos::EntityList;
   using compos::SystemList;
 
-  const auto& packageManager = registry.ctx().at <PackageManager> ();
+  const auto& packageManager = registry.ctx().get <PackageManager> ();
 
   const auto entryPoint = packageManager.entryPoint();
 
@@ -540,7 +540,7 @@ EntityManager::entryPointExecute(
           registry.emplace_or_replace <SubscriberUpdate> (entity);
       }
 
-    auto& systemManager = registry.ctx().at <SystemManager> ();
+    auto& systemManager = registry.ctx().get <SystemManager> ();
 
     if ( cSystems != nullptr )
       for ( const auto& systemId : cSystems->systems )
@@ -589,9 +589,11 @@ EntityManager::delayedRemove(
   for ( const auto& [entity, componentList] : mComponentsToRemove )
     if ( entity_valid(entity, registry) == true )
       for ( const auto component : componentList )
-        if ( const auto iter = registry.storage(component);
-             iter < registry.storage().end() )
-          iter->second.remove(entity);
+      {
+        const auto componentStorage = registry.storage(component);
+        if ( componentStorage != nullptr )
+          componentStorage->remove(entity);
+      }
 
   mEntitesToRemove.clear();
   mComponentsToRemove.clear();

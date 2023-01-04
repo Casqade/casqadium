@@ -92,6 +92,7 @@
 #include <cqde/types/assets/TextStringAssetManager.hpp>
 
 #include <entt/entity/registry.hpp>
+#include <entt/meta/context.hpp>
 
 #include <ctpl/ctpl_stl.h>
 
@@ -122,8 +123,6 @@ engineInit(
   using namespace compos;
   using namespace types;
   using namespace ui;
-
-  entt::meta_ctx::bind(registry.ctx().emplace <entt::meta_ctx> ());
 
   registry.ctx().emplace <SoLoud::Soloud> ();
 
@@ -426,6 +425,13 @@ engineInit(
   sequenceFactory.registerSequence <TextureTintInterpolated> ("TextureTintInterpolated");
   sequenceFactory.registerSequence <TransformInterpolated> ("TransformInterpolated");
   sequenceFactory.registerSequence <TransformManipulate> ("TransformManipulate");
+
+
+  using MetaCtxLocator = entt::locator <entt::meta_ctx>;
+  using MetaCtxHandle = MetaCtxLocator::node_type;
+
+  const auto handle = MetaCtxLocator::handle();
+  registry.ctx().emplace <MetaCtxHandle> (handle);
 }
 
 std::string

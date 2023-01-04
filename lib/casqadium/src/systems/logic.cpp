@@ -33,7 +33,7 @@ EditorSystem(
   if ( auto& imguiIO = ImGui::GetIO();
        imguiIO.IniFilename == nullptr )
   {
-    static auto imguiIniFileName = registry.ctx().at <ConfigManager> ().executableName() + ".imgui";
+    static auto imguiIniFileName = registry.ctx().get <ConfigManager> ().executableName() + ".imgui";
     imguiIO.IniFilename = imguiIniFileName.data();
     ImGui::LoadIniSettingsFromMemory(EditorImGuiSettings);
     ImGui::LoadIniSettingsFromDisk(imguiIO.IniFilename);
@@ -55,13 +55,13 @@ EditorSystem(
   callbacks::editorCameraCreate(registry);
   callbacks::editorControllerCreate(registry);
 
-  registry.ctx().at <PackageManagerUi> ().ui_show(registry);
-  registry.ctx().at <AssetManagerUi> ().ui_show(registry);
-  registry.ctx().at <PrefabManagerUi> ().ui_show(registry);
-  registry.ctx().at <EntityManagerUi> ().ui_show(registry);
-  registry.ctx().at <InputManagerUi> ().ui_show(registry);
-  registry.ctx().at <SystemManagerUi> ().ui_show(registry);
-  registry.ctx().at <ViewportManagerUi> ().ui_show(registry);
+  registry.ctx().get <PackageManagerUi> ().ui_show(registry);
+  registry.ctx().get <AssetManagerUi> ().ui_show(registry);
+  registry.ctx().get <PrefabManagerUi> ().ui_show(registry);
+  registry.ctx().get <EntityManagerUi> ().ui_show(registry);
+  registry.ctx().get <InputManagerUi> ().ui_show(registry);
+  registry.ctx().get <SystemManagerUi> ().ui_show(registry);
+  registry.ctx().get <ViewportManagerUi> ().ui_show(registry);
 }
 
 void

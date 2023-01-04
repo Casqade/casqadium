@@ -24,7 +24,7 @@ FontAssetList::ui_edit_props(
   if ( ImGui::CollapsingHeader("Fonts", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
 
-  const auto fontList = registry.ctx().at <FontAssetManager> ().assetIdList();
+  const auto fontList = registry.ctx().get <FontAssetManager> ().assetIdList();
 
   static ui::StringFilter fontFilter {"Font ID"};
 

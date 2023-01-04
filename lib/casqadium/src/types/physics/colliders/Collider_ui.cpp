@@ -66,7 +66,7 @@ Collider::ui_show(
 
       callbackFilter.search({}, ImGuiInputTextFlags_AutoSelectAll);
 
-      auto& callbackManager = registry.ctx().at <CallbackManager> ();
+      auto& callbackManager = registry.ctx().get <CallbackManager> ();
 
       for ( const auto& callbackId : callbackManager.callbacksSorted() )
       {

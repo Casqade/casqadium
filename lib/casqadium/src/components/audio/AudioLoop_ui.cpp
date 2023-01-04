@@ -24,7 +24,7 @@ AudioLoop::ui_edit_props(
   if ( ImGui::CollapsingHeader("Layers", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
 
-  const auto audioList = registry.ctx().at <AudioAssetManager> ().assetIdList();
+  const auto audioList = registry.ctx().get <AudioAssetManager> ().assetIdList();
 
   static ui::StringFilter audioFilter {"Audio ID"};
 

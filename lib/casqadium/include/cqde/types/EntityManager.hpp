@@ -148,16 +148,18 @@ EntityManager::registerEmptyComponent(
   using namespace entt::literals;
   using entt::type_hash;
 
+  const auto componentType = type_hash <Component> ();
+
   auto factory = entt::meta <Component> ();
-  factory.type();
-  factory.props(std::make_pair("empty"_hs, true),
-                std::make_pair("typename"_hs, name.substr()));
+  factory.type(componentType);
+  factory.prop("empty"_hs, true);
+  factory.prop("typename"_hs, name.substr());
   factory.template func <&component_exists <Component>> ("exists"_hs);
   factory.template func <&component_remove <Component>> ("remove"_hs);
   factory.template func <&Component::serialize> ("serialize"_hs);
   factory.template func <&Component::deserialize> ("deserialize"_hs);
 
-  mComponentTypes[name] = type_hash <Component> ();
+  mComponentTypes[name] = componentType;
 }
 
 template <typename Component>
@@ -170,8 +172,7 @@ EntityManager::registerComponent(
   registerEmptyComponent <Component> (name);
 
   auto factory = entt::meta <Component> ();
-  factory.props(std::make_pair("empty"_hs, false),
-                std::make_pair("typename"_hs, name.substr()));
+  factory.prop("empty"_hs, false);
   factory.template func <&component_get <Component>, entt::as_ref_t> ("get"_hs);
   factory.template func <&component_get_const <Component>, entt::as_cref_t> ("get_const"_hs);
   factory.template func <&Component::ui_edit_props> ("ui_edit_props"_hs);

@@ -32,7 +32,7 @@ loadAudioAssets(
 
   auto& assetLoadList = registry.get <const AudioAssetList> (entity);
 
-  auto& audioManager = registry.ctx().at <AudioAssetManager> ();
+  auto& audioManager = registry.ctx().get <AudioAssetManager> ();
 
   audioManager.load(assetLoadList.audio);
 }
@@ -49,7 +49,7 @@ loadFontAssets(
 
   auto& assetLoadList = registry.get <FontAssetList> (entity);
 
-  auto& fontManager = registry.ctx().at <FontAssetManager> ();
+  auto& fontManager = registry.ctx().get <FontAssetManager> ();
 
   fontManager.load(assetLoadList.fonts);
 }
@@ -66,7 +66,7 @@ loadGeometryAssets(
 
   auto& assetLoadList = registry.get <GeometryAssetList> (entity);
 
-  auto& geometryManager = registry.ctx().at <GeometryAssetManager> ();
+  auto& geometryManager = registry.ctx().get <GeometryAssetManager> ();
 
   geometryManager.load(assetLoadList.geometry);
 }
@@ -83,7 +83,7 @@ loadTerrainAssets(
 
   auto& assetLoadList = registry.get <TerrainAssetList> (entity);
 
-  auto& terrainManager = registry.ctx().at <TerrainAssetManager> ();
+  auto& terrainManager = registry.ctx().get <TerrainAssetManager> ();
 
   terrainManager.load(assetLoadList.terrain);
 }
@@ -100,7 +100,7 @@ loadTextStringAssets(
 
   auto& assetLoadList = registry.get <TextStringAssetList> (entity);
 
-  auto& textManager = registry.ctx().at <TextStringAssetManager> ();
+  auto& textManager = registry.ctx().get <TextStringAssetManager> ();
 
   textManager.load(assetLoadList.text);
 }
@@ -117,7 +117,7 @@ loadTextureAssets(
 
   auto& assetLoadList = registry.get <TextureAssetList> (entity);
 
-  auto& textureManager = registry.ctx().at <TextureAssetManager> ();
+  auto& textureManager = registry.ctx().get <TextureAssetManager> ();
 
   textureManager.load(assetLoadList.textures);
 }
@@ -134,7 +134,7 @@ unloadAudioAssets(
 
   auto& assetUnloadList = registry.get <AudioAssetList> (entity);
 
-  auto& audioManager = registry.ctx().at <AudioAssetManager> ();
+  auto& audioManager = registry.ctx().get <AudioAssetManager> ();
 
   audioManager.unload(assetUnloadList.audio);
 }
@@ -151,7 +151,7 @@ unloadFontAssets(
 
   auto& assetUnloadList = registry.get <FontAssetList> (entity);
 
-  auto& fontManager = registry.ctx().at <FontAssetManager> ();
+  auto& fontManager = registry.ctx().get <FontAssetManager> ();
 
   fontManager.unload(assetUnloadList.fonts);
 }
@@ -168,7 +168,7 @@ unloadGeometryAssets(
 
   auto& assetUnloadList = registry.get <GeometryAssetList> (entity);
 
-  auto& geometryManager = registry.ctx().at <GeometryAssetManager> ();
+  auto& geometryManager = registry.ctx().get <GeometryAssetManager> ();
 
   geometryManager.unload(assetUnloadList.geometry);
 }
@@ -185,7 +185,7 @@ unloadTerrainAssets(
 
   auto& assetUnloadList = registry.get <TerrainAssetList> (entity);
 
-  auto& terrainManager = registry.ctx().at <TerrainAssetManager> ();
+  auto& terrainManager = registry.ctx().get <TerrainAssetManager> ();
 
   terrainManager.unload(assetUnloadList.terrain);
 }
@@ -202,7 +202,7 @@ unloadTextStringAssets(
 
   auto& assetUnloadList = registry.get <TextStringAssetList> (entity);
 
-  auto& textManager = registry.ctx().at <TextStringAssetManager> ();
+  auto& textManager = registry.ctx().get <TextStringAssetManager> ();
 
   textManager.unload(assetUnloadList.text);
 }
@@ -219,7 +219,7 @@ unloadTextureAssets(
 
   auto& assetUnloadList = registry.get <TextureAssetList> (entity);
 
-  auto& textureManager = registry.ctx().at <TextureAssetManager> ();
+  auto& textureManager = registry.ctx().get <TextureAssetManager> ();
 
   textureManager.unload(assetUnloadList.textures);
 }

@@ -70,7 +70,7 @@ updateAudio3dParams(
   using compos::SubscriberUpdate;
   using types::EntityManager;
 
-  auto& soloud = registry.ctx().at <SoLoud::Soloud> ();
+  auto& soloud = registry.ctx().get <SoLoud::Soloud> ();
 
   const auto sourceTransform = GetWorldMatrix(registry, eSource, cSourceTransform );
   const auto sourceToListenerTransform = listenerParams.transform * sourceTransform;

@@ -289,7 +289,7 @@ InputManager::handleAxisInput(
       mInputHistory.pop_front();
   }
 
-  auto& callbackMgr = registry.ctx().at <CallbackManager> ();
+  auto& callbackMgr = registry.ctx().get <CallbackManager> ();
 
   const auto [axesBegin, axesEnd] = mBindings.equal_range(inputId);
 

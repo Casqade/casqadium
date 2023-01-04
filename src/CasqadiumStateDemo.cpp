@@ -46,13 +46,16 @@ CasqadiumStateDemo::CasqadiumStateDemo(
 {
   using namespace cqde::types;
 
+  using MetaCtxLocator = entt::locator <entt::meta_ctx>;
+  using MetaCtxHandle = MetaCtxLocator::node_type;
+
   cqde::engineInit(mRegistry);
 
-  entt::meta_ctx::bind(mRegistry.ctx().at <entt::meta_ctx> ());
+  MetaCtxLocator::reset(mRegistry.ctx().get <MetaCtxHandle> ());
 
   mRegistry.ctx().emplace <ConfigManager> (configManager);
 
-  auto& audioBackend = mRegistry.ctx().at <SoLoud::Soloud> ();
+  auto& audioBackend = mRegistry.ctx().get <SoLoud::Soloud> ();
 
   const auto audioInitResult = audioBackend.init(
     configManager.audioFlags(),
@@ -115,7 +118,7 @@ CasqadiumStateDemo::CasqadiumStateDemo(
   entityManager.registerEmptyComponent <demo::FootstepAudioBank> ("FootstepAudioBank");
 
 
-  auto& packageManager = mRegistry.ctx().at <PackageManager> ();
+  auto& packageManager = mRegistry.ctx().get <PackageManager> ();
 
   try
   {
@@ -129,10 +132,10 @@ CasqadiumStateDemo::CasqadiumStateDemo(
     return;
   }
 
-  auto& userManager = mRegistry.ctx().at <UserManager> ();
+  auto& userManager = mRegistry.ctx().get <UserManager> ();
   userManager.setUser(configManager.lastUser());
 
-  auto& inputManager = mRegistry.ctx().at <InputManager> ();
+  auto& inputManager = mRegistry.ctx().get <InputManager> ();
   inputManager.load(userManager.inputConfigPath());
 
 
@@ -165,7 +168,7 @@ CasqadiumStateDemo::~CasqadiumStateDemo()
 {
   mRegistry.clear();
 
-  mRegistry.ctx().at <cqde::types::AudioAssetManager> ().clear(false);
+  mRegistry.ctx().get <cqde::types::AudioAssetManager> ().clear(false);
 }
 
 void
@@ -182,7 +185,7 @@ CasqadiumStateDemo::keyEvent(
   using cqde::InputHwCode;
   using cqde::types::InputManager;
 
-  auto& inputManager = mRegistry.ctx().at <InputManager> ();
+  auto& inputManager = mRegistry.ctx().get <InputManager> ();
 
   const int8_t inputDirection = event.type - olc::Event::KeyHeld;
 
@@ -199,7 +202,7 @@ CasqadiumStateDemo::mouseMoveEvent(
   using cqde::InputHwCode;
   using cqde::types::InputManager;
 
-  auto& inputManager = mRegistry.ctx().at <InputManager> ();
+  auto& inputManager = mRegistry.ctx().get <InputManager> ();
 
   if ( event.dx != 0 )
   {
@@ -234,7 +237,7 @@ CasqadiumStateDemo::mouseButtonEvent(
   using cqde::InputHwCode;
   using cqde::types::InputManager;
 
-  auto& inputManager = mRegistry.ctx().at <InputManager> ();
+  auto& inputManager = mRegistry.ctx().get <InputManager> ();
 
   const InputHwCode inputHwCode = InputHwCode(MouseInputId::ENUM_BEGIN) +
                                   InputHwCode(event.mouseButton.button);
@@ -254,7 +257,7 @@ CasqadiumStateDemo::mouseWheelEvent(
   using cqde::InputHwCode;
   using cqde::types::InputManager;
 
-  auto& inputManager = mRegistry.ctx().at <InputManager> ();
+  auto& inputManager = mRegistry.ctx().get <InputManager> ();
 
   inputManager.handleAxisInput( InputHwCode(MouseInputId::Wheel),
                                 std::abs(event.delta),
@@ -273,17 +276,17 @@ CasqadiumStateDemo::update(
   using cqde::types::TickCurrent;
   using cqde::types::System;
 
-  auto& callbackManager = mRegistry.ctx().at <CallbackManager> ();
-  auto& entityManager = mRegistry.ctx().at <EntityManager> ();
+  auto& callbackManager = mRegistry.ctx().get <CallbackManager> ();
+  auto& entityManager = mRegistry.ctx().get <EntityManager> ();
 
-  auto& tick = mRegistry.ctx().at <TickCurrent> ();
+  auto& tick = mRegistry.ctx().get <TickCurrent> ();
 
   tick.ticksElapsed = ticks;
   tick.tickInterval = interval;
 
   for ( uint32_t i = 0; i < ticks; ++i )
   {
-    mRegistry.ctx().at <SystemManager> ().execute(mRegistry,
+    mRegistry.ctx().get <SystemManager> ().execute(mRegistry,
                                                   System::Phase::Logic);
 
     callbackManager.delayedExecution(mRegistry);
@@ -304,12 +307,12 @@ CasqadiumStateDemo::render(
   using cqde::types::FrameCurrent;
   using cqde::types::System;
 
-  auto& frame = mRegistry.ctx().at <FrameCurrent> ();
+  auto& frame = mRegistry.ctx().get <FrameCurrent> ();
 
   frame.framesElapsed = frames;
   frame.frameInterval = interval;
 
-  mRegistry.ctx().at <SystemManager> ().execute(mRegistry,
+  mRegistry.ctx().get <SystemManager> ().execute(mRegistry,
                                                 System::Phase::Render);
 
   frame.lastFrameTimepoint = TimeUtils::Now();

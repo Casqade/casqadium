@@ -307,7 +307,7 @@ RigidBody::deserialize(
 
   auto& comp = registry.emplace_or_replace <RigidBody> (entity);
 
-  comp.world = registry.ctx().at <PhysicsManager> ().world();
+  comp.world = registry.ctx().get <PhysicsManager> ().world();
 
   comp.body = comp.world->createRigidBody({});
   comp.body->setUserData(&comp);
@@ -329,7 +329,7 @@ RigidBody::deserialize(
   comp.body->setAngularLockAxisFactor(glmToRp3d(axisLockFactor));
 
 
-  const auto& colliderFactory = registry.ctx().at <ColliderFactory> ();
+  const auto& colliderFactory = registry.ctx().get <ColliderFactory> ();
   const auto& jsonColliders = json["colliders"];
 
   for ( const auto& jsonCollider : jsonColliders )
