@@ -1,6 +1,6 @@
 #include <cqde/render_helpers.hpp>
+#include <cqde/string_helpers.hpp>
 #include <cqde/math_helpers.hpp>
-#include <cqde/common.hpp>
 
 #include <olcPGE/olcPGEX_TTF.hpp>
 
