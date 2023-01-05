@@ -650,7 +650,7 @@ public:
   int32_t width = 0;
   int32_t height = 0;
   enum Mode { NORMAL, PERIODIC };
-  enum Flip { NONE = 0, HORIZ = 1, VERT = 2 };
+  enum Flip : uint8_t { NONE = 0, HORIZ = 1, VERT = 2 };
 
 public:
   void SetSampleMode(olc::Sprite::Mode mode = olc::Sprite::Mode::NORMAL);
@@ -658,6 +658,7 @@ public:
   bool  SetPixel(int32_t x, int32_t y, Pixel p);
   Pixel GetPixel(const olc::vi2d& a) const;
   bool  SetPixel(const olc::vi2d& a, Pixel p);
+  void  SetFlipped(const Flip flip);
   Pixel Sample(float x, float y) const;
   Pixel SampleBL(float u, float v) const;
   Pixel* GetData();
