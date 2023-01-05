@@ -34,6 +34,18 @@ public:
                  const Callback&,
                  const Phase );
 
+  void RegisterBefore(
+    const SystemId& before,
+    const SystemId&,
+    const Callback&,
+    const Phase );
+
+  void RegisterAfter(
+    const SystemId& after,
+    const SystemId&,
+    const Callback&,
+    const Phase );
+
   void activate( const SystemId& );
   void deactivate( const SystemId& );
   void deactivate();

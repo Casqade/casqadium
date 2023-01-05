@@ -1,5 +1,6 @@
 #include <cqde/types/SystemManager.hpp>
 
+#include <cqde/common.hpp>
 #include <cqde/json_helpers.hpp>
 
 #include <cqde/util/logger.hpp>
@@ -112,6 +113,51 @@ SystemManager::Register(
   mSystems.insert(systemIter(systemId),
                   {callback, systemId,
                   phase, false} );
+}
+
+void
+SystemManager::RegisterBefore(
+  const SystemId& beforeId,
+  const SystemId& systemId,
+  const Callback& callback,
+  const Phase     phase )
+{
+  LOG_INFO("Registering system '{}' before '{}'",
+            systemId.str(), beforeId.str());
+
+  const auto pos = systemIter(beforeId);
+
+  if ( pos == mSystems.end() )
+    CQDE_ASSERT_DEBUG(false, {});
+
+  mSystems.insert(
+    pos,
+    {callback, systemId,
+    phase, false} );
+}
+
+void
+SystemManager::RegisterAfter(
+  const SystemId& afterId,
+  const SystemId& systemId,
+  const Callback& callback,
+  const Phase     phase )
+{
+  LOG_INFO("Registering system '{}' after '{}'",
+            systemId.str(), afterId.str());
+
+  auto pos = systemIter(afterId);
+
+  if ( pos != mSystems.end() )
+    pos += std::min(2, std::distance(pos, mSystems.end()));
+
+  else
+    CQDE_ASSERT_DEBUG(false, {});
+
+  mSystems.insert(
+    pos,
+    {callback, systemId,
+    phase, false} );
 }
 
 void
