@@ -216,6 +216,51 @@ bool Sprite::SetPixel(int32_t x, int32_t y, Pixel p)
     return false;
 }
 
+void Sprite::SetFlipped(const Flip flip)
+{
+  const bool flipH = flip & olc::Sprite::Flip::HORIZ;
+  const bool flipV = flip & olc::Sprite::Flip::VERT;
+
+  if ( flipH == false && flipV == false )
+    return;
+
+  if ( flipH == true && flipV == true ||
+       flipH == true && height < 2 ||
+       flipV == true && width < 2 )
+  {
+    std::reverse(pColData.begin(), pColData.end());
+    return;
+  }
+
+  const auto dataTmp {std::move(pColData)};
+  pColData.clear();
+
+  int32_t xDir = 1;
+  int32_t yDir = 1;
+  int32_t xInitial = 0;
+  int32_t yInitial = 0;
+
+  if ( flipH == true )
+  {
+    xDir = -1;
+    xInitial = width - 1;
+  }
+
+  if ( flipV == true )
+  {
+    yDir = -1;
+    yInitial = height - 1;
+  }
+
+  for ( int32_t yi = 0, y = yInitial;
+        yi < height; ++yi, y += yDir )
+  {
+    for ( int32_t xi = 0, x = xInitial;
+          xi < width; ++xi, x += xDir )
+      pColData.push_back(dataTmp[y * width + x]);
+  }
+}
+
 Pixel Sprite::Sample(float x, float y) const
 {
   int32_t sx = std::min((int32_t)((x * (float)width)), width - 1);

@@ -35,6 +35,14 @@ AssetManager <olc::Renderable>::AssetJsonDbEntryReference()
   reference["clamp"].setComment("// texture clamp mode must be a JSON boolean"s,
                                 Json::CommentPlacement::commentBefore);
 
+  reference["flipHorizontal"] = ValueType::booleanValue;
+  reference["flipHorizontal"].setComment("// texture 'flipHorizontal' must be a JSON boolean"s,
+                                          Json::CommentPlacement::commentBefore);
+
+  reference["flipVertical"] = ValueType::booleanValue;
+  reference["flipVertical"].setComment("// texture 'flipVertical' must be a JSON boolean"s,
+                                        Json::CommentPlacement::commentBefore);
+
   reference["path"] = ValueType::stringValue;
   reference["path"].setComment("// texture path must be a JSON string"s,
                                 Json::CommentPlacement::commentBefore);
@@ -96,6 +104,8 @@ AssetManager <olc::Renderable>::parseJsonEntryImpl(
 
   mAssetsProperties[id]["filter"] = entry["filter"];
   mAssetsProperties[id]["clamp"] = entry["clamp"];
+  mAssetsProperties[id]["flipHorizontal"] = entry["flipHorizontal"];
+  mAssetsProperties[id]["flipVertical"] = entry["flipVertical"];
 }
 
 template <>
@@ -104,6 +114,11 @@ AssetManager <olc::Renderable>::loadImpl(
   const AssetId& id,
   const AssetPath& path ) const
 {
+  using Flip = olc::Sprite::Flip;
+
+  const bool flipH = mAssetsProperties.at(id)["flipHorizontal"].asBool();
+  const bool flipV = mAssetsProperties.at(id)["flipVertical"].asBool();
+
   LOG_INFO("Loading texture '{}'", path.string());
 
   auto texture = std::make_shared <olc::Renderable> ();
@@ -113,8 +128,19 @@ AssetManager <olc::Renderable>::loadImpl(
   switch (result)
   {
     case olc::rcode::OK:
+    {
+      uint8_t flip {};
+
+      if ( flipH == true )
+        flip |= Flip::HORIZ;
+
+      if ( flipV == true )
+        flip |= Flip::VERT;
+
+      sprite->SetFlipped(static_cast <Flip> (flip));
       texture->SetSprite(sprite);
       return texture;
+    }
 
     case olc::rcode::NO_FILE:
       LOG_ERROR("Failed to load texture '{}': file not found",
@@ -266,6 +292,17 @@ AssetManager <olc::Renderable>::ui_show(
     bool filter = entry["filter"].asBool();
     if ( ImGui::Checkbox("##textureFilter", &filter) )
       entry["filter"] = filter;
+  }
+
+  if ( ImGui::CollapsingHeader("Flip", ImGuiTreeNodeFlags_DefaultOpen) )
+  {
+    bool flipH = entry["flipHorizontal"].asBool();
+    if ( ImGui::Checkbox("Flip horizontally##flipH", &flipH) )
+      entry["flipHorizontal"] = flipH;
+
+    bool flipV = entry["flipVertical"].asBool();
+    if ( ImGui::Checkbox("Flip vertically##flipV", &flipV) )
+      entry["flipVertical"] = flipV;
   }
 
   if ( ImGui::CollapsingHeader("Path", ImGuiTreeNodeFlags_DefaultOpen) )
