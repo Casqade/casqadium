@@ -27,11 +27,11 @@ AssetManager <olc::Font>::AssetJsonDbEntryReference()
                        Json::CommentPlacement::commentBefore);
 
   reference["size"] = 1u;
-  reference["size"].setComment("// font size must be a JSON unsigned integer"s,
+  reference["size"].setComment("// font 'size' must be a JSON unsigned integer"s,
                                 Json::CommentPlacement::commentBefore);
 
   reference["path"] = ValueType::stringValue;
-  reference["path"].setComment("// font path must be a JSON string"s,
+  reference["path"].setComment("// font 'path' must be a JSON string"s,
                                 Json::CommentPlacement::commentBefore);
 
   return reference;
