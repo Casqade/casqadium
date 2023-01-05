@@ -3,54 +3,72 @@
   {
     "clamp" : false,
     "filter" : false,
+    "flipHorizontal" : false,
+    "flipVertical" : false,
     "path" : "textures/cloud_1.png"
   },
   "cloud_2" :
   {
     "clamp" : false,
     "filter" : false,
+    "flipHorizontal" : false,
+    "flipVertical" : false,
     "path" : "textures/cloud_2.png"
   },
   "cloud_3" :
   {
     "clamp" : false,
     "filter" : false,
+    "flipHorizontal" : false,
+    "flipVertical" : false,
     "path" : "textures/cloud_3.png"
   },
   "cloud_4" :
   {
     "clamp" : false,
     "filter" : false,
+    "flipHorizontal" : false,
+    "flipVertical" : false,
     "path" : "textures/cloud_4.png"
   },
   "cloud_5" :
   {
     "clamp" : false,
     "filter" : false,
+    "flipHorizontal" : false,
+    "flipVertical" : false,
     "path" : "textures/cloud_5.png"
   },
   "cloud_6" :
   {
     "clamp" : false,
     "filter" : false,
+    "flipHorizontal" : false,
+    "flipVertical" : false,
     "path" : "textures/cloud_6.png"
   },
   "cloud_7" :
   {
     "clamp" : false,
     "filter" : false,
+    "flipHorizontal" : false,
+    "flipVertical" : false,
     "path" : "textures/cloud_7.png"
   },
   "man" :
   {
     "clamp" : false,
     "filter" : false,
+    "flipHorizontal" : false,
+    "flipVertical" : false,
     "path" : "textures/man_placeholder.png"
   },
   "sun" :
   {
     "clamp" : false,
     "filter" : false,
+    "flipHorizontal" : false,
+    "flipVertical" : false,
     "path" : "textures/sun.png"
   }
 }
