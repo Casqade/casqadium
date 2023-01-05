@@ -110,9 +110,15 @@ SystemManager::Register(
   LOG_INFO("Registering system '{}'",
             systemId.str());
 
-  mSystems.insert(systemIter(systemId),
-                  {callback, systemId,
-                  phase, false} );
+  auto pos = systemIter(systemId);
+
+  if ( pos != mSystems.end() )
+    ++pos;
+
+  mSystems.insert(
+    pos,
+    {callback, systemId,
+    phase, false} );
 }
 
 void
