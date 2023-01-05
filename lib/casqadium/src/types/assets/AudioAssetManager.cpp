@@ -150,11 +150,11 @@ AssetManager <SoLoud::AudioSource>::AssetJsonDbEntryReference()
                        Json::CommentPlacement::commentBefore);
 
   reference["type"] = AudioSourceTypeToString(AudioSourceType::Wav);
-  reference["type"].setComment("// audio type must be a JSON string"s,
+  reference["type"].setComment("// audio 'type' must be a JSON string"s,
                                 Json::CommentPlacement::commentBefore);
 
   reference["path"] = ValueType::stringValue;
-  reference["path"].setComment("// audio path must be a JSON string"s,
+  reference["path"].setComment("// audio 'path' must be a JSON string"s,
                                 Json::CommentPlacement::commentBefore);
 
   return reference;

@@ -28,11 +28,11 @@ AssetManager <olc::Renderable>::AssetJsonDbEntryReference()
                        Json::CommentPlacement::commentBefore);
 
   reference["filter"] = ValueType::booleanValue;
-  reference["filter"].setComment("// texture filter mode must be a JSON boolean"s,
+  reference["filter"].setComment("// texture 'filter' must be a JSON boolean"s,
                                   Json::CommentPlacement::commentBefore);
 
   reference["clamp"] = ValueType::booleanValue;
-  reference["clamp"].setComment("// texture clamp mode must be a JSON boolean"s,
+  reference["clamp"].setComment("// texture 'clamp' must be a JSON boolean"s,
                                 Json::CommentPlacement::commentBefore);
 
   reference["flipHorizontal"] = ValueType::booleanValue;
@@ -44,7 +44,7 @@ AssetManager <olc::Renderable>::AssetJsonDbEntryReference()
                                         Json::CommentPlacement::commentBefore);
 
   reference["path"] = ValueType::stringValue;
-  reference["path"].setComment("// texture path must be a JSON string"s,
+  reference["path"].setComment("// texture 'path' must be a JSON string"s,
                                 Json::CommentPlacement::commentBefore);
 
   return reference;

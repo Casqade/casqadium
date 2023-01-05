@@ -55,7 +55,7 @@ AssetManager <Terrain>::AssetJsonDbEntryReference()
 
 
   reference["path"] = ValueType::stringValue;
-  reference["path"].setComment("// terrain path must be a JSON string"s,
+  reference["path"].setComment("// terrain 'path' must be a JSON string"s,
                                 Json::CommentPlacement::commentBefore);
 
   return reference;
