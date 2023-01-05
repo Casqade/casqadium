@@ -124,7 +124,7 @@ CasqadiumStateDemo::CasqadiumStateDemo(
 
   pge->SetDrawTarget(layer);
 
-  auto& textures = mRegistry.ctx().at <TextureAssetManager> ();
+  auto& textures = mRegistry.ctx().get <TextureAssetManager> ();
   textures.insert("skybox_n", skyBoxTexture);
   textures.insert("monolith", monolithTexture);
   textures.insert("cqde_c", cqde::textureFromText("c", olc::RED, olc::BLANK, true));
