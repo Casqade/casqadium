@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.8 FATAL_ERROR)
 
-set(TARGET Casqadium)
+set(TARGET CasqadiumApp)
 project(${TARGET} VERSION 1.0 LANGUAGES CXX)
 
 # For developing only
