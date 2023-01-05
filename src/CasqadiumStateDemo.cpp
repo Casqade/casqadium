@@ -73,8 +73,8 @@ CasqadiumStateDemo::CasqadiumStateDemo(
   audioBackend.setMaxActiveVoiceCount(configManager.audioMaxActiveVoices());
 
   const auto engineShutdown =
-  [this] (  entt::registry& registry,
-            const std::vector <std::any>& args )
+  [this] (  entt::registry&,
+            const std::vector <std::any>& )
   {
     mRunning = false;
   };
@@ -141,9 +141,11 @@ CasqadiumStateDemo::CasqadiumStateDemo(
 
 CasqadiumStateDemo::~CasqadiumStateDemo()
 {
+  using cqde::types::AudioAssetManager;
+
   mRegistry.clear();
 
-  mRegistry.ctx().get <cqde::types::AudioAssetManager> ().clear(false);
+  mRegistry.ctx().get <AudioAssetManager> ().clear(false);
 }
 
 void
@@ -162,11 +164,13 @@ CasqadiumStateDemo::keyEvent(
 
   auto& inputManager = mRegistry.ctx().get <InputManager> ();
 
-  const int8_t inputDirection = event.type - olc::Event::KeyHeld;
+  const int8_t inputDirection =
+    event.type - olc::Event::KeyHeld;
 
-  inputManager.handleAxisInput( InputHwCode(event.key.code),
-                                1.0f, inputDirection,
-                                mRegistry );
+  inputManager.handleAxisInput(
+    InputHwCode(event.key.code),
+    1.0f, inputDirection,
+    mRegistry );
 }
 
 void
@@ -181,26 +185,32 @@ CasqadiumStateDemo::mouseMoveEvent(
 
   if ( event.dx != 0 )
   {
-    inputManager.handleAxisInput( InputHwCode(MouseInputId::MoveX),
-                                  std::abs(event.dx),
-                                  std::clamp(event.dx, -1, 1),
-                                  mRegistry );
-    inputManager.handleAxisInput( InputHwCode(MouseInputId::PosX),
-                                  mPGE->GetMouseX(),
-                                  std::clamp(event.dx, -1, 1),
-                                  mRegistry );
+    inputManager.handleAxisInput(
+      InputHwCode(MouseInputId::MoveX),
+      std::abs(event.dx),
+      std::clamp(event.dx, -1, 1),
+      mRegistry );
+
+    inputManager.handleAxisInput(
+      InputHwCode(MouseInputId::PosX),
+      mPGE->GetMouseX(),
+      std::clamp(event.dx, -1, 1),
+      mRegistry );
   }
 
   if ( event.dy != 0 )
   {
-    inputManager.handleAxisInput( InputHwCode(MouseInputId::MoveY),
-                                  std::abs(event.dy),
-                                  std::clamp(event.dy, -1, 1),
-                                  mRegistry);
-    inputManager.handleAxisInput( InputHwCode(MouseInputId::PosY),
-                                  mPGE->GetMouseY(),
-                                  std::clamp(event.dy, -1, 1),
-                                  mRegistry);
+    inputManager.handleAxisInput(
+      InputHwCode(MouseInputId::MoveY),
+      std::abs(event.dy),
+      std::clamp(event.dy, -1, 1),
+      mRegistry );
+
+    inputManager.handleAxisInput(
+      InputHwCode(MouseInputId::PosY),
+      mPGE->GetMouseY(),
+      std::clamp(event.dy, -1, 1),
+      mRegistry );
   }
 }
 
@@ -214,14 +224,17 @@ CasqadiumStateDemo::mouseButtonEvent(
 
   auto& inputManager = mRegistry.ctx().get <InputManager> ();
 
-  const InputHwCode inputHwCode = InputHwCode(MouseInputId::ENUM_BEGIN) +
-                                  InputHwCode(event.mouseButton.button);
+  const InputHwCode inputHwCode =
+    InputHwCode(MouseInputId::ENUM_BEGIN) +
+    InputHwCode(event.mouseButton.button);
 
-  const int8_t inputDirection = event.type - olc::Event::MouseButtonHeld;
+  const int8_t inputDirection =
+    event.type - olc::Event::MouseButtonHeld;
 
-  inputManager.handleAxisInput( inputHwCode,
-                                1.0f, inputDirection,
-                                mRegistry );
+  inputManager.handleAxisInput(
+    inputHwCode,
+    1.0f, inputDirection,
+    mRegistry );
 }
 
 void
@@ -234,10 +247,11 @@ CasqadiumStateDemo::mouseWheelEvent(
 
   auto& inputManager = mRegistry.ctx().get <InputManager> ();
 
-  inputManager.handleAxisInput( InputHwCode(MouseInputId::Wheel),
-                                std::abs(event.delta),
-                                std::clamp(event.delta, -1, 1),
-                                mRegistry );
+  inputManager.handleAxisInput(
+    InputHwCode(MouseInputId::Wheel),
+    std::abs(event.delta),
+    std::clamp(event.delta, -1, 1),
+    mRegistry );
 }
 
 bool
@@ -261,8 +275,8 @@ CasqadiumStateDemo::update(
 
   for ( uint32_t i = 0; i < ticks; ++i )
   {
-    mRegistry.ctx().get <SystemManager> ().execute(mRegistry,
-                                                  System::Phase::Logic);
+    mRegistry.ctx().get <SystemManager> ().execute(
+      mRegistry, System::Phase::Logic );
 
     callbackManager.delayedExecution(mRegistry);
     entityManager.delayedRemove(mRegistry);
@@ -287,8 +301,8 @@ CasqadiumStateDemo::render(
   frame.framesElapsed = frames;
   frame.frameInterval = interval;
 
-  mRegistry.ctx().get <SystemManager> ().execute(mRegistry,
-                                                System::Phase::Render);
+  mRegistry.ctx().get <SystemManager> ().execute(
+    mRegistry, System::Phase::Render );
 
   frame.lastFrameTimepoint = TimeUtils::Now();
 }

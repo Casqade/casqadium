@@ -30,9 +30,10 @@ class SystemManager
 public:
   SystemManager() = default;
 
-  void Register( const SystemId&,
-                 const Callback&,
-                 const Phase );
+  void Register(
+    const SystemId&,
+    const Callback&,
+    const Phase );
 
   void RegisterBefore(
     const SystemId& before,
