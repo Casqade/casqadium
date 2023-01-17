@@ -155,7 +155,8 @@ SystemManager::RegisterAfter(
   auto pos = systemIter(afterId);
 
   if ( pos != mSystems.end() )
-    pos += std::min(2, std::distance(pos, mSystems.end()));
+    pos += std::min(decltype(mSystems)::difference_type{2},
+                    std::distance(pos, mSystems.end()));
 
   else
     CQDE_ASSERT_DEBUG(false, {});
