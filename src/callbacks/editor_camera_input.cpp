@@ -40,7 +40,6 @@ editorCameraControlOn(
     entityInputOn(registry, {eCamera});
 
     registry.emplace_or_replace <WantsMouseGrabbed> (eCamera);
-    registry.emplace_or_replace <WantsCursorOverridden> (eCamera);
 
     return;
   }
@@ -60,7 +59,6 @@ editorCameraControlOff(
 
   auto& entityManager = registry.ctx().get <EntityManager> ();
   entityManager.removeLater(eCamera, entityManager.componentType <WantsMouseGrabbed> ());
-  entityManager.removeLater(eCamera, entityManager.componentType <WantsCursorOverridden> ());
 };
 
 void
