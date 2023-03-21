@@ -116,7 +116,7 @@ TextureBuffer::deserialize(
 
   if ( json.isMember("texture") == true )
     comp.texture = json["texture"].asString();
-  else
+  else if ( json["textures"].empty() == false )
     comp.texture = json["textures"].begin()->asString();
 
   comp.update();
