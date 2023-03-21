@@ -192,8 +192,7 @@
           0.0
         ]
       },
-      "WantsMouseCentered" : {},
-      "WantsMouseHidden" : {}
+      "WantsMouseGrabbed" : {}
     }
   },
   "quad" : 
