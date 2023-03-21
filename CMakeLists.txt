@@ -645,7 +645,7 @@ FetchContent_MakeAvailable(ctpl)
 
 
 FetchContent_Declare(TimeUtils
-  GIT_REPOSITORY git@gitlab.com:Casqade/timeutils.git
+  GIT_REPOSITORY git@github.com:Casqade/TimeUtils
   GIT_TAG        main
   GIT_SHALLOW    TRUE
 )
