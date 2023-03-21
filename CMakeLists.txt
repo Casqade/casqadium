@@ -825,6 +825,8 @@ target_link_libraries(${TARGET} PUBLIC
   soloud
 )
 
+include(GNUInstallDirs)
+
 if(${CQDE_BUILD_EXAMPLE_APP})
   set(CQDE_APPNAME CasqadiumApp)
 
@@ -858,13 +860,13 @@ if(${CQDE_BUILD_EXAMPLE_APP})
   target_link_libraries(${CQDE_APPNAME} PRIVATE
     casqadium::casqadium
   )
+
+  file(COPY example/data DESTINATION ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
 endif()
 
 
 include(GenerateExportHeader)
 generate_export_header(${TARGET} EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/exports/${CASQADIUM_SHORT}/${CASQADIUM_SHORT}_export.hpp)
-
-include(GNUInstallDirs)
 
 target_include_directories(${TARGET} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
