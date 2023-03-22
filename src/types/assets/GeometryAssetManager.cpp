@@ -256,8 +256,12 @@ void
 AssetManager <VertexBuffer>::unloadImpl(
   AssetHandle& handle ) const
 {
-  LOG_TRACE("Freeing geometry");
-  handle->destroy();
+  if ( handle != nullptr )
+  {
+    LOG_TRACE("Freeing geometry");
+    handle->destroy();
+  }
+
   handle.reset();
 }
 

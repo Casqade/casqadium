@@ -55,9 +55,14 @@ VertexBuffer::create()
 void
 VertexBuffer::destroy()
 {
-  vao.destroy();
-  vbo.destroy();
-  ebo.destroy();
+  if ( vao.isValid() == true )
+    vao.destroy();
+
+  if ( vbo.isValid() == true )
+    vbo.destroy();
+
+  if ( ebo.isValid() == true )
+    ebo.destroy();
 }
 
 } // namespace cqde::types
