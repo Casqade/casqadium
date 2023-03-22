@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cqde/types/graphics/GlTexture.hpp>
+
 #include <glm/vec2.hpp>
 
 #include <cstdint>
@@ -15,8 +17,8 @@ struct RenderTarget
   uint32_t fbo {};
   uint32_t rbo {};
 
-  uint32_t textureAlbedo {};
-  uint32_t textureObjectIds {};
+  GlTexture textureAlbedo {};
+  GlTexture textureObjectIds {};
 
 
   RenderTarget();

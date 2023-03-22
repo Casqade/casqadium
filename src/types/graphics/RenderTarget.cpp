@@ -4,28 +4,9 @@
 
 #include <glad/gl.h>
 
-#include <unordered_map>
-
 
 namespace cqde::types
 {
-
-struct GlTexture
-{
-  using SamplerParams = std::unordered_map <GLenum, GLint>;
-
-  uint32_t mId {};
-
-
-  void create(
-    GLenum type,
-    const glm::vec2& size,
-    const SamplerParams& = DefaultSamplerParams() );
-
-  void destroy();
-
-  static SamplerParams DefaultSamplerParams();
-};
 
 RenderTarget::RenderTarget()
 {
@@ -57,41 +38,18 @@ RenderTarget::update(
   glCreateFramebuffers(1, &fbo);
   glCreateRenderbuffers(1, &rbo);
 
-  const auto updateTexture =
-  [this, size]
-  ( GLuint& texture,
-    const GLenum internalFormat,
-    const GLenum attachment )
-  {
-    if ( texture != 0 )
-      glDeleteTextures(1, &texture);
+  textureAlbedo.create(size, GL_TEXTURE_2D, GL_RGBA8);
+  textureObjectIds.create(size, GL_TEXTURE_2D, GL_R32UI);
 
-    glCreateTextures(GL_TEXTURE_2D, 1, &texture);
+  textureAlbedo.generateMipmap();
 
-    glTextureParameteri( texture,
-      GL_TEXTURE_MIN_FILTER, GL_NEAREST );
+  glNamedFramebufferTexture( fbo,
+    GL_COLOR_ATTACHMENT0,
+    textureAlbedo.id(), 0 );
 
-    glTextureParameteri( texture,
-      GL_TEXTURE_MAG_FILTER, GL_NEAREST );
-
-    glTextureParameteri( texture,
-      GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-
-    glTextureParameteri( texture,
-      GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
-
-    glTextureStorage2D( texture, 1,
-      internalFormat,
-      size.x, size.y );
-
-    glNamedFramebufferTexture( fbo,
-      attachment,
-      texture, 0 );
-  };
-
-  updateTexture(textureAlbedo, GL_RGBA8, GL_COLOR_ATTACHMENT0);
-  glGenerateTextureMipmap(textureAlbedo);
-  updateTexture(textureObjectIds, GL_R32UI, GL_COLOR_ATTACHMENT1);
+  glNamedFramebufferTexture( fbo,
+    GL_COLOR_ATTACHMENT1,
+    textureObjectIds.id(), 0 );
 
   glNamedRenderbufferStorageMultisample( rbo,
     0, GL_DEPTH24_STENCIL8,
@@ -119,13 +77,16 @@ RenderTarget::destroy()
   if ( rbo != 0 )
     glDeleteRenderbuffers(1, &rbo);
 
-  if ( textureAlbedo != 0 )
-    glDeleteTextures(1, &textureAlbedo);
+  if ( textureAlbedo.isValid() == true )
+    textureAlbedo.destroy();
+
+  if ( textureObjectIds.isValid() == true )
+    textureObjectIds.destroy();
 
   if ( fbo != 0 )
     glDeleteFramebuffers(1, &fbo);
 
-  fbo = rbo = textureAlbedo = 0;
+  fbo = rbo = 0;
 }
 
 } // namespace cqde::types

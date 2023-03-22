@@ -289,7 +289,7 @@ ViewportManagerUi::ui_show_viewport_windows(
     iter->framebuffer.update({viewportSize.x, viewportSize.y});
 
     ImGui::GetBackgroundDrawList()->AddImage(
-      (ImTextureID) iter->framebuffer.textureAlbedo,
+      (ImTextureID) iter->framebuffer.textureAlbedo.id(),
       {viewportPos.x, viewportPos.y},
       {viewportPos.x + viewportSize.x, viewportPos.y + viewportSize.y},
       ImVec2{0, 1}, ImVec2{1, 0} );
