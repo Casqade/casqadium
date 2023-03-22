@@ -16,12 +16,23 @@ RenderTarget::RenderTarget()
 RenderTarget::RenderTarget(
   const RenderTarget& other )
 {
-  update(other.size);
+  *this = other;
 }
 
 RenderTarget::~RenderTarget()
 {
   destroy();
+}
+
+RenderTarget&
+RenderTarget::operator = (
+  const RenderTarget& other )
+{
+  size = other.size;
+
+  update(size);
+
+  return *this;
 }
 
 void

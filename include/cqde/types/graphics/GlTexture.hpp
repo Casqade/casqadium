@@ -30,6 +30,12 @@ class GlTexture
 public:
   GlTexture() = default;
 
+  GlTexture( GlTexture&& );
+  GlTexture& operator = ( GlTexture&& );
+
+  GlTexture( const GlTexture& ) = delete;
+  GlTexture& operator = ( const GlTexture& ) = delete;
+
   void create(
     const glm::u16vec2& size,
     const GLenum type,

@@ -10,6 +10,24 @@
 namespace cqde::types
 {
 
+GlTexture::GlTexture(
+  GlTexture&& other )
+{
+  *this = std::move(other);
+}
+
+GlTexture&
+GlTexture::operator = (
+  GlTexture&& other )
+{
+  CQDE_ASSERT_DEBUG(isValid() == false, destroy());
+
+  std::swap(mId, other.mId);
+  mSize = other.mSize;
+
+  return *this;
+}
+
 void
 GlTexture::create(
   const glm::u16vec2& size,

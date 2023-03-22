@@ -25,6 +25,8 @@ struct RenderTarget
   RenderTarget( const RenderTarget& );
   ~RenderTarget();
 
+  RenderTarget& operator = ( const RenderTarget& );
+
   void update( const glm::vec2& size );
   void destroy();
 };
