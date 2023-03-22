@@ -21,6 +21,8 @@ Notable libraries used:
 - [GLM](https://github.com/g-truc/glm)
 - [JsonCPP](https://github.com/open-source-parsers/jsoncpp)
 - [spdlog](https://github.com/gabime/spdlog)
+- [Dear ImGui](https://github.com/ocornut/imgui)
+- [ImGuizmo](https://github.com/CedricGuillemet/ImGuizmo)
 - [ReactPhysics3D](https://github.com/DanielChappuis/reactphysics3d)
 - [SoLoud](https://github.com/jarikomppa/soloud)
 
