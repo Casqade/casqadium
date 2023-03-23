@@ -3,6 +3,8 @@
 #include <cqde/common.hpp>
 #include <cqde/logger.hpp>
 
+#include <glad/gl.h>
+
 
 namespace cqde::types
 {

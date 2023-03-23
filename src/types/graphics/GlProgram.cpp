@@ -4,6 +4,8 @@
 #include <cqde/file_helpers.hpp>
 #include <cqde/logger.hpp>
 
+#include <glad/gl.h>
+
 #include <spdlog/fmt/bundled/format.h>
 
 
@@ -18,11 +20,11 @@ GlProgram::~GlProgram()
 void
 GlProgram::create()
 {
-  CQDE_ASSERT_DEBUG(mId == 0, destroy());
+  CQDE_ASSERT_DEBUG(isValid() == false, destroy());
 
   mId = glCreateProgram();
 
-  CQDE_ASSERT_DEBUG(mId != 0, return);
+  CQDE_ASSERT_DEBUG(isValid() == true, return);
 }
 
 void
@@ -37,8 +39,8 @@ void
 GlProgram::attach(
   const GlShader& shader )
 {
-  CQDE_ASSERT_DEBUG(mId != 0, return);
-  CQDE_ASSERT_DEBUG(shader.id() != 0, return);
+  CQDE_ASSERT_DEBUG(isValid() == true, return);
+  CQDE_ASSERT_DEBUG(shader.isValid() == true, return);
 
   glAttachShader(mId, shader.id());
 }
@@ -47,8 +49,8 @@ void
 GlProgram::detach(
   const GlShader& shader )
 {
-  CQDE_ASSERT_DEBUG(mId != 0, return);
-  CQDE_ASSERT_DEBUG(shader.id() != 0, return);
+  CQDE_ASSERT_DEBUG(isValid() == true, return);
+  CQDE_ASSERT_DEBUG(shader.isValid() == true, return);
 
   glDetachShader(mId, shader.id());
 }
@@ -58,7 +60,7 @@ GlProgram::link()
 {
   using fmt::format;
 
-  CQDE_ASSERT_DEBUG(mId != 0, return);
+  CQDE_ASSERT_DEBUG(isValid() == true, return);
 
   mAttributes.clear();
 
@@ -88,7 +90,7 @@ GlProgram::link()
 void
 GlProgram::use() const
 {
-  CQDE_ASSERT_DEBUG(mId != 0, return);
+  CQDE_ASSERT_DEBUG(isValid() == true, return);
 
   glUseProgram(mId);
 }
@@ -96,10 +98,7 @@ GlProgram::use() const
 void
 GlProgram::unuse() const
 {
-  CQDE_ASSERT_DEBUG(mId != 0, return);
-
-//  for ( const auto& [name, attribute] : mAttributes )
-//    glDisableVertexArrayAttrib(0, attribute);
+  CQDE_ASSERT_DEBUG(isValid() == true, return);
 
   glUseProgram(0);
 }
@@ -108,7 +107,7 @@ GLint
 GlProgram::attribLocation(
   const char* name )
 {
-  CQDE_ASSERT_DEBUG(mId != 0, return -1);
+  CQDE_ASSERT_DEBUG(isValid() == true, return -1);
 
   const auto iter = mAttributes.find(name);
 
@@ -122,7 +121,7 @@ GLint
 GlProgram::uniformLocation(
   const char* name )
 {
-  CQDE_ASSERT_DEBUG(mId != 0, return -1);
+  CQDE_ASSERT_DEBUG(isValid() == true, return -1);
 
   const auto iter = mUniforms.find(name);
 
@@ -130,6 +129,12 @@ GlProgram::uniformLocation(
     return iter->second;
 
   return mUniforms[name] = glGetUniformLocation(mId, name);
+}
+
+bool
+GlProgram::isValid() const
+{
+  return mId != 0;
 }
 
 GLuint
