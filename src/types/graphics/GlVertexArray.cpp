@@ -99,6 +99,27 @@ GlVertexArray::attachBuffer(
 }
 
 void
+GlVertexArray::detachBuffer(
+  const GlBuffer& buffer )
+{
+  CQDE_ASSERT_DEBUG(isValid() == true, return);
+  CQDE_ASSERT_DEBUG(buffer.isValid() == true, return);
+
+  auto bindingIndex = std::find(
+    mBindings.begin(),
+    mBindings.end(),
+    buffer.id() );
+
+  CQDE_ASSERT_DEBUG(bindingIndex != mBindings.end(), return);
+
+  glVertexArrayVertexBuffer( mId,
+    std::distance(mBindings.begin(), bindingIndex),
+    0, 0, 0 );
+
+  mBindings.erase(bindingIndex);
+}
+
+void
 GlVertexArray::setAttributeFormat(
   const size_t attribIndex,
   const size_t componentsPerVertex,

@@ -57,6 +57,9 @@ public:
     const size_t offset,
     const size_t stride );
 
+  void detachBuffer(
+    const GlBuffer& );
+
   void setAttributeFormat(
     const size_t attribIndex,
     const size_t componentsPerVertex,
