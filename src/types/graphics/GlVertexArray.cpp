@@ -86,8 +86,8 @@ GlVertexArray::attachBuffer(
     std::distance(mBindings.begin(), bindingIndex) );
 
   glVertexArrayVertexBuffer( mId,
-    attribIndex, buffer.id(),
-    offset, stride );
+    std::distance(mBindings.begin(), bindingIndex),
+    buffer.id(), offset, stride );
 }
 
 void
