@@ -65,6 +65,14 @@ GlVertexArray::attachElementBuffer(
 }
 
 void
+GlVertexArray::detachElementBuffer()
+{
+  CQDE_ASSERT_DEBUG(isValid() == true, return);
+
+  glVertexArrayElementBuffer(mId, 0);
+}
+
+void
 GlVertexArray::attachBuffer(
   const GlBuffer& buffer,
   const size_t attribIndex,

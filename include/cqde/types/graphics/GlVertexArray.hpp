@@ -49,6 +49,8 @@ public:
   void attachElementBuffer(
     const GlBuffer& );
 
+  void detachElementBuffer();
+
   void attachBuffer(
     const GlBuffer&,
     const size_t attribIndex,
