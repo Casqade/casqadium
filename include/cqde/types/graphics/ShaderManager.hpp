@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cqde/types/enums.hpp>
 #include <cqde/types/graphics/GlProgram.hpp>
 
 #include <unordered_map>
@@ -7,13 +8,6 @@
 
 namespace cqde::types
 {
-
-enum class ShaderType
-{
-  Geometry,
-  Shadows,
-  UiElements,
-};
 
 class ShaderManager
 {
@@ -34,10 +28,6 @@ public:
     const std::string& fragmentPath );
 
   GlProgram& get( const ShaderType );
-
-
-  static std::string ShaderTypeToString( const ShaderType );
-  static ShaderType ShaderTypeFromString( const std::string& );
 };
 
 } // namespace cqde::types

@@ -24,4 +24,11 @@ enum class MathFunctionType : uint8_t
   Sawtooth,
 };
 
+enum class ShaderType : uint8_t
+{
+  Geometry,
+  Shadows,
+  UiElements,
+};
+
 } // namespace cqde::types
