@@ -123,6 +123,9 @@ ShaderTypeToString(
 
     case ShaderType::UiElements:
       return "UiElements";
+
+    case ShaderType::DebugDraw:
+      return "DebugDraw";
   }
 
   CQDE_ASSERT_DEBUG(false, return "");
@@ -142,6 +145,9 @@ ShaderTypeFromString(
 
   if ( type == ShaderTypeToString(ShaderType::UiElements) )
     return ShaderType::UiElements;
+
+  if ( type == ShaderTypeToString(ShaderType::DebugDraw) )
+    return ShaderType::DebugDraw;
 
   throw std::runtime_error(
     format("'{}' is not a valid shader type", type));

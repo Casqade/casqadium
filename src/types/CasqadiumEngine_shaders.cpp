@@ -115,6 +115,55 @@ void main()
 
 )code";
 
+static const char* DebugDrawVertexShader =
+R"code(
+#version 430
+
+layout(location = 0) uniform mat4 uTransform;
+
+layout(location = 0) in vec4 aPos;
+layout(location = 1) in vec4 aColor;
+
+out VertexOutput
+{
+  vec4 color;
+
+} vOutput;
+
+out gl_PerVertex
+{
+  vec4 gl_Position;
+};
+
+
+void main()
+{
+  gl_Position = uTransform * aPos;
+  vOutput.color = aColor;
+}
+
+)code";
+
+static const char* DebugDrawFragmentShader =
+R"code(
+#version 430
+
+in VertexOutput
+{
+  vec4 color;
+
+} vInput;
+
+layout(location = 0) out vec4 fAlbedo;
+
+
+void main()
+{
+  fAlbedo = vInput.color;
+}
+
+)code";
+
 bool
 CasqadiumEngine::loadShaders()
 {
@@ -132,21 +181,29 @@ CasqadiumEngine::loadShaders()
     shaderManager.load(
       ShaderType::UiElements,
       UiElementsVertexShader,
-      UiElementsFragmentShader );
+      UiElementsFragmentShader ) &&
+    shaderManager.load(
+      ShaderType::DebugDraw,
+      DebugDrawVertexShader,
+      DebugDrawFragmentShader );
 
   return
     shaderManager.load(
       ShaderType::Geometry,
-      "geometry.vert",
-      "geometry.frag" ) &&
+      "shaders/geometry.vert",
+      "shaders/geometry.frag" ) &&
     shaderManager.load(
       ShaderType::Shadows,
-      "shadows.vert",
-      "shadows.frag" ) &&
+      "shaders/shadows.vert",
+      "shaders/shadows.frag" ) &&
     shaderManager.load(
       ShaderType::UiElements,
-      "uiElements.vert",
-      "uiElements.frag" );
+      "shaders/uiElements.vert",
+      "shaders/uiElements.frag" ) &&
+    shaderManager.load(
+      ShaderType::DebugDraw,
+      "shaders/debugDraw.vert",
+      "shaders/debugDraw.frag" );
 }
 
 } // namespace cqde::types

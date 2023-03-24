@@ -29,6 +29,7 @@ enum class ShaderType : uint8_t
   Geometry,
   Shadows,
   UiElements,
+  DebugDraw,
 };
 
 } // namespace cqde::types

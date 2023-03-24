@@ -1,11 +1,14 @@
 #include <cqde/systems/physics.hpp>
 
+#include <cqde/common.hpp>
 #include <cqde/render_helpers.hpp>
 #include <cqde/conversion/rp3d_glm.hpp>
 
 #include <cqde/types/TickCurrent.hpp>
 #include <cqde/types/PhysicsManager.hpp>
+#include <cqde/types/CasqadiumEngine.hpp>
 #include <cqde/types/graphics/GlProgram.hpp>
+#include <cqde/types/graphics/ShaderManager.hpp>
 #include <cqde/types/ui/ViewportManagerUi.hpp>
 
 #include <cqde/components/Camera.hpp>
@@ -17,12 +20,109 @@
 
 #include <entt/entity/registry.hpp>
 
+#include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/compatibility.hpp>
 #include <glm/gtx/matrix_decompose.hpp>
 #include <glm/ext/matrix_relational.hpp>
 
-//#include <glad/gl.h>
+#include <glad/gl.h>
 
+
+namespace cqde::types
+{
+
+struct PhysicsDebugDrawData
+{
+  using GlBuffer = types::GlBuffer;
+  using GlVertexArray = types::GlVertexArray;
+
+  struct DataBuffer
+  {
+    using PositionType = glm::vec3;
+    using ColorType = uint32_t;
+
+    GlVertexArray vao {};
+    GlBuffer vertices {};
+
+    size_t elementCount {};
+
+
+    void create()
+    {
+      const auto colorOffset = sizeof(PositionType);
+
+      vao.create();
+      vao.enableAttribute(0);
+      vao.setAttributeFormat(
+        0, PositionType::length(),
+        0, GL_FLOAT );
+
+      vao.enableAttribute(1);
+      vao.setAttributeFormat(
+        1, 3,
+        colorOffset, GL_UNSIGNED_BYTE,
+        GlVertexArray::AttributeType::Float,
+        true );
+
+      resize(1);
+    }
+
+    void destroy()
+    {
+      vao.destroy();
+      vertices.destroy();
+    }
+
+    void resize( const size_t newElementCount )
+    {
+      CQDE_ASSERT_DEBUG(vao.isValid() == true, return);
+
+      if ( newElementCount <= elementCount )
+        return;
+
+      const auto stride = sizeof(PositionType) + sizeof(ColorType);
+      const auto colorOffset = sizeof(PositionType);
+
+      elementCount = newElementCount;
+
+      const auto sizeBytes = elementCount * stride;
+
+      if ( vertices.isValid() == true )
+      {
+        vao.detachBuffer(vertices);
+        vertices.destroy();
+      }
+
+      vertices.create(
+        sizeBytes,
+        GlBuffer::MutableStorageFlags(),
+        nullptr );
+
+      vao.attachBuffer(
+        vertices, 0,
+        0, stride );
+
+      vao.attachBuffer(
+        vertices, 1,
+        0, stride );
+    }
+  };
+
+  DataBuffer buffer {};
+
+
+  PhysicsDebugDrawData()
+  {
+    buffer.create();
+  }
+
+  ~PhysicsDebugDrawData()
+  {
+    buffer.destroy();
+  }
+};
+
+}
 
 namespace cqde::systems
 {
@@ -129,18 +229,23 @@ PhysicsSystem(
 
 void
 PhysicsDebugRenderSystem(
-  const entt::registry& registry )
+  entt::registry& registry )
 {
   using compos::Camera;
   using compos::Transform;
   using compos::SubscriberUpdate;
+  using types::CasqadiumEngine;
   using types::GlProgram;
+  using types::ShaderType;
+  using types::ShaderManager;
   using types::PhysicsManager;
+  using types::PhysicsDebugDrawData;
   using DebugItem = rp3d::DebugRenderer::DebugItem;
 
-  auto& glProgram = registry.ctx().get <GlProgram> ();
+  const auto& glProgram = registry.ctx().get <GlProgram> ();
 
-  auto& physicsManager = registry.ctx().get <PhysicsManager> ();
+  const auto& physicsManager = registry.ctx().get <PhysicsManager> ();
+  auto& shaderManager = registry.ctx().get <ShaderManager> ();
 
   const auto world = physicsManager.world();
   auto& debugRenderer = world->getDebugRenderer();
@@ -149,10 +254,10 @@ PhysicsDebugRenderSystem(
   debugRenderer.setIsDebugItemDisplayed(DebugItem::COLLIDER_AABB, true);
   debugRenderer.setIsDebugItemDisplayed(DebugItem::COLLIDER_BROADPHASE_AABB, true);
   debugRenderer.setIsDebugItemDisplayed(DebugItem::COLLISION_SHAPE, true);
-  debugRenderer.setIsDebugItemDisplayed(DebugItem::CONTACT_POINT, true); // eats fps
+  debugRenderer.setIsDebugItemDisplayed(DebugItem::CONTACT_POINT, true);
   debugRenderer.setIsDebugItemDisplayed(DebugItem::CONTACT_NORMAL, true);
-  debugRenderer.setNbSectorsSphere(6);
-  debugRenderer.setNbStacksSphere(3);
+//  debugRenderer.setNbSectorsSphere(6);
+//  debugRenderer.setNbStacksSphere(3);
 
   const auto& lines = debugRenderer.getLines();
   const auto& triangles = debugRenderer.getTriangles();
@@ -160,71 +265,96 @@ PhysicsDebugRenderSystem(
   if ( lines.size() == 0 &&
        triangles.size() == 0 )
     return;
+
+  const auto engine = registry.ctx().get <CasqadiumEngine*> ();
+
+  auto& shader = shaderManager.get(ShaderType::DebugDraw);
+  shader.use();
+
+  const auto uTransform = shader.uniformLocation("uTransform");
+
+  if ( registry.ctx().contains <PhysicsDebugDrawData> () == false )
+    registry.ctx().emplace <PhysicsDebugDrawData> ();
+
+  auto& debugDrawData = registry.ctx().get <PhysicsDebugDrawData> ();
+
+  const auto debugVertexCount = lines.size() * 2 + triangles.size() * 3;
+
+  if ( debugVertexCount > debugDrawData.buffer.elementCount )
+    debugDrawData.buffer.resize(debugVertexCount);
+
+  const auto linesSize = sizeof(*lines.begin()) * lines.size();
+  const auto trianglesSize = sizeof(*triangles.begin()) * triangles.size();
+
+  debugDrawData.buffer.vertices.write(
+    0, linesSize,
+    &*lines.begin() );
+
+  debugDrawData.buffer.vertices.write(
+    linesSize, trianglesSize,
+    &*triangles.begin() );
+
+  debugDrawData.buffer.vao.bind();
+
+  glEnable(GL_SCISSOR_TEST);
+  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
+  const auto framebufferSize = engine->framebufferSize();
+
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+  glColorMaski(1, GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+
+  glViewport(
+    0, 0,
+    framebufferSize.x,
+    framebufferSize.y );
+
+  glScissor(
+    0, 0,
+    framebufferSize.x,
+    framebufferSize.y );
 
   for ( const auto&& [eCamera, cCamera, cCameraTransform]
           : registry.view <Camera, Transform, SubscriberUpdate> ().each() )
   {
-    const glm::mat4 camView = cCamera.viewMatrix(registry, eCamera, cCameraTransform);
-    const glm::mat4 camProjection = cCamera.projMatrix({});
-    const glm::vec4 camViewport = cCamera.viewportScaled({});
+    const auto camView = cCamera.viewMatrix(registry, eCamera, cCameraTransform);
+    const auto camProjection = cCamera.projMatrix(framebufferSize) * camView;
 
-    for ( const auto& line : lines )
-    {
-      const std::vector <glm::vec3> lineVertices
-      {
-        rp3dToGlm(line.point1),
-        rp3dToGlm(line.point2),
-      };
+    glUniformMatrix4fv( uTransform,
+      1, GL_FALSE,
+      glm::value_ptr(camProjection) );
 
-      const auto attributePos = glGetAttribLocation(glProgram.id(), "position");
-      glVertexAttribPointer(attributePos, 3, GL_FLOAT, GL_FALSE, 0, 0);
-      glEnableVertexAttribArray(attributePos);
+    glDrawArrays( GL_LINES,
+      0, lines.size() * 2 );
 
-      const auto attributeColor = glGetAttribLocation(glProgram.id(), "color");
-      glVertexAttribPointer(attributeColor, 3, GL_FLOAT, GL_FALSE, 0, (void*) sizeof(line.point1));
-      glEnableVertexAttribArray(attributeColor);
-
-//      glEnableClientState(GL_VERTEX_ARRAY);
-//      glVertexPointer(3, GL_FLOAT, 0, lineVertices.data());
-//      glDrawArrays(GL_LINE_STRIP, 0, 2);
-//      glDisableClientState(GL_VERTEX_ARRAY);
-
-      olc::Pixel color = line.color1;
-      color.a = 255;
-    }
-
-    for ( const auto& triangle : triangles )
-    {
-      const std::vector <glm::vec3> triangleVertices
-      {
-        rp3dToGlm(triangle.point1),
-        rp3dToGlm(triangle.point2),
-        rp3dToGlm(triangle.point3),
-      };
-
-//      glEnableClientState(GL_VERTEX_ARRAY);
-//      glVertexPointer(3, GL_FLOAT, 0, triangleVertices.data());
-//      glDrawArrays(GL_TRIANGLES, 0, 1);
-//      glDisableClientState(GL_VERTEX_ARRAY);
-
-      olc::Pixel color = triangle.color1;
-      color.a = 255;
-    }
+    glDrawArrays( GL_TRIANGLES,
+      lines.size() * 2,
+      triangles.size() * 3 );
   }
+
+  debugDrawData.buffer.vao.unbind();
+
+  glDisable(GL_SCISSOR_TEST);
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
 
 void
 EditorPhysicsDebugRenderSystem(
-  const entt::registry& registry )
+  entt::registry& registry )
 {
   using compos::Camera;
   using compos::Transform;
+  using types::ShaderType;
+  using types::ShaderManager;
   using types::PhysicsManager;
+  using types::PhysicsDebugDrawData;
   using ui::ViewportManagerUi;
   using DebugItem = rp3d::DebugRenderer::DebugItem;
 
   auto& physicsManager = registry.ctx().get <PhysicsManager> ();
-  auto& viewportManagerUi = registry.ctx().get <ViewportManagerUi> ();
+  const auto& viewportManagerUi = registry.ctx().get <ViewportManagerUi> ();
+  auto& shaderManager = registry.ctx().get <ShaderManager> ();
 
   const auto world = physicsManager.world();
   auto& debugRenderer = world->getDebugRenderer();
@@ -233,10 +363,10 @@ EditorPhysicsDebugRenderSystem(
   debugRenderer.setIsDebugItemDisplayed(DebugItem::COLLIDER_AABB, true);
   debugRenderer.setIsDebugItemDisplayed(DebugItem::COLLIDER_BROADPHASE_AABB, true);
   debugRenderer.setIsDebugItemDisplayed(DebugItem::COLLISION_SHAPE, true);
-  debugRenderer.setIsDebugItemDisplayed(DebugItem::CONTACT_POINT, true); // eats fps
+  debugRenderer.setIsDebugItemDisplayed(DebugItem::CONTACT_POINT, true);
   debugRenderer.setIsDebugItemDisplayed(DebugItem::CONTACT_NORMAL, true);
-  debugRenderer.setNbSectorsSphere(6);
-  debugRenderer.setNbStacksSphere(3);
+//  debugRenderer.setNbSectorsSphere(6);
+//  debugRenderer.setNbStacksSphere(3);
 
   const auto& lines = debugRenderer.getLines();
   const auto& triangles = debugRenderer.getTriangles();
@@ -244,6 +374,37 @@ EditorPhysicsDebugRenderSystem(
   if ( lines.size() == 0 &&
        triangles.size() == 0 )
     return;
+
+  auto& shader = shaderManager.get(ShaderType::DebugDraw);
+  shader.use();
+
+  const auto uTransform = shader.uniformLocation("uTransform");
+
+  if ( registry.ctx().contains <PhysicsDebugDrawData> () == false )
+    registry.ctx().emplace <PhysicsDebugDrawData> ();
+
+  auto& debugDrawData = registry.ctx().get <PhysicsDebugDrawData> ();
+
+  const auto debugVertexCount = lines.size() * 2 + triangles.size() * 3;
+
+  if ( debugVertexCount > debugDrawData.buffer.elementCount )
+    debugDrawData.buffer.resize(debugVertexCount);
+
+  const auto linesSize = sizeof(*lines.begin()) * lines.size();
+  const auto trianglesSize = sizeof(*triangles.begin()) * triangles.size();
+
+  debugDrawData.buffer.vertices.write(
+    0, linesSize,
+    &*lines.begin() );
+
+  debugDrawData.buffer.vertices.write(
+    linesSize, trianglesSize,
+    &*triangles.begin() );
+
+  debugDrawData.buffer.vao.bind();
+
+  glEnable(GL_SCISSOR_TEST);
+  glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
   for ( const auto& viewport : viewportManagerUi.viewports() )
   {
@@ -259,34 +420,45 @@ EditorPhysicsDebugRenderSystem(
          cCameraTransform == nullptr )
       continue;
 
+    const auto framebufferSize = viewport.framebuffer.size;
+    const auto camViewport = cCamera->viewportScaled(framebufferSize);
+
     const auto camView = cCamera->viewMatrix(registry, eCamera, *cCameraTransform);
-    const auto camProjection = cCamera->projMatrix({});
+    const auto camProjection = cCamera->projMatrix(framebufferSize) * camView;
 
-    for ( const auto& line : lines )
-    {
-      std::vector <glm::vec3> buffer
-      {
-        rp3dToGlm(line.point1),
-        rp3dToGlm(line.point2),
-      };
+    glBindFramebuffer(GL_FRAMEBUFFER, viewport.framebuffer.fbo);
 
-      olc::Pixel color = line.color1;
-      color.a = 255;
-    }
+    glColorMaski(1, GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 
-    for ( const auto& triangle : triangles )
-    {
-      std::vector <glm::vec3> buffer
-      {
-        rp3dToGlm(triangle.point1),
-        rp3dToGlm(triangle.point2),
-        rp3dToGlm(triangle.point3),
-      };
+    glViewport(
+      camViewport.x,
+      camViewport.y,
+      camViewport.z,
+      camViewport.w );
 
-      olc::Pixel color = triangle.color1;
-      color.a = 255;
-    }
+    glScissor(
+      camViewport.x,
+      camViewport.y,
+      camViewport.z,
+      camViewport.w );
+
+    glUniformMatrix4fv( uTransform,
+      1, GL_FALSE,
+      glm::value_ptr(camProjection) );
+
+    glDrawArrays( GL_LINES,
+      0, lines.size() * 2 );
+
+    glDrawArrays( GL_TRIANGLES,
+      lines.size() * 2,
+      triangles.size() * 3 );
   }
+
+  debugDrawData.buffer.vao.unbind();
+
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  glDisable(GL_SCISSOR_TEST);
+  glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 };
 
 } // namespace cqde::systems
