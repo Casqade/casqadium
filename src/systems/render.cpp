@@ -190,7 +190,9 @@ geometryPass(
       glBindTextureUnit(0, textureIdCurrent);
     }
 
-    glDrawArrays(renderMode, 0, gBuffer->vertices.size());
+    glDrawElements( renderMode,
+      gBuffer->indices.size(),
+      GL_UNSIGNED_INT, nullptr );
   };
 
   glBindVertexArray(0);
