@@ -117,4 +117,11 @@ ShaderManager::get(
   return mShaders.at(type);
 }
 
+const GlProgram&
+ShaderManager::get(
+  const ShaderType type ) const
+{
+  return mShaders.at(type);
+}
+
 } // namespace cqde::types

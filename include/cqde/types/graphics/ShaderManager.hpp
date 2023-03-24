@@ -28,6 +28,7 @@ public:
     const std::string& fragmentPath );
 
   GlProgram& get( const ShaderType );
+  const GlProgram& get( const ShaderType ) const;
 };
 
 } // namespace cqde::types
