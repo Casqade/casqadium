@@ -16,7 +16,6 @@
 
 #include <optional>
 
-#include <cqde/logger.hpp>
 
 namespace cqde::types
 {

@@ -56,7 +56,7 @@ target_sources(${TARGET} PRIVATE
   src/render_helpers.cpp
   include/${CASQADIUM_SHORT}/render_helpers.hpp
 
-  include/${CASQADIUM_SHORT}/common.hpp
+  include/${CASQADIUM_SHORT}/assert.hpp
 
   src/identifier.cpp
   include/${CASQADIUM_SHORT}/identifier.hpp

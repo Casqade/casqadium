@@ -1,6 +1,6 @@
 #include <cqde/types/graphics/GlTexture.hpp>
 
-#include <cqde/common.hpp>
+#include <cqde/assert.hpp>
 
 #include <glad/gl.h>
 

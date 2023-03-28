@@ -1,7 +1,6 @@
 #include <cqde/types/ui/ViewportManagerUi.hpp>
 #include <cqde/types/ui/EntityManagerUi.hpp>
 
-#include <cqde/logger.hpp>
 #include <cqde/ecs_helpers.hpp>
 #include <cqde/math_helpers.hpp>
 #include <cqde/render_helpers.hpp>

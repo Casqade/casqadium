@@ -9,7 +9,7 @@
 
 #include <cqde/components/SceneNode.hpp>
 
-#include <cqde/common.hpp>
+#include <cqde/assert.hpp>
 #include <cqde/file_helpers.hpp>
 #include <cqde/logger.hpp>
 

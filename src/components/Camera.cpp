@@ -1,8 +1,7 @@
 #include <cqde/components/Camera.hpp>
 #include <cqde/components/Transform.hpp>
 
-#include <cqde/common.hpp>
-#include <cqde/logger.hpp>
+#include <cqde/assert.hpp>
 #include <cqde/json_helpers.hpp>
 
 #include <cqde/conversion/json_glm_vec4.hpp>

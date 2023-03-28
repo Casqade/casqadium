@@ -1,6 +1,6 @@
 #include <cqde/types/assets/AssetManager-inl.hpp>
 
-#include <cqde/common.hpp>
+#include <cqde/assert.hpp>
 #include <cqde/json_helpers.hpp>
 #include <cqde/string_helpers.hpp>
 

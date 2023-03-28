@@ -1,6 +1,5 @@
 #include <cqde/types/graphics/ShaderManager.hpp>
 
-#include <cqde/common.hpp>
 #include <cqde/logger.hpp>
 #include <cqde/conversion/enum_strings.hpp>
 

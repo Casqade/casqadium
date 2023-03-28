@@ -1,8 +1,10 @@
 #include <cqde/types/graphics/GlBuffer.hpp>
 
-#include <cqde/common.hpp>
+#include <cqde/assert.hpp>
 
 #include <glad/gl.h>
+
+#include <utility>
 
 
 namespace cqde::types

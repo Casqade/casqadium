@@ -1,6 +1,6 @@
 #include <cqde/types/graphics/FrameReadback.hpp>
 
-#include <cqde/common.hpp>
+#include <cqde/assert.hpp>
 
 #include <entt/entity/entity.hpp>
 

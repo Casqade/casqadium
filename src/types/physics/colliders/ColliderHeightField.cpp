@@ -1,6 +1,6 @@
 #include <cqde/types/physics/colliders/ColliderHeightField.hpp>
 
-#include <cqde/common.hpp>
+#include <cqde/assert.hpp>
 #include <cqde/json_helpers.hpp>
 
 #include <cqde/conversion/json_glm_vec3.hpp>

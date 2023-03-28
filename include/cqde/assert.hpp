@@ -1,7 +1,5 @@
 #pragma once
 
-#include <entt/fwd.hpp>
-
 #include <cassert>
 
 

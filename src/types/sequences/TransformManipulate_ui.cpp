@@ -10,8 +10,6 @@
 
 #include <imgui.h>
 
-#include <cqde/logger.hpp>
-
 
 namespace cqde::types
 {

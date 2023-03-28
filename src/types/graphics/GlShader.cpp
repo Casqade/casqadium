@@ -1,6 +1,6 @@
 #include <cqde/types/graphics/GlShader.hpp>
 
-#include <cqde/common.hpp>
+#include <cqde/assert.hpp>
 #include <cqde/file_helpers.hpp>
 #include <cqde/logger.hpp>
 

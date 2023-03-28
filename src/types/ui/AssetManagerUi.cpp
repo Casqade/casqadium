@@ -9,7 +9,7 @@
 #include <cqde/types/assets/TerrainAssetManager.hpp>
 #include <cqde/types/assets/TextureAssetManager.hpp>
 
-#include <cqde/common.hpp>
+#include <cqde/assert.hpp>
 #include <cqde/file_helpers.hpp>
 #include <cqde/json_helpers.hpp>
 #include <cqde/logger.hpp>

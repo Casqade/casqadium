@@ -4,7 +4,7 @@
 #include <cqde/types/ui/widgets/StringFilter.hpp>
 #include <cqde/types/EntityManager.hpp>
 
-#include <cqde/common.hpp>
+#include <cqde/assert.hpp>
 
 #include <imgui.h>
 

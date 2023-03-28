@@ -1,6 +1,6 @@
 #include <cqde/json_helpers.hpp>
 
-#include <cqde/common.hpp>
+#include <cqde/assert.hpp>
 
 #include <spdlog/fmt/bundled/format.h>
 

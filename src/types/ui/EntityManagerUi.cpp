@@ -10,7 +10,7 @@
 #include <cqde/components/EntityMetaInfo.hpp>
 #include <cqde/components/CasqadiumEditorInternal.hpp>
 
-#include <cqde/common.hpp>
+#include <cqde/assert.hpp>
 #include <cqde/ecs_helpers.hpp>
 #include <cqde/logger.hpp>
 

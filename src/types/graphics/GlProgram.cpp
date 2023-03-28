@@ -1,12 +1,13 @@
 #include <cqde/types/graphics/GlProgram.hpp>
 
-#include <cqde/common.hpp>
+#include <cqde/assert.hpp>
 #include <cqde/file_helpers.hpp>
-#include <cqde/logger.hpp>
 
 #include <glad/gl.h>
 
 #include <spdlog/fmt/bundled/format.h>
+
+#include <vector>
 
 
 namespace cqde::types

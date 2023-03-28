@@ -1,7 +1,5 @@
 #include <cqde/systems/render.hpp>
 
-#include <cqde/common.hpp>
-#include <cqde/logger.hpp>
 #include <cqde/render_helpers.hpp>
 
 #include <cqde/types/EntityManager.hpp>
@@ -241,8 +239,8 @@ EditorRenderSystem(
       framebufferSize.y );
 
     glClearNamedFramebufferfv( viewport.framebuffer.fbo,
-        GL_COLOR, 0,
-        glm::value_ptr(glm::vec4{0.0, 0.0, 0.0, 1.0f}) );
+      GL_COLOR, 0,
+      glm::value_ptr(glm::vec4{0.0, 0.0, 0.0, 1.0f}) );
 
     glClearNamedFramebufferfi( viewport.framebuffer.fbo,
       GL_DEPTH_STENCIL, 0,

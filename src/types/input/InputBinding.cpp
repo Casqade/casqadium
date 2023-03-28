@@ -2,7 +2,7 @@
 #include <cqde/types/input/InputBindingAbsolute.hpp>
 #include <cqde/types/input/InputBindingRelative.hpp>
 
-#include <cqde/common.hpp>
+#include <cqde/assert.hpp>
 
 #include <cqde/json_helpers.hpp>
 

@@ -1,8 +1,10 @@
 #include <cqde/types/graphics/GlVertexArray.hpp>
 
-#include <cqde/common.hpp>
+#include <cqde/assert.hpp>
 
 #include <glad/gl.h>
+
+#include <algorithm>
 
 
 namespace cqde::types

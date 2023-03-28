@@ -1,6 +1,5 @@
 #include <cqde/components/physics/CollisionBody.hpp>
 
-#include <cqde/common.hpp>
 #include <cqde/json_helpers.hpp>
 
 #include <cqde/types/PhysicsManager.hpp>

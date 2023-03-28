@@ -4,7 +4,7 @@
 #include <cqde/types/input/InputBindingRelative.hpp>
 #include <cqde/types/input/MouseInputId.hpp>
 
-#include <cqde/common.hpp>
+#include <cqde/assert.hpp>
 #include <cqde/file_helpers.hpp>
 #include <cqde/json_helpers.hpp>
 #include <cqde/logger.hpp>

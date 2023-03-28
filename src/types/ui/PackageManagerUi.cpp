@@ -12,7 +12,7 @@
 #include <cqde/types/assets/TextStringAssetManager.hpp>
 #include <cqde/types/assets/TextureAssetManager.hpp>
 
-#include <cqde/common.hpp>
+#include <cqde/assert.hpp>
 #include <cqde/logger.hpp>
 
 #include <cqde/file_helpers.hpp>

@@ -2,8 +2,6 @@
 
 #include <cqde/types/graphics/ShaderManager.hpp>
 
-#include <cqde/logger.hpp>
-
 
 namespace cqde::types
 {
@@ -105,7 +103,7 @@ R"code(
 
 layout(location = 16) uniform uint uColor;
 
-layout(location = 0 ) out vec4 fAlbedo;
+layout(location = 0) out vec4 fAlbedo;
 
 
 void main()

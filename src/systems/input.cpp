@@ -1,6 +1,6 @@
 #include <cqde/systems/input.hpp>
 
-#include <cqde/common.hpp>
+#include <cqde/assert.hpp>
 
 #include <cqde/types/CasqadiumEngine.hpp>
 #include <cqde/types/MouseCursor.hpp>

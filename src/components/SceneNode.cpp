@@ -3,7 +3,7 @@
 
 #include <cqde/types/EntityManager.hpp>
 
-#include <cqde/common.hpp>
+#include <cqde/assert.hpp>
 #include <cqde/json_helpers.hpp>
 
 #include <entt/entity/registry.hpp>

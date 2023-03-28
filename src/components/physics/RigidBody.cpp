@@ -1,6 +1,6 @@
 #include <cqde/components/physics/RigidBody.hpp>
 
-#include <cqde/common.hpp>
+#include <cqde/assert.hpp>
 #include <cqde/json_helpers.hpp>
 
 #include <cqde/conversion/rp3d_glm.hpp>

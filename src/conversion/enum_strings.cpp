@@ -1,6 +1,6 @@
 #include <cqde/conversion/enum_strings.hpp>
 
-#include <cqde/common.hpp>
+#include <cqde/assert.hpp>
 
 #include <spdlog/fmt/bundled/format.h>
 
