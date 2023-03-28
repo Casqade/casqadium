@@ -60,6 +60,7 @@ public:
   void setGizmoOperation( const ImGuizmo::OPERATION );
   void setGizmoSpace( const ImGuizmo::MODE );
 
+  std::vector <Viewport>& viewports();
   const std::vector <Viewport>& viewports() const;
 
   ImGuizmo::OPERATION gizmoOperation() const;

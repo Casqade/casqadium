@@ -76,6 +76,12 @@ ViewportManagerUi::setGizmoSpace(
   mGizmoSpace = gizmoSpace;
 }
 
+std::vector <Viewport>&
+ViewportManagerUi::viewports()
+{
+  return mViewports;
+}
+
 const std::vector <Viewport>&
 ViewportManagerUi::viewports() const
 {
