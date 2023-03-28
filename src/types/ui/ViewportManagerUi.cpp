@@ -292,6 +292,7 @@ ViewportManagerUi::ui_show_viewport_windows(
     viewportSize.x -= viewportPos.x;
     viewportSize.y -= viewportPos.y;
 
+    iter->pos = {viewportPos.x, viewportPos.y};
     iter->framebuffer.update({viewportSize.x, viewportSize.y});
 
     ImGui::GetBackgroundDrawList()->AddImage(

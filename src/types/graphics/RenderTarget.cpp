@@ -37,7 +37,7 @@ RenderTarget::operator = (
 
 void
 RenderTarget::update(
-  const glm::vec2& size )
+  const glm::u16vec2& size )
 {
   if ( this->size == size )
     return;
@@ -47,10 +47,10 @@ RenderTarget::update(
   destroy();
 
   glCreateFramebuffers(1, &fbo);
-  glCreateRenderbuffers(1, &rbo);
+  glCreateRenderbuffers(1, &objectIds);
+  glCreateRenderbuffers(1, &depthStencil);
 
   textureAlbedo.create(size, GL_TEXTURE_2D, GL_RGBA8);
-  textureObjectIds.create(size, GL_TEXTURE_2D, GL_R32UI);
 
   textureAlbedo.generateMipmap();
 
@@ -58,17 +58,21 @@ RenderTarget::update(
     GL_COLOR_ATTACHMENT0,
     textureAlbedo.id(), 0 );
 
-  glNamedFramebufferTexture( fbo,
-    GL_COLOR_ATTACHMENT1,
-    textureObjectIds.id(), 0 );
+  glNamedRenderbufferStorageMultisample( objectIds,
+    0, GL_R32UI,
+    size.x, size.y );
 
-  glNamedRenderbufferStorageMultisample( rbo,
+  glNamedRenderbufferStorageMultisample( depthStencil,
     0, GL_DEPTH24_STENCIL8,
     size.x, size.y );
 
   glNamedFramebufferRenderbuffer( fbo,
+    GL_COLOR_ATTACHMENT1,
+    GL_RENDERBUFFER, objectIds );
+
+  glNamedFramebufferRenderbuffer( fbo,
     GL_DEPTH_STENCIL_ATTACHMENT,
-    GL_RENDERBUFFER, rbo );
+    GL_RENDERBUFFER, depthStencil );
 
   const GLuint attachements[]
   {
@@ -85,19 +89,19 @@ RenderTarget::update(
 void
 RenderTarget::destroy()
 {
-  if ( rbo != 0 )
-    glDeleteRenderbuffers(1, &rbo);
+  if ( depthStencil != 0 )
+    glDeleteRenderbuffers(1, &depthStencil);
+
+  if ( objectIds != 0 )
+    glDeleteRenderbuffers(1, &objectIds);
 
   if ( textureAlbedo.isValid() == true )
     textureAlbedo.destroy();
 
-  if ( textureObjectIds.isValid() == true )
-    textureObjectIds.destroy();
-
   if ( fbo != 0 )
     glDeleteFramebuffers(1, &fbo);
 
-  fbo = rbo = 0;
+  fbo = depthStencil = 0;
 }
 
 } // namespace cqde::types

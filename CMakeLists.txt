@@ -146,6 +146,9 @@ target_sources(${TARGET} PRIVATE
   src/types/graphics/GlTexture.cpp
   include/${CASQADIUM_SHORT}/types/graphics/GlTexture.hpp
 
+  src/types/graphics/FrameReadback.cpp
+  include/${CASQADIUM_SHORT}/types/graphics/FrameReadback.hpp
+
   src/types/graphics/Mesh.cpp
   include/${CASQADIUM_SHORT}/types/graphics/Mesh.hpp
 

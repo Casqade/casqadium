@@ -26,6 +26,8 @@ struct Viewport
 
   types::RenderTarget framebuffer {};
 
+  glm::vec2 pos {}; // in ImGui screen space
+
   bool visible {};
 
   Viewport() = default;

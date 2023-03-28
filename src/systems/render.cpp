@@ -5,6 +5,7 @@
 #include <cqde/render_helpers.hpp>
 
 #include <cqde/types/EntityManager.hpp>
+#include <cqde/types/CallbackManager.hpp>
 #include <cqde/types/CasqadiumEngine.hpp>
 
 #include <cqde/types/assets/TextureAssetManager.hpp>
@@ -13,6 +14,7 @@
 #include <cqde/types/graphics/GlBuffer.hpp>
 #include <cqde/types/graphics/GlVertexArray.hpp>
 #include <cqde/types/graphics/ShaderManager.hpp>
+#include <cqde/types/graphics/FrameReadback.hpp>
 
 #include <cqde/types/ui/EntityManagerUi.hpp>
 #include <cqde/types/ui/ViewportManagerUi.hpp>
@@ -36,8 +38,6 @@
 #include <ctpl/ctpl_stl.h>
 
 #include <glm/gtc/type_ptr.hpp>
-
-#include <execution>
 
 #include <glad/gl.h>
 
@@ -208,13 +208,18 @@ EditorRenderSystem(
   using compos::Transform;
   using types::ShaderType;
   using types::ShaderManager;
+  using types::CallbackManager;
+  using types::FrameReadbackQueue;
+  using types::FrameReadbackResult;
   using ui::ViewportManagerUi;
 
   const auto& const_registry = registry;
 
+  auto& readbackQueue = registry.ctx().get <FrameReadbackQueue> ();
+  auto& callbackManager = registry.ctx().get <CallbackManager> ();
   auto& viewportManagerUi = const_registry.ctx().get <ViewportManagerUi> ();
 
-  for ( const auto& viewport : viewportManagerUi.viewports() )
+  for ( auto& viewport : viewportManagerUi.viewports() )
   {
     if ( viewport.visible == false )
       continue;
@@ -382,11 +387,94 @@ EditorRenderSystem(
     glDrawArrays(GL_LINE_LOOP, 0, 4);
 
     glBindVertexArray(0);
+
+    auto& readbackQueue = registry.ctx().get <FrameReadbackQueue> ();
+
+    for ( auto& request : readbackQueue.requests )
+      if ( request.fence == nullptr )
+      {
+        glBindBuffer(GL_PIXEL_PACK_BUFFER, request.buffers.first.id());
+
+        glNamedFramebufferReadBuffer(
+          viewport.framebuffer.fbo,
+          GL_COLOR_ATTACHMENT1 );
+
+        glReadPixels(
+          request.pos.x, request.pos.y,
+          request.size.x, request.size.y,
+          GL_RED_INTEGER,
+          GL_UNSIGNED_INT,
+          nullptr );
+
+        const auto bufferSize =
+          sizeof(decltype(request.data)::value_type) * request.size.x * request.size.y;
+
+        glCopyNamedBufferSubData(
+          request.buffers.first.id(),
+          request.buffers.second.id(),
+          0, 0,
+          bufferSize );
+
+        request.fence = glFenceSync(
+          GL_SYNC_GPU_COMMANDS_COMPLETE, 0 );
+      }
+
+    glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
   }
 
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
   glDisable(GL_SCISSOR_TEST);
   glDisable(GL_BLEND);
+
+  while ( readbackQueue.requests.empty() == false )
+  {
+    auto& request = readbackQueue.requests.front();
+
+    if ( request.fence == nullptr )
+      break;
+
+    GLint status {};
+    GLsizei length {};
+
+    glGetSynciv( request.fence,
+      GL_SYNC_STATUS, sizeof(status),
+      &length, &status );
+
+    if ( status != GL_SIGNALED )
+      break;
+
+    glBindBuffer(GL_PIXEL_PACK_BUFFER, request.buffers.first.id());
+
+    const auto readDataSize =
+      sizeof(decltype(request.data)::value_type) * request.size.x * request.size.y;
+
+    const auto readData = request.buffers.second.map(
+      0, readDataSize,
+      GL_MAP_READ_BIT );
+
+    std::memcpy(
+      request.data.data(),
+      readData, readDataSize );
+
+    request.buffers.second.unmap();
+
+    if ( request.callback != nullptr )
+    {
+      const FrameReadbackResult result
+      {
+        request.pos,
+        request.size,
+        std::move(request.data),
+      };
+
+      callbackManager.executeLater(
+        request.callback, {result} );
+    }
+
+    readbackQueue.pop();
+  }
+
+  glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
 }
 
 void

@@ -17,6 +17,8 @@
 #include <cqde/types/input/InputManager.hpp>
 #include <cqde/types/input/InputBindingRelative.hpp>
 
+#include <cqde/types/graphics/FrameReadback.hpp>
+
 #include <cqde/components/Tag.hpp>
 #include <cqde/components/Camera.hpp>
 #include <cqde/components/Transform.hpp>
@@ -455,6 +457,9 @@ editorEntitySelect(
 {
   using types::EntityManager;
   using types::CasqadiumEngine;
+  using types::FrameReadbackQueue;
+  using types::FrameReadbackResult;
+  using CallbackArgs = types::CallbackManager::CallbackArgs;
 
   using ui::EntityManagerUi;
   using ui::ViewportManagerUi;
@@ -468,49 +473,58 @@ editorEntitySelect(
   const auto& engine = *registry.ctx().get <CasqadiumEngine*> ();
 
   glm::dvec2 cursorPos {};
+  glm::ivec2 windowPos {};
 
-  glfwGetCursorPos(engine.window(), &cursorPos.x, &cursorPos.y);
+  if ( engine.hoveredWindow() == nullptr )
+    return;
 
+  glfwGetCursorPos(engine.hoveredWindow(), &cursorPos.x, &cursorPos.y);
+  glfwGetWindowPos(engine.hoveredWindow(), &windowPos.x, &windowPos.y);
+
+  auto& readbackQueue = registry.ctx().get <FrameReadbackQueue> ();
   auto& viewportManagerUi = registry.ctx().get <const ViewportManagerUi> ();
   auto& entityManagerUi = registry.ctx().get <EntityManagerUi> ();
 
   const bool multipleSelectionEnabled = entityManagerUi.entitiesMultipleSelection();
 
-  for ( const auto&& [eCamera, cTag, cCamera]
-          : registry.view <Tag, Camera, CasqadiumEditorInternal> ().each() )
+  for ( const auto& viewport : viewportManagerUi.viewports() )
   {
-    if ( viewportManagerUi.mouseOverViewport(cTag.id) == false )
+    const auto eCamera = viewport.camera.get(registry);
+
+    if ( viewportManagerUi.mouseOverViewport(viewport.camera.id) == false )
       continue;
 
     if ( registry.all_of <SubscriberInput> (eCamera) == true )
       return;
 
-//    for ( auto iter = cCamera.zBuffer.rbegin();
-//          iter != cCamera.zBuffer.rend();
-//          ++iter )
-//    {
-//      const auto& [vBuf, entity] = *iter;
+    const glm::u16vec2 pos
+    {
+      windowPos.x + cursorPos.x - viewport.pos.x,
+      viewport.framebuffer.size.y - (windowPos.y + cursorPos.y - viewport.pos.y),
+    };
 
-//      if ( pointInRect( cursorPos, boundingBox(vBuf.vertices) ) == false )
-//        continue;
+    readbackQueue.push( pos, {1u, 1u},
+    [&entityManagerUi, multipleSelectionEnabled]
+    ( entt::registry& registry,
+      const CallbackArgs& args )
+    {
+      const auto request =
+        std::any_cast <FrameReadbackResult> (args.at(0));
 
-//      if ( multipleSelectionEnabled == false )
-//      {
-//        if ( entityManagerUi.entitySelected(entity) == true )
-//          continue;
+      const auto entity = static_cast <entt::entity> (request.data.front());
 
-//        entityManagerUi.entitiesDeselect();
-//        return entityManagerUi.entitySelect(entity);
-//      }
+      if ( multipleSelectionEnabled == false )
+        entityManagerUi.entitiesDeselect();
 
-//      if ( entityManagerUi.entitySelected(entity) == true )
-//        return entityManagerUi.entityDeselect(entity);
+      if ( entity != entt::null )
+      {
+        if ( multipleSelectionEnabled == true &&
+             entityManagerUi.entitySelected(entity) == true )
+            return entityManagerUi.entityDeselect(entity);
 
-//      return entityManagerUi.entitySelect(entity);
-//    }
-
-    if ( multipleSelectionEnabled == false )
-      entityManagerUi.entitiesDeselect();
+        return entityManagerUi.entitySelect(entity);
+      }
+    });
   }
 };
 

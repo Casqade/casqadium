@@ -12,13 +12,13 @@ namespace cqde::types
 
 struct RenderTarget
 {
-  glm::vec2 size {};
+  glm::u16vec2 size {};
 
   uint32_t fbo {};
-  uint32_t rbo {};
+  uint32_t objectIds {};
+  uint32_t depthStencil {};
 
   GlTexture textureAlbedo {};
-  GlTexture textureObjectIds {};
 
 
   RenderTarget();
@@ -27,7 +27,7 @@ struct RenderTarget
 
   RenderTarget& operator = ( const RenderTarget& );
 
-  void update( const glm::vec2& size );
+  void update( const glm::u16vec2& size );
   void destroy();
 };
 
