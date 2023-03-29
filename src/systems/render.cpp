@@ -389,7 +389,8 @@ EditorRenderSystem(
     auto& readbackQueue = registry.ctx().get <FrameReadbackQueue> ();
 
     for ( auto& request : readbackQueue.requests )
-      if ( request.fence == nullptr )
+      if ( request.fence == nullptr &&
+           request.framebufferId == viewport.framebuffer.fbo )
       {
         glBindBuffer(GL_PIXEL_PACK_BUFFER, request.buffers.first.id());
 

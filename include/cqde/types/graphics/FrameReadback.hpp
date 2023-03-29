@@ -27,6 +27,8 @@ struct FrameReadbackRequest
   std::pair <GlBuffer, GlBuffer> buffers {};
   GLsync fence {};
 
+  GLuint framebufferId {};
+
 
   FrameReadbackRequest() = default;
 };
@@ -54,6 +56,7 @@ struct FrameReadbackQueue
 
 
   FrameReadbackRequest& push(
+    const GLuint framebufferId,
     const glm::u16vec2& pos,
     const glm::u16vec2& size,
     const CallbackFunc& );

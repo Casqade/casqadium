@@ -32,6 +32,7 @@ FrameReadbackQueue::operator = (
 
 FrameReadbackRequest&
 FrameReadbackQueue::push(
+  const GLuint framebufferId,
   const glm::u16vec2& pos,
   const glm::u16vec2& size,
   const CallbackFunc& callback )
@@ -40,6 +41,7 @@ FrameReadbackQueue::push(
 
   auto& request = requests.emplace_back();
 
+  request.framebufferId = framebufferId;
   request.pos = pos;
   request.size = size;
   request.data.resize(elementCount, entt::null);

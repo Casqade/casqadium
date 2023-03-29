@@ -489,13 +489,8 @@ editorEntitySelect(
 
   for ( const auto& viewport : viewportManagerUi.viewports() )
   {
-    const auto eCamera = viewport.camera.get(registry);
-
     if ( viewportManagerUi.mouseOverViewport(viewport.camera.id) == false )
       continue;
-
-    if ( registry.all_of <SubscriberInput> (eCamera) == true )
-      return;
 
     const glm::u16vec2 pos
     {
@@ -503,15 +498,17 @@ editorEntitySelect(
       viewport.framebuffer.size.y - (windowPos.y + cursorPos.y - viewport.pos.y),
     };
 
-    readbackQueue.push( pos, {1u, 1u},
+    readbackQueue.push(
+      viewport.framebuffer.fbo,
+      pos, {1u, 1u},
     [&entityManagerUi, multipleSelectionEnabled]
     ( entt::registry& registry,
       const CallbackArgs& args )
     {
-      const auto request =
+      const auto result =
         std::any_cast <FrameReadbackResult> (args.at(0));
 
-      const auto entity = static_cast <entt::entity> (request.data.front());
+      const auto entity = static_cast <entt::entity> (result.data.front());
 
       if ( multipleSelectionEnabled == false )
         entityManagerUi.entitiesDeselect();
