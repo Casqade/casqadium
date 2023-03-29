@@ -53,8 +53,13 @@ RenderBufferClearSystem(
 
   const auto framebufferSize = engine.framebufferSize();
 
-  glViewport(0, 0, framebufferSize.x, framebufferSize.y);
-  glScissor(0, 0, framebufferSize.x, framebufferSize.y);
+  glViewport( 0, 0,
+    framebufferSize.x,
+    framebufferSize.y );
+
+  glScissor( 0, 0,
+    framebufferSize.x,
+    framebufferSize.y );
 
   glClearNamedFramebufferfv( 0,
     GL_COLOR, 0,
@@ -65,12 +70,87 @@ RenderBufferClearSystem(
     1.0f, 0 );
 }
 
+struct PrimaryRenderTarget
+{
+  using GlBuffer = types::GlBuffer;
+  using GlVertexArray = types::GlVertexArray;
+  using RenderTarget = types::RenderTarget;
+
+
+  RenderTarget target {};
+
+  GlVertexArray vao {};
+  GlBuffer vertices {};
+  GlBuffer texCoords {};
+
+
+  PrimaryRenderTarget()
+  {
+    const std::vector <glm::vec2> verticesData
+    {
+      {-1.0f, -1.0f},
+      {1.0f, -1.0f},
+      {1.0f, 1.0f},
+      {-1.0f, 1.0f},
+    };
+
+    const std::vector <glm::vec2> texCoordsData
+    {
+      {0.0f, 0.0f},
+      {1.0f, 0.0f},
+      {1.0f, 1.0f},
+      {0.0f, 1.0f},
+    };
+
+    const auto verticesSize =
+      sizeof(decltype(verticesData)::value_type) * verticesData.size();
+
+    const auto texCoordsSize =
+      sizeof(decltype(texCoordsData)::value_type) * texCoordsData.size();
+
+    vertices.create( verticesSize,
+      GlBuffer::ImmutableStorageFlags(),
+      verticesData.data() );
+
+    texCoords.create( texCoordsSize,
+      GlBuffer::ImmutableStorageFlags(),
+      texCoordsData.data() );
+
+    const auto stride = sizeof(glm::vec2);
+
+    vao.create();
+
+    vao.enableAttribute(0);
+    vao.setAttributeFormat(
+      0, 2, 0, GL_FLOAT );
+
+    vao.enableAttribute(1);
+    vao.setAttributeFormat(
+      1, 2, 0, GL_FLOAT );
+
+    vao.attachBuffer(
+      vertices, 0,
+      0, stride );
+
+    vao.attachBuffer(
+      texCoords, 1,
+      0, stride );
+  }
+
+  ~PrimaryRenderTarget()
+  {
+    vao.destroy();
+    vertices.destroy();
+    texCoords.destroy();
+  }
+};
+
 struct EditorRenderData
 {
   using GlBuffer = types::GlBuffer;
   using GlVertexArray = types::GlVertexArray;
 
-  struct LineBuffer
+  struct OutlineBuffer
   {
     GlVertexArray vao {};
     GlBuffer vertices {};
@@ -80,7 +160,7 @@ struct EditorRenderData
       using AttributeType = glm::vec2;
 
       vertices.create(
-        sizeof(AttributeType) * 4,
+        sizeof(AttributeType) * 8,
         GlBuffer::MutableStorageFlags(),
         nullptr );
 
@@ -102,25 +182,22 @@ struct EditorRenderData
     }
   };
 
-  LineBuffer viewportOutline {};
-  LineBuffer windowOutline {};
+  OutlineBuffer outline {};
 
 
   EditorRenderData()
   {
-    viewportOutline.create();
-    windowOutline.create();
+    outline.create();
   }
 
   ~EditorRenderData()
   {
-    viewportOutline.destroy();
-    windowOutline.destroy();
+    outline.destroy();
   }
 };
 
-void
-geometryPass(
+static void
+GeometryPass(
   entt::registry& registry,
   const GLenum renderMode,
   const glm::mat4& viewProjection )
@@ -198,232 +275,164 @@ geometryPass(
   glBindBuffer(GL_ARRAY_BUFFER, 0);
 }
 
-void
-EditorRenderSystem(
-  entt::registry& registry )
+static void
+DrawViewportOutline(
+  entt::registry& registry,
+  const types::RenderTarget& target,
+  const glm::vec4& viewport )
 {
-  using compos::Camera;
-  using compos::Transform;
   using types::ShaderType;
   using types::ShaderManager;
+
+  const glm::vec2 framebufferSize = target.size;
+
+  glDisable(GL_CULL_FACE);
+  glDisable(GL_DEPTH_TEST);
+
+  glBindFramebuffer(GL_FRAMEBUFFER, target.fbo);
+  glColorMaski(1, GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+
+  if ( registry.ctx().contains <EditorRenderData> () == false )
+    registry.ctx().emplace <EditorRenderData> ();
+
+  auto& renderData = registry.ctx().get <EditorRenderData> ();
+
+  auto& shaderManager = registry.ctx().get <ShaderManager> ();
+
+  auto& shader = shaderManager.get(ShaderType::UiElements);
+  shader.use();
+
+  const auto uTransform = shader.uniformLocation("uTransform");
+  const auto uColor = shader.uniformLocation("uColor");
+
+  const uint32_t colorViewport = ImGui::GetColorU32(ImGuiCol_FrameBg);
+  const uint32_t colorWindow = ImGui::GetColorU32(ImGuiCol_Border, 0.75f);
+
+  const auto& outline = renderData.outline;
+
+  const std::vector <glm::vec2> viewportOutline
+  {
+    {1.0f, viewport.w},
+    {1.0f, 1.0f},
+    {viewport.z - 0.0f, 1.0f},
+    {viewport.z - 0.0f, viewport.w},
+  };
+
+  const std::vector <glm::vec2> windowOutline
+  {
+    {1.0f, framebufferSize.y},
+    {1.0f, 1.0f},
+    {framebufferSize.x - 0.0f, 1.0f},
+    {framebufferSize.x - 0.0f, framebufferSize.y},
+  };
+
+  const auto viewportOutlineSize =
+    sizeof(decltype(viewportOutline)::value_type) * viewportOutline.size();
+
+  const auto windowOutlineSize =
+    sizeof(decltype(windowOutline)::value_type) * windowOutline.size();
+
+  outline.vertices.write( 0,
+    viewportOutlineSize,
+    viewportOutline.data() );
+
+  outline.vertices.write(
+    viewportOutlineSize,
+    windowOutlineSize,
+    windowOutline.data() );
+
+  outline.vao.bind();
+
+  auto projection = glm::ortho(
+    0.0f, viewport.z,
+    0.0f, viewport.w,
+    0.0f, 1.0f );
+
+  glUniform1ui(uColor, colorViewport);
+  glUniformMatrix4fv(
+    uTransform,
+    1, GL_FALSE,
+    glm::value_ptr(projection) );
+
+  glDrawArrays(GL_LINE_LOOP, 0, 4);
+
+  glViewport(
+    0, 0,
+    framebufferSize.x,
+    framebufferSize.y );
+
+  glScissor(
+    0, 0,
+    framebufferSize.x,
+    framebufferSize.y );
+
+  projection = glm::ortho(
+    0.0f, framebufferSize.x,
+    0.0f, framebufferSize.y,
+    0.0f, 1.0f );
+
+  glUniform1ui(uColor, colorWindow);
+  glUniformMatrix4fv(
+    uTransform, 1, GL_FALSE,
+    glm::value_ptr(projection));
+
+  glDrawArrays(GL_LINE_LOOP, 4, 4);
+
+  glBindVertexArray(0);
+}
+
+static void
+WriteFrameReadbackData(
+  entt::registry& registry,
+  const types::RenderTarget& target )
+{
+  using types::FrameReadbackQueue;
+
+  auto& readbackQueue = registry.ctx().get <FrameReadbackQueue> ();
+
+  for ( auto& request : readbackQueue.requests )
+    if ( request.fence == nullptr &&
+         request.framebufferId == target.fbo )
+    {
+      glBindBuffer(GL_PIXEL_PACK_BUFFER, request.buffers.first.id());
+
+      glNamedFramebufferReadBuffer(
+        target.fbo,
+        GL_COLOR_ATTACHMENT1 );
+
+      glReadPixels(
+        request.pos.x, request.pos.y,
+        request.size.x, request.size.y,
+        GL_RED_INTEGER,
+        GL_UNSIGNED_INT,
+        nullptr );
+
+      const auto bufferSize =
+        sizeof(decltype(request.data)::value_type) * request.size.x * request.size.y;
+
+      glCopyNamedBufferSubData(
+        request.buffers.first.id(),
+        request.buffers.second.id(),
+        0, 0,
+        bufferSize );
+
+      request.fence = glFenceSync(
+        GL_SYNC_GPU_COMMANDS_COMPLETE, 0 );
+    }
+
+  glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+}
+
+static void
+ProcessFrameReadback(
+  entt::registry& registry )
+{
   using types::CallbackManager;
   using types::FrameReadbackQueue;
   using types::FrameReadbackResult;
-  using ui::ViewportManagerUi;
-
-  const auto& const_registry = registry;
 
   auto& readbackQueue = registry.ctx().get <FrameReadbackQueue> ();
   auto& callbackManager = registry.ctx().get <CallbackManager> ();
-  auto& viewportManagerUi = const_registry.ctx().get <ViewportManagerUi> ();
-
-  for ( auto& viewport : viewportManagerUi.viewports() )
-  {
-    if ( viewport.visible == false )
-      continue;
-
-    glBindFramebuffer(GL_FRAMEBUFFER, viewport.framebuffer.fbo);
-
-    glColorMaski(1, GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-
-    glEnable(GL_SCISSOR_TEST);
-
-    const glm::vec2 framebufferSize = viewport.framebuffer.size;
-
-    glViewport( 0, 0,
-      framebufferSize.x,
-      framebufferSize.y );
-
-    glScissor( 0, 0,
-      framebufferSize.x,
-      framebufferSize.y );
-
-    glClearNamedFramebufferfv( viewport.framebuffer.fbo,
-      GL_COLOR, 0,
-      glm::value_ptr(glm::vec4{0.0, 0.0, 0.0, 1.0f}) );
-
-    glClearNamedFramebufferfi( viewport.framebuffer.fbo,
-      GL_DEPTH_STENCIL, 0,
-      1.0f, 0 );
-
-    const uint32_t invalidId {entt::null};
-
-    glClearNamedFramebufferuiv( viewport.framebuffer.fbo,
-      GL_COLOR, 1, &invalidId );
-
-    const auto eCamera = viewport.camera.get(registry);
-
-    if ( eCamera == entt::null )
-      continue;
-
-    const auto&& [cCamera, cCameraTransform]
-      = const_registry.try_get <Camera, Transform> (eCamera);
-
-    if ( cCamera == nullptr ||
-         cCameraTransform == nullptr )
-      continue;
-
-    const auto camViewport = cCamera->viewportScaled(framebufferSize);
-
-    glEnable(GL_BLEND);
-    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-    glViewport(
-      camViewport.x,
-      camViewport.y,
-      camViewport.z,
-      camViewport.w );
-
-    glScissor(
-      camViewport.x,
-      camViewport.y,
-      camViewport.z,
-      camViewport.w );
-
-    const auto camView = cCamera->viewMatrix(const_registry, eCamera, *cCameraTransform);
-    const auto viewProjection = cCamera->projMatrix(framebufferSize) * camView;
-
-    GLenum renderMode = GL_LINE_LOOP;
-
-    if ( cCamera->renderMode == Camera::RenderMode::Solid )
-    {
-      glEnable(GL_DEPTH_TEST);
-      renderMode = GL_TRIANGLE_FAN;
-    }
-    else
-      glDisable(GL_DEPTH_TEST);
-
-    glEnable(GL_CULL_FACE);
-
-    geometryPass(registry, renderMode, viewProjection);
-
-    glDisable(GL_CULL_FACE);
-    glDisable(GL_DEPTH_TEST);
-
-    glColorMaski(1, GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
-
-    if ( registry.ctx().contains <EditorRenderData> () == false )
-      registry.ctx().emplace <EditorRenderData> ();
-
-    auto& renderData = registry.ctx().get <EditorRenderData> ();
-
-    auto& shaderManager = registry.ctx().get <ShaderManager> ();
-
-    auto& shader = shaderManager.get(ShaderType::UiElements);
-    shader.use();
-
-    const auto uTransform = shader.uniformLocation("uTransform");
-    const auto uColor = shader.uniformLocation("uColor");
-
-    const uint32_t colorViewport = ImGui::GetColorU32(ImGuiCol_FrameBg);
-    const uint32_t colorWindow = ImGui::GetColorU32(ImGuiCol_Border, 0.75f);
-
-    const auto& viewportOutline = renderData.viewportOutline;
-    const auto& windowOutline = renderData.windowOutline;
-
-    const std::vector <glm::vec2> viewportOutlineVertices
-    {
-      {1.0f, camViewport.w},
-      {1.0f, 1.0f},
-      {camViewport.z - 0.0f, 1.0f},
-      {camViewport.z - 0.0f, camViewport.w},
-    };
-
-    const std::vector <glm::vec2> windowOutlineVertices
-    {
-      {1.0f, framebufferSize.y},
-      {1.0f, 1.0f},
-      {framebufferSize.x - 0.0f, 1.0f},
-      {framebufferSize.x - 0.0f, framebufferSize.y},
-    };
-
-    viewportOutline.vertices.write( 0,
-      sizeof(decltype(viewportOutlineVertices)::value_type) * viewportOutlineVertices.size(),
-      viewportOutlineVertices.data() );
-
-    windowOutline.vertices.write( 0,
-      sizeof(decltype(windowOutlineVertices)::value_type) * windowOutlineVertices.size(),
-      windowOutlineVertices.data() );
-
-    viewportOutline.vao.bind();
-
-    auto projection = glm::ortho(
-      0.0f, camViewport.z,
-      0.0f, camViewport.w,
-      -1.0f, 1.0f );
-
-    glUniform1ui(uColor, colorViewport);
-    glUniformMatrix4fv(
-      uTransform,
-      1, GL_FALSE,
-      glm::value_ptr(projection) );
-
-    glDrawArrays(GL_LINE_LOOP, 0, 4);
-
-    windowOutline.vao.bind();
-
-    glViewport(
-      0, 0,
-      framebufferSize.x,
-      framebufferSize.y );
-
-    glScissor(
-      0, 0,
-      framebufferSize.x,
-      framebufferSize.y );
-
-    projection = glm::ortho(
-      0.0f, framebufferSize.x,
-      0.0f, framebufferSize.y,
-      0.0f, 1.0f );
-
-    glUniform1ui(uColor, colorWindow);
-    glUniformMatrix4fv(
-      uTransform, 1, GL_FALSE,
-      glm::value_ptr(projection));
-
-    glDrawArrays(GL_LINE_LOOP, 0, 4);
-
-    glBindVertexArray(0);
-
-    auto& readbackQueue = registry.ctx().get <FrameReadbackQueue> ();
-
-    for ( auto& request : readbackQueue.requests )
-      if ( request.fence == nullptr &&
-           request.framebufferId == viewport.framebuffer.fbo )
-      {
-        glBindBuffer(GL_PIXEL_PACK_BUFFER, request.buffers.first.id());
-
-        glNamedFramebufferReadBuffer(
-          viewport.framebuffer.fbo,
-          GL_COLOR_ATTACHMENT1 );
-
-        glReadPixels(
-          request.pos.x, request.pos.y,
-          request.size.x, request.size.y,
-          GL_RED_INTEGER,
-          GL_UNSIGNED_INT,
-          nullptr );
-
-        const auto bufferSize =
-          sizeof(decltype(request.data)::value_type) * request.size.x * request.size.y;
-
-        glCopyNamedBufferSubData(
-          request.buffers.first.id(),
-          request.buffers.second.id(),
-          0, 0,
-          bufferSize );
-
-        request.fence = glFenceSync(
-          GL_SYNC_GPU_COMMANDS_COMPLETE, 0 );
-      }
-
-    glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
-  }
-
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
-  glDisable(GL_SCISSOR_TEST);
-  glDisable(GL_BLEND);
 
   while ( readbackQueue.requests.empty() == false )
   {
@@ -474,6 +483,143 @@ EditorRenderSystem(
   }
 
   glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
+}
+
+static void
+RenderToTarget(
+  entt::registry& registry,
+  const types::RenderTarget& target,
+  const entt::entity eCamera )
+{
+  using compos::Camera;
+  using compos::Transform;
+  using types::ShaderType;
+  using types::ShaderManager;
+  using types::FrameReadbackQueue;
+
+  const auto& const_registry = registry;
+
+  const glm::vec2 framebufferSize = target.size;
+
+  glBindFramebuffer(GL_FRAMEBUFFER, target.fbo);
+
+  glColorMaski(1, GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+
+  glEnable(GL_SCISSOR_TEST);
+
+  glViewport( 0, 0,
+    framebufferSize.x,
+    framebufferSize.y );
+
+  glScissor( 0, 0,
+    framebufferSize.x,
+    framebufferSize.y );
+
+  glClearNamedFramebufferfv( target.fbo,
+    GL_COLOR, 0,
+    glm::value_ptr(glm::vec4{0.0, 0.0, 0.0, 1.0f}) );
+
+  glClearNamedFramebufferfi( target.fbo,
+    GL_DEPTH_STENCIL, 0,
+    1.0f, 0 );
+
+  const uint32_t invalidId {entt::null};
+
+  glClearNamedFramebufferuiv( target.fbo,
+    GL_COLOR, 1, &invalidId );
+
+  if ( eCamera == entt::null )
+    return;
+
+  const auto&& [cCamera, cCameraTransform]
+    = const_registry.try_get <Camera, Transform> (eCamera);
+
+  if ( cCamera == nullptr ||
+       cCameraTransform == nullptr )
+    return;
+
+  const auto camViewport = cCamera->viewportScaled(framebufferSize);
+
+  glEnable(GL_BLEND);
+  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
+  glViewport(
+    camViewport.x, camViewport.y,
+    camViewport.z, camViewport.w );
+
+  glScissor(
+    camViewport.x, camViewport.y,
+    camViewport.z, camViewport.w );
+
+  const auto camView = cCamera->viewMatrix(const_registry, eCamera, *cCameraTransform);
+  const auto viewProjection = cCamera->projMatrix(framebufferSize) * camView;
+
+  GLenum renderMode = GL_LINE_LOOP;
+
+  if ( cCamera->renderMode == Camera::RenderMode::Solid )
+  {
+    glEnable(GL_DEPTH_TEST);
+    renderMode = GL_TRIANGLE_FAN;
+  }
+  else
+    glDisable(GL_DEPTH_TEST);
+
+  glEnable(GL_CULL_FACE);
+
+  GeometryPass(registry, renderMode, viewProjection);
+
+  WriteFrameReadbackData(registry, target);
+}
+
+
+void
+EditorRenderSystem(
+  entt::registry& registry )
+{
+  using compos::Camera;
+  using compos::Transform;
+  using types::ShaderType;
+  using types::ShaderManager;
+  using types::CallbackManager;
+  using types::FrameReadbackQueue;
+  using types::FrameReadbackResult;
+  using ui::ViewportManagerUi;
+
+  const auto& const_registry = registry;
+
+  auto& viewportManagerUi = const_registry.ctx().get <ViewportManagerUi> ();
+
+  for ( auto& viewport : viewportManagerUi.viewports() )
+    if ( viewport.visible == true )
+    {
+      const auto eCamera = viewport.camera.get(registry);
+
+      RenderToTarget(
+        registry,
+        viewport.framebuffer,
+        eCamera );
+
+      if ( eCamera == entt::null )
+        continue;
+
+      const auto&& [cCamera, cCameraTransform]
+        = const_registry.try_get <Camera, Transform> (eCamera);
+
+      if ( cCamera == nullptr ||
+           cCameraTransform == nullptr )
+        continue;
+
+      DrawViewportOutline(
+        registry,
+        viewport.framebuffer,
+        cCamera->viewportScaled(viewport.framebuffer.size) );
+    }
+
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  glDisable(GL_SCISSOR_TEST);
+  glDisable(GL_BLEND);
+
+  ProcessFrameReadback(registry);
 }
 
 void
@@ -613,16 +759,63 @@ void
 RenderSystem(
   entt::registry& registry )
 {
-  using namespace compos;
-  using namespace types;
-
-  const auto& const_registry = registry;
+  using types::ShaderType;
+  using types::ShaderManager;
+  using types::CasqadiumEngine;
+  using compos::Camera;
+  using compos::Transform;
+  using compos::SubscriberUpdate;
 
   registry.sort <Camera> (
   [] ( const Camera& lhs, const Camera& rhs )
   {
     return lhs.layer > rhs.layer;
   });
+
+  if ( registry.ctx().contains <PrimaryRenderTarget> () == false )
+    registry.ctx().emplace <PrimaryRenderTarget> ();
+
+  auto& engine = *registry.ctx().get <CasqadiumEngine*> ();
+  auto& mainTarget = registry.ctx().get <PrimaryRenderTarget> ();
+
+  const auto framebufferSize = engine.framebufferSize();
+
+  mainTarget.target.update(framebufferSize);
+
+  auto& shaderManager = registry.ctx().get <ShaderManager> ();
+  auto& shader = shaderManager.get(ShaderType::FullscreenQuad);
+
+  for ( const auto&& [eCamera, cCamera, cTransform]
+          : registry.view <Camera, Transform, SubscriberUpdate> ().each() )
+    RenderToTarget(registry, mainTarget.target, eCamera);
+
+//  glBlitFramebuffer( 0, 0,
+//    mainTarget.target.size.x,
+//    mainTarget.target.size.y,
+//    0, 0,
+//    mainTarget.target.size.x,
+//    mainTarget.target.size.y,
+//    0, 0 );
+
+  ProcessFrameReadback(registry);
+
+  glDisable(GL_SCISSOR_TEST);
+  glDisable(GL_BLEND);
+
+  glViewport( 0, 0,
+    framebufferSize.x,
+    framebufferSize.y );
+
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  glBindTextureUnit(0, mainTarget.target.textureAlbedo.id());
+  mainTarget.vao.bind();
+
+  shader.use();
+
+  glDrawArrays(GL_TRIANGLE_FAN, 0, 4);
+
+  glBindTextureUnit(0, 0);
+  shader.unuse();
 }
 
 void

@@ -49,8 +49,8 @@ in VertexOutput
 
 } vInput;
 
-layout(location = 0 ) out vec4 fAlbedo;
-layout(location = 1 ) out uint fObjectId;
+layout(location = 0) out vec4 fAlbedo;
+layout(location = 1) out uint fObjectId;
 
 
 void main()
@@ -109,6 +109,54 @@ layout(location = 0) out vec4 fAlbedo;
 void main()
 {
   fAlbedo = unpackUnorm4x8(uColor);
+}
+
+)code";
+
+static const char* FullscreenQuadVertexShader =
+R"code(
+#version 430
+
+layout(location = 0) in vec4 aPos;
+layout(location = 1) in vec2 aTexCoords;
+
+out VertexOutput
+{
+  vec2 texCoords;
+
+} vOutput;
+
+out gl_PerVertex
+{
+  vec4 gl_Position;
+};
+
+void main()
+{
+  gl_Position = aPos;
+  vOutput.texCoords = aTexCoords;
+}
+
+)code";
+
+static const char* FullscreenQuadFragmentShader =
+R"code(
+#version 430
+
+uniform sampler2D uTexture;
+
+in VertexOutput
+{
+  vec2 texCoords;
+
+} vInput;
+
+layout(location = 0) out vec4 fAlbedo;
+
+
+void main()
+{
+  fAlbedo = texture(uTexture, vInput.texCoords);
 }
 
 )code";
@@ -181,6 +229,10 @@ CasqadiumEngine::loadShaders()
       UiElementsVertexShader,
       UiElementsFragmentShader ) &&
     shaderManager.load(
+      ShaderType::FullscreenQuad,
+      FullscreenQuadVertexShader,
+      FullscreenQuadFragmentShader ) &&
+    shaderManager.load(
       ShaderType::DebugDraw,
       DebugDrawVertexShader,
       DebugDrawFragmentShader );
@@ -198,6 +250,10 @@ CasqadiumEngine::loadShaders()
       ShaderType::UiElements,
       "shaders/uiElements.vert",
       "shaders/uiElements.frag" ) &&
+    shaderManager.load(
+      ShaderType::FullscreenQuad,
+      "shaders/fullscreenQuad.vert",
+      "shaders/fullscreenQuad.frag" ) &&
     shaderManager.load(
       ShaderType::DebugDraw,
       "shaders/debugDraw.vert",

@@ -12,11 +12,13 @@ namespace cqde::types
 
 struct RenderTarget
 {
+  using GLuint = uint32_t;
+
   glm::u16vec2 size {};
 
-  uint32_t fbo {};
-  uint32_t objectIds {};
-  uint32_t depthStencil {};
+  GLuint fbo {};
+  GLuint objectIds {};
+  GLuint depthStencil {};
 
   GlTexture textureAlbedo {};
 

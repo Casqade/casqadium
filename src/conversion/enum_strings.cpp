@@ -124,6 +124,9 @@ ShaderTypeToString(
     case ShaderType::UiElements:
       return "UiElements";
 
+    case ShaderType::FullscreenQuad:
+      return "FullscreenQuad";
+
     case ShaderType::DebugDraw:
       return "DebugDraw";
   }
@@ -145,6 +148,9 @@ ShaderTypeFromString(
 
   if ( type == ShaderTypeToString(ShaderType::UiElements) )
     return ShaderType::UiElements;
+
+  if ( type == ShaderTypeToString(ShaderType::FullscreenQuad) )
+    return ShaderType::FullscreenQuad;
 
   if ( type == ShaderTypeToString(ShaderType::DebugDraw) )
     return ShaderType::DebugDraw;
