@@ -32,9 +32,11 @@ struct alignas(64) TextureBuffer
 
   TextureBuffer();
   TextureBuffer( const TextureBuffer& );
+  TextureBuffer( TextureBuffer&& );
   ~TextureBuffer();
 
   TextureBuffer& operator = ( const TextureBuffer& );
+  TextureBuffer& operator = ( TextureBuffer&& );
 
   void create();
   void update();

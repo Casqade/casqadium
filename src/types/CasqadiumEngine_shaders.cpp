@@ -66,6 +66,63 @@ void main()
 
 )code";
 
+static const char* WireframeVertexShader =
+R"code(
+#version 430
+
+layout(location = 0) uniform mat4 uTransform;
+
+layout(location = 0) in vec4 aPos;
+layout(location = 1) in vec2 aTexCoords;
+
+out VertexOutput
+{
+  vec2 texCoords;
+
+} vOutput;
+
+out gl_PerVertex
+{
+  vec4 gl_Position;
+};
+
+
+void main()
+{
+  gl_Position = uTransform * aPos;
+  vOutput.texCoords = aTexCoords;
+}
+
+)code";
+
+static const char* WireframeFragmentShader =
+R"code(
+#version 430
+
+layout(location = 16) uniform uint uObjectId;
+
+in VertexOutput
+{
+  vec2 texCoords;
+
+} vInput;
+
+layout(location = 0) out vec4 fAlbedo;
+layout(location = 1) out uint fObjectId;
+
+
+void main()
+{
+  float alpha =
+    float(vInput.texCoords.x <= 0.01) + float(vInput.texCoords.x >= 0.99)
+  + float(vInput.texCoords.y <= 0.01) + float(vInput.texCoords.y >= 0.99);
+
+  fAlbedo = vec4(0.75, 0.75, 0.75, alpha);
+  fObjectId = uObjectId;
+}
+
+)code";
+
 static const char* ShadowsVertexShader =
 R"code(
 
@@ -220,6 +277,10 @@ CasqadiumEngine::loadShaders()
       ShaderType::Geometry,
       GeometryVertexShader,
       GeometryFragmentShader ) &&
+    shaderManager.load(
+      ShaderType::Wireframe,
+      WireframeVertexShader,
+      WireframeFragmentShader ) &&
 //    shaderManager.load(
 //      ShaderType::Shadows,
 //      ShadowsVertexShader,
@@ -242,6 +303,10 @@ CasqadiumEngine::loadShaders()
       ShaderType::Geometry,
       "shaders/geometry.vert",
       "shaders/geometry.frag" ) &&
+    shaderManager.load(
+      ShaderType::Wireframe,
+      "shaders/wireframe.vert",
+      "shaders/wireframe.frag" ) &&
     shaderManager.load(
       ShaderType::Shadows,
       "shaders/shadows.vert",

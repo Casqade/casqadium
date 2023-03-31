@@ -104,6 +104,10 @@ editorModeEnable(
 
   for ( const auto& systemId : systemManager.systems(Phase::Editor) )
     systemManager.activate(systemId);
+
+  using types::FrameReadbackQueue;
+  auto& readbackQueue = registry.ctx().get <FrameReadbackQueue> ();
+  readbackQueue.clear();
 };
 
 void
@@ -113,6 +117,7 @@ editorModeDisable(
 {
   using types::EntityManager;
   using types::SystemManager;
+  using types::FrameReadbackQueue;
   using compos::CasqadiumEditorInternal;
 
   using Phase = types::System::Phase;
@@ -127,6 +132,9 @@ editorModeDisable(
 
   for ( const auto& systemId : systemManager.systemsActive(Phase::Editor) )
     systemManager.deactivate(systemId);
+
+  auto& readbackQueue = registry.ctx().get <FrameReadbackQueue> ();
+  readbackQueue.clear();
 };
 
 void

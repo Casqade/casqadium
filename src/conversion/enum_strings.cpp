@@ -118,6 +118,9 @@ ShaderTypeToString(
     case ShaderType::Geometry:
       return "Geometry";
 
+    case ShaderType::Wireframe:
+      return "Wireframe";
+
     case ShaderType::Shadows:
       return "Shadows";
 
@@ -142,6 +145,9 @@ ShaderTypeFromString(
 
   if ( type == ShaderTypeToString(ShaderType::Geometry) )
     return ShaderType::Geometry;
+
+  if ( type == ShaderTypeToString(ShaderType::Wireframe) )
+    return ShaderType::Wireframe;
 
   if ( type == ShaderTypeToString(ShaderType::Shadows) )
     return ShaderType::Shadows;

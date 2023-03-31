@@ -35,12 +35,12 @@ RenderTarget::operator = (
   return *this;
 }
 
-void
+bool
 RenderTarget::update(
   const glm::u16vec2& size )
 {
   if ( this->size == size )
-    return;
+    return false;
 
   this->size = size;
 
@@ -83,7 +83,9 @@ RenderTarget::update(
   glNamedFramebufferDrawBuffers(fbo, sizeof(attachements) / sizeof(attachements[0]), attachements);
 
   const auto status = glCheckNamedFramebufferStatus(fbo, GL_FRAMEBUFFER);
-  CQDE_ASSERT_DEBUG(status == GL_FRAMEBUFFER_COMPLETE, return);
+  CQDE_ASSERT_DEBUG(status == GL_FRAMEBUFFER_COMPLETE, return false);
+
+  return true;
 }
 
 void

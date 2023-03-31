@@ -29,7 +29,7 @@ struct RenderTarget
 
   RenderTarget& operator = ( const RenderTarget& );
 
-  void update( const glm::u16vec2& size );
+  bool update( const glm::u16vec2& size );
   void destroy();
 };
 

@@ -14,8 +14,8 @@ void RenderSystem( entt::registry& );
 
 void LightingSystem( entt::registry& );
 
-void EditorEntityHighlightSystem( const entt::registry& );
+void EditorEntityHighlightSystem( entt::registry& );
 
-void InteractionHighlightSystem( const entt::registry& );
+void InteractionHighlightSystem( entt::registry& );
 
 } // namespace cqde::systems

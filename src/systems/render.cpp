@@ -13,6 +13,7 @@
 #include <cqde/types/graphics/GlVertexArray.hpp>
 #include <cqde/types/graphics/ShaderManager.hpp>
 #include <cqde/types/graphics/FrameReadback.hpp>
+#include <cqde/types/graphics/PrimaryRenderTarget.hpp>
 
 #include <cqde/types/ui/EntityManagerUi.hpp>
 #include <cqde/types/ui/ViewportManagerUi.hpp>
@@ -70,80 +71,6 @@ RenderBufferClearSystem(
     1.0f, 0 );
 }
 
-struct PrimaryRenderTarget
-{
-  using GlBuffer = types::GlBuffer;
-  using GlVertexArray = types::GlVertexArray;
-  using RenderTarget = types::RenderTarget;
-
-
-  RenderTarget target {};
-
-  GlVertexArray vao {};
-  GlBuffer vertices {};
-  GlBuffer texCoords {};
-
-
-  PrimaryRenderTarget()
-  {
-    const std::vector <glm::vec2> verticesData
-    {
-      {-1.0f, -1.0f},
-      {1.0f, -1.0f},
-      {1.0f, 1.0f},
-      {-1.0f, 1.0f},
-    };
-
-    const std::vector <glm::vec2> texCoordsData
-    {
-      {0.0f, 0.0f},
-      {1.0f, 0.0f},
-      {1.0f, 1.0f},
-      {0.0f, 1.0f},
-    };
-
-    const auto verticesSize =
-      sizeof(decltype(verticesData)::value_type) * verticesData.size();
-
-    const auto texCoordsSize =
-      sizeof(decltype(texCoordsData)::value_type) * texCoordsData.size();
-
-    vertices.create( verticesSize,
-      GlBuffer::ImmutableStorageFlags(),
-      verticesData.data() );
-
-    texCoords.create( texCoordsSize,
-      GlBuffer::ImmutableStorageFlags(),
-      texCoordsData.data() );
-
-    const auto stride = sizeof(glm::vec2);
-
-    vao.create();
-
-    vao.enableAttribute(0);
-    vao.setAttributeFormat(
-      0, 2, 0, GL_FLOAT );
-
-    vao.enableAttribute(1);
-    vao.setAttributeFormat(
-      1, 2, 0, GL_FLOAT );
-
-    vao.attachBuffer(
-      vertices, 0,
-      0, stride );
-
-    vao.attachBuffer(
-      texCoords, 1,
-      0, stride );
-  }
-
-  ~PrimaryRenderTarget()
-  {
-    vao.destroy();
-    vertices.destroy();
-    texCoords.destroy();
-  }
-};
 
 struct EditorRenderData
 {
@@ -200,13 +127,13 @@ static void
 GeometryPass(
   entt::registry& registry,
   const GLenum renderMode,
-  const glm::mat4& viewProjection )
+  const glm::mat4& viewProjection,
+  const types::ShaderType shaderType )
 {
   using compos::Camera;
   using compos::Transform;
   using compos::GeometryBuffer;
   using compos::TextureBuffer;
-  using types::ShaderType;
   using types::ShaderManager;
   using types::GeometryAssetManager;
   using types::TextureAssetManager;
@@ -215,7 +142,7 @@ GeometryPass(
   auto& textures  = registry.ctx().get <TextureAssetManager> ();
   auto& shaderManager = registry.ctx().get <ShaderManager> ();
 
-  auto& shader = shaderManager.get(ShaderType::Geometry);
+  auto& shader = shaderManager.get(shaderType);
   shader.use();
 
   const auto uTransform = shader.uniformLocation("uTransform");
@@ -382,110 +309,6 @@ DrawViewportOutline(
 }
 
 static void
-WriteFrameReadbackData(
-  entt::registry& registry,
-  const types::RenderTarget& target )
-{
-  using types::FrameReadbackQueue;
-
-  auto& readbackQueue = registry.ctx().get <FrameReadbackQueue> ();
-
-  for ( auto& request : readbackQueue.requests )
-    if ( request.fence == nullptr &&
-         request.framebufferId == target.fbo )
-    {
-      glBindBuffer(GL_PIXEL_PACK_BUFFER, request.buffers.first.id());
-
-      glNamedFramebufferReadBuffer(
-        target.fbo,
-        GL_COLOR_ATTACHMENT1 );
-
-      glReadPixels(
-        request.pos.x, request.pos.y,
-        request.size.x, request.size.y,
-        GL_RED_INTEGER,
-        GL_UNSIGNED_INT,
-        nullptr );
-
-      const auto bufferSize =
-        sizeof(decltype(request.data)::value_type) * request.size.x * request.size.y;
-
-      glCopyNamedBufferSubData(
-        request.buffers.first.id(),
-        request.buffers.second.id(),
-        0, 0,
-        bufferSize );
-
-      request.fence = glFenceSync(
-        GL_SYNC_GPU_COMMANDS_COMPLETE, 0 );
-    }
-
-  glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
-}
-
-static void
-ProcessFrameReadback(
-  entt::registry& registry )
-{
-  using types::CallbackManager;
-  using types::FrameReadbackQueue;
-  using types::FrameReadbackResult;
-
-  auto& readbackQueue = registry.ctx().get <FrameReadbackQueue> ();
-  auto& callbackManager = registry.ctx().get <CallbackManager> ();
-
-  while ( readbackQueue.requests.empty() == false )
-  {
-    auto& request = readbackQueue.requests.front();
-
-    if ( request.fence == nullptr )
-      break;
-
-    GLint status {};
-    GLsizei length {};
-
-    glGetSynciv( request.fence,
-      GL_SYNC_STATUS, sizeof(status),
-      &length, &status );
-
-    if ( status != GL_SIGNALED )
-      break;
-
-    glBindBuffer(GL_PIXEL_PACK_BUFFER, request.buffers.first.id());
-
-    const auto readDataSize =
-      sizeof(decltype(request.data)::value_type) * request.size.x * request.size.y;
-
-    const auto readData = request.buffers.second.map(
-      0, readDataSize,
-      GL_MAP_READ_BIT );
-
-    std::memcpy(
-      request.data.data(),
-      readData, readDataSize );
-
-    request.buffers.second.unmap();
-
-    if ( request.callback != nullptr )
-    {
-      const FrameReadbackResult result
-      {
-        request.pos,
-        request.size,
-        std::move(request.data),
-      };
-
-      callbackManager.executeLater(
-        request.callback, {result} );
-    }
-
-    readbackQueue.pop();
-  }
-
-  glBindBuffer(GL_PIXEL_PACK_BUFFER, 0);
-}
-
-static void
 RenderToTarget(
   entt::registry& registry,
   const types::RenderTarget& target,
@@ -554,23 +377,28 @@ RenderToTarget(
   const auto camView = cCamera->viewMatrix(const_registry, eCamera, *cCameraTransform);
   const auto viewProjection = cCamera->projMatrix(framebufferSize) * camView;
 
-  GLenum renderMode = GL_LINE_LOOP;
+  GLenum renderMode = GL_TRIANGLE_FAN;
+  ShaderType shaderType = ShaderType::Wireframe;
 
   if ( cCamera->renderMode == Camera::RenderMode::Solid )
   {
     glEnable(GL_DEPTH_TEST);
+    glEnable(GL_CULL_FACE);
+
     renderMode = GL_TRIANGLE_FAN;
+    shaderType = ShaderType::Geometry;
   }
   else
+  {
     glDisable(GL_DEPTH_TEST);
+    glDisable(GL_CULL_FACE);
+  }
 
-  glEnable(GL_CULL_FACE);
+  GeometryPass(registry, renderMode, viewProjection, shaderType);
 
-  GeometryPass(registry, renderMode, viewProjection);
-
-  WriteFrameReadbackData(registry, target);
+  auto& readbackQueue = registry.ctx().get <FrameReadbackQueue> ();
+  readbackQueue.write(target);
 }
-
 
 void
 EditorRenderSystem(
@@ -619,7 +447,8 @@ EditorRenderSystem(
   glDisable(GL_SCISSOR_TEST);
   glDisable(GL_BLEND);
 
-  ProcessFrameReadback(registry);
+  auto& readbackQueue = registry.ctx().get <FrameReadbackQueue> ();
+  readbackQueue.process(registry);
 }
 
 void
@@ -762,6 +591,8 @@ RenderSystem(
   using types::ShaderType;
   using types::ShaderManager;
   using types::CasqadiumEngine;
+  using types::FrameReadbackQueue;
+  using types::PrimaryRenderTarget;
   using compos::Camera;
   using compos::Transform;
   using compos::SubscriberUpdate;
@@ -772,15 +603,14 @@ RenderSystem(
     return lhs.layer > rhs.layer;
   });
 
-  if ( registry.ctx().contains <PrimaryRenderTarget> () == false )
-    registry.ctx().emplace <PrimaryRenderTarget> ();
-
   auto& engine = *registry.ctx().get <CasqadiumEngine*> ();
   auto& mainTarget = registry.ctx().get <PrimaryRenderTarget> ();
+  auto& readbackQueue = registry.ctx().get <FrameReadbackQueue> ();
 
   const auto framebufferSize = engine.framebufferSize();
 
-  mainTarget.target.update(framebufferSize);
+  if ( mainTarget.target.update(framebufferSize) == true )
+    readbackQueue.clear();
 
   auto& shaderManager = registry.ctx().get <ShaderManager> ();
   auto& shader = shaderManager.get(ShaderType::FullscreenQuad);
@@ -789,15 +619,7 @@ RenderSystem(
           : registry.view <Camera, Transform, SubscriberUpdate> ().each() )
     RenderToTarget(registry, mainTarget.target, eCamera);
 
-//  glBlitFramebuffer( 0, 0,
-//    mainTarget.target.size.x,
-//    mainTarget.target.size.y,
-//    0, 0,
-//    mainTarget.target.size.x,
-//    mainTarget.target.size.y,
-//    0, 0 );
-
-  ProcessFrameReadback(registry);
+  readbackQueue.process(registry);
 
   glDisable(GL_SCISSOR_TEST);
   glDisable(GL_BLEND);
@@ -820,57 +642,185 @@ RenderSystem(
 
 void
 EditorEntityHighlightSystem(
-  const entt::registry& registry )
+  entt::registry& registry )
 {
   using compos::Camera;
+  using compos::Transform;
+  using compos::GeometryBuffer;
   using compos::CasqadiumEditorInternal;
+  using types::ShaderType;
+  using types::ShaderManager;
   using types::EntityManager;
+  using types::GeometryAssetManager;
   using ui::EntityManagerUi;
+  using ui::ViewportManagerUi;
+
+  const auto& const_registry = registry;
 
   auto& entityManager   = registry.ctx().get <EntityManager> ();
   auto& entityManagerUi = registry.ctx().get <EntityManagerUi> ();
+  auto& viewportManagerUi = const_registry.ctx().get <ViewportManagerUi> ();
+
+  auto& geometry = registry.ctx().get <GeometryAssetManager> ();
+  auto& shaderManager = registry.ctx().get <ShaderManager> ();
+
+  auto& shader = shaderManager.get(ShaderType::UiElements);
+  shader.use();
+
+  const auto uTransform = shader.uniformLocation("uTransform");
+  const auto uColor = shader.uniformLocation("uColor");
+
+  glDisable(GL_DEPTH_TEST);
+  glEnable(GL_SCISSOR_TEST);
+  glUniform1ui(uColor, olc::YELLOW.n);
 
   for ( const auto selectedEntity : entityManagerUi.selectedEntities() )
   {
     if ( selectedEntity == entt::null )
-      return;
+      continue;
 
-//    for ( const auto&& [eCamera, cCamera]
-//            : registry.view <Camera, CasqadiumEditorInternal> ().each() )
-//      for ( const auto& [vBuf, entity] : cCamera.zBuffer )
-//        if ( entity == selectedEntity )
-//          olc::renderer->ptrPGE->DrawPolyLineDecal(vBuf.vertices, olc::YELLOW);
+    auto&& [cTransform, cGeometryBuffer] =
+      const_registry.try_get <Transform, GeometryBuffer> (selectedEntity);
+
+    if ( cTransform == nullptr ||
+         cGeometryBuffer == nullptr )
+      continue;
+
+    const auto gBuffer = geometry.get(cGeometryBuffer->buffer);
+
+    if ( gBuffer == nullptr )
+      continue;
+
+    glBindVertexArray(gBuffer->vao.id());
+
+    for ( auto& viewport : viewportManagerUi.viewports() )
+    {
+      if ( viewport.visible == false )
+        continue;
+
+      const auto eCamera = viewport.camera.get(registry);
+
+      auto&& [cCamera, cCameraTransform] = registry.try_get <Camera, Transform> (eCamera);
+
+      if ( cCamera == nullptr ||
+           cCameraTransform == nullptr )
+        continue;
+
+      const auto framebufferSize = viewport.framebuffer.size;
+      const auto camViewport = cCamera->viewportScaled(framebufferSize);
+
+      glBindFramebuffer(GL_FRAMEBUFFER, viewport.framebuffer.fbo);
+
+      glViewport(
+        camViewport.x, camViewport.y,
+        camViewport.z, camViewport.w );
+
+      glScissor(
+        camViewport.x, camViewport.y,
+        camViewport.z, camViewport.w );
+
+      const auto camView = cCamera->viewMatrix(const_registry, eCamera, *cCameraTransform);
+      const auto viewProjection = cCamera->projMatrix(framebufferSize) * camView;
+
+      const auto mvp = viewProjection * GetWorldMatrix(
+        registry,
+        selectedEntity,
+        *cTransform );
+
+      glUniformMatrix4fv(
+        uTransform, 1, GL_FALSE,
+        glm::value_ptr(mvp) );
+
+      glDrawArrays(GL_LINE_LOOP, 0, 4);
+    }
   }
+
+  glBindVertexArray(0);
+
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  shader.unuse();
 }
 
 void
 InteractionHighlightSystem(
-  const entt::registry& registry )
+  entt::registry& registry )
 {
   using compos::Camera;
   using compos::InteractionListenerColor;
   using compos::InteractionSource;
   using compos::SubscriberUpdate;
+  using compos::GeometryBuffer;
+  using compos::Transform;
+  using types::ShaderType;
+  using types::ShaderManager;
+  using types::PrimaryRenderTarget;
+  using types::GeometryAssetManager;
 
-  for ( const auto&& [eCamera, cCamera, cInteractionSource]
-          : registry.view <Camera, InteractionSource, SubscriberUpdate> ().each() )
+  const auto& const_registry = registry;
+
+  auto& geometry = registry.ctx().get <GeometryAssetManager> ();
+  auto& shaderManager = registry.ctx().get <ShaderManager> ();
+  auto& mainTarget = registry.ctx().get <PrimaryRenderTarget> ();
+
+  auto& shader = shaderManager.get(ShaderType::UiElements);
+  shader.use();
+
+  const auto uTransform = shader.uniformLocation("uTransform");
+  const auto uColor = shader.uniformLocation("uColor");
+
+  glDisable(GL_DEPTH_TEST);
+  glEnable(GL_SCISSOR_TEST);
+
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+
+  for ( const auto&& [eCamera, cCamera, cCameraTransform, cInteractionSource]
+          : registry.view <Camera, Transform, InteractionSource, SubscriberUpdate> ().each() )
   {
     const auto eListener = cInteractionSource.listener;
 
     if ( entity_valid(eListener, registry) == false )
       continue;
 
-    const auto cListenerColor = registry.try_get <InteractionListenerColor> (eListener);
+    auto&& [cTransform, cGeometryBuffer, cListenerColor] =
+      const_registry.try_get <Transform, GeometryBuffer, InteractionListenerColor> (eListener);
 
-    if ( cListenerColor == nullptr )
+    if ( cTransform == nullptr ||
+         cGeometryBuffer == nullptr ||
+         cListenerColor == nullptr )
       continue;
 
-//    for ( const auto& [vBuf, entity] : cCamera.zBuffer )
-//      if ( entity == eListener )
-//      {
-//        olc::renderer->ptrPGE->DrawPolyLineDecal(vBuf.vertices, cListenerColor->color);
-//        break;
-//      }
+    const auto gBuffer = geometry.get(cGeometryBuffer->buffer);
+
+    if ( gBuffer == nullptr )
+      continue;
+
+    glBindVertexArray(gBuffer->vao.id());
+
+    const auto framebufferSize = mainTarget.target.size;
+    const auto camViewport = cCamera.viewportScaled(framebufferSize);
+
+    glViewport(
+      camViewport.x, camViewport.y,
+      camViewport.z, camViewport.w );
+
+    glScissor(
+      camViewport.x, camViewport.y,
+      camViewport.z, camViewport.w );
+
+    const auto camView = cCamera.viewMatrix(registry, eCamera, cCameraTransform);
+    const auto viewProjection = cCamera.projMatrix(framebufferSize) * camView;
+
+    const auto mvp = viewProjection * GetWorldMatrix(
+      registry,
+      eListener,
+      *cTransform );
+
+    glUniform1ui(uColor, cListenerColor->color.n);
+    glUniformMatrix4fv(
+      uTransform, 1, GL_FALSE,
+      glm::value_ptr(mvp) );
+
+    glDrawArrays(GL_LINE_LOOP, 0, 4);
   }
 }
 

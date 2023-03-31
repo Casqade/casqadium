@@ -152,11 +152,14 @@ target_sources(${TARGET} PRIVATE
   src/types/graphics/Mesh.cpp
   include/${CASQADIUM_SHORT}/types/graphics/Mesh.hpp
 
-  src/types/graphics/ShaderManager.cpp
-  include/${CASQADIUM_SHORT}/types/graphics/ShaderManager.hpp
+  src/types/graphics/PrimaryRenderTarget.cpp
+  include/${CASQADIUM_SHORT}/types/graphics/PrimaryRenderTarget.hpp
 
   src/types/graphics/RenderTarget.cpp
   include/${CASQADIUM_SHORT}/types/graphics/RenderTarget.hpp
+
+  src/types/graphics/ShaderManager.cpp
+  include/${CASQADIUM_SHORT}/types/graphics/ShaderManager.hpp
 
   src/types/physics/PhysicsEventListener.cpp
   include/${CASQADIUM_SHORT}/types/physics/PhysicsEventListener.hpp

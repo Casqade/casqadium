@@ -9,6 +9,8 @@
 #include <cqde/types/SystemManager.hpp>
 #include <cqde/types/UserManager.hpp>
 
+#include <cqde/types/graphics/FrameReadback.hpp>
+
 #include <cqde/components/InteractionListener.hpp>
 #include <cqde/components/InteractionProbe.hpp>
 #include <cqde/components/InteractionSource.hpp>
@@ -406,6 +408,7 @@ quickLoad(
   entt::registry& registry,
   const std::vector <std::any>& args )
 {
+  using types::FrameReadbackQueue;
   using types::CallbackManager;
   using types::SnapshotManager;
   using types::UserManager;
@@ -418,6 +421,9 @@ quickLoad(
     {
       const auto snapshotPath = registry.ctx().get <UserManager> ().snapshotsRoot();
       SnapshotManager::Load(registry, snapshotPath / "quick.json");
+
+      auto& readbackQueue = registry.ctx().get <FrameReadbackQueue> ();
+      readbackQueue.clear();
     }
     catch ( const std::exception& e )
     {

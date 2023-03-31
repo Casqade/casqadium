@@ -72,6 +72,11 @@ struct System;
 struct Terrain;
 struct TickCurrent;
 struct VertexBuffer;
+struct RenderTarget;
+struct PrimaryRenderTarget;
+struct FrameReadbackRequest;
+struct FrameReadbackResult;
+struct FrameReadbackQueue;
 
 class Collider;
 class ColliderFactory;

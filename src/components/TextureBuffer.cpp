@@ -41,6 +41,12 @@ TextureBuffer::TextureBuffer(
   *this = other;
 }
 
+TextureBuffer::TextureBuffer(
+  TextureBuffer&& other )
+{
+  *this = std::move(other);
+}
+
 TextureBuffer::~TextureBuffer()
 {
   --refCounter;
@@ -57,6 +63,18 @@ TextureBuffer::operator = (
   uvBuffer = other.uvBuffer;
   uv = other.uv;
   refCounter = ++other.refCounter;
+
+  return *this;
+}
+
+TextureBuffer&
+TextureBuffer::operator = (
+  TextureBuffer&& other )
+{
+  std::swap(texture, other.texture);
+  std::swap(uvBuffer, other.uvBuffer);
+  std::swap(uv, other.uv);
+  std::swap(refCounter, other.refCounter);
 
   return *this;
 }

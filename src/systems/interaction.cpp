@@ -11,6 +11,10 @@
 #include <cqde/components/SubscriberUpdate.hpp>
 #include <cqde/components/Transform.hpp>
 
+#include <cqde/types/CasqadiumEngine.hpp>
+#include <cqde/types/graphics/FrameReadback.hpp>
+#include <cqde/types/graphics/PrimaryRenderTarget.hpp>
+
 #include <entt/entity/registry.hpp>
 
 
@@ -29,6 +33,21 @@ InteractionQuerySystem(
   using compos::SubscriberUpdate;
   using InteractionType = InteractionSource::Type;
 
+  using types::CasqadiumEngine;
+  using types::FrameReadbackQueue;
+  using types::FrameReadbackResult;
+  using types::PrimaryRenderTarget;
+  using CallbackArgs = types::CallbackManager::CallbackArgs;
+
+  const auto& engine = *registry.ctx().get <CasqadiumEngine*> ();
+
+  auto& mainTarget = registry.ctx().get <PrimaryRenderTarget> ();
+
+  if ( mainTarget.target.fbo == 0 )
+    return;
+
+  auto& readbackQueue = registry.ctx().get <FrameReadbackQueue> ();
+
   for ( const auto&& [eCamera, cCamera, cInteractionSource]
           : registry.view <Camera, InteractionSource, SubscriberUpdate> ().each() )
   {
@@ -38,7 +57,7 @@ InteractionQuerySystem(
     {
       case InteractionType::ViewportCenter:
       {
-//        probePos = rectCenter(cCamera.viewportScaled());
+        probePos = rectCenter(cCamera.viewportScaled(engine.windowSize()));
         break;
       }
 
@@ -70,46 +89,59 @@ InteractionQuerySystem(
         CQDE_ASSERT_DEBUG(false, continue);
     }
 
-    cInteractionSource.listener = entt::null;
+    readbackQueue.push( mainTarget.target.fbo, probePos, {1u, 1u},
+    [eCamera = eCamera]
+    ( entt::registry& registry,
+      const CallbackArgs& args )
+    {
+      if ( registry.all_of <Camera, InteractionSource, SubscriberUpdate> (eCamera) == false )
+        return;
 
-//    for ( auto& [vBuf, entity] : cCamera.zBuffer )
-//    {
-//      if ( registry.all_of <InteractionListener, SubscriberUpdate> (entity) == false )
-//        continue;
+      auto& cInteractionSource = registry.get <InteractionSource> (eCamera);
 
-//      if ( pointInRect( probePos, boundingBox(vBuf.vertices) ) == false )
-//        continue;
+      cInteractionSource.listener = entt::null;
 
-//      auto& cInteractionListener = registry.get <const InteractionListener> (entity);
+      const auto result =
+        std::any_cast <FrameReadbackResult> (args.at(0));
 
-//      bool actionFound {};
+      const auto entity = static_cast <entt::entity> (result.data.front());
 
-//      for ( const auto& actionId : cInteractionSource.actions )
-//        if ( cInteractionListener.actions.count(actionId) > 0 )
-//        {
-//          actionFound = true;
-//          break;
-//        }
+      if ( entity == entt::null )
+        return;
 
-//      if ( actionFound == false )
-//        continue;
+      if ( registry.all_of <InteractionListener, SubscriberUpdate> (entity) == false )
+        return;
 
-//      if ( cInteractionSource.radius > 0.0f )
-//      {
-//        auto& cSourceTransform = registry.get <Transform> (eCamera);
-//        auto& cListenerTransform = registry.get <Transform> (entity);
+      auto& cInteractionListener = registry.get <const InteractionListener> (entity);
 
-//        const auto sourcePos = GetWorldMatrix(registry, eCamera, cSourceTransform)[3];
-//        const auto listenerPos = GetWorldMatrix(registry, entity, cListenerTransform)[3];
+      bool actionFound {};
 
-//        const auto distance = glm::length(listenerPos - sourcePos);
+      for ( const auto& actionId : cInteractionSource.actions )
+        if ( cInteractionListener.actions.count(actionId) > 0 )
+        {
+          actionFound = true;
+          break;
+        }
 
-//        if ( distance > cInteractionSource.radius )
-//          continue;
-//      }
+      if ( actionFound == false )
+        return;
 
-//      cInteractionSource.listener = entity;
-//    }
+      if ( cInteractionSource.radius > 0.0f )
+      {
+        auto& cSourceTransform = registry.get <Transform> (eCamera);
+        auto& cListenerTransform = registry.get <Transform> (entity);
+
+        const auto sourcePos = GetWorldMatrix(registry, eCamera, cSourceTransform)[3];
+        const auto listenerPos = GetWorldMatrix(registry, entity, cListenerTransform)[3];
+
+        const auto distance = glm::length(listenerPos - sourcePos);
+
+        if ( distance > cInteractionSource.radius )
+          return;
+      }
+
+      cInteractionSource.listener = entity;
+    });
   }
 }
 

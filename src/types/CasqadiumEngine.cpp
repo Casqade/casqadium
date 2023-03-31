@@ -22,6 +22,7 @@
 #include <cqde/types/input/InputManager.hpp>
 
 #include <cqde/types/graphics/FrameReadback.hpp>
+#include <cqde/types/graphics/PrimaryRenderTarget.hpp>
 
 #include <cqde/types/assets/AudioAssetManager.hpp>
 #include <cqde/types/assets/FontAssetManager.hpp>
@@ -308,6 +309,7 @@ CasqadiumEngine::initCommon()
   mRegistry.ctx().emplace <SystemManager> ();
   mRegistry.ctx().emplace <SnapshotManager> ();
   mRegistry.ctx().emplace <UserManager> ();
+  mRegistry.ctx().emplace <PrimaryRenderTarget> ();
   mRegistry.ctx().emplace <FrameReadbackQueue> ();
 
   mRegistry.ctx().emplace <AudioAssetManager> (tp);

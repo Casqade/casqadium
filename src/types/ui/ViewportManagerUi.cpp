@@ -17,6 +17,7 @@
 #include <cqde/components/CasqadiumEditorInternal.hpp>
 
 #include <cqde/types/assets/GeometryAssetManager.hpp>
+#include <cqde/types/graphics/FrameReadback.hpp>
 
 #include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/vector_angle.hpp>
@@ -193,6 +194,7 @@ ViewportManagerUi::ui_show_viewport_windows(
 {
   using fmt::format;
   using types::CasqadiumEngine;
+  using types::FrameReadbackQueue;
   using compos::Tag;
   using compos::Camera;
   using compos::SceneNode;
@@ -292,7 +294,12 @@ ViewportManagerUi::ui_show_viewport_windows(
     viewportSize.y -= viewportPos.y;
 
     iter->pos = {viewportPos.x, viewportPos.y};
-    iter->framebuffer.update({viewportSize.x, viewportSize.y});
+
+    if ( iter->framebuffer.update({viewportSize.x, viewportSize.y}) == true )
+    {
+      auto& readbackQueue = registry.ctx().get <FrameReadbackQueue> ();
+      readbackQueue.clear();
+    }
 
     ImGui::GetBackgroundDrawList()->AddImage(
       (ImTextureID) iter->framebuffer.textureAlbedo.id(),

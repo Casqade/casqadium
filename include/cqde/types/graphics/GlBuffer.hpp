@@ -43,6 +43,12 @@ public:
     const size_t size,
     const void* data ) const;
 
+  void copy(
+    const GlBuffer& target,
+    const size_t size,
+    const size_t readOffset = 0,
+    const size_t writeOffset = 0 ) const;
+
   bool isValid() const;
   bool isMapped() const;
 

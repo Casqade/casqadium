@@ -95,6 +95,22 @@ GlBuffer::write(
     offset, size, data );
 }
 
+void
+GlBuffer::copy(
+  const GlBuffer& target,
+  const size_t size,
+  const size_t readOffset,
+  const size_t writeOffset ) const
+{
+  CQDE_ASSERT_DEBUG(isValid() == true, return);
+  CQDE_ASSERT_DEBUG(target.isValid() == true, return);
+
+  glCopyNamedBufferSubData(
+    mId, target.mId,
+    readOffset, writeOffset,
+    size );
+}
+
 bool
 GlBuffer::isValid() const
 {

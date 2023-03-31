@@ -27,6 +27,7 @@ enum class MathFunctionType : uint8_t
 enum class ShaderType : uint8_t
 {
   Geometry,
+  Wireframe,
   Shadows,
   UiElements,
   FullscreenQuad,

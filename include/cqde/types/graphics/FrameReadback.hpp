@@ -62,6 +62,10 @@ struct FrameReadbackQueue
     const CallbackFunc& );
 
   void pop();
+  void clear();
+
+  void write( const RenderTarget& );
+  void process( entt::registry& );
 };
 
 } // namespace cqde::types
