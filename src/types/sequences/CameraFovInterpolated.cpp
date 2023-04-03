@@ -65,13 +65,17 @@ CameraFovInterpolated::execute(
   const entt::entity entity )
 {
   using compos::Camera;
+  using TimeUtils::Duration;
 
   if ( mInitStatus.initialized() == false )
     init(registry, entity);
 
   const bool timeExpired = mTime.expired(registry);
 
-  const auto dt = mSpline.value(std::min(mTime.progress(), 1.0));
+  auto dt = mSpline.value(std::min(mTime.progress(), 1.0));
+
+  if ( mTime.total == Duration{} )
+    dt = 1.0;
 
   auto& cCamera = registry.get <Camera> (entity);
   cCamera.fov = glm::mix(mFov.first, mFov.second, dt);
