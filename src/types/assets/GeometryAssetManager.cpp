@@ -221,6 +221,11 @@ AssetManager <VertexBuffer>::load(
           glm::vec3 vertex {};
           vertex << vertexJson;
           handle->vertices.push_back(vertex);
+          handle->indices=
+          {
+            0, 1, 2,
+            2, 3, 0,
+          };
         }
       }
       catch ( const std::exception& e )
