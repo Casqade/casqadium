@@ -330,7 +330,7 @@ AssetManager <std::string>::ui_show(
       entry.append(line);
 
     if ( linesSeparated.size() == 1 )
-      entry = lines.front();
+      entry = linesSeparated.front();
   }
 }
 
