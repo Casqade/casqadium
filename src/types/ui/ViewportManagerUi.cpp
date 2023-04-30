@@ -13,10 +13,8 @@
 #include <cqde/components/Camera.hpp>
 #include <cqde/components/SceneNode.hpp>
 #include <cqde/components/Transform.hpp>
-#include <cqde/components/GeometryBuffer.hpp>
 #include <cqde/components/CasqadiumEditorInternal.hpp>
 
-#include <cqde/types/assets/GeometryAssetManager.hpp>
 #include <cqde/types/graphics/FrameReadback.hpp>
 
 #include <glm/gtc/type_ptr.hpp>

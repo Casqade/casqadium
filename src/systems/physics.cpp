@@ -8,6 +8,7 @@
 #include <cqde/types/PhysicsManager.hpp>
 #include <cqde/types/CasqadiumEngine.hpp>
 #include <cqde/types/graphics/GlProgram.hpp>
+#include <cqde/types/graphics/GlVertexArray.hpp>
 #include <cqde/types/graphics/ShaderManager.hpp>
 #include <cqde/types/ui/ViewportManagerUi.hpp>
 

@@ -104,8 +104,6 @@ static void APIENTRY glDebugCallback(
   const GLchar* message,
   const void* userData )
 {
-  const auto engine = static_cast <const CasqadiumEngine*> (userData);
-
   using spdlog::level::level_enum;
 
   std::string sourceString {};
