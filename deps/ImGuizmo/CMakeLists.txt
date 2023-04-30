@@ -13,17 +13,14 @@ target_sources(${TARGET} PRIVATE
   ImGuizmo.h
 )
 
-target_include_directories(ImGuizmo PUBLIC
+target_include_directories(${TARGET} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
 )
 
-target_link_libraries(ImGuizmo PUBLIC imgui)
+target_link_libraries(${TARGET} PUBLIC imgui)
 
-# if (${BUILD_SHARED_LIBS})
-  # if (WIN32)
-    # target_compile_definitions(ImGuizmo PRIVATE IMGUI_API="__declspec(dllexport)")
-    # target_compile_definitions(ImGuizmo INTERFACE IMGUI_API="__declspec(dllimport)")
-  # else ()
-    # target_compile_definitions(ImGuizmo PUBLIC IMGUI_API="__attribute__((visibility("default")))")
-  # endif()
-# endif()
+if (${BUILD_SHARED_LIBS})
+ if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+   target_compile_definitions(${TARGET} PRIVATE "IMGUI_API=__declspec(dllexport)")
+ endif()
+endif()

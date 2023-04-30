@@ -22,7 +22,8 @@ UndoRedoQueue <T>::push(
        element == *mQueueIter )
     return;
 
-  if ( mQueueIter + 1 < mQueue.end() )
+  if ( mQueue.empty() == false &&
+       mQueueIter + 1 < mQueue.end() )
     mQueue.erase(mQueueIter + 1, mQueue.end());
 
   mQueue.push_back(element);
@@ -66,6 +67,9 @@ template <typename T>
 bool
 UndoRedoQueue <T>::redoAvailable() const
 {
+  if ( mQueue.size() < 2 )
+    return false;
+
   return mQueueIter < mQueue.end() - 1;
 }
 

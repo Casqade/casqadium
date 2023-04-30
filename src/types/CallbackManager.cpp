@@ -3,6 +3,8 @@
 #include <cqde/assert.hpp>
 #include <cqde/logger.hpp>
 
+#include <algorithm>
+
 
 namespace cqde::types
 {

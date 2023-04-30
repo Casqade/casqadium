@@ -6,6 +6,8 @@
 
 #include <imgui.h>
 
+#include <algorithm>
+
 
 namespace cqde::ui
 {

@@ -19,9 +19,6 @@ CameraFovInterpolated::ui_show(
   const entt::registry& registry,
   const entt::entity entity )
 {
-  const auto flags = ImGuiSliderFlags_AlwaysClamp |
-                     ImGuiSliderFlags_NoRoundToFormat;
-
   mTime.ui_show();
 
   if ( ImGui::CollapsingHeader("Interpolation curve", ImGuiTreeNodeFlags_DefaultOpen) )
@@ -39,6 +36,10 @@ CameraFovInterpolated::ui_show(
   const auto editFov =
   [] ( float& fov, const std::string& widgetId )
   {
+    const auto flags =
+      ImGuiSliderFlags_AlwaysClamp |
+      ImGuiSliderFlags_NoRoundToFormat;
+
     static bool fovAsRadians {};
 
     if ( fovAsRadians == false )

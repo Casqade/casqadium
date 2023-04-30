@@ -1,5 +1,7 @@
 #pragma once
 
+#include <olcPGE/olcPGE_export.hpp>
+
 #include <cstdint>
 
 
@@ -73,10 +75,10 @@ template <class T> inline v2d_generic<T> operator / (const int& lhs, const v2d_g
 template <class T, class U> inline bool operator < (const v2d_generic<T>& lhs, const v2d_generic<U>& rhs);
 template <class T, class U> inline bool operator > (const v2d_generic<T>& lhs, const v2d_generic<U>& rhs);
 
-extern template struct v2d_generic <int32_t>;
-extern template struct v2d_generic <uint32_t>;
-extern template struct v2d_generic <float>;
-extern template struct v2d_generic <double>;
+extern template struct OLCPGE_EXPORT v2d_generic <int32_t>;
+extern template struct OLCPGE_EXPORT v2d_generic <uint32_t>;
+extern template struct OLCPGE_EXPORT v2d_generic <float>;
+extern template struct OLCPGE_EXPORT v2d_generic <double>;
 
 using vi2d = v2d_generic <int32_t>;
 using vu2d = v2d_generic <uint32_t>;

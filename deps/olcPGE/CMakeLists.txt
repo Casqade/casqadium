@@ -60,9 +60,13 @@ FetchContent_Declare(Freetype
 FetchContent_MakeAvailable(Freetype)
 
 target_compile_definitions(freetype PUBLIC FT_CONFIG_OPTION_ERROR_STRINGS)
-target_link_libraries(${TARGET} PUBLIC freetype)
+
+if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+  target_compile_definitions(freetype INTERFACE DLL_IMPORT)
+endif()
 
 target_link_libraries(${TARGET} PUBLIC
+  freetype
   glad
   glfw
 )
@@ -76,7 +80,6 @@ if(WIN32)
     endif()
   endif()
 
-#  target_link_libraries(${TARGET} PUBLIC user32 gdi32 gdiplus Shlwapi dwmapi)
   target_link_libraries(${TARGET} PUBLIC gdiplus)
 
 else()

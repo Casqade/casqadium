@@ -4,7 +4,7 @@
 namespace olc
 {
 
-class Pixel;
+struct Pixel;
 class Sprite;
 class Decal;
 class Renderable;

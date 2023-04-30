@@ -31,9 +31,9 @@ template <int steps> void bezier_table(ImVec2 P[], ImVec2 results[])
     }
 }
 
-float BezierValue(float dt01, float P[4]);
+IMGUI_API float BezierValue(float dt01, float P[4]);
 
-int Bezier(const char* label, float P[5]);
+IMGUI_API int Bezier(const char* label, float P[5]);
 
 // void ShowBezierDemo() {
 //    { static float v[5] = { 0.950f, 0.050f, 0.795f, 0.035f };

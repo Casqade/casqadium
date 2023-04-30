@@ -2,12 +2,7 @@
 
 #include <olcPGE/Renderable.hpp>
 
-#ifdef WIN32
 #include <ft2build.h>
-#pragma comment(lib, "freetype.lib")
-#else
-#include <freetype2/ft2build.h>
-#endif
 
 #include FT_FREETYPE_H
 #include FT_GLYPH_H
@@ -19,8 +14,8 @@
 namespace olc
 {
 
-const std::vector <uint32_t>& OLCPGE_EXPORT FontProggyCleanData();
-const std::vector <uint32_t>& OLCPGE_EXPORT FontRobotoMediumData();
+OLCPGE_EXPORT const std::vector <uint32_t>& FontProggyCleanData();
+OLCPGE_EXPORT const std::vector <uint32_t>& FontRobotoMediumData();
 
 struct FontRect
 {
@@ -65,8 +60,8 @@ public:
   int GetFontSize() const;
   std::string GetErrorMessage() const;
 
-  static std::string OLCPGE_EXPORT Init();
-  static std::string OLCPGE_EXPORT Deinit();
+  static std::string Init();
+  static std::string Deinit();
 
 private:
   void DrawBitmapTo(int x, int y, FT_Bitmap bmp, olc::Pixel color,
@@ -80,7 +75,7 @@ private:
 
   std::string errorMessage {};
 
-  static FT_Library OLCPGE_EXPORT library;
+  static FT_Library library;
 };
 
 } // namespace olc

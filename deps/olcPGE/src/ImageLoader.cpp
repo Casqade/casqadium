@@ -24,9 +24,6 @@ namespace _gfs = std::filesystem;
 #if !defined(VC_EXTRALEAN)
 #define VC_EXTRALEAN
 #endif
-#if !defined(NOMINMAX)
-#define NOMINMAX
-#endif
 
 // In Code::Blocks
 #if !defined(_WIN32_WINNT)

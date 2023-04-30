@@ -67,14 +67,12 @@ target_include_directories(imgui PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/misc/curve>
 )
 
-# if (${BUILD_SHARED_LIBS})
-  # if (WIN32)
-    # target_compile_definitions(imgui PRIVATE IMGUI_API="__declspec(dllexport)")
-    # target_compile_definitions(imgui INTERFACE IMGUI_API="__declspec(dllimport)")
-  # else ()
-    # target_compile_definitions(imgui PUBLIC IMGUI_API="__attribute__((visibility("default")))")
-  # endif()
-# endif()
+if (${BUILD_SHARED_LIBS})
+ if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+   target_compile_definitions(imgui PRIVATE "IMGUI_API=__declspec(dllexport)")
+   target_compile_definitions(imgui INTERFACE "IMGUI_API=__declspec(dllimport)")
+ endif()
+endif()
 
 if(${IMGUI_BUILD_BACKEND_GLFW})
     add_library(imgui_backend_glfw ./backends/imgui_impl_glfw.cpp)

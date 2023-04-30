@@ -44,7 +44,7 @@ public:
 
   static Pixel::Mode nPixelMode;
 
-  static std::unique_ptr <olc::ImageLoader> OLCPGE_EXPORT loader;
+  static std::unique_ptr <olc::ImageLoader> loader;
 
 public:
   void SetSampleMode(olc::Sprite::Mode mode = olc::Sprite::Mode::NORMAL);

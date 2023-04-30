@@ -10,6 +10,11 @@ target_sources(${TARGET} PRIVATE
   src/gl.c
 )
 
+if (${BUILD_SHARED_LIBS})
+  target_compile_definitions(${TARGET} PUBLIC GLAD_API_CALL_EXPORT)
+  target_compile_definitions(${TARGET} PRIVATE GLAD_API_CALL_EXPORT_BUILD)
+endif()
+
 include(GNUInstallDirs)
 
 target_include_directories(${TARGET} PUBLIC

@@ -1,6 +1,7 @@
 #include <olcPGE/Pixel.hpp>
 
 #include <cmath>
+#include <algorithm>
 
 
 namespace olc

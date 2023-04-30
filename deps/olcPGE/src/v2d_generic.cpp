@@ -1,6 +1,7 @@
 #include <olcPGE/v2d_generic.hpp>
 
 #include <cmath>
+#include <algorithm>
 
 
 namespace olc
