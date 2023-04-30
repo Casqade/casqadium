@@ -377,7 +377,7 @@ Camera::deserialize(
 
   auto& comp = registry.emplace_or_replace <Camera> (entity);
 
-//  comp.aspectRatioBehaviour = AspectRatioBehaviourFromString( json["aspectRatioBehaviour"].asString() );
+  comp.aspectRatioBehaviour = AspectRatioBehaviourFromString( json["aspectRatioBehaviour"].asString() );
   comp.projectionType = ProjectionTypeFromString( json["projection"].asString() );
   comp.renderMode = RenderModeFromString( json["renderMode"].asString() );
   comp.textureMode = TextureModeFromString( json["textureMode"].asString() );
@@ -388,7 +388,7 @@ Camera::deserialize(
   else
     comp.fov = json["fov"].asFloat();
 
-//  comp.aspectRatio = json["aspectRatio"].asFloat();
+  comp.aspectRatio = json["aspectRatio"].asFloat();
   comp.layer = json["layer"].asInt();
 
   comp.zRange.first = json["z-range"][0].asFloat();

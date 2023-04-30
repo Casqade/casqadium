@@ -5,6 +5,8 @@
     {
       "Camera" : 
       {
+        "aspectRatio" : 1.77,
+        "aspectRatioBehaviour" : "keep",
         "fov" : 57.295780181884766,
         "layer" : 0,
         "lightingMode" : "diffuse",
@@ -66,6 +68,8 @@
     {
       "Camera" : 
       {
+        "aspectRatio" : 1.77,
+        "aspectRatioBehaviour" : "keep",
         "fov" : 57.295780181884766,
         "layer" : 0,
         "lightingMode" : "diffuse",
