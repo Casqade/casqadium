@@ -4,6 +4,7 @@
 
 #include <cqde/assert.hpp>
 #include <cqde/file_helpers.hpp>
+#include <cqde/static_strings.hpp>
 
 #include <cqde/logger.hpp>
 
@@ -17,60 +18,6 @@
 
 namespace cqde::types
 {
-
-template <typename Asset>
-std::string
-AssetManager <Asset>::StatusAsString(
-  const AssetStatus status )
-{
-  switch (status)
-  {
-    case AssetStatus::Undefined:
-      return "Undefined";
-
-    case AssetStatus::Unloaded:
-      return "Unloaded";
-
-    case AssetStatus::Loading:
-      return "Loading";
-
-    case AssetStatus::Loaded:
-      return "Loaded";
-
-    case AssetStatus::Error:
-      return "Error";
-
-    default:
-      CQDE_ASSERT_DEBUG(false, return "Undefined");
-  }
-}
-
-template <typename Asset>
-uint32_t
-AssetManager <Asset>::StatusAsColor(
-  const AssetStatus status )
-{
-  switch (status)
-  {
-    case AssetStatus::Undefined:
-      return ImGui::ColorConvertFloat4ToU32({1.0f, 1.0f, 0.0f, 1.0f});
-
-    case AssetStatus::Unloaded:
-      return ImGui::ColorConvertFloat4ToU32({1.0f, 1.0f, 1.0f, 1.0f});
-
-    case AssetStatus::Loading:
-      return ImGui::ColorConvertFloat4ToU32({0.0f, 1.0f, 1.0f, 1.0f});
-
-    case AssetStatus::Loaded:
-      return ImGui::ColorConvertFloat4ToU32({0.0f, 1.0f, 0.0f, 1.0f});
-
-    case AssetStatus::Error:
-      return ImGui::ColorConvertFloat4ToU32({1.0f, 0.0f, 0.0f, 1.0f});
-
-    default:
-      CQDE_ASSERT_DEBUG(false, return ImGui::ColorConvertFloat4ToU32({1.0f, 1.0f, 1.0f, 1.0f}););
-  }
-}
 
 template <typename Asset>
 AssetManager <Asset>::AssetManager(
@@ -189,7 +136,7 @@ AssetManager <Asset>::load(
       const AssetPath assetPath = mAssets.at(id).path;
 
       CQDE_ASSERT_DEBUG(assetPath.string().empty() == false, continue);
-      CQDE_ASSERT_DEBUG(assetPath.string() != MemoryResidentPath, continue);
+      CQDE_ASSERT_DEBUG(assetPath.string() != MemoryResidentPath(), continue);
 
       mAssets.at(id).status = AssetStatus::Loading;
 
@@ -253,7 +200,7 @@ AssetManager <Asset>::insert(
 {
   std::lock_guard guard(mAssetsMutex);
 
-  mAssets[id].path = MemoryResidentPath;
+  mAssets[id].path = MemoryResidentPath();
   mAssets[id].handle = res;
   mAssets[id].status = AssetStatus::Loaded;
 }
@@ -283,14 +230,14 @@ AssetManager <Asset>::clear(
 
   for ( const auto& [id, entry] : mAssets )
     if ( keepMemoryResidents == true &&
-         entry.path != MemoryResidentPath )
+         entry.path != MemoryResidentPath() )
       unload({id});
 
   std::vector <std::pair <AssetId, AssetEntry>> assetsInMemory {};
 
   if ( keepMemoryResidents == true )
     for ( const auto& [id, entry] : mAssets )
-      if ( entry.path == MemoryResidentPath )
+      if ( entry.path == MemoryResidentPath() )
         assetsInMemory.push_back({id, entry});
 
   mAssets.clear();

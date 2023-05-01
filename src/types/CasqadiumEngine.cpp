@@ -26,7 +26,7 @@
 
 #include <cqde/types/assets/AudioAssetManager.hpp>
 #include <cqde/types/assets/FontAssetManager.hpp>
-#include <cqde/types/assets/GeometryAssetManager.hpp>
+#include <cqde/types/assets/MeshAssetManager.hpp>
 #include <cqde/types/assets/MouseCursorAssetManager.hpp>
 #include <cqde/types/assets/TerrainAssetManager.hpp>
 #include <cqde/types/assets/TextStringAssetManager.hpp>
@@ -314,7 +314,7 @@ CasqadiumEngine::initCommon()
 
   mRegistry.ctx().emplace <AudioAssetManager> (tp);
   mRegistry.ctx().emplace <FontAssetManager> (tp);
-  mRegistry.ctx().emplace <GeometryAssetManager> (tp);
+  mRegistry.ctx().emplace <MeshAssetManager> ();
   mRegistry.ctx().emplace <MouseCursorAssetManager> (tp);
   mRegistry.ctx().emplace <TerrainAssetManager> (tp);
   mRegistry.ctx().emplace <TextureAssetManager> (tp);

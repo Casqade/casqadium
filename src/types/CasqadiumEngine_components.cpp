@@ -7,7 +7,7 @@
 #include <cqde/components/CasqadiumEditorInternal.hpp>
 #include <cqde/components/CasqadiumEditorCameraSettings.hpp>
 #include <cqde/components/EntityMetaInfo.hpp>
-#include <cqde/components/GeometryBuffer.hpp>
+#include <cqde/components/DrawableMesh.hpp>
 #include <cqde/components/InputController.hpp>
 #include <cqde/components/InteractionListener.hpp>
 #include <cqde/components/InteractionListenerColor.hpp>
@@ -22,7 +22,6 @@
 #include <cqde/components/SubscriberUpdate.hpp>
 #include <cqde/components/SequenceController.hpp>
 #include <cqde/components/Tag.hpp>
-#include <cqde/components/TextureBuffer.hpp>
 #include <cqde/components/TextureTint.hpp>
 #include <cqde/components/Transform.hpp>
 #include <cqde/components/WantsMouseGrabbed.hpp>
@@ -33,7 +32,7 @@
 
 #include <cqde/components/assets/AudioAssetList.hpp>
 #include <cqde/components/assets/FontAssetList.hpp>
-#include <cqde/components/assets/GeometryAssetList.hpp>
+#include <cqde/components/assets/MeshAssetList.hpp>
 #include <cqde/components/assets/MouseCursorAssetList.hpp>
 #include <cqde/components/assets/TerrainAssetList.hpp>
 #include <cqde/components/assets/TextStringAssetList.hpp>
@@ -69,7 +68,7 @@ CasqadiumEngine::registerComponents()
   entityManager.registerComponent <Camera> ("Camera");
   entityManager.registerComponent <CasqadiumEditorCameraSettings> ("CasqadiumEditorCameraSettings");
   entityManager.registerComponent <EntityMetaInfo> ("EntityMetaInfo");
-  entityManager.registerComponent <GeometryBuffer> ("GeometryBuffer");
+  entityManager.registerComponent <DrawableMesh> ("DrawableMesh");
   entityManager.registerComponent <InputController> ("InputController");
   entityManager.registerComponent <InteractionListener> ("InteractionListener");
   entityManager.registerComponent <InteractionListenerColor> ("InteractionListenerColor");
@@ -81,7 +80,6 @@ CasqadiumEngine::registerComponents()
   entityManager.registerComponent <SceneNode> ("SceneNode");
   entityManager.registerComponent <SequenceController> ("SequenceController");
   entityManager.registerComponent <Tag> ("Tag");
-  entityManager.registerComponent <TextureBuffer> ("TextureBuffer");
   entityManager.registerComponent <TextureTint> ("TextureTint");
   entityManager.registerComponent <Transform> ("Transform");
   entityManager.registerComponent <WantsCursorOverridden> ("WantsCursorOverridden");
@@ -91,7 +89,7 @@ CasqadiumEngine::registerComponents()
 
   entityManager.registerComponent <AudioAssetList> ("AudioAssetList");
   entityManager.registerComponent <FontAssetList> ("FontAssetList");
-  entityManager.registerComponent <GeometryAssetList> ("GeometryAssetList");
+  entityManager.registerComponent <MeshAssetList> ("MeshAssetList");
   entityManager.registerComponent <MouseCursorAssetList> ("MouseCursorAssetList");
   entityManager.registerComponent <TerrainAssetList> ("TerrainAssetList");
   entityManager.registerComponent <TextStringAssetList> ("TextStringAssetList");

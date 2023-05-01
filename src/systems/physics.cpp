@@ -100,11 +100,11 @@ struct PhysicsDebugDrawData
         nullptr );
 
       vao.attachBuffer(
-        vertices, 0,
+        vertices, 0, 0,
         0, stride );
 
       vao.attachBuffer(
-        vertices, 1,
+        vertices, 1, 0,
         0, stride );
     }
   };
@@ -165,12 +165,10 @@ PhysicsSystem(
       cBody.body->setIsActive(false);
     }
 
-//  todo: parallelize
   for ( auto&& [eBody, cTransform, cBody]
           : registry.view <const Transform, CollisionBody, const SubscriberUpdate> ().each() )
     cBody.body->setTransform(glmToRp3d(GetWorldMatrix(registry, eBody, cTransform)));
 
-//  todo: parallelize
   for ( auto&& [eBody, cTransform, cBody]
           : registry.view <const Transform, RigidBody, const SubscriberUpdate> ().each() )
   {
@@ -243,10 +241,7 @@ PhysicsDebugRenderSystem(
   using types::PhysicsDebugDrawData;
   using DebugItem = rp3d::DebugRenderer::DebugItem;
 
-  const auto& glProgram = registry.ctx().get <GlProgram> ();
-
   const auto& physicsManager = registry.ctx().get <PhysicsManager> ();
-  auto& shaderManager = registry.ctx().get <ShaderManager> ();
 
   const auto world = physicsManager.world();
   auto& debugRenderer = world->getDebugRenderer();
@@ -269,6 +264,7 @@ PhysicsDebugRenderSystem(
 
   const auto engine = registry.ctx().get <CasqadiumEngine*> ();
 
+  auto& shaderManager = registry.ctx().get <ShaderManager> ();
   auto& shader = shaderManager.get(ShaderType::DebugDraw);
   shader.use();
 
@@ -355,7 +351,6 @@ EditorPhysicsDebugRenderSystem(
 
   auto& physicsManager = registry.ctx().get <PhysicsManager> ();
   const auto& viewportManagerUi = registry.ctx().get <ViewportManagerUi> ();
-  auto& shaderManager = registry.ctx().get <ShaderManager> ();
 
   const auto world = physicsManager.world();
   auto& debugRenderer = world->getDebugRenderer();
@@ -376,6 +371,7 @@ EditorPhysicsDebugRenderSystem(
        triangles.size() == 0 )
     return;
 
+  auto& shaderManager = registry.ctx().get <ShaderManager> ();
   auto& shader = shaderManager.get(ShaderType::DebugDraw);
   shader.use();
 

@@ -203,9 +203,10 @@
   {
     "eQuad" : 
     {
-      "GeometryBuffer" : 
+      "DrawableMesh" : 
       {
-        "buffer" : "null"
+        "meshId" : "null",
+        "textureId" : "null"
       },
       "SceneNode" : 
       {
@@ -213,10 +214,6 @@
         "parent" : "null"
       },
       "Tag" : {},
-      "TextureBuffer" : 
-      {
-        "textures" : []
-      },
       "Transform" : 
       {
         "orientation" : 

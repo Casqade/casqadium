@@ -2,14 +2,14 @@
 
 #include <cqde/types/assets/AudioAssetManager.hpp>
 #include <cqde/types/assets/FontAssetManager.hpp>
-#include <cqde/types/assets/GeometryAssetManager.hpp>
+#include <cqde/types/assets/MeshAssetManager.hpp>
 #include <cqde/types/assets/TerrainAssetManager.hpp>
 #include <cqde/types/assets/TextStringAssetManager.hpp>
 #include <cqde/types/assets/TextureAssetManager.hpp>
 
 #include <cqde/components/assets/AudioAssetList.hpp>
 #include <cqde/components/assets/FontAssetList.hpp>
-#include <cqde/components/assets/GeometryAssetList.hpp>
+#include <cqde/components/assets/MeshAssetList.hpp>
 #include <cqde/components/assets/TerrainAssetList.hpp>
 #include <cqde/components/assets/TextStringAssetList.hpp>
 #include <cqde/components/assets/TextureAssetList.hpp>
@@ -55,20 +55,20 @@ loadFontAssets(
 }
 
 void
-loadGeometryAssets(
+loadMeshAssets(
   entt::registry& registry,
   const std::vector <std::any>& args )
 {
-  using compos::GeometryAssetList;
-  using types::GeometryAssetManager;
+  using compos::MeshAssetList;
+  using types::MeshAssetManager;
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
 
-  auto& assetLoadList = registry.get <GeometryAssetList> (entity);
+  auto& assetLoadList = registry.get <MeshAssetList> (entity);
 
-  auto& geometryManager = registry.ctx().get <GeometryAssetManager> ();
+  auto& meshManager = registry.ctx().get <MeshAssetManager> ();
 
-  geometryManager.load(assetLoadList.geometry);
+  meshManager.load(assetLoadList.meshes);
 }
 
 void
@@ -157,20 +157,20 @@ unloadFontAssets(
 }
 
 void
-unloadGeometryAssets(
+unloadMeshAssets(
   entt::registry& registry,
   const std::vector <std::any>& args )
 {
-  using compos::GeometryAssetList;
-  using types::GeometryAssetManager;
+  using compos::MeshAssetList;
+  using types::MeshAssetManager;
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
 
-  auto& assetUnloadList = registry.get <GeometryAssetList> (entity);
+  auto& assetUnloadList = registry.get <MeshAssetList> (entity);
 
-  auto& geometryManager = registry.ctx().get <GeometryAssetManager> ();
+  auto& meshManager = registry.ctx().get <MeshAssetManager> ();
 
-  geometryManager.unload(assetUnloadList.geometry);
+  meshManager.unload(assetUnloadList.meshes);
 }
 
 void

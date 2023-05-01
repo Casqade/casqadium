@@ -4,6 +4,11 @@
 namespace cqde
 {
 
+const char* MemoryResidentPath()
+{
+  return "***memory***";
+}
+
 const char* EditorImGuiSettings()
 {
   return

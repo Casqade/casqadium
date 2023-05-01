@@ -2,25 +2,18 @@
 
 #include <cqde/types/graphics/GlBuffer.hpp>
 
-#include <vector>
+#include <unordered_map>
 
 
 namespace cqde::types
 {
-
-template <typename Element>
-size_t BufferSize(
-  const std::vector <Element>& data )
-{
-  return sizeof(Element) * data.size();
-}
 
 class GlVertexArray
 {
   using GLuint = uint32_t;
   using GLenum = uint32_t;
 
-  std::vector <GLuint> mBindings {};
+  std::unordered_map <size_t, GLuint> mBindings {};
 
   GLuint mId {};
 
@@ -54,6 +47,7 @@ public:
   void attachBuffer(
     const GlBuffer&,
     const size_t attribIndex,
+    const size_t bindingIndex,
     const size_t offset,
     const size_t stride );
 

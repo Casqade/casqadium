@@ -38,7 +38,7 @@ public:
     Input,
     Audio,
     Fonts,
-    Geometry,
+    Meshes,
     MouseCursors,
     Terrain,
     Textures,

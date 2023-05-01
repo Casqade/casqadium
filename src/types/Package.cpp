@@ -8,7 +8,7 @@
 
 #include <cqde/types/assets/AudioAssetManager.hpp>
 #include <cqde/types/assets/FontAssetManager.hpp>
-#include <cqde/types/assets/GeometryAssetManager.hpp>
+#include <cqde/types/assets/MeshAssetManager.hpp>
 #include <cqde/types/assets/TerrainAssetManager.hpp>
 #include <cqde/types/assets/TextureAssetManager.hpp>
 #include <cqde/types/assets/TextStringAssetManager.hpp>
@@ -161,8 +161,8 @@ Package::load(
   auto& fonts = registry.ctx().get <FontAssetManager> ();
   fonts.parseAssetDbFile(contentPath(ContentType::Fonts));
 
-  auto& geometry = registry.ctx().get <GeometryAssetManager> ();
-  geometry.parseAssetDbFile(contentPath(ContentType::Geometry));
+  auto& meshes = registry.ctx().get <MeshAssetManager> ();
+  meshes.parseAssetDbFile(contentPath(ContentType::Meshes));
 
   auto& terrain = registry.ctx().get <TerrainAssetManager> ();
   terrain.parseAssetDbFile(contentPath(ContentType::Terrain));
@@ -223,8 +223,12 @@ Package::save(
       contentTypeName = "font database";
       break;
 
-    case ContentType::Geometry:
-      contentTypeName = "geometry database";
+    case ContentType::Meshes:
+      contentTypeName = "mesh database";
+      break;
+
+    case ContentType::MouseCursors:
+      contentTypeName = "mouse cursors database";
       break;
 
     case ContentType::Terrain:
@@ -322,8 +326,8 @@ Package::ContentFileName(
     case ContentType::Fonts:
       return "fonts.json";
 
-    case ContentType::Geometry:
-      return "geometry.json";
+    case ContentType::Meshes:
+      return "meshes.json";
 
     case ContentType::MouseCursors:
       return "cursors.json";

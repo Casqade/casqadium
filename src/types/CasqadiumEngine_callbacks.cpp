@@ -76,14 +76,14 @@ CasqadiumEngine::registerCallbacks()
 
   callbackManager.Register("LoadAudioAssets", loadAudioAssets);
   callbackManager.Register("LoadFontAssets", loadFontAssets);
-  callbackManager.Register("LoadGeometryAssets", loadGeometryAssets);
+  callbackManager.Register("LoadMeshAssets", loadMeshAssets);
   callbackManager.Register("LoadTerrainAssets", loadTerrainAssets);
   callbackManager.Register("LoadTextStringAssets", loadTextStringAssets);
   callbackManager.Register("LoadTextureAssets", loadTextureAssets);
 
   callbackManager.Register("UnloadAudioAssets", unloadAudioAssets);
   callbackManager.Register("UnloadFontAssets", unloadFontAssets);
-  callbackManager.Register("UnloadGeometryAssets", unloadGeometryAssets);
+  callbackManager.Register("UnloadMeshAssets", unloadMeshAssets);
   callbackManager.Register("UnloadTerrainAssets", unloadTerrainAssets);
   callbackManager.Register("UnloadTextStringAssets", unloadTextStringAssets);
   callbackManager.Register("UnloadTextureAssets", unloadTextureAssets);

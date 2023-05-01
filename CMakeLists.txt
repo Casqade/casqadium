@@ -93,6 +93,8 @@ target_sources(${TARGET} PRIVATE
   include/${CASQADIUM_SHORT}/types/UndoRedoQueue.hpp
   include/${CASQADIUM_SHORT}/types/UndoRedoQueue-inl.hpp
 
+  include/${CASQADIUM_SHORT}/types/graphics/Mesh.hpp
+
   src/types/CasqadiumEngine.cpp
   src/types/CasqadiumEngine_audio.cpp
   src/types/CasqadiumEngine_callbacks.cpp
@@ -128,14 +130,14 @@ target_sources(${TARGET} PRIVATE
   src/types/TimeProgress_ui.cpp
   include/${CASQADIUM_SHORT}/types/TimeProgress.hpp
 
-  src/types/VertexBuffer.cpp
-  include/${CASQADIUM_SHORT}/types/VertexBuffer.hpp
-
   src/types/graphics/GlVertexArray.cpp
   include/${CASQADIUM_SHORT}/types/graphics/GlVertexArray.hpp
 
   src/types/graphics/GlBuffer.cpp
   include/${CASQADIUM_SHORT}/types/graphics/GlBuffer.hpp
+
+  src/types/graphics/GlFramebuffer.cpp
+  include/${CASQADIUM_SHORT}/types/graphics/GlFramebuffer.hpp
 
   src/types/graphics/GlProgram.cpp
   include/${CASQADIUM_SHORT}/types/graphics/GlProgram.hpp
@@ -149,8 +151,8 @@ target_sources(${TARGET} PRIVATE
   src/types/graphics/FrameReadback.cpp
   include/${CASQADIUM_SHORT}/types/graphics/FrameReadback.hpp
 
-  src/types/graphics/Mesh.cpp
-  include/${CASQADIUM_SHORT}/types/graphics/Mesh.hpp
+  src/types/graphics/MeshStorage.cpp
+  include/${CASQADIUM_SHORT}/types/graphics/MeshStorage.hpp
 
   src/types/graphics/PrimaryRenderTarget.cpp
   include/${CASQADIUM_SHORT}/types/graphics/PrimaryRenderTarget.hpp
@@ -265,6 +267,7 @@ target_sources(${TARGET} PRIVATE
 
 
 #  Assets
+  src/types/assets/AssetStatus.cpp
   include/${CASQADIUM_SHORT}/types/assets/AssetStatus.hpp
 
   include/${CASQADIUM_SHORT}/types/assets/AssetManager.hpp
@@ -276,8 +279,8 @@ target_sources(${TARGET} PRIVATE
   src/types/assets/FontAssetManager.cpp
   include/${CASQADIUM_SHORT}/types/assets/FontAssetManager.hpp
 
-  src/types/assets/GeometryAssetManager.cpp
-  include/${CASQADIUM_SHORT}/types/assets/GeometryAssetManager.hpp
+  src/types/assets/MeshAssetManager.cpp
+  include/${CASQADIUM_SHORT}/types/assets/MeshAssetManager.hpp
 
   src/types/assets/MouseCursorAssetManager.cpp
   include/${CASQADIUM_SHORT}/types/assets/MouseCursorAssetManager.hpp
@@ -400,6 +403,10 @@ target_sources(${TARGET} PRIVATE
   src/components/CasqadiumEntryPoint.cpp
   include/${CASQADIUM_SHORT}/components/CasqadiumEntryPoint.hpp
 
+  src/components/DrawableMesh.cpp
+  src/components/DrawableMesh_ui.cpp
+  include/${CASQADIUM_SHORT}/components/DrawableMesh.hpp
+
   src/components/EntityList.cpp
   src/components/EntityList_ui.cpp
   include/${CASQADIUM_SHORT}/components/EntityList.hpp
@@ -407,10 +414,6 @@ target_sources(${TARGET} PRIVATE
   src/components/EntityMetaInfo.cpp
   src/components/EntityMetaInfo_ui.cpp
   include/${CASQADIUM_SHORT}/components/EntityMetaInfo.hpp
-
-  src/components/GeometryBuffer.cpp
-  src/components/GeometryBuffer_ui.cpp
-  include/${CASQADIUM_SHORT}/components/GeometryBuffer.hpp
 
   src/components/InputController.cpp
   src/components/InputController_ui.cpp
@@ -469,10 +472,6 @@ target_sources(${TARGET} PRIVATE
   src/components/Tag_ui.cpp
   include/${CASQADIUM_SHORT}/components/Tag.hpp
 
-  src/components/TextureBuffer.cpp
-  src/components/TextureBuffer_ui.cpp
-  include/${CASQADIUM_SHORT}/components/TextureBuffer.hpp
-
   src/components/TextureTint.cpp
   src/components/TextureTint_ui.cpp
   include/${CASQADIUM_SHORT}/components/TextureTint.hpp
@@ -497,9 +496,9 @@ target_sources(${TARGET} PRIVATE
   src/components/assets/FontAssetList_ui.cpp
   include/${CASQADIUM_SHORT}/components/assets/FontAssetList.hpp
 
-  src/components/assets/GeometryAssetList.cpp
-  src/components/assets/GeometryAssetList_ui.cpp
-  include/${CASQADIUM_SHORT}/components/assets/GeometryAssetList.hpp
+  src/components/assets/MeshAssetList.cpp
+  src/components/assets/MeshAssetList_ui.cpp
+  include/${CASQADIUM_SHORT}/components/assets/MeshAssetList.hpp
 
   src/components/assets/MouseCursorAssetList.cpp
   src/components/assets/MouseCursorAssetList_ui.cpp

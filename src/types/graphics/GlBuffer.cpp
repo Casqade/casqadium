@@ -135,6 +135,17 @@ GlBuffer::data() const
   return mData;
 }
 
+size_t
+GlBuffer::size() const
+{
+  CQDE_ASSERT_DEBUG(isValid() == true, return 0);
+
+  GLint size;
+  glGetNamedBufferParameteriv(mId, GL_BUFFER_SIZE, &size);
+
+  return size;
+}
+
 GLbitfield
 GlBuffer::MutableAccessFlags()
 {

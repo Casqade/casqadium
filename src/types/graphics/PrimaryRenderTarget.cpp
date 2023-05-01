@@ -49,11 +49,11 @@ PrimaryRenderTarget::PrimaryRenderTarget()
     1, 2, 0, GL_FLOAT );
 
   vao.attachBuffer(
-    vertices, 0,
+    vertices, 0, 0,
     0, stride );
 
   vao.attachBuffer(
-    texCoords, 1,
+    texCoords, 1, 1,
     0, stride );
 }
 

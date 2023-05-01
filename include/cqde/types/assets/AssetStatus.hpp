@@ -1,5 +1,7 @@
 #pragma once
 
+#include <string>
+
 
 namespace cqde::types
 {
@@ -12,5 +14,9 @@ enum class AssetStatus
   Loaded,
   Error,
 };
+
+
+uint32_t AssetStatusAsColor( const AssetStatus );
+std::string AssetStatusAsString( const AssetStatus );
 
 } // namespace cqde::types

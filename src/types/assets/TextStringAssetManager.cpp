@@ -119,7 +119,7 @@ AssetManager <std::string>::load(
       const AssetPath assetPath = mAssets.at(id).path;
 
       CQDE_ASSERT_DEBUG(assetPath.empty() == false, continue);
-      CQDE_ASSERT_DEBUG(assetPath.string() != MemoryResidentPath, continue);
+      CQDE_ASSERT_DEBUG(assetPath.string() != MemoryResidentPath(), continue);
 
       mAssets.at(id).status = AssetStatus::Loading;
 
@@ -264,13 +264,13 @@ AssetManager <std::string>::ui_show_preview(
   const auto assetStatus = status(stringId);
 
   if ( ImGui::CollapsingHeader("Status", ImGuiTreeNodeFlags_DefaultOpen) )
-    ImGui::TextColored(ImGui::ColorConvertU32ToFloat4(StatusAsColor(assetStatus)),
-                       "%s", StatusAsString(assetStatus).c_str());
+    ImGui::TextColored(ImGui::ColorConvertU32ToFloat4(AssetStatusAsColor(assetStatus)),
+                       "%s", AssetStatusAsString(assetStatus).c_str());
 
   if ( assetStatus == AssetStatus::Undefined )
     return;
 
-  if ( mAssets.at(stringId).path != MemoryResidentPath )
+  if ( mAssets.at(stringId).path != MemoryResidentPath() )
   {
     ImGui::SameLine();
     if ( ImGui::Button("Reload") )

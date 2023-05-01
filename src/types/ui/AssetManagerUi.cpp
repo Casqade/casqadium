@@ -3,7 +3,7 @@
 
 #include <cqde/types/assets/AudioAssetManager.hpp>
 #include <cqde/types/assets/FontAssetManager.hpp>
-#include <cqde/types/assets/GeometryAssetManager.hpp>
+#include <cqde/types/assets/MeshAssetManager.hpp>
 #include <cqde/types/assets/MouseCursorAssetManager.hpp>
 #include <cqde/types/assets/TextStringAssetManager.hpp>
 #include <cqde/types/assets/TerrainAssetManager.hpp>
@@ -29,7 +29,7 @@ AssetManagerUi::AssetManagerUi()
   {
     {ContentType::Audio, "Audio"},
     {ContentType::Fonts, "Fonts"},
-    {ContentType::Geometry, "Geometry"},
+    {ContentType::Meshes, "Meshes"},
     {ContentType::MouseCursors, "Mouse cursors"},
     {ContentType::Terrain, "Terrain"},
     {ContentType::Text, "Text"},
@@ -40,7 +40,7 @@ AssetManagerUi::AssetManagerUi()
   {
     {ContentType::Audio, {}},
     {ContentType::Fonts, {}},
-    {ContentType::Geometry, {}},
+    {ContentType::Meshes, {}},
     {ContentType::MouseCursors, {}},
     {ContentType::Terrain, {}},
     {ContentType::Text, {}},
@@ -56,7 +56,7 @@ AssetManagerUi::stateApply(
 {
   using AudioAssetManager = types::AudioAssetManager;
   using FontAssetManager = types::FontAssetManager;
-  using GeometryAssetManager = types::GeometryAssetManager;
+  using MeshAssetManager = types::MeshAssetManager;
   using MouseCursorAssetManager = types::MouseCursorAssetManager;
   using TerrainAssetManager = types::TerrainAssetManager;
   using TextStringAssetManager = types::TextStringAssetManager;
@@ -67,7 +67,7 @@ AssetManagerUi::stateApply(
 
   auto& audioMgr = registry.ctx().get <AudioAssetManager> ();
   auto& fontMgr = registry.ctx().get <FontAssetManager> ();
-  auto& geometryMgr = registry.ctx().get <GeometryAssetManager> ();
+  auto& meshesMgr = registry.ctx().get <MeshAssetManager> ();
   auto& mouseCursorMgr = registry.ctx().get <MouseCursorAssetManager> ();
   auto& terrainMgr = registry.ctx().get <TerrainAssetManager> ();
   auto& textMgr = registry.ctx().get <TextStringAssetManager> ();
@@ -77,7 +77,7 @@ AssetManagerUi::stateApply(
 
   audioMgr.clear();
   fontMgr.clear();
-  geometryMgr.clear();
+  meshesMgr.clear();
   terrainMgr.clear();
   textMgr.clear();
   textureMgr.clear();
@@ -91,7 +91,7 @@ AssetManagerUi::stateApply(
 
     const auto audioPath = package->contentPath(ContentType::Audio);
     const auto fontsPath = package->contentPath(ContentType::Fonts);
-    const auto geometryPath = package->contentPath(ContentType::Geometry);
+    const auto meshesPath = package->contentPath(ContentType::Meshes);
     const auto mouseCursorPath = package->contentPath(ContentType::MouseCursors);
     const auto terrainPath = package->contentPath(ContentType::Terrain);
     const auto textPath = package->contentPath(ContentType::Text);
@@ -99,7 +99,7 @@ AssetManagerUi::stateApply(
 
     audioMgr.parseAssetDbFile(audioPath);
     fontMgr.parseAssetDbFile(fontsPath);
-    geometryMgr.parseAssetDbFile(geometryPath);
+    meshesMgr.parseAssetDbFile(meshesPath);
     mouseCursorMgr.parseAssetDbFile(mouseCursorPath);
     terrainMgr.parseAssetDbFile(terrainPath);
     textMgr.parseAssetDbFile(textPath);
@@ -133,7 +133,7 @@ AssetManagerUi::stateSave(
 
   const auto& audioDb = mAssetsState[packageId][mAssetTypeNames.at(ContentType::Audio)];
   const auto& fontsDb = mAssetsState[packageId][mAssetTypeNames.at(ContentType::Fonts)];
-  const auto& geometryDb = mAssetsState[packageId][mAssetTypeNames.at(ContentType::Geometry)];
+  const auto& meshesDb = mAssetsState[packageId][mAssetTypeNames.at(ContentType::Meshes)];
   const auto& mouseCursorsDb = mAssetsState[packageId][mAssetTypeNames.at(ContentType::MouseCursors)];
   const auto& terrainDb = mAssetsState[packageId][mAssetTypeNames.at(ContentType::Terrain)];
   const auto& textDb = mAssetsState[packageId][mAssetTypeNames.at(ContentType::Text)];
@@ -145,8 +145,8 @@ AssetManagerUi::stateSave(
   if ( fontsDb.isNull() == false )
     package->save(ContentType::Fonts, fontsDb);
 
-  if ( geometryDb.isNull() == false )
-    package->save(ContentType::Geometry, geometryDb);
+  if ( meshesDb.isNull() == false )
+    package->save(ContentType::Meshes, meshesDb);
 
   if ( mouseCursorsDb.isNull() == false )
     package->save(ContentType::MouseCursors, mouseCursorsDb);
@@ -251,9 +251,9 @@ AssetManagerUi::ui_show_live_state(
       ui_show_live_font(registry);
       break;
     }
-    case ContentType::Geometry:
+    case ContentType::Meshes:
     {
-      ui_show_live_geometry(registry);
+      ui_show_live_meshes(registry);
       break;
     }
     case ContentType::MouseCursors:
@@ -294,7 +294,7 @@ AssetManagerUi::ui_show_package_state(
 
   using AudioAssetManager = types::AudioAssetManager;
   using FontAssetManager = types::FontAssetManager;
-  using GeometryAssetManager = types::GeometryAssetManager;
+  using MeshAssetManager = types::MeshAssetManager;
   using MouseCursorAssetManager = types::MouseCursorAssetManager;
   using TerrainAssetManager = types::TerrainAssetManager;
   using TextStringAssetManager = types::TextStringAssetManager;
@@ -338,9 +338,9 @@ AssetManagerUi::ui_show_package_state(
       break;
     }
 
-    case ContentType::Geometry:
+    case ContentType::Meshes:
     {
-      GeometryAssetManager::Validate(assetDb);
+      MeshAssetManager::Validate(assetDb);
       break;
     }
 
@@ -401,9 +401,9 @@ AssetManagerUi::ui_show_package_state(
         break;
       }
 
-      case ContentType::Geometry:
+      case ContentType::Meshes:
       {
-        newAsset = GeometryAssetManager::AssetJsonDbEntryReference();
+        newAsset = MeshAssetManager::AssetJsonDbEntryReference();
         break;
       }
 
@@ -613,7 +613,7 @@ AssetManagerUi::ui_show_asset_window(
 
   using AudioAssetManager = types::AudioAssetManager;
   using FontAssetManager = types::FontAssetManager;
-  using GeometryAssetManager = types::GeometryAssetManager;
+  using MeshAssetManager = types::MeshAssetManager;
   using MouseCursorAssetManager = types::MouseCursorAssetManager;
   using TerrainAssetManager = types::TerrainAssetManager;
   using TextStringAssetManager = types::TextStringAssetManager;
@@ -655,9 +655,9 @@ AssetManagerUi::ui_show_asset_window(
       registry.ctx().get <FontAssetManager> ().ui_show(assetEntry);
       break;
     }
-    case ContentType::Geometry:
+    case ContentType::Meshes:
     {
-      registry.ctx().get <GeometryAssetManager> ().ui_show(assetEntry);
+      registry.ctx().get <MeshAssetManager> ().ui_show(assetEntry);
       break;
     }
     case ContentType::MouseCursors:
@@ -799,14 +799,14 @@ AssetManagerUi::ui_show_live_font(
 }
 
 void
-AssetManagerUi::ui_show_live_geometry(
+AssetManagerUi::ui_show_live_meshes(
   entt::registry& registry )
 {
   using fmt::format;
-  using GeometryAssetManager = types::GeometryAssetManager;
+  using MeshAssetManager = types::MeshAssetManager;
 
-  auto& geometryMgr = registry.ctx().get <GeometryAssetManager> ();
-  auto assets = geometryMgr.assetIdList();
+  auto& meshesMgr = registry.ctx().get <MeshAssetManager> ();
+  auto assets = meshesMgr.assetIdList();
 
   for ( const auto& asset : assets )
   {
@@ -831,21 +831,21 @@ AssetManagerUi::ui_show_live_geometry(
   if ( mAssetWindowOpened == false )
     return;
 
-  const auto& selectedGeometryId = mSelectedAssetIds[mSelectedAssetType];
+  const auto& selectedMeshId = mSelectedAssetIds[mSelectedAssetType];
 
-  if ( selectedGeometryId.empty() == true )
+  if ( selectedMeshId.empty() == true )
     return;
 
-  const auto windowTitle = format("Geometry '{}'###assetEditWindow",
+  const auto windowTitle = format("Mesh '{}'###assetEditWindow",
                                   mSelectedAssetIds[mSelectedAssetType]);
 
   if ( ImGui::Begin(windowTitle.c_str(), &mAssetWindowOpened,
                     ImGuiWindowFlags_HorizontalScrollbar) == true )
   {
-    if ( geometryMgr.status(selectedGeometryId) != AssetStatus::Undefined )
-      geometryMgr.load({selectedGeometryId});
+    if ( meshesMgr.status(selectedMeshId) != AssetStatus::Undefined )
+      meshesMgr.load({selectedMeshId});
 
-    geometryMgr.ui_show_preview(selectedGeometryId, registry);
+    meshesMgr.ui_show_preview(selectedMeshId, registry);
   }
 
   ImGui::End(); // windowTitle

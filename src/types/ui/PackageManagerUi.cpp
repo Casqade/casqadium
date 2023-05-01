@@ -8,7 +8,7 @@
 
 #include <cqde/types/assets/AudioAssetManager.hpp>
 #include <cqde/types/assets/FontAssetManager.hpp>
-#include <cqde/types/assets/GeometryAssetManager.hpp>
+#include <cqde/types/assets/MeshAssetManager.hpp>
 #include <cqde/types/assets/TextStringAssetManager.hpp>
 #include <cqde/types/assets/TextureAssetManager.hpp>
 
@@ -249,7 +249,7 @@ PackageManagerUi::ui_show_menu_bar(
 
   using types::AudioAssetManager;
   using types::FontAssetManager;
-  using types::GeometryAssetManager;
+  using types::MeshAssetManager;
   using types::TextStringAssetManager;
   using types::TextureAssetManager;
 
@@ -305,7 +305,7 @@ PackageManagerUi::ui_show_menu_bar(
 
       registry.ctx().get <AudioAssetManager> ().clear();
       registry.ctx().get <FontAssetManager> ().clear();
-      registry.ctx().get <GeometryAssetManager> ().clear();
+      registry.ctx().get <MeshAssetManager> ().clear();
       registry.ctx().get <TextStringAssetManager> ().clear();
       registry.ctx().get <TextureAssetManager> ().clear();
 

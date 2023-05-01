@@ -222,13 +222,13 @@ AssetManager <MouseCursor>::ui_show_preview(
   const auto assetStatus = status(cursorId);
 
   if ( ImGui::CollapsingHeader("Status", ImGuiTreeNodeFlags_DefaultOpen) )
-    ImGui::TextColored(ImGui::ColorConvertU32ToFloat4(StatusAsColor(assetStatus)),
-                       "%s", StatusAsString(assetStatus).c_str());
+    ImGui::TextColored(ImGui::ColorConvertU32ToFloat4(AssetStatusAsColor(assetStatus)),
+                       "%s", AssetStatusAsString(assetStatus).c_str());
 
   if ( assetStatus == AssetStatus::Undefined )
     return;
 
-  if ( mAssets.at(cursorId).path != MemoryResidentPath )
+  if ( mAssets.at(cursorId).path != MemoryResidentPath() )
   {
     ImGui::SameLine();
     if ( ImGui::Button("Reload") )

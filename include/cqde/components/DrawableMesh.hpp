@@ -4,20 +4,21 @@
 
 #include <entt/fwd.hpp>
 
-#include <json/forwards.h>
+#include <glm/vec2.hpp>
 
-#include <unordered_set>
+#include <json/forwards.h>
 
 
 namespace cqde::compos
 {
 
-struct GeometryAssetList
+struct alignas(64) DrawableMesh
 {
-  std::unordered_set <GeometryId, identifier_hash> geometry {};
+  MeshId meshId {};
+  TextureId textureId {};
 
 
-  GeometryAssetList() = default;
+  DrawableMesh() = default;
 
 
   void ui_edit_props( const entt::entity,

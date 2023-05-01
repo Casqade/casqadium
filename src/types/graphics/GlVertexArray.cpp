@@ -78,25 +78,24 @@ void
 GlVertexArray::attachBuffer(
   const GlBuffer& buffer,
   const size_t attribIndex,
+  const size_t bindingIndex,
   const size_t offset,
   const size_t stride )
 {
   CQDE_ASSERT_DEBUG(isValid() == true, return);
   CQDE_ASSERT_DEBUG(buffer.isValid() == true, return);
 
-  auto bindingIndex = std::find(
-    mBindings.begin(),
-    mBindings.end(),
-    buffer.id() );
+  if ( mBindings.count(bindingIndex) > 0 )
+    CQDE_ASSERT_DEBUG(buffer.id() == mBindings[bindingIndex], return);
 
-  bindingIndex = mBindings.emplace(bindingIndex, buffer.id());
+  mBindings.emplace(bindingIndex, buffer.id());
 
   glVertexArrayAttribBinding( mId,
     attribIndex,
-    std::distance(mBindings.begin(), bindingIndex) );
+    bindingIndex );
 
   glVertexArrayVertexBuffer( mId,
-    std::distance(mBindings.begin(), bindingIndex),
+    bindingIndex,
     buffer.id(), offset, stride );
 }
 
@@ -107,15 +106,18 @@ GlVertexArray::detachBuffer(
   CQDE_ASSERT_DEBUG(isValid() == true, return);
   CQDE_ASSERT_DEBUG(buffer.isValid() == true, return);
 
-  auto bindingIndex = std::find(
-    mBindings.begin(),
-    mBindings.end(),
-    buffer.id() );
+  const auto bindingIndex = std::find_if(
+    mBindings.begin(), mBindings.end(),
+    [sourceBufferId = buffer.id()] ( const auto& element )
+    {
+      auto&& [index, bufferId] = element;
+      return bufferId == sourceBufferId;
+    });
 
   CQDE_ASSERT_DEBUG(bindingIndex != mBindings.end(), return);
 
   glVertexArrayVertexBuffer( mId,
-    std::distance(mBindings.begin(), bindingIndex),
+    bindingIndex->first,
     0, 0, 0 );
 
   mBindings.erase(bindingIndex);
@@ -175,15 +177,18 @@ GlVertexArray::setBindingDivisor(
 {
   CQDE_ASSERT_DEBUG(isValid() == true, return);
 
-  const auto bindingIndex = std::find(
-    mBindings.begin(),
-    mBindings.end(),
-    buffer.id() );
+  const auto bindingIndex = std::find_if(
+    mBindings.begin(), mBindings.end(),
+    [sourceBufferId = buffer.id()] ( const auto& element )
+    {
+      auto&& [index, bufferId] = element;
+      return bufferId == sourceBufferId;
+    });
 
   CQDE_ASSERT_DEBUG(bindingIndex != mBindings.end(), return);
 
   glVertexArrayBindingDivisor( mId,
-    std::distance(mBindings.begin(), bindingIndex),
+    bindingIndex->first,
     divisor );
 }
 

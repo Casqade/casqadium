@@ -6,16 +6,18 @@
 
 #include <json/forwards.h>
 
+#include <unordered_set>
+
 
 namespace cqde::compos
 {
 
-struct alignas(64) GeometryBuffer
+struct MeshAssetList
 {
-  GeometryId buffer {};
+  std::unordered_set <MeshId, identifier_hash> meshes {};
 
 
-  GeometryBuffer() = default;
+  MeshAssetList() = default;
 
 
   void ui_edit_props( const entt::entity,

@@ -86,10 +86,6 @@ CasqadiumEngine::registerSystems()
                          RenderSystem,
                          Phase{Phase::Render | Phase::Editor});
 
-  systemManager.Register("CasqadiumEditorEntityHighlightSystem",
-                         EditorEntityHighlightSystem,
-                         Phase{Phase::Render | Phase::Editor});
-
   systemManager.Register("EditorPhysicsDebugRenderSystem",
                          EditorPhysicsDebugRenderSystem,
                          Phase::Render);
@@ -97,6 +93,10 @@ CasqadiumEngine::registerSystems()
   systemManager.Register("InteractionHighlightSystem",
                          InteractionHighlightSystem,
                          Phase::Render);
+
+  systemManager.Register("CasqadiumEditorEntityHighlightSystem",
+                         EditorEntityHighlightSystem,
+                         Phase{Phase::Render | Phase::Editor});
 }
 
 } // namespace cqde::types

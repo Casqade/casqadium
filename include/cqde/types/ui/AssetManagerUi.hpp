@@ -57,7 +57,7 @@ private:
 
   void ui_show_live_audio( entt::registry& );
   void ui_show_live_font( entt::registry& );
-  void ui_show_live_geometry( entt::registry& );
+  void ui_show_live_meshes( entt::registry& );
   void ui_show_live_mouse_cursors( entt::registry& );
   void ui_show_live_terrain( entt::registry& );
   void ui_show_live_text( entt::registry& );

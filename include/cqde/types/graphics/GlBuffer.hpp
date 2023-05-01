@@ -3,9 +3,18 @@
 #include <cstdint>
 #include <cstddef>
 
+#include <vector>
+
 
 namespace cqde::types
 {
+
+template <typename Element>
+size_t BufferSize(
+  const std::vector <Element>& data )
+{
+  return sizeof(Element) * data.size();
+}
 
 class GlBuffer
 {
@@ -54,6 +63,8 @@ public:
 
   GLuint id() const;
   void* data() const;
+
+  size_t size() const;
 
   static GLbitfield MutableAccessFlags();
 

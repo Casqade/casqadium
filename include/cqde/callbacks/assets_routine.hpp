@@ -17,7 +17,7 @@ void loadFontAssets(
   entt::registry&,
   const std::vector <std::any>& args = {} );
 
-void loadGeometryAssets(
+void loadMeshAssets(
   entt::registry&,
   const std::vector <std::any>& args = {} );
 
@@ -42,7 +42,7 @@ void unloadFontAssets(
   entt::registry&,
   const std::vector <std::any>& args = {} );
 
-void unloadGeometryAssets(
+void unloadMeshAssets(
   entt::registry&,
   const std::vector <std::any>& args = {} );
 

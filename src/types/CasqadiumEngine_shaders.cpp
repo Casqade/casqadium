@@ -42,6 +42,7 @@ R"code(
 uniform sampler2D uTexture;
 
 layout(location = 16) uniform uint uObjectId;
+layout(location = 17) uniform uint uTextureTint;
 
 in VertexOutput
 {
@@ -55,7 +56,9 @@ layout(location = 1) out uint fObjectId;
 
 void main()
 {
-  vec4 texel = texture(uTexture, vInput.texCoords);
+  const vec4 tint = unpackUnorm4x8(uTextureTint);
+  const vec4 texel = tint * texture(uTexture, vInput.texCoords);
+
   if ( texel.a > 0.0)
     fAlbedo = texel;
   else
@@ -113,11 +116,7 @@ layout(location = 1) out uint fObjectId;
 
 void main()
 {
-  float alpha =
-    float(vInput.texCoords.x <= 0.01) + float(vInput.texCoords.x >= 0.99)
-  + float(vInput.texCoords.y <= 0.01) + float(vInput.texCoords.y >= 0.99);
-
-  fAlbedo = vec4(0.75, 0.75, 0.75, alpha);
+  fAlbedo = vec4(0.75, 0.75, 0.75, 1.0);
   fObjectId = uObjectId;
 }
 

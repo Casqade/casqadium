@@ -7,7 +7,7 @@
 #include <cqde/types/CasqadiumEngine.hpp>
 
 #include <cqde/types/assets/TextureAssetManager.hpp>
-#include <cqde/types/assets/GeometryAssetManager.hpp>
+#include <cqde/types/assets/MeshAssetManager.hpp>
 
 #include <cqde/types/graphics/GlBuffer.hpp>
 #include <cqde/types/graphics/GlVertexArray.hpp>
@@ -22,7 +22,7 @@
 #include <cqde/components/Camera.hpp>
 #include <cqde/components/Transform.hpp>
 #include <cqde/components/CasqadiumEditorInternal.hpp>
-#include <cqde/components/GeometryBuffer.hpp>
+#include <cqde/components/DrawableMesh.hpp>
 #include <cqde/components/InteractionListenerColor.hpp>
 #include <cqde/components/InteractionSource.hpp>
 #include <cqde/components/LightSource.hpp>
@@ -30,7 +30,6 @@
 #include <cqde/components/SubscriberUpdate.hpp>
 #include <cqde/components/Transform.hpp>
 #include <cqde/components/TextureTint.hpp>
-#include <cqde/components/TextureBuffer.hpp>
 
 #include <entt/entity/registry.hpp>
 
@@ -98,7 +97,7 @@ struct EditorRenderData
         0, GL_FLOAT );
 
       vao.attachBuffer(
-        vertices, 0, 0,
+        vertices, 0, 0, 0,
         sizeof(AttributeType) );
     }
 
@@ -126,19 +125,33 @@ struct EditorRenderData
 static void
 GeometryPass(
   entt::registry& registry,
-  const GLenum renderMode,
   const glm::mat4& viewProjection,
   const types::ShaderType shaderType )
 {
   using compos::Camera;
   using compos::Transform;
-  using compos::GeometryBuffer;
-  using compos::TextureBuffer;
+  using compos::DrawableMesh;
+  using compos::TextureTint;
   using types::ShaderManager;
-  using types::GeometryAssetManager;
+  using types::MeshAssetManager;
   using types::TextureAssetManager;
 
-  auto& geometry = registry.ctx().get <GeometryAssetManager> ();
+  struct RenderCommand
+  {
+    glm::mat4 mvp {};
+
+    GLuint textureId {};
+
+    size_t firstElement {};
+    size_t elementCount {};
+    size_t firstVertex {};
+
+    GLuint objectId {};
+
+    uint32_t tint {};
+  };
+
+  auto& meshes = registry.ctx().get <MeshAssetManager> ();
   auto& textures  = registry.ctx().get <TextureAssetManager> ();
   auto& shaderManager = registry.ctx().get <ShaderManager> ();
 
@@ -147,55 +160,107 @@ GeometryPass(
 
   const auto uTransform = shader.uniformLocation("uTransform");
   const auto uObjectId = shader.uniformLocation("uObjectId");
-  const auto aTexCoords = shader.attribLocation("aTexCoords");
+  const auto uTextureTint = shader.uniformLocation("uTextureTint");
 
-  GLuint geometryIdCurrent {};
-  GLuint textureIdCurrent {};
-  GLuint uvIdCurrent {};
+  static std::vector <RenderCommand> renderCommands {};
+  renderCommands.clear();
 
-  for ( const auto&& [eDrawable, cTransform, cGeometryBuffer, cTextureBuffer]
-          : registry.view <Transform, GeometryBuffer, TextureBuffer> ().each() )
+  for ( const auto&& [eDrawable, cTransform, cMesh]
+          : registry.view <Transform, DrawableMesh> (entt::exclude <TextureTint>).each() )
   {
-    const auto gBuffer = geometry.get(cGeometryBuffer.buffer);
+    const auto mesh = meshes.get(cMesh.meshId);
 
-    if ( gBuffer == nullptr )
-      return;
+    if ( mesh == nullptr )
+      continue;
 
-    const auto mvp = viewProjection * GetWorldMatrix(registry, eDrawable, cTransform);
+    const auto texture = textures.get(cMesh.textureId);
 
-    glUniformMatrix4fv(uTransform, 1, GL_FALSE, glm::value_ptr(mvp));
-    glUniform1ui(uObjectId, static_cast <uint32_t> (eDrawable));
+    if ( texture == nullptr ||
+         texture->Decal() == nullptr )
+      continue;
 
-    if ( gBuffer->vao.id() != geometryIdCurrent )
+    renderCommands.emplace_back( RenderCommand
     {
-      geometryIdCurrent = gBuffer->vao.id();
-      glBindVertexArray(geometryIdCurrent);
-      glEnableVertexAttribArray(1);
-    }
+      viewProjection * GetWorldMatrix(registry, eDrawable, cTransform),
+      texture->Decal()->id,
+      mesh->firstElementIndex,
+      mesh->elementCount,
+      mesh->firstVertexIndex,
+      static_cast <GLuint> (eDrawable),
+      olc::WHITE.n,
+    } );
+  }
 
-    if ( cTextureBuffer.uv != uvIdCurrent )
+  std::sort( renderCommands.begin(), renderCommands.end(),
+  [] ( const RenderCommand& lhs, const RenderCommand& rhs )
+  {
+//    front-to-back
+    return lhs.mvp[3].z < rhs.mvp[3].z;
+  });
+
+  const auto lastOpaqueCommandIndex = renderCommands.size();
+
+  for ( const auto&& [eDrawable, cTransform, cMesh, cTextureTint]
+          : registry.view <Transform, DrawableMesh, TextureTint> ().each() )
+  {
+    const auto mesh = meshes.get(cMesh.meshId);
+
+    if ( mesh == nullptr )
+      continue;
+
+    const auto texture = textures.get(cMesh.textureId);
+
+    if ( texture == nullptr ||
+         texture->Decal() == nullptr )
+      continue;
+
+    renderCommands.emplace_back( RenderCommand
     {
-      uvIdCurrent = cTextureBuffer.uv;
-      glBindBuffer(GL_ARRAY_BUFFER, uvIdCurrent);
-      glVertexAttribPointer(
-        aTexCoords, 2, GL_FLOAT,
-        GL_FALSE, 0, 0 );
-    }
+      viewProjection * GetWorldMatrix(registry, eDrawable, cTransform),
+      texture->Decal()->id,
+      mesh->firstElementIndex,
+      mesh->elementCount,
+      mesh->firstVertexIndex,
+      static_cast <GLuint> (eDrawable),
+      cTextureTint.tint.n,
+    } );
+  };
 
-    const auto texture = textures.get(cTextureBuffer.texture);
+  std::sort( renderCommands.begin() + lastOpaqueCommandIndex, renderCommands.end(),
+  [] ( const RenderCommand& lhs, const RenderCommand& rhs )
+  {
+//    back-to-front
+    return lhs.mvp[3].z > rhs.mvp[3].z;
+  });
 
-    if ( texture != nullptr &&
-         texture->Decal() != nullptr &&
-         texture->Decal()->id != textureIdCurrent )
+  GLuint textureIdCurrent {};
+
+  glBindVertexArray(meshes.vaoId());
+
+  for ( auto& command : renderCommands )
+  {
+    if ( command.textureId != textureIdCurrent )
     {
-      textureIdCurrent = texture->Decal()->id;
+      textureIdCurrent = command.textureId;
       glBindTextureUnit(0, textureIdCurrent);
     }
 
-    glDrawElements( renderMode,
-      gBuffer->indices.size(),
-      GL_UNSIGNED_INT, nullptr );
-  };
+    glUniformMatrix4fv(
+      uTransform, 1, GL_FALSE,
+      glm::value_ptr(command.mvp) );
+
+    glUniform1ui(uObjectId, command.objectId);
+    glUniform1ui(uTextureTint, command.tint);
+
+    const auto elementOffset = sizeof(uint32_t) * command.firstElement;
+
+    glDrawElementsBaseVertex(
+      GL_TRIANGLES,
+      command.elementCount,
+      GL_UNSIGNED_INT,
+      reinterpret_cast <const void*> (elementOffset),
+      command.firstVertex );
+  }
 
   glBindVertexArray(0);
   glBindTextureUnit(0, 0);
@@ -324,6 +389,8 @@ RenderToTarget(
 
   const glm::vec2 framebufferSize = target.size;
 
+//  glUseProgram(0);
+
   glBindFramebuffer(GL_FRAMEBUFFER, target.fbo);
 
   glColorMaski(1, GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
@@ -377,24 +444,27 @@ RenderToTarget(
   const auto camView = cCamera->viewMatrix(const_registry, eCamera, *cCameraTransform);
   const auto viewProjection = cCamera->projMatrix(framebufferSize) * camView;
 
-  GLenum renderMode = GL_TRIANGLE_FAN;
-  ShaderType shaderType = ShaderType::Wireframe;
+  ShaderType shaderType = ShaderType::Geometry;
 
   if ( cCamera->renderMode == Camera::RenderMode::Solid )
   {
     glEnable(GL_DEPTH_TEST);
     glEnable(GL_CULL_FACE);
 
-    renderMode = GL_TRIANGLE_FAN;
-    shaderType = ShaderType::Geometry;
+    glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
   }
   else
   {
     glDisable(GL_DEPTH_TEST);
     glDisable(GL_CULL_FACE);
+
+    glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+    shaderType = ShaderType::Wireframe;
   }
 
-  GeometryPass(registry, renderMode, viewProjection, shaderType);
+  GeometryPass(registry, viewProjection, shaderType);
+
+  glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 
   auto& readbackQueue = registry.ctx().get <FrameReadbackQueue> ();
   readbackQueue.write(target);
@@ -646,22 +716,20 @@ EditorEntityHighlightSystem(
 {
   using compos::Camera;
   using compos::Transform;
-  using compos::GeometryBuffer;
+  using compos::DrawableMesh;
   using compos::CasqadiumEditorInternal;
   using types::ShaderType;
   using types::ShaderManager;
-  using types::EntityManager;
-  using types::GeometryAssetManager;
+  using types::MeshAssetManager;
   using ui::EntityManagerUi;
   using ui::ViewportManagerUi;
 
   const auto& const_registry = registry;
 
-  auto& entityManager   = registry.ctx().get <EntityManager> ();
   auto& entityManagerUi = registry.ctx().get <EntityManagerUi> ();
   auto& viewportManagerUi = const_registry.ctx().get <ViewportManagerUi> ();
 
-  auto& geometry = registry.ctx().get <GeometryAssetManager> ();
+  auto& meshes = registry.ctx().get <MeshAssetManager> ();
   auto& shaderManager = registry.ctx().get <ShaderManager> ();
 
   auto& shader = shaderManager.get(ShaderType::UiElements);
@@ -674,24 +742,26 @@ EditorEntityHighlightSystem(
   glEnable(GL_SCISSOR_TEST);
   glUniform1ui(uColor, olc::YELLOW.n);
 
+  glBindVertexArray(meshes.vaoId());
+
+  glPolygonMode( GL_FRONT_AND_BACK, GL_LINE );
+
   for ( const auto selectedEntity : entityManagerUi.selectedEntities() )
   {
     if ( selectedEntity == entt::null )
       continue;
 
-    auto&& [cTransform, cGeometryBuffer] =
-      const_registry.try_get <Transform, GeometryBuffer> (selectedEntity);
+    auto&& [cTransform, cMesh] =
+      const_registry.try_get <Transform, DrawableMesh> (selectedEntity);
 
     if ( cTransform == nullptr ||
-         cGeometryBuffer == nullptr )
+         cMesh == nullptr )
       continue;
 
-    const auto gBuffer = geometry.get(cGeometryBuffer->buffer);
+    const auto mesh = meshes.get(cMesh->meshId);
 
-    if ( gBuffer == nullptr )
+    if ( mesh == nullptr )
       continue;
-
-    glBindVertexArray(gBuffer->vao.id());
 
     for ( auto& viewport : viewportManagerUi.viewports() )
     {
@@ -731,14 +801,23 @@ EditorEntityHighlightSystem(
         uTransform, 1, GL_FALSE,
         glm::value_ptr(mvp) );
 
-      glDrawArrays(GL_LINE_LOOP, 0, 4);
+      const auto elementOffset = sizeof(uint32_t) * mesh->firstElementIndex;
+
+      glDrawElementsBaseVertex(
+        GL_TRIANGLES,
+        mesh->elementCount,
+        GL_UNSIGNED_INT,
+        reinterpret_cast <const void*> (elementOffset),
+        mesh->firstVertexIndex );
     }
   }
 
-  glBindVertexArray(0);
+  glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
   shader.unuse();
+
+  glBindVertexArray(0);
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
 }
 
 void
@@ -749,16 +828,16 @@ InteractionHighlightSystem(
   using compos::InteractionListenerColor;
   using compos::InteractionSource;
   using compos::SubscriberUpdate;
-  using compos::GeometryBuffer;
+  using compos::DrawableMesh;
   using compos::Transform;
   using types::ShaderType;
   using types::ShaderManager;
   using types::PrimaryRenderTarget;
-  using types::GeometryAssetManager;
+  using types::MeshAssetManager;
 
   const auto& const_registry = registry;
 
-  auto& geometry = registry.ctx().get <GeometryAssetManager> ();
+  auto& meshes = registry.ctx().get <MeshAssetManager> ();
   auto& shaderManager = registry.ctx().get <ShaderManager> ();
   auto& mainTarget = registry.ctx().get <PrimaryRenderTarget> ();
 
@@ -773,6 +852,8 @@ InteractionHighlightSystem(
 
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
+  glBindVertexArray(meshes.vaoId());
+
   for ( const auto&& [eCamera, cCamera, cCameraTransform, cInteractionSource]
           : registry.view <Camera, Transform, InteractionSource, SubscriberUpdate> ().each() )
   {
@@ -781,20 +862,18 @@ InteractionHighlightSystem(
     if ( entity_valid(eListener, registry) == false )
       continue;
 
-    auto&& [cTransform, cGeometryBuffer, cListenerColor] =
-      const_registry.try_get <Transform, GeometryBuffer, InteractionListenerColor> (eListener);
+    auto&& [cTransform, cMesh, cListenerColor] =
+      const_registry.try_get <Transform, DrawableMesh, InteractionListenerColor> (eListener);
 
     if ( cTransform == nullptr ||
-         cGeometryBuffer == nullptr ||
+         cMesh == nullptr ||
          cListenerColor == nullptr )
       continue;
 
-    const auto gBuffer = geometry.get(cGeometryBuffer->buffer);
+    const auto mesh = meshes.get(cMesh->meshId);
 
-    if ( gBuffer == nullptr )
+    if ( mesh == nullptr )
       continue;
-
-    glBindVertexArray(gBuffer->vao.id());
 
     const auto framebufferSize = mainTarget.target.size;
     const auto camViewport = cCamera.viewportScaled(framebufferSize);
@@ -820,8 +899,18 @@ InteractionHighlightSystem(
       uTransform, 1, GL_FALSE,
       glm::value_ptr(mvp) );
 
-    glDrawArrays(GL_LINE_LOOP, 0, 4);
+    const auto elementOffset = sizeof(uint32_t) * mesh->firstElementIndex;
+
+    glDrawElementsBaseVertex(
+      GL_LINE_LOOP,
+      mesh->elementCount,
+      GL_UNSIGNED_INT,
+      reinterpret_cast <const void*> (elementOffset),
+      mesh->firstVertexIndex );
   }
+
+  shader.unuse();
+  glBindVertexArray(0);
 }
 
 } // namespace cqde::systems

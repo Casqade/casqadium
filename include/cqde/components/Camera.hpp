@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cqde/types/VertexBuffer.hpp>
 #include <cqde/alias.hpp>
 
 #include <entt/fwd.hpp>
@@ -48,9 +47,6 @@ struct Camera
     Diffuse,
     FullBright,
   };
-
-//  std::multimap < types::VertexBuffer, entt::entity,
-//                  types::VertexBufferComparator> zBuffer {};
 
   std::pair <float, float> zRange {0.1f, 1000.0f};
   glm::vec4 viewport {0.0, 0.0, 1.0, 1.0};
