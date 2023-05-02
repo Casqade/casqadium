@@ -32,7 +32,6 @@ CasqadiumEngine::framebufferSizeEvent(
   int32_t width,
   int32_t height )
 {
-  LOG_INFO("{} fb size: {}x{}", fmt::ptr(window), width, height);
   mFramebufferSize = {width, height};
 }
 
@@ -79,11 +78,7 @@ CasqadiumEngine::keyEvent(
 
   if ( io.WantCaptureKeyboard == true ||
        io.WantTextInput == true )
-  {
-    const auto keyName = glfwGetKeyName(key, scancode);
-    LOG_INFO("+key {}", keyName != nullptr ? keyName : std::to_string(key));
     return;
-  }
 
   auto& inputManager = mRegistry.ctx().get <InputManager> ();
 
