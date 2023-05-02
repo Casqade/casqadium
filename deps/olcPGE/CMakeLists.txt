@@ -5,6 +5,8 @@ project(${TARGET} VERSION 2.16 LANGUAGES CXX)
 
 add_library(${TARGET})
 
+option(OLC_USE_STB_IMAGE "Use stb_image.h for sprite loading" OFF)
+
 target_sources(${TARGET} PRIVATE
 
   include/${TARGET}/v2d_generic.hpp
@@ -44,6 +46,17 @@ else()
   target_link_libraries(${TARGET} PUBLIC -static)
 endif()
 
+if(${OLC_USE_STB_IMAGE})
+  target_compile_definitions(${TARGET} PRIVATE OLC_IMAGE_STB)
+
+elseif(WIN32)
+  target_compile_definitions(${TARGET} PRIVATE OLC_IMAGE_GDI)
+
+else()
+  target_compile_definitions(${TARGET} PRIVATE OLC_IMAGE_LIBPNG)
+endif()
+
+
 set(FT_DISABLE_BROTLI ON CACHE BOOL "" FORCE)
 set(FT_DISABLE_BZIP2 ON CACHE BOOL "" FORCE)
 set(FT_DISABLE_HARFBUZZ ON CACHE BOOL "" FORCE)
@@ -80,11 +93,14 @@ if(WIN32)
     endif()
   endif()
 
-  target_link_libraries(${TARGET} PUBLIC gdiplus)
+  if(NOT ${OLC_USE_STB_IMAGE})
+    target_link_libraries(${TARGET} PUBLIC gdiplus)
+  endif()
 
-else()
-  target_link_libraries(${TARGET} PRIVATE X11 GL png)
+elseif(NOT ${OLC_USE_STB_IMAGE})
+  target_link_libraries(${TARGET} PRIVATE GL png)
 endif()
+
 
 include(GenerateExportHeader)
 generate_export_header(${TARGET} EXPORT_FILE_NAME ${CMAKE_BINARY_DIR}/exports/${TARGET}/${TARGET}_export.hpp)

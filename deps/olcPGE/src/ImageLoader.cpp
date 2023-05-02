@@ -1,16 +1,6 @@
 #include <olcPGE/ImageLoader.hpp>
 #include <olcPGE/Sprite.hpp>
 
-// Image loader
-#if !defined(OLC_IMAGE_STB) && !defined(OLC_IMAGE_GDI) && !defined(OLC_IMAGE_LIBPNG)
-#if defined(_WIN32)
-#define OLC_IMAGE_GDI
-#endif
-#if defined(__linux__) || defined(__APPLE__) || defined(__FreeBSD__)
-#define OLC_IMAGE_LIBPNG
-#endif
-#endif
-
 #include <filesystem>
 namespace _gfs = std::filesystem;
 
@@ -18,6 +8,7 @@ namespace _gfs = std::filesystem;
 // O------------------------------------------------------------------------------O
 // | START IMAGE LOADER: GDI+, Windows Only, always exists, a little slow         |
 // O------------------------------------------------------------------------------O
+
 #if defined(OLC_IMAGE_GDI)
 
 #define _WINSOCKAPI_ // Thanks Cornchipss
@@ -125,15 +116,20 @@ namespace olc
     }
   };
 } // namespace olc
+
 #endif
+
 // O------------------------------------------------------------------------------O
 // | END IMAGE LOADER: GDI+                                                       |
 // O------------------------------------------------------------------------------O
 
+
 // O------------------------------------------------------------------------------O
 // | START IMAGE LOADER: libpng, default on linux, requires -lpng  (libpng-dev)   |
 // O------------------------------------------------------------------------------O
+
 #if defined(OLC_IMAGE_LIBPNG)
+
 #include <png.h>
 
 namespace olc
@@ -233,7 +229,9 @@ fail_load:
     }
   };
 } // namespace olc
+
 #endif
+
 // O------------------------------------------------------------------------------O
 // | END IMAGE LOADER: libpng                                                     |
 // O------------------------------------------------------------------------------O
@@ -244,14 +242,14 @@ fail_load:
 // Thanks to Sean Barrett - https://github.com/nothings/stb/blob/master/stb_image.h
 // MIT License - Copyright(c) 2017 Sean Barrett
 
-// Note you need to download the above file into your project folder, and
-// #define OLC_IMAGE_STB
-// #define OLC_PGE_APPLICATION
-// #include "olcPixelGameEngine.h"
-
 #if defined(OLC_IMAGE_STB)
+
 #define STB_IMAGE_IMPLEMENTATION
-#include "stb_image.h"
+#include <olcPGE/thirdparty/stb_image.h>
+
+#include <cstring>
+
+
 namespace olc
 {
   class ImageLoader_STB : public olc::ImageLoader
@@ -280,14 +278,11 @@ namespace olc
       delete[] bytes;
       return olc::rcode::OK;
     }
-
-    olc::rcode SaveImageResource(olc::Sprite* spr, const std::string& sImageFile) override
-    {
-      return olc::rcode::OK;
-    }
   };
 }
+
 #endif
+
 // O------------------------------------------------------------------------------O
 // | END IMAGE LOADER: stb_image.h                                              |
 // O------------------------------------------------------------------------------O
