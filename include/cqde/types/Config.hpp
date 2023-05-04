@@ -14,7 +14,7 @@ namespace cqde::types
 
 struct Config
 {
-  using level = spdlog::level::level_enum;
+  using log_level = spdlog::level::level_enum;
   using level_enum = spdlog::level::level_enum;
 
   using BACKEND = SoLoud::Soloud::BACKENDS;
@@ -48,9 +48,9 @@ struct Config
   {
     struct
     {
-      level cmd {level::err};
-      level file {level::info};
-      level flushOn {level::warn};
+      log_level cmd {log_level::err};
+      log_level file {log_level::info};
+      log_level flushOn {log_level::warn};
 
     } level {};
 
