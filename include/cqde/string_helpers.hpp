@@ -7,9 +7,6 @@
 namespace cqde
 {
 
-<<<<<<<< HEAD:lib/casqadium/include/cqde/common.hpp
-void engineInit( entt::registry& registry );
-========
 std::string toLowerCase( const std::string& );
 
 std::vector <std::string> stringSplit(
@@ -53,6 +50,5 @@ IdGenerate(
 
   return stringJoin(tokens, {delimeter});
 }
->>>>>>>> main:include/cqde/string_helpers.hpp
 
 } // namespace cqde
