@@ -1,6 +1,6 @@
 {
   "title": "Audio Demo",
   "description": "",
-  "dependencies": [],
+  "dependencies": ["cqde-templates"],
   "version": "1.0.0",
 }

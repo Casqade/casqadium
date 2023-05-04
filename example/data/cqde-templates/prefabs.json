@@ -1,0 +1,247 @@
+{
+  "camera" : 
+  {
+    "eCamera" : 
+    {
+      "Camera" : 
+      {
+        "aspectRatio" : 1.77,
+        "aspectRatioBehaviour" : "keep",
+        "fov" : 57.295780181884766,
+        "layer" : 0,
+        "lightingMode" : "diffuse",
+        "projection" : "perspective",
+        "renderMode" : "solid",
+        "textureMode" : "textured",
+        "viewport" : 
+        [
+          0.0,
+          0.0,
+          1.0,
+          1.0
+        ],
+        "z-range" : 
+        [
+          0.10000000149011612,
+          1000.0
+        ]
+      },
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "null"
+      },
+      "Tag" : {},
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    }
+  },
+  "camera_free" : 
+  {
+    "eCamera" : 
+    {
+      "Camera" : 
+      {
+        "aspectRatio" : 1.77,
+        "aspectRatioBehaviour" : "keep",
+        "fov" : 57.295780181884766,
+        "layer" : 0,
+        "lightingMode" : "diffuse",
+        "projection" : "perspective",
+        "renderMode" : "solid",
+        "textureMode" : "textured",
+        "viewport" : 
+        [
+          0.0,
+          0.0,
+          1.0,
+          1.0
+        ],
+        "z-range" : 
+        [
+          0.10000000149011612,
+          1000.0
+        ]
+      },
+      "InputController" : 
+      {
+        "axes" : 
+        {
+          "Pitch" : 
+          {
+            "callbacks" : 
+            [
+              "ControlPitchRelative"
+            ],
+            "constraint" : 
+            [
+              1.0,
+              0.0
+            ],
+            "value" : 0.0
+          },
+          "TranslateX" : 
+          {
+            "callbacks" : 
+            [
+              "ControlTranslateXRelative"
+            ],
+            "constraint" : 
+            [
+              1.0,
+              0.0
+            ],
+            "value" : 0.0
+          },
+          "TranslateY" : 
+          {
+            "callbacks" : 
+            [
+              "ControlTranslateYRelative"
+            ],
+            "constraint" : 
+            [
+              1.0,
+              0.0
+            ],
+            "value" : 0.0
+          },
+          "TranslateZ" : 
+          {
+            "callbacks" : 
+            [
+              "ControlTranslateZRelative"
+            ],
+            "constraint" : 
+            [
+              1.0,
+              0.0
+            ],
+            "value" : 0.0
+          },
+          "Yaw" : 
+          {
+            "callbacks" : 
+            [
+              "ControlYawRelative"
+            ],
+            "constraint" : 
+            [
+              1.0,
+              0.0
+            ],
+            "value" : 0.0
+          }
+        }
+      },
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "null"
+      },
+      "SubscriberInput" : {},
+      "SubscriberUpdate" : {},
+      "Tag" : {},
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      },
+      "WantsMouseGrabbed" : {}
+    }
+  },
+  "quad" : 
+  {
+    "eQuad" : 
+    {
+      "DrawableMesh" : 
+      {
+        "meshId" : "null",
+        "textureId" : "null"
+      },
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "null"
+      },
+      "Tag" : {},
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    }
+  }
+}

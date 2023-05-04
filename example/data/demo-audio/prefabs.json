@@ -144,13 +144,10 @@
         "parent" : "eDrunkardTorso"
       },
       "Tag" : {},
-      "TextureBuffer" :
+      "DrawableMesh" :
       {
-        "textures" :
-        [
-          "drunkard_head",
-          "drunkard_head"
-        ]
+        "meshId" : "null",
+        "textureId" : "drunkard_head"
       },
       "Transform" :
       {
@@ -183,23 +180,16 @@
     },
     "eDrunkardLegLeft" :
     {
-      "GeometryBuffer" :
-      {
-        "buffer" : "null"
-      },
       "SceneNode" :
       {
         "children" : [],
         "parent" : "eDrunkardLegsRoot"
       },
       "Tag" : {},
-      "TextureBuffer" :
+      "DrawableMesh" :
       {
-        "textures" :
-        [
-          "drunkard_leg_left",
-          "drunkard_leg_right"
-        ]
+        "meshId" : "null",
+        "textureId" : "drunkard_leg_left"
       },
       "Transform" :
       {
@@ -232,23 +222,16 @@
     },
     "eDrunkardLegRight" :
     {
-      "GeometryBuffer" :
-      {
-        "buffer" : "null"
-      },
       "SceneNode" :
       {
         "children" : [],
         "parent" : "eDrunkardLegsRoot"
       },
       "Tag" : {},
-      "TextureBuffer" :
+      "DrawableMesh" :
       {
-        "textures" :
-        [
-          "drunkard_leg_right",
-          "drunkard_leg_left"
-        ]
+        "meshId" : "null",
+        "textureId" : "drunkard_leg_right"
       },
       "Transform" :
       {
@@ -471,10 +454,6 @@
         "dopplerFactor" : 1.0
       },
       "AudioBus" : {},
-      "GeometryBuffer" :
-      {
-        "buffer" : "null"
-      },
       "InteractionListener" :
       {
         "actions" :
@@ -495,13 +474,10 @@
         "parent" : "eDrunkardRoot"
       },
       "Tag" : {},
-      "TextureBuffer" :
+      "DrawableMesh" :
       {
-        "textures" :
-        [
-          "drunkard_torso",
-          "drunkard_torso"
-        ]
+        "meshId" : "null",
+        "textureId" : "drunkard_torso"
       },
       "Transform" :
       {

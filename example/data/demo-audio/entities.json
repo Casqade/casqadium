@@ -72,6 +72,8 @@
     "AudioListener3d" : {},
     "Camera" : 
     {
+      "aspectRatio" : 1.77,
+      "aspectRatioBehaviour" : "keep",
       "fov" : 57.295780181884766,
       "layer" : 0,
       "lightingMode" : "diffuse",
@@ -170,8 +172,7 @@
         0.0
       ]
     },
-    "WantsMouseCentered" : {},
-    "WantsMouseHidden" : {}
+    "WantsMouseGrabbed" : {}
   },
   "eCameraConcertFootstepsTrigger" : 
   {
@@ -473,6 +474,8 @@
     "AudioListener3d" : {},
     "Camera" : 
     {
+      "aspectRatio" : 1.77,
+      "aspectRatioBehaviour" : "keep",
       "fov" : 57.295780181884766,
       "layer" : 0,
       "lightingMode" : "diffuse",
@@ -597,8 +600,7 @@
         0.0
       ]
     },
-    "WantsMouseCentered" : {},
-    "WantsMouseHidden" : {}
+    "WantsMouseGrabbed" : {}
   },
   "eCameraEngine" : 
   {
@@ -606,6 +608,8 @@
     "AudioListener3d" : {},
     "Camera" : 
     {
+      "aspectRatio" : 1.77,
+      "aspectRatioBehaviour" : "keep",
       "fov" : 57.295780181884766,
       "layer" : 0,
       "lightingMode" : "diffuse",
@@ -663,7 +667,9 @@
   {
     "Camera" : 
     {
-      "fov" : 0.0010000000474974513,
+      "aspectRatio" : 1.77,
+      "aspectRatioBehaviour" : "keep",
+      "fov" : 0.9,
       "layer" : -1,
       "lightingMode" : "diffuse",
       "projection" : "orthographic",
@@ -765,6 +771,8 @@
   {
     "Camera" : 
     {
+      "aspectRatio" : 1.77,
+      "aspectRatioBehaviour" : "keep",
       "fov" : 57.295780181884766,
       "layer" : 0,
       "lightingMode" : "diffuse",
@@ -876,8 +884,7 @@
         0.0
       ]
     },
-    "WantsMouseCentered" : {},
-    "WantsMouseHidden" : {}
+    "WantsMouseGrabbed" : {}
   },
   "eCar" : 
   {
@@ -898,10 +905,6 @@
       [
         "car_loop"
       ]
-    },
-    "GeometryBuffer" : 
-    {
-      "buffer" : "null"
     },
     "RigidBody" : 
     {
@@ -1034,13 +1037,10 @@
       "children" : [],
       "parent" : "eCarRoot"
     },
-    "TextureBuffer" : 
+    "DrawableMesh" : 
     {
-      "textures" : 
-      [
-        "null",
-        "null"
-      ]
+      "meshId" : "null",
+      "textureId" : "null"
     },
     "Transform" : 
     {
@@ -1241,10 +1241,6 @@
         "eMusViola"
       ]
     },
-    "GeometryBuffer" : 
-    {
-      "buffer" : "null"
-    },
     "InteractionListener" : 
     {
       "actions" : 
@@ -1265,13 +1261,10 @@
       "children" : [],
       "parent" : "eConcertRoot"
     },
-    "TextureBuffer" : 
+    "DrawableMesh" : 
     {
-      "textures" : 
-      [
-        "mus_reset",
-        "mus_reset"
-      ]
+      "meshId" : "null",
+      "textureId" : "mus_reset"
     },
     "Transform" : 
     {
@@ -1481,14 +1474,12 @@
       "systems" : 
       [
         "Audio3dSystem",
-        "MouseCenteringSystem",
+        "MouseGrabSystem",
         "InteractionQuerySystem",
         "PhysicsSystem",
         "AudioDrivenTransformSystem",
         "SequenceSystem",
-        "CullingSystem",
         "RenderSystem",
-        "MouseHidingSystem",
         "InteractionHighlightSystem",
         "RenderBufferClearSystem"
       ]
@@ -1733,10 +1724,6 @@
       "sourceEntityId" : "eDrunkardHead",
       "useWorldSpace" : false
     },
-    "GeometryBuffer" : 
-    {
-      "buffer" : "null"
-    },
     "SceneNode" : 
     {
       "children" : [],
@@ -1762,13 +1749,10 @@
         }
       ]
     },
-    "TextureBuffer" : 
+    "DrawableMesh" : 
     {
-      "textures" : 
-      [
-        "drunkard_head",
-        "drunkard_head"
-      ]
+      "meshId" : "null",
+      "textureId" : "drunkard_head"
     },
     "Transform" : 
     {
@@ -1801,22 +1785,15 @@
   },
   "eDrunkardLegLeft" : 
   {
-    "GeometryBuffer" : 
-    {
-      "buffer" : "null"
-    },
     "SceneNode" : 
     {
       "children" : [],
       "parent" : "eDrunkardLegLeftRoot"
     },
-    "TextureBuffer" : 
+    "DrawableMesh" : 
     {
-      "textures" : 
-      [
-        "drunkard_leg_left",
-        "drunkard_leg_right"
-      ]
+      "meshId" : "null",
+      "textureId" : "drunkard_leg_left"
     },
     "Transform" : 
     {
@@ -1915,22 +1892,15 @@
   },
   "eDrunkardLegRight" : 
   {
-    "GeometryBuffer" : 
-    {
-      "buffer" : "null"
-    },
     "SceneNode" : 
     {
       "children" : [],
       "parent" : "eDrunkardLegRightRoot"
     },
-    "TextureBuffer" : 
+    "DrawableMesh" : 
     {
-      "textures" : 
-      [
-        "drunkard_leg_right",
-        "drunkard_leg_left"
-      ]
+      "meshId" : "null",
+      "textureId" : "drunkard_leg_right"
     },
     "Transform" : 
     {
@@ -2139,10 +2109,6 @@
   },
   "eDrunkardTorso" : 
   {
-    "GeometryBuffer" : 
-    {
-      "buffer" : "null"
-    },
     "SceneNode" : 
     {
       "children" : 
@@ -2151,13 +2117,10 @@
       ],
       "parent" : "eDrunkardRoot"
     },
-    "TextureBuffer" : 
+    "DrawableMesh" : 
     {
-      "textures" : 
-      [
-        "drunkard_torso",
-        "drunkard_torso"
-      ]
+      "meshId" : "null",
+      "textureId" : "drunkard_torso"
     },
     "Transform" : 
     {
@@ -2201,9 +2164,10 @@
         "eDrunkardFootstepsTrigger"
       ]
     },
-    "GeometryBuffer" : 
+    "DrawableMesh" : 
     {
-      "buffer" : "null"
+      "meshId" : "null",
+      "textureId" : "empty"
     },
     "InteractionListener" : 
     {
@@ -2685,21 +2649,15 @@
         }
       ]
     },
-    "GeometryBuffer" : 
-    {
-      "buffer" : "null"
-    },
     "SceneNode" : 
     {
       "children" : [],
       "parent" : "eEngineRoot"
     },
-    "TextureBuffer" : 
+    "DrawableMesh" : 
     {
-      "textures" : 
-      [
-        "null"
-      ]
+      "meshId" : "null",
+      "textureId" : "null"
     },
     "Transform" : 
     {
@@ -2773,22 +2731,15 @@
   },
   "eEngineSprite" : 
   {
-    "GeometryBuffer" : 
-    {
-      "buffer" : "null"
-    },
     "SceneNode" : 
     {
       "children" : [],
       "parent" : "eEngine"
     },
-    "TextureBuffer" : 
+    "DrawableMesh" : 
     {
-      "textures" : 
-      [
-        "error",
-        "error"
-      ]
+      "meshId" : "null",
+      "textureId" : "error"
     },
     "Transform" : 
     {
@@ -2860,21 +2811,15 @@
   },
   "eInputHintDemoReset" : 
   {
-    "GeometryBuffer" : 
-    {
-      "buffer" : "null"
-    },
     "SceneNode" : 
     {
       "children" : [],
       "parent" : "eCameraInputHintRoot"
     },
-    "TextureBuffer" : 
+    "DrawableMesh" : 
     {
-      "textures" : 
-      [
-        "hint_reset"
-      ]
+      "meshId" : "null",
+      "textureId" : "hint_reset"
     },
     "Transform" : 
     {
@@ -2907,21 +2852,15 @@
   },
   "eInputHintInteract" : 
   {
-    "GeometryBuffer" : 
-    {
-      "buffer" : "null"
-    },
     "SceneNode" : 
     {
       "children" : [],
       "parent" : "eCameraInputHintRoot"
     },
-    "TextureBuffer" : 
+    "DrawableMesh" : 
     {
-      "textures" : 
-      [
-        "hint_interact"
-      ]
+      "meshId" : "null",
+      "textureId" : "hint_interact"
     },
     "Transform" : 
     {
@@ -2954,21 +2893,15 @@
   },
   "eInputHintLook" : 
   {
-    "GeometryBuffer" : 
-    {
-      "buffer" : "null"
-    },
     "SceneNode" : 
     {
       "children" : [],
       "parent" : "eCameraInputHintRoot"
     },
-    "TextureBuffer" : 
+    "DrawableMesh" : 
     {
-      "textures" : 
-      [
-        "hint_look"
-      ]
+      "meshId" : "null",
+      "textureId" : "hint_look"
     },
     "Transform" : 
     {
@@ -3001,21 +2934,15 @@
   },
   "eInputHintMove" : 
   {
-    "GeometryBuffer" : 
-    {
-      "buffer" : "null"
-    },
     "SceneNode" : 
     {
       "children" : [],
       "parent" : "eCameraInputHintRoot"
     },
-    "TextureBuffer" : 
+    "DrawableMesh" : 
     {
-      "textures" : 
-      [
-        "hint_move"
-      ]
+      "meshId" : "null",
+      "textureId" : "hint_move"
     },
     "Transform" : 
     {
@@ -3048,21 +2975,15 @@
   },
   "eInputHintPhysDebug" : 
   {
-    "GeometryBuffer" : 
-    {
-      "buffer" : "null"
-    },
     "SceneNode" : 
     {
       "children" : [],
       "parent" : "eCameraInputHintRoot"
     },
-    "TextureBuffer" : 
+    "DrawableMesh" : 
     {
-      "textures" : 
-      [
-        "hint_physics_debug"
-      ]
+      "meshId" : "null",
+      "textureId" : "hint_physics_debug"
     },
     "Transform" : 
     {
@@ -3095,21 +3016,15 @@
   },
   "eInputHintQuit" : 
   {
-    "GeometryBuffer" : 
-    {
-      "buffer" : "null"
-    },
     "SceneNode" : 
     {
       "children" : [],
       "parent" : "eCameraInputHintRoot"
     },
-    "TextureBuffer" : 
+    "DrawableMesh" : 
     {
-      "textures" : 
-      [
-        "hint_quit"
-      ]
+      "meshId" : "null",
+      "textureId" : "hint_quit"
     },
     "Transform" : 
     {
@@ -3197,9 +3112,10 @@
       "dopplerFactor" : 1.0
     },
     "AudioBus" : {},
-    "GeometryBuffer" : 
+    "DrawableMesh" : 
     {
-      "buffer" : "null"
+      "meshId" : "null",
+      "textureId" : "empty"
     },
     "InteractionListener" : 
     {
@@ -3274,22 +3190,15 @@
       "sourceEntityId" : "eMusBanjoMelody",
       "useWorldSpace" : false
     },
-    "GeometryBuffer" : 
-    {
-      "buffer" : "null"
-    },
     "SceneNode" : 
     {
       "children" : [],
       "parent" : "eMusBanjoMelody"
     },
-    "TextureBuffer" : 
+    "DrawableMesh" : 
     {
-      "textures" : 
-      [
-        "mus_banjo1",
-        "mus_banjo1"
-      ]
+      "meshId" : "null",
+      "textureId" : "mus_banjo1"
     },
     "Transform" : 
     {
@@ -3334,9 +3243,10 @@
       "dopplerFactor" : 1.0
     },
     "AudioBus" : {},
-    "GeometryBuffer" : 
+    "DrawableMesh" : 
     {
-      "buffer" : "null"
+      "meshId" : "null",
+      "textureId" : "empty"
     },
     "InteractionListener" : 
     {
@@ -3411,22 +3321,15 @@
       "sourceEntityId" : "eMusBanjoRhythm",
       "useWorldSpace" : false
     },
-    "GeometryBuffer" : 
-    {
-      "buffer" : "null"
-    },
     "SceneNode" : 
     {
       "children" : [],
       "parent" : "eMusBanjoRhythm"
     },
-    "TextureBuffer" : 
+    "DrawableMesh" : 
     {
-      "textures" : 
-      [
-        "mus_banjo2",
-        "mus_banjo2"
-      ]
+      "meshId" : "null",
+      "textureId" : "mus_banjo2"
     },
     "Transform" : 
     {
@@ -3471,9 +3374,10 @@
       "dopplerFactor" : 1.0
     },
     "AudioBus" : {},
-    "GeometryBuffer" : 
+    "DrawableMesh" : 
     {
-      "buffer" : "null"
+      "meshId" : "null",
+      "textureId" : "empty"
     },
     "InteractionListener" : 
     {
@@ -3548,22 +3452,15 @@
       "sourceEntityId" : "eMusBass",
       "useWorldSpace" : false
     },
-    "GeometryBuffer" : 
-    {
-      "buffer" : "null"
-    },
     "SceneNode" : 
     {
       "children" : [],
       "parent" : "eMusBass"
     },
-    "TextureBuffer" : 
+    "DrawableMesh" : 
     {
-      "textures" : 
-      [
-        "mus_bass",
-        "mus_bass"
-      ]
+      "meshId" : "null",
+      "textureId" : "mus_bass"
     },
     "Transform" : 
     {
@@ -3608,9 +3505,10 @@
       "dopplerFactor" : 1.0
     },
     "AudioBus" : {},
-    "GeometryBuffer" : 
+    "DrawableMesh" : 
     {
-      "buffer" : "null"
+      "meshId" : "null",
+      "textureId" : "empty"
     },
     "InteractionListener" : 
     {
@@ -3685,22 +3583,15 @@
       "sourceEntityId" : "eMusBottle",
       "useWorldSpace" : false
     },
-    "GeometryBuffer" : 
-    {
-      "buffer" : "null"
-    },
     "SceneNode" : 
     {
       "children" : [],
       "parent" : "eMusBottle"
     },
-    "TextureBuffer" : 
+    "DrawableMesh" : 
     {
-      "textures" : 
-      [
-        "mus_bottle",
-        "mus_bottle"
-      ]
+      "meshId" : "null",
+      "textureId" : "mus_bottle"
     },
     "Transform" : 
     {
@@ -3745,9 +3636,10 @@
       "dopplerFactor" : 1.0
     },
     "AudioBus" : {},
-    "GeometryBuffer" : 
+    "DrawableMesh" : 
     {
-      "buffer" : "null"
+      "meshId" : "null",
+      "textureId" : "empty"
     },
     "InteractionListener" : 
     {
@@ -3822,22 +3714,15 @@
       "sourceEntityId" : "eMusGuitar",
       "useWorldSpace" : false
     },
-    "GeometryBuffer" : 
-    {
-      "buffer" : "null"
-    },
     "SceneNode" : 
     {
       "children" : [],
       "parent" : "eMusGuitar"
     },
-    "TextureBuffer" : 
+    "DrawableMesh" : 
     {
-      "textures" : 
-      [
-        "mus_guitar",
-        "mus_guitar"
-      ]
+      "meshId" : "null",
+      "textureId" : "mus_guitar"
     },
     "Transform" : 
     {
@@ -3882,9 +3767,10 @@
       "dopplerFactor" : 1.0
     },
     "AudioBus" : {},
-    "GeometryBuffer" : 
+    "DrawableMesh" : 
     {
-      "buffer" : "null"
+      "meshId" : "null",
+      "textureId" : "empty"
     },
     "InteractionListener" : 
     {
@@ -3959,22 +3845,15 @@
       "sourceEntityId" : "eMusPerc",
       "useWorldSpace" : false
     },
-    "GeometryBuffer" : 
-    {
-      "buffer" : "null"
-    },
     "SceneNode" : 
     {
       "children" : [],
       "parent" : "eMusPerc"
     },
-    "TextureBuffer" : 
+    "DrawableMesh" : 
     {
-      "textures" : 
-      [
-        "mus_perc",
-        "mus_perc"
-      ]
+      "meshId" : "null",
+      "textureId" : "mus_perc"
     },
     "Transform" : 
     {
@@ -4019,9 +3898,10 @@
       "dopplerFactor" : 1.0
     },
     "AudioBus" : {},
-    "GeometryBuffer" : 
+    "DrawableMesh" : 
     {
-      "buffer" : "null"
+      "meshId" : "null",
+      "textureId" : "empty"
     },
     "InteractionListener" : 
     {
@@ -4096,22 +3976,15 @@
       "sourceEntityId" : "eMusPiano",
       "useWorldSpace" : false
     },
-    "GeometryBuffer" : 
-    {
-      "buffer" : "null"
-    },
     "SceneNode" : 
     {
       "children" : [],
       "parent" : "eMusPiano"
     },
-    "TextureBuffer" : 
+    "DrawableMesh" : 
     {
-      "textures" : 
-      [
-        "mus_piano",
-        "mus_piano"
-      ]
+      "meshId" : "null",
+      "textureId" : "mus_piano"
     },
     "Transform" : 
     {
@@ -4156,9 +4029,10 @@
       "dopplerFactor" : 1.0
     },
     "AudioBus" : {},
-    "GeometryBuffer" : 
+    "DrawableMesh" : 
     {
-      "buffer" : "null"
+      "meshId" : "null",
+      "textureId" : "empty"
     },
     "InteractionListener" : 
     {
@@ -4233,22 +4107,15 @@
       "sourceEntityId" : "eMusVargan",
       "useWorldSpace" : false
     },
-    "GeometryBuffer" : 
-    {
-      "buffer" : "null"
-    },
     "SceneNode" : 
     {
       "children" : [],
       "parent" : "eMusVargan"
     },
-    "TextureBuffer" : 
+    "DrawableMesh" : 
     {
-      "textures" : 
-      [
-        "mus_vargan",
-        "mus_vargan"
-      ]
+      "meshId" : "null",
+      "textureId" : "mus_vargan"
     },
     "Transform" : 
     {
@@ -4293,9 +4160,10 @@
       "dopplerFactor" : 1.0
     },
     "AudioBus" : {},
-    "GeometryBuffer" : 
+    "DrawableMesh" : 
     {
-      "buffer" : "null"
+      "meshId" : "null",
+      "textureId" : "empty"
     },
     "InteractionListener" : 
     {
@@ -4370,22 +4238,15 @@
       "sourceEntityId" : "eMusViola",
       "useWorldSpace" : false
     },
-    "GeometryBuffer" : 
-    {
-      "buffer" : "null"
-    },
     "SceneNode" : 
     {
       "children" : [],
       "parent" : "eMusViola"
     },
-    "TextureBuffer" : 
+    "DrawableMesh" : 
     {
-      "textures" : 
-      [
-        "mus_viola",
-        "mus_viola"
-      ]
+      "meshId" : "null",
+      "textureId" : "mus_viola"
     },
     "Transform" : 
     {
@@ -4430,9 +4291,10 @@
       "dopplerFactor" : 1.0
     },
     "AudioBus" : {},
-    "GeometryBuffer" : 
+    "DrawableMesh" : 
     {
-      "buffer" : "null"
+      "meshId" : "null",
+      "textureId" : "empty"
     },
     "InteractionListener" : 
     {
@@ -4507,22 +4369,15 @@
       "sourceEntityId" : "eMusViolin",
       "useWorldSpace" : false
     },
-    "GeometryBuffer" : 
-    {
-      "buffer" : "null"
-    },
     "SceneNode" : 
     {
       "children" : [],
       "parent" : "eMusViolin"
     },
-    "TextureBuffer" : 
+    "DrawableMesh" : 
     {
-      "textures" : 
-      [
-        "mus_violin",
-        "mus_violin"
-      ]
+      "meshId" : "null",
+      "textureId" : "mus_violin"
     },
     "Transform" : 
     {
@@ -4591,10 +4446,6 @@
         "eMusBassSprite"
       ]
     },
-    "GeometryBuffer" : 
-    {
-      "buffer" : "null"
-    },
     "InteractionListener" : 
     {
       "actions" : 
@@ -4614,13 +4465,10 @@
       "children" : [],
       "parent" : "eMenuRoot"
     },
-    "TextureBuffer" : 
+    "DrawableMesh" : 
     {
-      "textures" : 
-      [
-        "scene_concert",
-        "scene_concert"
-      ]
+      "meshId" : "null",
+      "textureId" : "scene_concert"
     },
     "Transform" : 
     {
@@ -4664,10 +4512,6 @@
         "eAudioDemoController"
       ]
     },
-    "GeometryBuffer" : 
-    {
-      "buffer" : "null"
-    },
     "InteractionListener" : 
     {
       "actions" : 
@@ -4687,13 +4531,10 @@
       "children" : [],
       "parent" : "eMenuRoot"
     },
-    "TextureBuffer" : 
+    "DrawableMesh" : 
     {
-      "textures" : 
-      [
-        "scene_doppler",
-        "scene_doppler"
-      ]
+      "meshId" : "null",
+      "textureId" : "scene_doppler"
     },
     "Transform" : 
     {
@@ -4737,10 +4578,6 @@
         "eCameraInputHint"
       ]
     },
-    "GeometryBuffer" : 
-    {
-      "buffer" : "null"
-    },
     "InteractionListener" : 
     {
       "actions" : 
@@ -4760,13 +4597,10 @@
       "children" : [],
       "parent" : "eMenuRoot"
     },
-    "TextureBuffer" : 
+    "DrawableMesh" : 
     {
-      "textures" : 
-      [
-        "scene_engine",
-        "scene_engine"
-      ]
+      "meshId" : "null",
+      "textureId" : "scene_engine"
     },
     "Transform" : 
     {

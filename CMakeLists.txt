@@ -868,7 +868,13 @@ if(${CQDE_BUILD_EXAMPLE_APP})
   add_executable(${CQDE_APPNAME})
   target_sources(${CQDE_APPNAME} PRIVATE
     example/main.cpp
+    example/src/callbacks.cpp
+    example/src/components.cpp
     example/icon.rc
+  )
+
+  target_include_directories(${CQDE_APPNAME} PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}/example/${CMAKE_INSTALL_INCLUDEDIR}>
   )
 
   if(CMAKE_BUILD_TYPE MATCHES "Release")
