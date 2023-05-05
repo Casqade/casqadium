@@ -300,8 +300,6 @@ PhysicsDebugRenderSystem(
 
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-  glColorMaski(1, GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
-
   glViewport(
     0, 0,
     framebufferSize.x,
@@ -400,6 +398,8 @@ EditorPhysicsDebugRenderSystem(
 
   debugDrawData.buffer.vao.bind();
 
+  glDepthMask(GL_FALSE);
+  glDisable(GL_DEPTH_TEST);
   glEnable(GL_SCISSOR_TEST);
   glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -424,8 +424,6 @@ EditorPhysicsDebugRenderSystem(
     const auto camProjection = cCamera->projMatrix(framebufferSize) * camView;
 
     glBindFramebuffer(GL_FRAMEBUFFER, viewport.framebuffer.fbo);
-
-    glColorMaski(1, GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
 
     glViewport(
       camViewport.x,
@@ -453,9 +451,12 @@ EditorPhysicsDebugRenderSystem(
 
   debugDrawData.buffer.vao.unbind();
 
-  glBindFramebuffer(GL_FRAMEBUFFER, 0);
+  glDepthMask(GL_TRUE);
+  glEnable(GL_DEPTH_TEST);
   glDisable(GL_SCISSOR_TEST);
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
+  glBindFramebuffer(GL_FRAMEBUFFER, 0);
 };
 
 } // namespace cqde::systems

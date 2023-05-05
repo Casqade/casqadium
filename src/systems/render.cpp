@@ -782,6 +782,7 @@ RenderSystem(
 
   glDisable(GL_SCISSOR_TEST);
   glDisable(GL_BLEND);
+  glDepthMask(GL_FALSE);
 
   glViewport( 0, 0,
     framebufferSize.x,
@@ -797,6 +798,8 @@ RenderSystem(
 
   glBindTextureUnit(0, 0);
   shader.unuse();
+
+  glDepthMask(GL_TRUE);
 }
 
 void
@@ -827,6 +830,7 @@ EditorEntityHighlightSystem(
   const auto uTransform = shader.uniformLocation("uTransform");
   const auto uColor = shader.uniformLocation("uColor");
 
+  glDepthMask(GL_FALSE);
   glDisable(GL_DEPTH_TEST);
   glEnable(GL_SCISSOR_TEST);
   glUniform1ui(uColor, olc::YELLOW.n);
@@ -901,6 +905,9 @@ EditorEntityHighlightSystem(
     }
   }
 
+  glDepthMask(GL_TRUE);
+  glEnable(GL_DEPTH_TEST);
+  glDisable(GL_SCISSOR_TEST);
   glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 
   shader.unuse();
