@@ -32,9 +32,9 @@ loadAudioAssets(
 
   auto& assetLoadList = registry.get <const AudioAssetList> (entity);
 
-  auto& audioManager = registry.ctx().get <AudioAssetManager> ();
+  auto& assetManager = registry.ctx().get <AudioAssetManager> ();
 
-  audioManager.load(assetLoadList.audio);
+  assetManager.load(assetLoadList.audio);
 }
 
 void
@@ -49,9 +49,9 @@ loadFontAssets(
 
   auto& assetLoadList = registry.get <FontAssetList> (entity);
 
-  auto& fontManager = registry.ctx().get <FontAssetManager> ();
+  auto& assetManager = registry.ctx().get <FontAssetManager> ();
 
-  fontManager.load(assetLoadList.fonts);
+  assetManager.load(assetLoadList.fonts);
 }
 
 void
@@ -66,9 +66,9 @@ loadMeshAssets(
 
   auto& assetLoadList = registry.get <MeshAssetList> (entity);
 
-  auto& meshManager = registry.ctx().get <MeshAssetManager> ();
+  auto& assetManager = registry.ctx().get <MeshAssetManager> ();
 
-  meshManager.load(assetLoadList.meshes);
+  assetManager.load(assetLoadList.meshes);
 }
 
 void
@@ -83,9 +83,9 @@ loadTerrainAssets(
 
   auto& assetLoadList = registry.get <TerrainAssetList> (entity);
 
-  auto& terrainManager = registry.ctx().get <TerrainAssetManager> ();
+  auto& assetManager = registry.ctx().get <TerrainAssetManager> ();
 
-  terrainManager.load(assetLoadList.terrain);
+  assetManager.load(assetLoadList.terrain);
 }
 
 void
@@ -100,9 +100,9 @@ loadTextStringAssets(
 
   auto& assetLoadList = registry.get <TextStringAssetList> (entity);
 
-  auto& textManager = registry.ctx().get <TextStringAssetManager> ();
+  auto& assetManager = registry.ctx().get <TextStringAssetManager> ();
 
-  textManager.load(assetLoadList.text);
+  assetManager.load(assetLoadList.text);
 }
 
 void
@@ -117,10 +117,90 @@ loadTextureAssets(
 
   auto& assetLoadList = registry.get <TextureAssetList> (entity);
 
-  auto& textureManager = registry.ctx().get <TextureAssetManager> ();
+  auto& assetManager = registry.ctx().get <TextureAssetManager> ();
 
-  textureManager.load(assetLoadList.textures);
+  assetManager.load(assetLoadList.textures);
 }
+
+
+void
+loadAllAudioAssets(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using types::AudioAssetManager;
+
+  auto& assetManager = registry.ctx().get <AudioAssetManager> ();
+
+    for ( const auto& assetId : assetManager.assetIdList() )
+      assetManager.load({assetId});
+}
+
+void
+loadAllFontAssets(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using types::FontAssetManager;
+
+  auto& assetManager = registry.ctx().get <FontAssetManager> ();
+
+    for ( const auto& assetId : assetManager.assetIdList() )
+      assetManager.load({assetId});
+}
+
+void
+loadAllMeshAssets(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using types::MeshAssetManager;
+
+  auto& assetManager = registry.ctx().get <MeshAssetManager> ();
+
+    for ( const auto& assetId : assetManager.assetIdList() )
+      assetManager.load({assetId});
+}
+
+void
+loadAllTerrainAssets(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using types::TerrainAssetManager;
+
+  auto& assetManager = registry.ctx().get <TerrainAssetManager> ();
+
+    for ( const auto& assetId : assetManager.assetIdList() )
+      assetManager.load({assetId});
+}
+
+void
+loadAllTextStringAssets(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using types::TextStringAssetManager;
+
+  auto& assetManager = registry.ctx().get <TextStringAssetManager> ();
+
+    for ( const auto& assetId : assetManager.assetIdList() )
+      assetManager.load({assetId});
+}
+
+void
+loadAllTextureAssets(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using types::TextureAssetManager;
+
+  auto& assetManager = registry.ctx().get <TextureAssetManager> ();
+
+    for ( const auto& assetId : assetManager.assetIdList() )
+      assetManager.load({assetId});
+}
+
 
 void
 unloadAudioAssets(
@@ -134,9 +214,9 @@ unloadAudioAssets(
 
   auto& assetUnloadList = registry.get <AudioAssetList> (entity);
 
-  auto& audioManager = registry.ctx().get <AudioAssetManager> ();
+  auto& assetManager = registry.ctx().get <AudioAssetManager> ();
 
-  audioManager.unload(assetUnloadList.audio);
+  assetManager.unload(assetUnloadList.audio);
 }
 
 void
@@ -151,9 +231,9 @@ unloadFontAssets(
 
   auto& assetUnloadList = registry.get <FontAssetList> (entity);
 
-  auto& fontManager = registry.ctx().get <FontAssetManager> ();
+  auto& assetManager = registry.ctx().get <FontAssetManager> ();
 
-  fontManager.unload(assetUnloadList.fonts);
+  assetManager.unload(assetUnloadList.fonts);
 }
 
 void
@@ -168,9 +248,9 @@ unloadMeshAssets(
 
   auto& assetUnloadList = registry.get <MeshAssetList> (entity);
 
-  auto& meshManager = registry.ctx().get <MeshAssetManager> ();
+  auto& assetManager = registry.ctx().get <MeshAssetManager> ();
 
-  meshManager.unload(assetUnloadList.meshes);
+  assetManager.unload(assetUnloadList.meshes);
 }
 
 void
@@ -185,9 +265,9 @@ unloadTerrainAssets(
 
   auto& assetUnloadList = registry.get <TerrainAssetList> (entity);
 
-  auto& terrainManager = registry.ctx().get <TerrainAssetManager> ();
+  auto& assetManager = registry.ctx().get <TerrainAssetManager> ();
 
-  terrainManager.unload(assetUnloadList.terrain);
+  assetManager.unload(assetUnloadList.terrain);
 }
 
 void
@@ -202,9 +282,9 @@ unloadTextStringAssets(
 
   auto& assetUnloadList = registry.get <TextStringAssetList> (entity);
 
-  auto& textManager = registry.ctx().get <TextStringAssetManager> ();
+  auto& assetManager = registry.ctx().get <TextStringAssetManager> ();
 
-  textManager.unload(assetUnloadList.text);
+  assetManager.unload(assetUnloadList.text);
 }
 
 void
@@ -219,9 +299,281 @@ unloadTextureAssets(
 
   auto& assetUnloadList = registry.get <TextureAssetList> (entity);
 
-  auto& textureManager = registry.ctx().get <TextureAssetManager> ();
+  auto& assetManager = registry.ctx().get <TextureAssetManager> ();
 
-  textureManager.unload(assetUnloadList.textures);
+  assetManager.unload(assetUnloadList.textures);
+}
+
+
+void
+waitAudioAssetsLoaded(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using compos::AudioAssetList;
+  using types::AudioAssetManager;
+  using types::AssetStatus;
+
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+
+  auto& assetLoadList = registry.get <const AudioAssetList> (entity);
+
+  const auto& assetManager = registry.ctx().get <AudioAssetManager> ();
+
+  for ( const auto& assetId : assetLoadList.audio )
+  {
+    for ( auto status = AssetStatus::Unloaded;
+          status == AssetStatus::Unloaded ||
+          status == AssetStatus::Loading;
+          status = assetManager.status(assetId) )
+      ;
+  }
+}
+
+void
+waitFontAssetsLoaded(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using compos::FontAssetList;
+  using types::FontAssetManager;
+  using types::AssetStatus;
+
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+
+  auto& assetLoadList = registry.get <const FontAssetList> (entity);
+
+  const auto& assetManager = registry.ctx().get <FontAssetManager> ();
+
+  for ( const auto& assetId : assetLoadList.fonts )
+  {
+    for ( auto status = AssetStatus::Unloaded;
+          status == AssetStatus::Unloaded ||
+          status == AssetStatus::Loading;
+          status = assetManager.status(assetId) )
+      ;
+  }
+}
+
+void
+waitMeshAssetsLoaded(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using compos::MeshAssetList;
+  using types::MeshAssetManager;
+  using types::AssetStatus;
+
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+
+  auto& assetLoadList = registry.get <const MeshAssetList> (entity);
+
+  const auto& assetManager = registry.ctx().get <MeshAssetManager> ();
+
+  for ( const auto& assetId : assetLoadList.meshes )
+  {
+    for ( auto status = AssetStatus::Unloaded;
+          status == AssetStatus::Unloaded ||
+          status == AssetStatus::Loading;
+          status = assetManager.status(assetId) )
+      ;
+  }
+}
+
+void
+waitTerrainAssetsLoaded(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using compos::TerrainAssetList;
+  using types::TerrainAssetManager;
+  using types::AssetStatus;
+
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+
+  auto& assetLoadList = registry.get <const TerrainAssetList> (entity);
+
+  const auto& assetManager = registry.ctx().get <TerrainAssetManager> ();
+
+  for ( const auto& assetId : assetLoadList.terrain )
+  {
+    for ( auto status = AssetStatus::Unloaded;
+          status == AssetStatus::Unloaded ||
+          status == AssetStatus::Loading;
+          status = assetManager.status(assetId) )
+      ;
+  }
+}
+
+void
+waitTextStringAssetsLoaded(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using compos::TextStringAssetList;
+  using types::TextStringAssetManager;
+  using types::AssetStatus;
+
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+
+  auto& assetLoadList = registry.get <const TextStringAssetList> (entity);
+
+  const auto& assetManager = registry.ctx().get <TextStringAssetManager> ();
+
+  for ( const auto& assetId : assetLoadList.text )
+  {
+    for ( auto status = AssetStatus::Unloaded;
+          status == AssetStatus::Unloaded ||
+          status == AssetStatus::Loading;
+          status = assetManager.status(assetId) )
+      ;
+  }
+}
+
+void
+waitTextureAssetsLoaded(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using compos::TextureAssetList;
+  using types::TextureAssetManager;
+  using types::AssetStatus;
+
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+
+  auto& assetLoadList = registry.get <const TextureAssetList> (entity);
+
+  const auto& assetManager = registry.ctx().get <TextureAssetManager> ();
+
+  for ( const auto& assetId : assetLoadList.textures )
+  {
+    for ( auto status = AssetStatus::Unloaded;
+          status == AssetStatus::Unloaded ||
+          status == AssetStatus::Loading;
+          status = assetManager.status(assetId) )
+      ;
+  }
+}
+
+
+void
+waitAllAudioAssetsLoaded(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using types::AudioAssetManager;
+  using types::AssetStatus;
+
+  const auto& assetManager = registry.ctx().get <AudioAssetManager> ();
+
+  for ( const auto& assetId : assetManager.assetIdList() )
+  {
+    for ( auto status = AssetStatus::Unloaded;
+          status == AssetStatus::Unloaded ||
+          status == AssetStatus::Loading;
+          status = assetManager.status(assetId) )
+      ;
+  }
+}
+
+void
+waitAllFontAssetsLoaded(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using types::FontAssetManager;
+  using types::AssetStatus;
+
+  const auto& assetManager = registry.ctx().get <FontAssetManager> ();
+
+  for ( const auto& assetId : assetManager.assetIdList() )
+  {
+    for ( auto status = AssetStatus::Unloaded;
+          status == AssetStatus::Unloaded ||
+          status == AssetStatus::Loading;
+          status = assetManager.status(assetId) )
+      ;
+  }
+}
+
+void
+waitAllMeshAssetsLoaded(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using types::MeshAssetManager;
+  using types::AssetStatus;
+
+  const auto& assetManager = registry.ctx().get <MeshAssetManager> ();
+
+  for ( const auto& assetId : assetManager.assetIdList() )
+  {
+    for ( auto status = AssetStatus::Unloaded;
+          status == AssetStatus::Unloaded ||
+          status == AssetStatus::Loading;
+          status = assetManager.status(assetId) )
+      ;
+  }
+}
+
+void
+waitAllTerrainAssetsLoaded(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using types::TerrainAssetManager;
+  using types::AssetStatus;
+
+  const auto& assetManager = registry.ctx().get <TerrainAssetManager> ();
+
+  for ( const auto& assetId : assetManager.assetIdList() )
+  {
+    for ( auto status = AssetStatus::Unloaded;
+          status == AssetStatus::Unloaded ||
+          status == AssetStatus::Loading;
+          status = assetManager.status(assetId) )
+      ;
+  }
+}
+
+void
+waitAllTextStringAssetsLoaded(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using types::TextStringAssetManager;
+  using types::AssetStatus;
+
+  const auto& assetManager = registry.ctx().get <TextStringAssetManager> ();
+
+  for ( const auto& assetId : assetManager.assetIdList() )
+  {
+    for ( auto status = AssetStatus::Unloaded;
+          status == AssetStatus::Unloaded ||
+          status == AssetStatus::Loading;
+          status = assetManager.status(assetId) )
+      ;
+  }
+}
+
+void
+waitAllTextureAssetsLoaded(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using types::TextureAssetManager;
+  using types::AssetStatus;
+
+  const auto& assetManager = registry.ctx().get <TextureAssetManager> ();
+
+  for ( const auto& assetId : assetManager.assetIdList() )
+  {
+    for ( auto status = AssetStatus::Unloaded;
+          status == AssetStatus::Unloaded ||
+          status == AssetStatus::Loading;
+          status = assetManager.status(assetId) )
+      ;
+  }
 }
 
 } // namespace cqde::callbacks
