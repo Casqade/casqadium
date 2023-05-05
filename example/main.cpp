@@ -127,11 +127,6 @@ main( int argc, char* argv[] )
     textures.insert("hint_quit", cqde::textureFromText("[Q] Quit", olc::DARK_GREY, olc::BLANK, true));
 
 
-    auto& audio = registry.ctx().get <AudioAssetManager> ();
-      for ( const auto& audioId : audio.assetIdList() )
-        audio.load({audioId});
-
-
     try
     {
       engine.run();

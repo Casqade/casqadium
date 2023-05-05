@@ -57,6 +57,22 @@
         }
       }
     },
+    "SequenceController" : 
+    {
+      "steps" : 
+      [
+        {
+          "CallbackExecute" : 
+          {
+            "callbacks" : 
+            [
+              "LoadAllAudioAssets",
+              "WaitAllAudioAssetsLoaded"
+            ]
+          }
+        }
+      ]
+    },
     "SubscriberInput" : {},
     "SystemList" : 
     {
