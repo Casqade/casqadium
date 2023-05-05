@@ -93,6 +93,13 @@ AssetManager <olc::Renderable>::initPlaceholders()
 
   const auto textureError = textureFromText("ERROR", olc::RED, olc::BLANK, true);
   insert("error"_id, textureError);
+
+  const auto textureTransparent = std::make_shared <olc::Renderable> ();
+  textureTransparent->Create(1, 1);
+  textureTransparent->Sprite()->SetPixel(0, 0, olc::BLANK);
+  textureTransparent->Decal()->Update();
+
+  insert("transparent"_id, textureTransparent);
 }
 
 template <>
