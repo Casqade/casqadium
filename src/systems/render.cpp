@@ -5,6 +5,7 @@
 #include <cqde/types/EntityManager.hpp>
 #include <cqde/types/CallbackManager.hpp>
 #include <cqde/types/CasqadiumEngine.hpp>
+#include <cqde/types/SystemManager.hpp>
 
 #include <cqde/types/assets/TextureAssetManager.hpp>
 #include <cqde/types/assets/MeshAssetManager.hpp>
@@ -23,6 +24,7 @@
 #include <cqde/components/Transform.hpp>
 #include <cqde/components/CasqadiumEditorInternal.hpp>
 #include <cqde/components/DrawableMesh.hpp>
+#include <cqde/components/InteractionListener.hpp>
 #include <cqde/components/InteractionListenerColor.hpp>
 #include <cqde/components/InteractionSource.hpp>
 #include <cqde/components/LightSource.hpp>
@@ -132,9 +134,13 @@ GeometryPass(
   using compos::Transform;
   using compos::DrawableMesh;
   using compos::TextureTint;
+  using compos::SubscriberUpdate;
+  using compos::InteractionListener;
   using types::ShaderManager;
+  using types::SystemManager;
   using types::MeshAssetManager;
   using types::TextureAssetManager;
+  using SystemPhase = types::System::Phase;
 
   struct RenderCommand
   {
@@ -260,6 +266,71 @@ GeometryPass(
       GL_UNSIGNED_INT,
       reinterpret_cast <const void*> (elementOffset),
       command.firstVertex );
+  }
+
+
+//  Rerender interactive objects using fully opaque texture.
+//  Otherwise transparent object parts won't be rendered at all
+//  and thus won't be detected by interaction system
+
+  auto& systemManager = registry.ctx().get <SystemManager> ();
+
+  if ( systemManager.systemsActive(SystemPhase::Editor).empty() == true )
+  {
+    renderCommands.clear();
+
+    for ( const auto&& [eDrawable, cTransform, cMesh, cListener]
+      : registry.view <Transform, DrawableMesh, InteractionListener, SubscriberUpdate> ().each() )
+    {
+      const auto mesh = meshes.get(cMesh.meshId);
+
+      if ( mesh == nullptr )
+        continue;
+
+      renderCommands.emplace_back( RenderCommand
+      {
+        viewProjection * GetWorldMatrix(registry, eDrawable, cTransform),
+        0,
+        mesh->firstElementIndex,
+        mesh->elementCount,
+        mesh->firstVertexIndex,
+        static_cast <GLuint> (eDrawable),
+      } );
+    }
+
+    std::sort( renderCommands.begin(), renderCommands.end(),
+    [] ( const RenderCommand& lhs, const RenderCommand& rhs )
+    {
+//      front-to-back
+      return lhs.mvp[3].z < rhs.mvp[3].z;
+    });
+
+    glDisable(GL_CULL_FACE);
+    glColorMaski(0, GL_FALSE, GL_FALSE, GL_FALSE, GL_FALSE);
+
+    glBindTextureUnit(0, 0);
+    glUniform1ui(uTextureTint, olc::WHITE.n);
+
+    for ( auto& command : renderCommands )
+    {
+      glUniformMatrix4fv(
+      uTransform, 1, GL_FALSE,
+      glm::value_ptr(command.mvp) );
+
+      glUniform1ui(uObjectId, command.objectId);
+
+      const auto elementOffset = sizeof(uint32_t) * command.firstElement;
+
+      glDrawElementsBaseVertex(
+      GL_TRIANGLES,
+      command.elementCount,
+      GL_UNSIGNED_INT,
+      reinterpret_cast <const void*> (elementOffset),
+      command.firstVertex );
+    }
+
+    glEnable(GL_CULL_FACE);
+    glColorMaski(0, GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
   }
 
   glBindVertexArray(0);
