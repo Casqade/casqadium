@@ -81,12 +81,33 @@ CasqadiumEngine::registerCallbacks()
   callbackManager.Register("LoadTextStringAssets", loadTextStringAssets);
   callbackManager.Register("LoadTextureAssets", loadTextureAssets);
 
+  callbackManager.Register("LoadAllAudioAssets", loadAllAudioAssets);
+  callbackManager.Register("LoadAllFontAssets", loadAllFontAssets);
+  callbackManager.Register("LoadAllMeshAssets", loadAllMeshAssets);
+  callbackManager.Register("LoadAllTerrainAssets", loadAllTerrainAssets);
+  callbackManager.Register("LoadAllTextStringAssets", loadAllTextStringAssets);
+  callbackManager.Register("LoadAllTextureAssets", loadAllTextureAssets);
+
   callbackManager.Register("UnloadAudioAssets", unloadAudioAssets);
   callbackManager.Register("UnloadFontAssets", unloadFontAssets);
   callbackManager.Register("UnloadMeshAssets", unloadMeshAssets);
   callbackManager.Register("UnloadTerrainAssets", unloadTerrainAssets);
   callbackManager.Register("UnloadTextStringAssets", unloadTextStringAssets);
   callbackManager.Register("UnloadTextureAssets", unloadTextureAssets);
+
+  callbackManager.Register("WaitAudioAssetsLoaded", waitAudioAssetsLoaded);
+  callbackManager.Register("WaitFontAssetsLoaded", waitFontAssetsLoaded);
+  callbackManager.Register("WaitMeshAssetsLoaded", waitMeshAssetsLoaded);
+  callbackManager.Register("WaitTerrainAssetsLoaded", waitTerrainAssetsLoaded);
+  callbackManager.Register("WaitTextStringAssetsLoaded", waitTextStringAssetsLoaded);
+  callbackManager.Register("WaitTextureAssetsLoaded", waitTextureAssetsLoaded);
+
+  callbackManager.Register("WaitAllAudioAssetsLoaded", waitAllAudioAssetsLoaded);
+  callbackManager.Register("WaitAllFontAssetsLoaded", waitAllFontAssetsLoaded);
+  callbackManager.Register("WaitAllMeshAssetsLoaded", waitAllMeshAssetsLoaded);
+  callbackManager.Register("WaitAllTerrainAssetsLoaded", waitAllTerrainAssetsLoaded);
+  callbackManager.Register("WaitAllTextStringAssetsLoaded", waitAllTextStringAssetsLoaded);
+  callbackManager.Register("WaitAllTextureAssetsLoaded", waitAllTextureAssetsLoaded);
 
   callbackManager.Register("ControlTranslateXRelative", controlTranslateXRelative);
   callbackManager.Register("ControlTranslateYRelative", controlTranslateYRelative);
