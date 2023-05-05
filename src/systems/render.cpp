@@ -370,32 +370,18 @@ DrawViewportOutline(
 
   glDrawArrays(GL_LINE_LOOP, 4, 4);
 
+  glColorMaski(1, GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
+
   glBindVertexArray(0);
 }
 
 static void
-RenderToTarget(
-  entt::registry& registry,
-  const types::RenderTarget& target,
-  const entt::entity eCamera )
+ClearRenderTarget(
+  const types::RenderTarget& target )
 {
-  using compos::Camera;
-  using compos::Transform;
-  using types::ShaderType;
-  using types::ShaderManager;
-  using types::FrameReadbackQueue;
-
-  const auto& const_registry = registry;
-
   const glm::vec2 framebufferSize = target.size;
 
-//  glUseProgram(0);
-
   glBindFramebuffer(GL_FRAMEBUFFER, target.fbo);
-
-  glColorMaski(1, GL_TRUE, GL_TRUE, GL_TRUE, GL_TRUE);
-
-  glEnable(GL_SCISSOR_TEST);
 
   glViewport( 0, 0,
     framebufferSize.x,
@@ -417,9 +403,24 @@ RenderToTarget(
 
   glClearNamedFramebufferuiv( target.fbo,
     GL_COLOR, 1, &invalidId );
+}
+
+static void
+RenderToTarget(
+  entt::registry& registry,
+  const types::RenderTarget& target,
+  const entt::entity eCamera )
+{
+  using compos::Camera;
+  using compos::Transform;
+  using types::ShaderType;
+  using types::ShaderManager;
+  using types::FrameReadbackQueue;
 
   if ( eCamera == entt::null )
     return;
+
+  const auto& const_registry = registry;
 
   const auto&& [cCamera, cCameraTransform]
     = const_registry.try_get <Camera, Transform> (eCamera);
@@ -428,10 +429,22 @@ RenderToTarget(
        cCameraTransform == nullptr )
     return;
 
+  const glm::vec2 framebufferSize = target.size;
   const auto camViewport = cCamera->viewportScaled(framebufferSize);
 
-  glEnable(GL_BLEND);
-  glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+  glBindFramebuffer(GL_FRAMEBUFFER, target.fbo);
+  glEnable(GL_SCISSOR_TEST);
+
+  glViewport( 0, 0,
+    framebufferSize.x,
+    framebufferSize.y );
+
+  glScissor( 0, 0,
+    framebufferSize.x,
+    framebufferSize.y );
+
+  glEnablei(GL_BLEND, 0);
+  glBlendFunci(0, GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
   glViewport(
     camViewport.x, camViewport.y,
@@ -480,22 +493,27 @@ EditorRenderSystem(
   using types::ShaderManager;
   using types::CallbackManager;
   using types::FrameReadbackQueue;
-  using types::FrameReadbackResult;
   using ui::ViewportManagerUi;
 
   const auto& const_registry = registry;
 
   auto& viewportManagerUi = const_registry.ctx().get <ViewportManagerUi> ();
 
+  auto& readbackQueue = registry.ctx().get <FrameReadbackQueue> ();
+
   for ( auto& viewport : viewportManagerUi.viewports() )
     if ( viewport.visible == true )
     {
       const auto eCamera = viewport.camera.get(registry);
 
+      ClearRenderTarget(viewport.framebuffer);
+
       RenderToTarget(
         registry,
         viewport.framebuffer,
         eCamera );
+
+      readbackQueue.process(registry);
 
       if ( eCamera == entt::null )
         continue;
@@ -516,9 +534,6 @@ EditorRenderSystem(
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
   glDisable(GL_SCISSOR_TEST);
   glDisable(GL_BLEND);
-
-  auto& readbackQueue = registry.ctx().get <FrameReadbackQueue> ();
-  readbackQueue.process(registry);
 }
 
 void
@@ -685,10 +700,13 @@ RenderSystem(
   auto& shaderManager = registry.ctx().get <ShaderManager> ();
   auto& shader = shaderManager.get(ShaderType::FullscreenQuad);
 
+  ClearRenderTarget(mainTarget.target);
+
   for ( const auto&& [eCamera, cCamera, cTransform]
           : registry.view <Camera, Transform, SubscriberUpdate> ().each() )
     RenderToTarget(registry, mainTarget.target, eCamera);
 
+  readbackQueue.write(mainTarget.target);
   readbackQueue.process(registry);
 
   glDisable(GL_SCISSOR_TEST);
