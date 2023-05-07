@@ -345,19 +345,19 @@ editorBindingsAssign(
 
   if ( inputManager.axisAssigned("EditorCameraPitch") == false )
   {
-    auto binding = std::make_shared <InputBindingRelative> ("+MouseMove_Y", -100.0f);
+    auto binding = std::make_shared <InputBindingRelative> ("+MouseMove_Y", -0.1f);
     inputManager.assignBinding("EditorCameraPitch", binding);
 
-    binding = std::make_shared <InputBindingRelative> ("-MouseMove_Y", 100.0f);
+    binding = std::make_shared <InputBindingRelative> ("-MouseMove_Y", 0.1f);
     inputManager.assignBinding("EditorCameraPitch", binding);
   }
 
   if ( inputManager.axisAssigned("EditorCameraYaw") == false )
   {
-    auto binding = std::make_shared <InputBindingRelative> ("+MouseMove_X", -100.0f);
+    auto binding = std::make_shared <InputBindingRelative> ("+MouseMove_X", -0.1f);
     inputManager.assignBinding("EditorCameraYaw", binding);
 
-    binding = std::make_shared <InputBindingRelative> ("-MouseMove_X", 100.0f);
+    binding = std::make_shared <InputBindingRelative> ("-MouseMove_X", 0.1f);
     inputManager.assignBinding("EditorCameraYaw", binding);
   }
 

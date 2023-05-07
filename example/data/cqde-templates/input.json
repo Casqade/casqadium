@@ -54,12 +54,12 @@
     "+MouseMove_Y" :
     {
       "absolute" : false,
-      "sensitivity" : -5.0
+      "sensitivity" : -0.1
     },
     "-MouseMove_Y" :
     {
       "absolute" : false,
-      "sensitivity" : 5.0
+      "sensitivity" : 0.1
     }
   },
   "QuickLoad" :
@@ -122,12 +122,12 @@
     "+MouseMove_X" :
     {
       "absolute" : false,
-      "sensitivity" : -5.0
+      "sensitivity" : -0.1
     },
     "-MouseMove_X" :
     {
       "absolute" : false,
-      "sensitivity" : 5.0
+      "sensitivity" : 0.1
     }
   }
 }

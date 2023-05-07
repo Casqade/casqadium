@@ -4,7 +4,7 @@
 #include <cqde/types/EntityManager.hpp>
 #include <cqde/types/ui/ViewportManagerUi.hpp>
 
-#include <cqde/types/CasqadiumEngine.hpp>
+#include <cqde/types/TickCurrent.hpp>
 #include <cqde/types/input/ControlAxis.hpp>
 
 #include <cqde/components/Tag.hpp>
@@ -68,18 +68,20 @@ editorCameraFovControl(
 {
   using compos::Camera;
   using types::ControlAxis;
-  using types::CasqadiumEngine;
+  using types::TickCurrent;
 
   const auto eCamera = std::any_cast <entt::entity> (args.at(0));
   const auto axis = std::any_cast <ControlAxis*> (args.at(2));
+  const auto isMouseMotion = std::any_cast <bool> (args.at(3));
 
-  const auto engine = registry.ctx().get <CasqadiumEngine*> ();
-  const float dt = static_cast <double> (engine->deltaTime());
+  const auto& tick = registry.ctx().get <TickCurrent> ();
+  const auto dt = isMouseMotion ? 1.0 : static_cast <double> (tick.tickInterval);
+  const float value = axis->value * dt;
 
   auto& cCamera = registry.get <Camera> (eCamera);
 
   if ( cCamera.projectionType == Camera::Projection::Perspective )
-    cCamera.fov += axis->value * dt;
+    cCamera.fov += value;
 
   axis->value = 0.0f;
 };
@@ -90,19 +92,22 @@ editorCameraZoomControl(
   const std::vector <std::any>& args )
 {
   using compos::Camera;
+  using compos::CasqadiumEditorCameraSettings;
   using types::ControlAxis;
-  using types::CasqadiumEngine;
+  using types::TickCurrent;
 
   const auto eCamera = std::any_cast <entt::entity> (args.at(0));
   const auto axis = std::any_cast <ControlAxis*> (args.at(2));
+  const auto isMouseMotion = std::any_cast <bool> (args.at(3));
 
-  const auto engine = registry.ctx().get <CasqadiumEngine*> ();
-  const float dt = static_cast <double> (engine->deltaTime());
+  const auto& tick = registry.ctx().get <TickCurrent> ();
+  const auto dt = isMouseMotion ? 1.0 : static_cast <double> (tick.tickInterval);
+  const float value = axis->value * dt;
 
-  auto& cCamera = registry.get <Camera> (eCamera);
+  auto&& [cCamera, cSettings] = registry.get <Camera, CasqadiumEditorCameraSettings> (eCamera);
 
   if ( cCamera.projectionType == Camera::Projection::Orthographic )
-    cCamera.scale += axis->value * dt;
+    cCamera.scale += value * cSettings.speed;
 
   axis->value = 0.0f;
 };
@@ -115,12 +120,18 @@ editorCameraSpeedControl(
   using compos::Transform;
   using compos::CasqadiumEditorCameraSettings;
   using types::ControlAxis;
+  using types::TickCurrent;
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
   const auto axis = std::any_cast <ControlAxis*> (args.at(2));
+  const auto isMouseMotion = std::any_cast <bool> (args.at(3));
+
+  const auto& tick = registry.ctx().get <TickCurrent> ();
+  const auto dt = isMouseMotion ? 1.0 : static_cast <double> (tick.tickInterval);
+  const float value = axis->value * dt;
 
   auto& cSettings = registry.get <CasqadiumEditorCameraSettings> (entity);
-  cSettings.speed += axis->value;
+  cSettings.speed += value;
 
   axis->value = 0.0f;
 };
@@ -133,17 +144,19 @@ editorCameraTranslateXRelative(
   using compos::Transform;
   using compos::CasqadiumEditorCameraSettings;
   using types::ControlAxis;
-  using types::CasqadiumEngine;
+  using types::TickCurrent;
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
   const auto axis = std::any_cast <ControlAxis*> (args.at(2));
+  const auto isMouseMotion = std::any_cast <bool> (args.at(3));
 
-  const auto engine = registry.ctx().get <CasqadiumEngine*> ();
-  const float dt = static_cast <double> (engine->deltaTime());
+  const auto& tick = registry.ctx().get <TickCurrent> ();
+  const auto dt = isMouseMotion ? 1.0 : static_cast <double> (tick.tickInterval);
+  const float value = axis->value * dt;
 
   auto&& [cTransform, cSettings] = registry.get <Transform, CasqadiumEditorCameraSettings> (entity);
 
-  cTransform.translation += cTransform.right() * axis->value * cSettings.speed * dt;
+  cTransform.translation += cTransform.right() * value * cSettings.speed;
 
   axis->value = 0.0f;
 };
@@ -156,17 +169,19 @@ editorCameraTranslateYRelative(
   using compos::Transform;
   using compos::CasqadiumEditorCameraSettings;
   using types::ControlAxis;
-  using types::CasqadiumEngine;
+  using types::TickCurrent;
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
   const auto axis = std::any_cast <ControlAxis*> (args.at(2));
+  const auto isMouseMotion = std::any_cast <bool> (args.at(3));
 
-  const auto engine = registry.ctx().get <CasqadiumEngine*> ();
-  const float dt = static_cast <double> (engine->deltaTime());
+  const auto& tick = registry.ctx().get <TickCurrent> ();
+  const auto dt = isMouseMotion ? 1.0 : static_cast <double> (tick.tickInterval);
+  const float value = axis->value * dt;
 
   auto&& [cTransform, cSettings] = registry.get <Transform, CasqadiumEditorCameraSettings> (entity);
 
-  cTransform.translation += cTransform.up() * axis->value * cSettings.speed * dt;
+  cTransform.translation += cTransform.up() * value * cSettings.speed;
 
   axis->value = 0.0f;
 };
@@ -180,18 +195,20 @@ editorCameraTranslateZRelative(
   using compos::Transform;
   using compos::CasqadiumEditorCameraSettings;
   using types::ControlAxis;
-  using types::CasqadiumEngine;
+  using types::TickCurrent;
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
   const auto axis = std::any_cast <ControlAxis*> (args.at(2));
+  const auto isMouseMotion = std::any_cast <bool> (args.at(3));
 
-  const auto engine = registry.ctx().get <CasqadiumEngine*> ();
-  const float dt = static_cast <double> (engine->deltaTime());
+  const auto& tick = registry.ctx().get <TickCurrent> ();
+  const auto dt = isMouseMotion ? 1.0 : static_cast <double> (tick.tickInterval);
+  const float value = axis->value * dt;
 
   auto&& [cTransform, cCamera, cSettings] = registry.get <Transform, Camera, CasqadiumEditorCameraSettings> (entity);
 
   if ( cCamera.projectionType == Camera::Projection::Perspective )
-    cTransform.translation += cTransform.front() * axis->value * cSettings.speed * dt;
+    cTransform.translation += cTransform.front() * value * cSettings.speed;
 
   axis->value = 0.0f;
 };
