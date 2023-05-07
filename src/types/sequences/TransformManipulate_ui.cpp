@@ -47,6 +47,10 @@ TransformManipulate::ui_show(
                              mOperation == TransformType::Scale) )
         mOperation = TransformType::Scale;
 
+      if ( ImGui::Selectable(TransformTypeToString(TransformType::ScaleWorld).c_str(),
+                             mOperation == TransformType::ScaleWorld) )
+        mOperation = TransformType::ScaleWorld;
+
       ImGui::EndCombo();
     }
   }
