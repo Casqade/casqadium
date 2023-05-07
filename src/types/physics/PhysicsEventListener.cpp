@@ -62,9 +62,9 @@ PhysicsEventListener::onContact(
     {
       case EventType::ContactStart:
       {
-        LOG_INFO("'{}' - '{}' contact starts",
-                 mRegistry.get <Tag> (eBody1).id.str(),
-                 mRegistry.get <Tag> (eBody2).id.str());
+//        LOG_DEBUG( "'{}' - '{}' contact starts",
+//          mRegistry.get <Tag> (eBody1).id.str(),
+//          mRegistry.get <Tag> (eBody2).id.str() );
 
         collider1->onEnter(mRegistry, {eBody1, eBody2, &pair});
         collider2->onEnter(mRegistry, {eBody2, eBody1, &pair});
@@ -72,9 +72,9 @@ PhysicsEventListener::onContact(
       }
       case EventType::ContactStay:
       {
-//        LOG_INFO("'{}' - '{}' contact stays",
-//                 mRegistry.get <Tag> (eBody1).id.str(),
-//                 mRegistry.get <Tag> (eBody2).id.str());
+//        LOG_DEBUG( "'{}' - '{}' contact stays",
+//          mRegistry.get <Tag> (eBody1).id.str(),
+//          mRegistry.get <Tag> (eBody2).id.str() );
 
         collider1->onStay(mRegistry, {eBody1, eBody2, &pair});
         collider2->onStay(mRegistry, {eBody2, eBody1, &pair});
@@ -82,9 +82,9 @@ PhysicsEventListener::onContact(
       }
       case EventType::ContactExit:
       {
-        LOG_INFO("'{}' - '{}' contact ends",
-                 mRegistry.get <Tag> (eBody1).id.str(),
-                 mRegistry.get <Tag> (eBody2).id.str());
+//        LOG_DEBUG( "'{}' - '{}' contact ends",
+//          mRegistry.get <Tag> (eBody1).id.str(),
+//          mRegistry.get <Tag> (eBody2).id.str() );
 
         collider1->onLeave(mRegistry, {eBody1, eBody2, &pair});
         collider2->onLeave(mRegistry, {eBody2, eBody1, &pair});
@@ -98,6 +98,7 @@ void
 PhysicsEventListener::onTrigger(
   const OverlapCallback::CallbackData& data )
 {
+  using compos::Tag;
   using EventType = OverlapCallback::OverlapPair::EventType;
 
   for ( int i = 0; i < data.getNbOverlappingPairs(); ++i )
@@ -114,12 +115,20 @@ PhysicsEventListener::onTrigger(
     {
       case EventType::OverlapStart:
       {
+//        LOG_DEBUG( "'{}' - '{}' overlap starts",
+//          mRegistry.get <Tag> (eBody1).id.str(),
+//          mRegistry.get <Tag> (eBody2).id.str() );
+
         collider1->onEnter(mRegistry, {eBody1, eBody2});
         collider2->onEnter(mRegistry, {eBody2, eBody1});
         break;
       }
       case EventType::OverlapStay:
       {
+//        LOG_DEBUG( "'{}' - '{}' overlap stays",
+//          mRegistry.get <Tag> (eBody1).id.str(),
+//          mRegistry.get <Tag> (eBody2).id.str() );
+
         collider1->onStay(mRegistry, {eBody1, eBody2});
         collider2->onStay(mRegistry, {eBody2, eBody1});
 
@@ -127,6 +136,10 @@ PhysicsEventListener::onTrigger(
       }
       case EventType::OverlapExit:
       {
+//        LOG_DEBUG( "'{}' - '{}' overlap ends",
+//          mRegistry.get <Tag> (eBody1).id.str(),
+//          mRegistry.get <Tag> (eBody2).id.str() );
+
         collider1->onLeave(mRegistry, {eBody1, eBody2});
         collider2->onLeave(mRegistry, {eBody2, eBody1});
 
