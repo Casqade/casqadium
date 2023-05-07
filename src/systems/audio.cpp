@@ -146,6 +146,26 @@ AudioDrivenTransformSystem(
           return;
         }
 
+        case TransformType::ScaleWorld:
+        {
+          auto scale = axis * factor;
+
+          if ( audioTransform->useWorldSpace == true )
+            scale = ToLocalSpace(scale, registry, entity, *transform);
+
+          transform->scaleWorld =
+          {
+            glm::epsilonEqual(axis.x, 0.0f, glm::epsilon <float> () ) == false
+              ? scale.x : transform->scaleWorld.x,
+            glm::epsilonEqual(axis.y, 0.0f, glm::epsilon <float> () ) == false
+              ? scale.y : transform->scaleWorld.y,
+            glm::epsilonEqual(axis.z, 0.0f, glm::epsilon <float> () ) == false
+              ? scale.z : transform->scaleWorld.z,
+          };
+
+          return;
+        }
+
         case TransformType::Rotate:
         {
           auto rotation = glm::angleAxis(factor, axis);

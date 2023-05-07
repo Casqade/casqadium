@@ -67,6 +67,10 @@ AudioDrivenTransform::ui_edit_props(
                              operation == TransformType::Scale) )
         operation = TransformType::Scale;
 
+      if ( ImGui::Selectable(TransformTypeToString(TransformType::ScaleWorld).c_str(),
+                             operation == TransformType::ScaleWorld) )
+        operation = TransformType::ScaleWorld;
+
       ImGui::EndCombo();
     }
   }

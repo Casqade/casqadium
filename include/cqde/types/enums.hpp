@@ -11,6 +11,7 @@ enum class TransformType : uint8_t
   Translate,
   Rotate,
   Scale,
+  ScaleWorld,
 };
 
 enum class MathFunctionType : uint8_t

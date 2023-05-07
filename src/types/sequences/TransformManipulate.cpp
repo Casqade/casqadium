@@ -145,6 +145,29 @@ TransformManipulate::execute(
       return timeExpired;
     }
 
+    case TransformType::ScaleWorld:
+    {
+      auto scale = mAxis * factor;
+
+      if ( mUseWorldSpace == true )
+        scale = ToLocalSpace(scale, registry, entity, cTransform);
+
+      if ( mTransformRelative == true )
+        cTransform.scaleWorld += scale * dt;
+      else
+        cTransform.scaleWorld =
+        {
+          glm::epsilonEqual(mAxis.x, 0.0f, glm::epsilon <float> () ) == false
+            ? scale.x : cTransform.scaleWorld.x,
+          glm::epsilonEqual(mAxis.y, 0.0f, glm::epsilon <float> () ) == false
+            ? scale.y : cTransform.scaleWorld.y,
+          glm::epsilonEqual(mAxis.z, 0.0f, glm::epsilon <float> () ) == false
+            ? scale.z : cTransform.scaleWorld.z,
+        };
+
+      return timeExpired;
+    }
+
     case TransformType::Rotate:
     {
       glm::quat rotation {};

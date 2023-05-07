@@ -22,6 +22,9 @@ TransformTypeToString(
 
     case TransformType::Scale:
       return "scale";
+
+    case TransformType::ScaleWorld:
+      return "scaleWorld";
   }
 
   CQDE_ASSERT_DEBUG(false, return "");
@@ -41,6 +44,9 @@ TransformTypeFromString(
 
   if ( type == TransformTypeToString(TransformType::Scale) )
     return TransformType::Scale;
+
+  if ( type == TransformTypeToString(TransformType::ScaleWorld) )
+    return TransformType::ScaleWorld;
 
   throw std::runtime_error(
     format("'{}' is not a valid transform type", type));
