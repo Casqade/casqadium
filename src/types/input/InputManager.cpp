@@ -397,6 +397,9 @@ InputManager::handleAxisInput(
 
   const InputHwId inputId = prefix + inputHwId->second.str();
 
+  const bool isMouseMotion =
+    inputHwCode >= static_cast <InputHwCode> (MouseInputId::MoveX);
+
   if ( direction != 0 )
   {
     InputEvent event {};
@@ -406,7 +409,7 @@ InputManager::handleAxisInput(
 
     mInputHistory.push_back(event);
 
-    if ( inputHwCode < static_cast <InputHwCode> (MouseInputId::ENUM_END) )
+    if ( inputHwCode < static_cast <InputHwCode> (MouseInputId::MoveX) )
     {
       if ( direction > 0 )
         mInputsHeld[inputHwCode] = event.tp;
@@ -440,8 +443,9 @@ InputManager::handleAxisInput(
         binding->handleInput(axis, amount);
 
         for ( const auto& callbackId : axis.callbacks )
-          callbackMgr.execute(callbackId, registry,
-                              {entity, &cController, &axis});
+          callbackMgr.execute(
+            callbackId, registry,
+            {entity, &cController, &axis, isMouseMotion} );
       }
     };
 

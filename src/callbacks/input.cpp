@@ -1,6 +1,6 @@
 #include <cqde/callbacks/input.hpp>
 
-#include <cqde/types/CasqadiumEngine.hpp>
+#include <cqde/types/TickCurrent.hpp>
 
 #include <cqde/components/Transform.hpp>
 #include <cqde/components/SubscriberInput.hpp>
@@ -21,17 +21,19 @@ controlTranslateXRelative(
 {
   using compos::Transform;
   using types::ControlAxis;
-  using types::CasqadiumEngine;
+  using types::TickCurrent;
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
   const auto axis = std::any_cast <ControlAxis*> (args.at(2));
+  const auto isMouseMotion = std::any_cast <bool> (args.at(3));
 
-  const auto engine = registry.ctx().get <CasqadiumEngine*> ();
-  const float dt = static_cast <double> (engine->deltaTime());
+  const auto& tick = registry.ctx().get <TickCurrent> ();
+  const auto dt = isMouseMotion ? 1.0 : static_cast <double> (tick.tickInterval);
+  const float value = axis->value * dt;
 
   auto& cTransform = registry.get <Transform> (entity);
 
-  cTransform.translation += cTransform.right() * axis->value * dt;
+  cTransform.translation += cTransform.right() * value;
 
   axis->value = 0.0f;
 };
@@ -43,17 +45,19 @@ controlTranslateYRelative(
 {
   using compos::Transform;
   using types::ControlAxis;
-  using types::CasqadiumEngine;
+  using types::TickCurrent;
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
   const auto axis = std::any_cast <ControlAxis*> (args.at(2));
+  const auto isMouseMotion = std::any_cast <bool> (args.at(3));
 
-  const auto engine = registry.ctx().get <CasqadiumEngine*> ();
-  const float dt = static_cast <double> (engine->deltaTime());
+  const auto& tick = registry.ctx().get <TickCurrent> ();
+  const auto dt = isMouseMotion ? 1.0 : static_cast <double> (tick.tickInterval);
+  const float value = axis->value * dt;
 
   auto& cTransform = registry.get <Transform> (entity);
 
-  cTransform.translation += cTransform.up() * axis->value * dt;
+  cTransform.translation += cTransform.up() * value;
 
   axis->value = 0.0f;
 };
@@ -65,17 +69,19 @@ controlTranslateZRelative(
 {
   using compos::Transform;
   using types::ControlAxis;
-  using types::CasqadiumEngine;
+  using types::TickCurrent;
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
   const auto axis = std::any_cast <ControlAxis*> (args.at(2));
+  const auto isMouseMotion = std::any_cast <bool> (args.at(3));
 
-  const auto engine = registry.ctx().get <CasqadiumEngine*> ();
-  const float dt = static_cast <double> (engine->deltaTime());
+  const auto& tick = registry.ctx().get <TickCurrent> ();
+  const auto dt = isMouseMotion ? 1.0 : static_cast <double> (tick.tickInterval);
+  const float value = axis->value * dt;
 
   auto& cTransform = registry.get <Transform> (entity);
 
-  cTransform.translation += cTransform.front() * axis->value * dt;
+  cTransform.translation += cTransform.front() * value;
 
   axis->value = 0.0f;
 };
@@ -87,17 +93,19 @@ controlPitchRelative(
 {
   using compos::Transform;
   using types::ControlAxis;
-  using types::CasqadiumEngine;
+  using types::TickCurrent;
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
   const auto axis = std::any_cast <ControlAxis*> (args.at(2));
+  const auto isMouseMotion = std::any_cast <bool> (args.at(3));
 
-  const auto engine = registry.ctx().get <CasqadiumEngine*> ();
-  const float dt = static_cast <double> (engine->deltaTime());
+  const auto& tick = registry.ctx().get <TickCurrent> ();
+  const auto dt = isMouseMotion ? 1.0 : static_cast <double> (tick.tickInterval);
+  const float value = axis->value * dt;
 
   auto& cTransform = registry.get <Transform> (entity);
 
-  const auto angle = glm::angleAxis(glm::radians(axis->value * dt),
+  const auto angle = glm::angleAxis(glm::radians(value),
                                     glm::vec3 {1.0f, 0.0f, 0.0f});
 
   const auto orientationPrev = cTransform.orientation;
@@ -117,17 +125,19 @@ controlYawRelative(
 {
   using compos::Transform;
   using types::ControlAxis;
-  using types::CasqadiumEngine;
+  using types::TickCurrent;
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
   const auto axis = std::any_cast <ControlAxis*> (args.at(2));
+  const auto isMouseMotion = std::any_cast <bool> (args.at(3));
 
-  const auto engine = registry.ctx().get <CasqadiumEngine*> ();
-  const float dt = static_cast <double> (engine->deltaTime());
+  const auto& tick = registry.ctx().get <TickCurrent> ();
+  const auto dt = isMouseMotion ? 1.0 : static_cast <double> (tick.tickInterval);
+  const float value = axis->value * dt;
 
   auto& cTransform = registry.get <Transform> (entity);
 
-  const auto angle = glm::angleAxis(glm::radians(axis->value * dt),
+  const auto angle = glm::angleAxis(glm::radians(value),
                                     glm::vec3 {0.0f, 1.0f, 0.0f});
 
   cTransform.orientation = glm::normalize(angle * cTransform.orientation);
@@ -142,17 +152,19 @@ controlRollRelative(
 {
   using compos::Transform;
   using types::ControlAxis;
-  using types::CasqadiumEngine;
+  using types::TickCurrent;
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
   const auto axis = std::any_cast <ControlAxis*> (args.at(2));
+  const auto isMouseMotion = std::any_cast <bool> (args.at(3));
 
-  const auto engine = registry.ctx().get <CasqadiumEngine*> ();
-  const float dt = static_cast <double> (engine->deltaTime());
+  const auto& tick = registry.ctx().get <TickCurrent> ();
+  const auto dt = isMouseMotion ? 1.0 : static_cast <double> (tick.tickInterval);
+  const float value = axis->value * dt;
 
   auto& cTransform = registry.get <Transform> (entity);
 
-  const auto angle = glm::angleAxis(glm::radians(axis->value * dt),
+  const auto angle = glm::angleAxis(glm::radians(value),
                                     glm::vec3 {0.0f, 0.0f, 1.0f});
 
   cTransform.orientation = glm::normalize(angle * cTransform.orientation);

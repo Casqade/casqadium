@@ -121,16 +121,15 @@ forceXRelative(
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
   const auto axis = std::any_cast <ControlAxis*> (args.at(2));
+  const auto isMouseMotion = std::any_cast <bool> (args.at(3));
 
   const auto& tick = registry.ctx().get <TickCurrent> ();
-  const auto ticks = tick.ticksElapsed;
-  const auto elapsed = tick.tickInterval;
-
-  const float dt = ticks * static_cast <double> (elapsed);
+  const auto dt = isMouseMotion ? 1.0 : static_cast <double> (tick.tickInterval);
+  const float value = axis->value * dt;
 
   auto& cRigidBody = registry.get <RigidBody> (entity);
 
-  cRigidBody.body->applyLocalForceAtCenterOfMass({axis->value * dt, 0.0f, 0.0f});
+  cRigidBody.body->applyLocalForceAtCenterOfMass({value, 0.0f, 0.0f});
 
   axis->value = 0.0f;
 }
@@ -146,16 +145,15 @@ forceYRelative(
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
   const auto axis = std::any_cast <ControlAxis*> (args.at(2));
+  const auto isMouseMotion = std::any_cast <bool> (args.at(3));
 
   const auto& tick = registry.ctx().get <TickCurrent> ();
-  const auto ticks = tick.ticksElapsed;
-  const auto elapsed = tick.tickInterval;
-
-  const float dt = ticks * static_cast <double> (elapsed);
+  const auto dt = isMouseMotion ? 1.0 : static_cast <double> (tick.tickInterval);
+  const float value = axis->value * dt;
 
   auto& cRigidBody = registry.get <RigidBody> (entity);
 
-  cRigidBody.body->applyLocalForceAtCenterOfMass({0.0f, axis->value * dt, 0.0f});
+  cRigidBody.body->applyLocalForceAtCenterOfMass({0.0f, value, 0.0f});
 
   axis->value = 0.0f;
 }
@@ -171,16 +169,15 @@ forceZRelative(
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
   const auto axis = std::any_cast <ControlAxis*> (args.at(2));
+  const auto isMouseMotion = std::any_cast <bool> (args.at(3));
 
   const auto& tick = registry.ctx().get <TickCurrent> ();
-  const auto ticks = tick.ticksElapsed;
-  const auto elapsed = tick.tickInterval;
-
-  const float dt = ticks * static_cast <double> (elapsed);
+  const auto dt = isMouseMotion ? 1.0 : static_cast <double> (tick.tickInterval);
+  const float value = axis->value * dt;
 
   auto& cRigidBody = registry.get <RigidBody> (entity);
 
-  cRigidBody.body->applyLocalForceAtCenterOfMass({0.0f, 0.0f, axis->value * dt});
+  cRigidBody.body->applyLocalForceAtCenterOfMass({0.0f, 0.0f, value});
 
   axis->value = 0.0f;
 }
@@ -197,16 +194,15 @@ torqueXRelative(
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
   const auto axis = std::any_cast <ControlAxis*> (args.at(2));
+  const auto isMouseMotion = std::any_cast <bool> (args.at(3));
 
   const auto& tick = registry.ctx().get <TickCurrent> ();
-  const auto ticks = tick.ticksElapsed;
-  const auto elapsed = tick.tickInterval;
-
-  const float dt = ticks * static_cast <double> (elapsed);
+  const auto dt = isMouseMotion ? 1.0 : static_cast <double> (tick.tickInterval);
+  const float value = axis->value * dt;
 
   auto& cRigidBody = registry.get <RigidBody> (entity);
 
-  cRigidBody.body->applyLocalTorque({axis->value * dt, 0.0f, 0.0f});
+  cRigidBody.body->applyLocalTorque({value, 0.0f, 0.0f});
 
   axis->value = 0.0f;
 }
@@ -222,16 +218,15 @@ torqueYRelative(
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
   const auto axis = std::any_cast <ControlAxis*> (args.at(2));
+  const auto isMouseMotion = std::any_cast <bool> (args.at(3));
 
   const auto& tick = registry.ctx().get <TickCurrent> ();
-  const auto ticks = tick.ticksElapsed;
-  const auto elapsed = tick.tickInterval;
-
-  const float dt = ticks * static_cast <double> (elapsed);
+  const auto dt = isMouseMotion ? 1.0 : static_cast <double> (tick.tickInterval);
+  const float value = axis->value * dt;
 
   auto& cRigidBody = registry.get <RigidBody> (entity);
 
-  cRigidBody.body->applyLocalTorque({0.0f, axis->value * dt, 0.0f});
+  cRigidBody.body->applyLocalTorque({0.0f, value, 0.0f});
 
   axis->value = 0.0f;
 }
@@ -247,16 +242,15 @@ torqueZRelative(
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
   const auto axis = std::any_cast <ControlAxis*> (args.at(2));
+  const auto isMouseMotion = std::any_cast <bool> (args.at(3));
 
   const auto& tick = registry.ctx().get <TickCurrent> ();
-  const auto ticks = tick.ticksElapsed;
-  const auto elapsed = tick.tickInterval;
-
-  const float dt = ticks * static_cast <double> (elapsed);
+  const auto dt = isMouseMotion ? 1.0 : static_cast <double> (tick.tickInterval);
+  const float value = axis->value * dt;
 
   auto& cRigidBody = registry.get <RigidBody> (entity);
 
-  cRigidBody.body->applyLocalTorque({0.0f, 0.0f, axis->value * dt});
+  cRigidBody.body->applyLocalTorque({0.0f, 0.0f, value});
 
   axis->value = 0.0f;
 }

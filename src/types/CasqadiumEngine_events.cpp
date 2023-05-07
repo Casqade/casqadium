@@ -144,6 +144,12 @@ CasqadiumEngine::mousePosEvent(
       std::abs(deltaX),
       std::clamp(deltaX, -1.0, 1.0),
       mRegistry );
+
+    inputManager.handleAxisInput(
+      InputHwCode(MouseInputId::PosX),
+      xPos,
+      std::clamp(deltaX, -1.0, 1.0),
+      mRegistry );
   }
 
   if ( deltaY != 0.0 )
@@ -153,19 +159,13 @@ CasqadiumEngine::mousePosEvent(
       std::abs(deltaY),
       std::clamp(deltaY, -1.0, 1.0),
       mRegistry );
+
+    inputManager.handleAxisInput(
+      InputHwCode(MouseInputId::PosY),
+      yPos,
+      std::clamp(deltaY, -1.0, 1.0),
+      mRegistry );
   }
-
-  inputManager.handleAxisInput(
-    InputHwCode(MouseInputId::PosX),
-    xPos,
-    std::clamp(xPos, -1.0, 1.0),
-    mRegistry );
-
-  inputManager.handleAxisInput(
-    InputHwCode(MouseInputId::PosY),
-    yPos,
-    std::clamp(yPos, -1.0, 1.0),
-    mRegistry );
 }
 
 void

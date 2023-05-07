@@ -640,6 +640,9 @@ CasqadiumEngine::run()
     mDeltaTime = currentTime - timePrevious;
     timePrevious = currentTime;
 
+    auto& tick = mRegistry.ctx().get <TickCurrent> ();
+    tick.tickInterval = deltaTime();
+
     glfwPollEvents();
     inputManager.updateInput(mRegistry);
 
@@ -652,7 +655,6 @@ CasqadiumEngine::run()
     else
     {
       ticks = 1;
-      mTickInterval = currentTime - tickPrevious;
       tickPrevious = currentTime;
     }
 
@@ -715,7 +717,7 @@ CasqadiumEngine::update(
   auto& tick = mRegistry.ctx().get <TickCurrent> ();
 
   tick.ticksElapsed = ticks;
-  tick.tickInterval = interval;
+  tick.tickInterval = interval > Duration{} ? interval : deltaTime();
 
   for ( uint32_t i = 0; i < ticks; ++i )
   {
