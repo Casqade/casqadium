@@ -169,8 +169,12 @@ EntityManagerUi::ui_show_filter_section(
                         mClipboard["payload"].empty() );
 
   if ( ImGui::Button("Paste##entityPaste") )
+  {
     mEntityMgr->prefabDeserialize(registry, mClipboard["payload"],
-                                  mRegistryFilter.package());
+        mRegistryFilter.package());
+
+    mEntityViewSortRequested = true;
+  }
 
   ImGui::EndDisabled();
 
@@ -205,6 +209,8 @@ EntityManagerUi::ui_show_entities_table(
 
       mEntityMgr->prefabDeserialize(registry, prefab,
                                     mRegistryFilter.package());
+
+      mEntityViewSortRequested = true;
     }
     ImGui::EndDragDropTarget();
   }
