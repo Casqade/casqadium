@@ -255,4 +255,82 @@ torqueZRelative(
   axis->value = 0.0f;
 }
 
+void
+speedXRelative(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using cqde::types::ControlAxis;
+  using cqde::types::TickCurrent;
+  using cqde::compos::RigidBody;
+
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+  const auto axis = std::any_cast <ControlAxis*> (args.at(2));
+  const auto isMouseMotion = std::any_cast <bool> (args.at(3));
+
+  const auto& tick = registry.ctx().get <TickCurrent> ();
+  const auto dt = isMouseMotion ? 1.0 : static_cast <double> (tick.tickInterval);
+  const float value = axis->value * dt;
+
+  auto& cRigidBody = registry.get <RigidBody> (entity);
+
+  auto velocity = cRigidBody.body->getLinearVelocity();
+  velocity.x += value;
+  cRigidBody.body->setLinearVelocity(velocity);
+
+  axis->value = 0.0f;
+}
+
+void
+speedYRelative(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using cqde::types::ControlAxis;
+  using cqde::types::TickCurrent;
+  using cqde::compos::RigidBody;
+
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+  const auto axis = std::any_cast <ControlAxis*> (args.at(2));
+  const auto isMouseMotion = std::any_cast <bool> (args.at(3));
+
+  const auto& tick = registry.ctx().get <TickCurrent> ();
+  const auto dt = isMouseMotion ? 1.0 : static_cast <double> (tick.tickInterval);
+  const float value = axis->value * dt;
+
+  auto& cRigidBody = registry.get <RigidBody> (entity);
+
+  auto velocity = cRigidBody.body->getLinearVelocity();
+  velocity.y += value;
+  cRigidBody.body->setLinearVelocity(velocity);
+
+  axis->value = 0.0f;
+}
+
+void
+speedZRelative(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using cqde::types::ControlAxis;
+  using cqde::types::TickCurrent;
+  using cqde::compos::RigidBody;
+
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+  const auto axis = std::any_cast <ControlAxis*> (args.at(2));
+  const auto isMouseMotion = std::any_cast <bool> (args.at(3));
+
+  const auto& tick = registry.ctx().get <TickCurrent> ();
+  const auto dt = isMouseMotion ? 1.0 : static_cast <double> (tick.tickInterval);
+  const float value = axis->value * dt;
+
+  auto& cRigidBody = registry.get <RigidBody> (entity);
+
+  auto velocity = cRigidBody.body->getLinearVelocity();
+  velocity.z += value;
+  cRigidBody.body->setLinearVelocity(velocity);
+
+  axis->value = 0.0f;
+}
+
 } // namespace cqde::callbacks
