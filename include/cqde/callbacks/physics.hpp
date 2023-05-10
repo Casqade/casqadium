@@ -49,4 +49,20 @@ torqueZRelative(
   entt::registry&,
   const std::vector <std::any>& args );
 
+
+void
+speedXRelative(
+  entt::registry&,
+  const std::vector <std::any>& args );
+
+void
+speedYRelative(
+  entt::registry&,
+  const std::vector <std::any>& args );
+
+void
+speedZRelative(
+  entt::registry&,
+  const std::vector <std::any>& args );
+
 } // cqde::callbacks
