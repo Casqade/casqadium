@@ -132,6 +132,10 @@ CasqadiumEngine::registerCallbacks()
   callbackManager.Register("SpeedLinearYRelative", speedLinearYRelative);
   callbackManager.Register("SpeedLinearZRelative", speedLinearZRelative);
 
+  callbackManager.Register("SpeedLinearLocalXRelative", speedLinearLocalXRelative);
+  callbackManager.Register("SpeedLinearLocalYRelative", speedLinearLocalYRelative);
+  callbackManager.Register("SpeedLinearLocalZRelative", speedLinearLocalZRelative);
+
   callbackManager.Register("SpeedAngularXRelative", speedAngularXRelative);
   callbackManager.Register("SpeedAngularYRelative", speedAngularYRelative);
   callbackManager.Register("SpeedAngularZRelative", speedAngularZRelative);

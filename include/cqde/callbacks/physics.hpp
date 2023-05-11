@@ -67,6 +67,22 @@ speedLinearZRelative(
 
 
 void
+speedLinearLocalXRelative(
+  entt::registry&,
+  const std::vector <std::any>& args );
+
+void
+speedLinearLocalYRelative(
+  entt::registry&,
+  const std::vector <std::any>& args );
+
+void
+speedLinearLocalZRelative(
+  entt::registry&,
+  const std::vector <std::any>& args );
+
+
+void
 speedAngularXRelative(
   entt::registry&,
   const std::vector <std::any>& args );

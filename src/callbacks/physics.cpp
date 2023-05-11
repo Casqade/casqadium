@@ -335,6 +335,103 @@ speedLinearZRelative(
 
 
 void
+speedLinearLocalXRelative(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using cqde::types::ControlAxis;
+  using cqde::types::TickCurrent;
+  using cqde::compos::Transform;
+  using cqde::compos::RigidBody;
+
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+  const auto axis = std::any_cast <ControlAxis*> (args.at(2));
+  const auto isMouseMotion = std::any_cast <bool> (args.at(3));
+
+  const auto& tick = registry.ctx().get <TickCurrent> ();
+  const auto dt = isMouseMotion ? 1.0 : static_cast <double> (tick.tickInterval);
+  const float value = axis->value * dt;
+
+  auto&& [cTransform, cRigidBody] = registry.get <Transform, RigidBody> (entity);
+
+  const auto velocity = cRigidBody.body->getLinearVelocity();
+
+  const auto velocityDelta = ToWorldSpace(
+    cTransform.right() * value,
+    registry, entity,
+    cTransform );
+
+  cRigidBody.body->setLinearVelocity(velocity + glmToRp3d(velocityDelta));
+
+  axis->value = 0.0f;
+}
+
+void
+speedLinearLocalYRelative(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using cqde::types::ControlAxis;
+  using cqde::types::TickCurrent;
+  using cqde::compos::Transform;
+  using cqde::compos::RigidBody;
+
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+  const auto axis = std::any_cast <ControlAxis*> (args.at(2));
+  const auto isMouseMotion = std::any_cast <bool> (args.at(3));
+
+  const auto& tick = registry.ctx().get <TickCurrent> ();
+  const auto dt = isMouseMotion ? 1.0 : static_cast <double> (tick.tickInterval);
+  const float value = axis->value * dt;
+
+  auto&& [cTransform, cRigidBody] = registry.get <Transform, RigidBody> (entity);
+
+  const auto velocity = cRigidBody.body->getLinearVelocity();
+
+  const auto velocityDelta = ToWorldSpace(
+    cTransform.up() * value,
+    registry, entity,
+    cTransform );
+
+  cRigidBody.body->setLinearVelocity(velocity + glmToRp3d(velocityDelta));
+
+  axis->value = 0.0f;
+}
+
+void
+speedLinearLocalZRelative(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using cqde::types::ControlAxis;
+  using cqde::types::TickCurrent;
+  using cqde::compos::Transform;
+  using cqde::compos::RigidBody;
+
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+  const auto axis = std::any_cast <ControlAxis*> (args.at(2));
+  const auto isMouseMotion = std::any_cast <bool> (args.at(3));
+
+  const auto& tick = registry.ctx().get <TickCurrent> ();
+  const auto dt = isMouseMotion ? 1.0 : static_cast <double> (tick.tickInterval);
+  const float value = axis->value * dt;
+
+  auto&& [cTransform, cRigidBody] = registry.get <Transform, RigidBody> (entity);
+
+  const auto velocity = cRigidBody.body->getLinearVelocity();
+
+  const auto velocityDelta = ToWorldSpace(
+    cTransform.front() * value,
+    registry, entity,
+    cTransform );
+
+  cRigidBody.body->setLinearVelocity(velocity + glmToRp3d(velocityDelta));
+
+  axis->value = 0.0f;
+}
+
+
+void
 speedAngularXRelative(
   entt::registry& registry,
   const std::vector <std::any>& args )
