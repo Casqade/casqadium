@@ -128,9 +128,13 @@ CasqadiumEngine::registerCallbacks()
   callbackManager.Register("TorqueYRelative", torqueYRelative);
   callbackManager.Register("TorqueZRelative", torqueZRelative);
 
-  callbackManager.Register("SpeedXRelative", speedXRelative);
-  callbackManager.Register("SpeedYRelative", speedYRelative);
-  callbackManager.Register("SpeedZRelative", speedZRelative);
+  callbackManager.Register("SpeedLinearXRelative", speedLinearXRelative);
+  callbackManager.Register("SpeedLinearYRelative", speedLinearYRelative);
+  callbackManager.Register("SpeedLinearZRelative", speedLinearZRelative);
+
+  callbackManager.Register("SpeedAngularXRelative", speedAngularXRelative);
+  callbackManager.Register("SpeedAngularYRelative", speedAngularYRelative);
+  callbackManager.Register("SpeedAngularZRelative", speedAngularZRelative);
 }
 
 } // namespace cqde::types

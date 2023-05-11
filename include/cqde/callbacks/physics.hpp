@@ -51,17 +51,33 @@ torqueZRelative(
 
 
 void
-speedXRelative(
+speedLinearXRelative(
   entt::registry&,
   const std::vector <std::any>& args );
 
 void
-speedYRelative(
+speedLinearYRelative(
   entt::registry&,
   const std::vector <std::any>& args );
 
 void
-speedZRelative(
+speedLinearZRelative(
+  entt::registry&,
+  const std::vector <std::any>& args );
+
+
+void
+speedAngularXRelative(
+  entt::registry&,
+  const std::vector <std::any>& args );
+
+void
+speedAngularYRelative(
+  entt::registry&,
+  const std::vector <std::any>& args );
+
+void
+speedAngularZRelative(
   entt::registry&,
   const std::vector <std::any>& args );
 
