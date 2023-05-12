@@ -66,8 +66,8 @@ PhysicsEventListener::onContact(
 //          mRegistry.get <Tag> (eBody1).id.str(),
 //          mRegistry.get <Tag> (eBody2).id.str() );
 
-        collider1->onEnter(mRegistry, {eBody1, eBody2, &pair});
-        collider2->onEnter(mRegistry, {eBody2, eBody1, &pair});
+        collider1->onEnter(mRegistry, {eBody1, eBody2, pair});
+        collider2->onEnter(mRegistry, {eBody2, eBody1, pair});
         break;
       }
       case EventType::ContactStay:
@@ -76,8 +76,8 @@ PhysicsEventListener::onContact(
 //          mRegistry.get <Tag> (eBody1).id.str(),
 //          mRegistry.get <Tag> (eBody2).id.str() );
 
-        collider1->onStay(mRegistry, {eBody1, eBody2, &pair});
-        collider2->onStay(mRegistry, {eBody2, eBody1, &pair});
+        collider1->onStay(mRegistry, {eBody1, eBody2, pair});
+        collider2->onStay(mRegistry, {eBody2, eBody1, pair});
         break;
       }
       case EventType::ContactExit:
@@ -86,8 +86,8 @@ PhysicsEventListener::onContact(
 //          mRegistry.get <Tag> (eBody1).id.str(),
 //          mRegistry.get <Tag> (eBody2).id.str() );
 
-        collider1->onLeave(mRegistry, {eBody1, eBody2, &pair});
-        collider2->onLeave(mRegistry, {eBody2, eBody1, &pair});
+        collider1->onLeave(mRegistry, {eBody1, eBody2, pair});
+        collider2->onLeave(mRegistry, {eBody2, eBody1, pair});
         break;
       }
     }
