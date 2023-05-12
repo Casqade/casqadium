@@ -12,8 +12,6 @@ void EditorRenderSystem( entt::registry& );
 
 void RenderSystem( entt::registry& );
 
-void LightingSystem( entt::registry& );
-
 void EditorEntityHighlightSystem( entt::registry& );
 
 void InteractionHighlightSystem( entt::registry& );

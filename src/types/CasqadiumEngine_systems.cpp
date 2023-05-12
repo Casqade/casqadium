@@ -69,10 +69,6 @@ CasqadiumEngine::registerSystems()
                          EditorRenderSystem,
                          Phase{Phase::Render | Phase::Editor});
 
-  systemManager.Register("LightingSystem",
-                         LightingSystem,
-                         Phase::Render);
-
   systemManager.Register("RenderSystem",
                          RenderSystem,
                          Phase::Render);
