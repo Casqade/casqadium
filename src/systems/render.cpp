@@ -124,16 +124,102 @@ struct EditorRenderData
   }
 };
 
+static glm::vec4
+AccumulateLight(
+  const entt::registry& registry,
+  const entt::entity eLightTgt,
+  const compos::Transform& cLightTgtTransform,
+  const glm::vec4& lightTgtPos )
+{
+  using compos::Transform;
+  using compos::LightSource;
+  using compos::SubscriberUpdate;
+
+  olc::Pixel accumulatedLight {olc::BLACK};
+
+  for ( auto&& [eLightSrc, cLightSrcTransform, cLightSrc]
+          : registry.view <Transform, LightSource, SubscriberUpdate> ().each() )
+  {
+    const auto lightSrcPos
+      = GetWorldMatrix(registry, eLightSrc, cLightSrcTransform)[3];
+
+    const auto distance = glm::length(lightTgtPos - lightSrcPos);
+
+    if ( distance > cLightSrc.radius )
+      return glm::vec4{1.0};
+
+    const float attenuation = 1.0f
+      / ( cLightSrc.attenuationConstant
+        + cLightSrc.attenuationLinear * distance
+        + cLightSrc.attenuationQuadratic * std::pow(distance, 2) );
+
+    glm::vec3 normal {};
+    glm::vec3 lightDir {};
+
+    if ( cLightSrc.type != LightSource::Type::Ambient )
+      normal = glm::rotate(
+        ToWorldSpace(
+          cLightTgtTransform.orientation,
+          registry,
+          eLightTgt, cLightTgtTransform ),
+        {0.0f, 0.0f, 1.0f} );
+
+    switch (cLightSrc.type)
+    {
+      case LightSource::Type::Ambient:
+      {
+        accumulatedLight += cLightSrc.color * attenuation;
+        break;
+      }
+      case LightSource::Type::Positional:
+      {
+        lightDir = glm::normalize(lightSrcPos - lightTgtPos);
+
+        const float diffuse = glm::max(glm::dot(normal, lightDir), 0.0f);
+
+        accumulatedLight += cLightSrc.color * attenuation * diffuse;
+
+        break;
+      }
+      case LightSource::Type::Directional:
+      {
+        lightDir = glm::rotate(
+          ToWorldSpace(
+            cLightSrcTransform.orientation,
+            registry,
+            eLightTgt, cLightSrcTransform ),
+          {0.0f, 0.0f, 1.0f} );
+
+        const float diffuse = glm::max(glm::dot(normal, lightDir), 0.0f);
+
+        accumulatedLight += cLightSrc.color * attenuation * diffuse;
+
+        break;
+      }
+    }
+  }
+
+  return
+  {
+    accumulatedLight.r / 255.0f,
+    accumulatedLight.g / 255.0f,
+    accumulatedLight.b / 255.0f,
+    1.0f,
+  };
+}
+
 static void
 GeometryPass(
   entt::registry& registry,
   const glm::mat4& viewProjection,
-  const types::ShaderType shaderType )
+  const types::ShaderType shaderType,
+  const bool calculateLighting )
 {
-  using compos::Camera;
   using compos::Transform;
   using compos::DrawableMesh;
   using compos::TextureTint;
+  using compos::LightTarget;
+  using compos::LightSource;
   using compos::SubscriberUpdate;
   using compos::InteractionListener;
   using types::ShaderManager;
@@ -185,15 +271,32 @@ GeometryPass(
          texture->Decal() == nullptr )
       continue;
 
+    const auto modelMatrix = GetWorldMatrix(
+      registry, eDrawable, cTransform );
+
+    auto meshTint {olc::WHITE.n};
+
+    if ( calculateLighting == true &&
+         registry.all_of <LightTarget> (eDrawable) == true )
+    {
+      const auto accumulatedLight = AccumulateLight(
+        registry, eDrawable,
+        cTransform, modelMatrix[3] );
+
+      meshTint = olc::PixelF(
+        accumulatedLight.r, accumulatedLight.g,
+        accumulatedLight.b, accumulatedLight.a ).n;
+    }
+
     renderCommands.emplace_back( RenderCommand
     {
-      viewProjection * GetWorldMatrix(registry, eDrawable, cTransform),
+      viewProjection * modelMatrix,
       texture->Decal()->id,
       mesh->firstElementIndex,
       mesh->elementCount,
       mesh->firstVertexIndex,
       static_cast <GLuint> (eDrawable),
-      olc::WHITE.n,
+      meshTint,
     } );
   }
 
@@ -204,7 +307,7 @@ GeometryPass(
     return lhs.mvp[3].z < rhs.mvp[3].z;
   });
 
-  const auto lastOpaqueCommandIndex = renderCommands.size();
+  const auto firstTranslucentCommandIndex = renderCommands.size();
 
   for ( const auto&& [eDrawable, cTransform, cMesh, cTextureTint]
           : registry.view <Transform, DrawableMesh, TextureTint> ().each() )
@@ -220,19 +323,45 @@ GeometryPass(
          texture->Decal() == nullptr )
       continue;
 
+    const auto modelMatrix = GetWorldMatrix(
+      registry, eDrawable, cTransform );
+
+    auto meshTint {cTextureTint.tint.n};
+
+    if ( registry.all_of <LightTarget> (eDrawable) == true )
+    {
+      const glm::vec4 textureTint
+      {
+        cTextureTint.tint.r / 255.0f,
+        cTextureTint.tint.g / 255.0f,
+        cTextureTint.tint.b / 255.0f,
+        cTextureTint.tint.a / 255.0f,
+      };
+
+      const auto accumulatedLight = AccumulateLight(
+        registry, eDrawable,
+        cTransform, modelMatrix[3] );
+
+      const auto resultTint = textureTint * accumulatedLight;
+
+      meshTint = olc::PixelF(
+        resultTint.r, resultTint.g,
+        resultTint.b, resultTint.a ).n;
+    }
+
     renderCommands.emplace_back( RenderCommand
     {
-      viewProjection * GetWorldMatrix(registry, eDrawable, cTransform),
+      viewProjection * modelMatrix,
       texture->Decal()->id,
       mesh->firstElementIndex,
       mesh->elementCount,
       mesh->firstVertexIndex,
       static_cast <GLuint> (eDrawable),
-      cTextureTint.tint.n,
+      meshTint,
     } );
   };
 
-  std::sort( renderCommands.begin() + lastOpaqueCommandIndex, renderCommands.end(),
+  std::sort( renderCommands.begin() + firstTranslucentCommandIndex, renderCommands.end(),
   [] ( const RenderCommand& lhs, const RenderCommand& rhs )
   {
 //    back-to-front
@@ -487,6 +616,7 @@ RenderToTarget(
   using types::ShaderType;
   using types::ShaderManager;
   using types::FrameReadbackQueue;
+  using LightingMode = Camera::LightingMode;
 
   if ( eCamera == entt::null )
     return;
@@ -546,7 +676,14 @@ RenderToTarget(
     shaderType = ShaderType::Wireframe;
   }
 
-  GeometryPass(registry, viewProjection, shaderType);
+  bool calculateLighting {};
+
+  if ( cCamera->lightingMode == LightingMode::Diffuse )
+    calculateLighting = true;
+
+  GeometryPass(
+    registry, viewProjection,
+    shaderType, calculateLighting );
 
   glPolygonMode( GL_FRONT_AND_BACK, GL_FILL );
 
@@ -605,139 +742,6 @@ EditorRenderSystem(
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
   glDisable(GL_SCISSOR_TEST);
   glDisable(GL_BLEND);
-}
-
-void
-LightingSystem(
-  entt::registry& registry )
-{
-  using compos::Camera;
-  using compos::LightSource;
-  using compos::LightTarget;
-  using compos::TextureTint;
-  using compos::Transform;
-  using compos::SubscriberUpdate;
-
-  const auto& const_registry = registry;
-
-  for ( auto&& [eCamera, cCamera]
-          : registry.view <Camera, const SubscriberUpdate> ().each() )
-  {
-//    if ( cCamera.lightingMode != Camera::LightingMode::Diffuse )
-//      continue;
-
-//    for ( auto iter = cCamera.zBuffer.begin();
-//          iter != cCamera.zBuffer.end();
-//          ++iter )
-//    {
-//      const auto [buffer, eLightTgt] = *iter;
-
-//      if ( registry.all_of <LightTarget> (eLightTgt) == false )
-//        continue;
-
-//      const auto [cLightTgtTransform, cTextureTint]
-//        = const_registry.try_get <Transform, TextureTint> (eLightTgt);
-
-//      const auto lightTgtPos
-//        = GetWorldMatrix(registry, eLightTgt, *cLightTgtTransform)[3];
-
-//      std::mutex accumulatedLightMutex {};
-//      olc::Pixel accumulatedLight {olc::BLACK};
-
-//      const auto lightSourcesView
-//          = const_registry.view <Transform, LightSource, SubscriberUpdate> ();
-
-//      const auto& handle = lightSourcesView.handle();
-
-//      std::for_each(std::execution::par_unseq, handle.cbegin(), handle.cend(),
-//      [&, cLightTgtTransform = cLightTgtTransform, eLightTgt = eLightTgt] ( const auto eLightSrc )
-//      {
-//        if ( lightSourcesView.contains(eLightSrc) == false )
-//          return;
-
-//        const auto&& [cLightSrcTransform, cLightSrc]
-//          = lightSourcesView.get <const Transform, const LightSource> (eLightSrc);
-
-//        const auto lightSrcPos
-//          = GetWorldMatrix(registry, eLightSrc, cLightSrcTransform)[3];
-
-//        const auto distance = glm::length(lightTgtPos - lightSrcPos);
-
-//        if ( distance > cLightSrc.radius )
-//          return;
-
-//        const float attenuation = 1.0f
-//          / ( cLightSrc.attenuationConstant
-//            + cLightSrc.attenuationLinear * distance
-//            + cLightSrc.attenuationQuadratic * std::pow(distance, 2) );
-
-//        glm::vec3 normal {};
-//        glm::vec3 lightDir {};
-
-//        if ( cLightSrc.type != LightSource::Type::Ambient )
-//          normal = glm::rotate( ToWorldSpace( cLightTgtTransform->orientation,
-//                                              registry,
-//                                              eLightTgt, *cLightTgtTransform),
-//                                {0.0f, 0.0f, 1.0f});
-
-//        switch (cLightSrc.type)
-//        {
-//          case LightSource::Type::Ambient:
-//          {
-//            std::lock_guard lock {accumulatedLightMutex};
-//            accumulatedLight += cLightSrc.color * attenuation;
-//            break;
-//          }
-//          case LightSource::Type::Positional:
-//          {
-//            lightDir = glm::normalize(lightSrcPos - lightTgtPos);
-
-//            const float diffuse = glm::max(glm::dot(normal, lightDir), 0.0f);
-
-//            std::lock_guard lock {accumulatedLightMutex};
-//            accumulatedLight += cLightSrc.color * attenuation * diffuse;
-
-//            break;
-//          }
-//          case LightSource::Type::Directional:
-//          {
-//            lightDir = glm::rotate( ToWorldSpace( cLightSrcTransform.orientation,
-//                                                  registry,
-//                                                  eLightTgt, cLightSrcTransform),
-//                                    {0.0f, 0.0f, 1.0f});
-
-//            const float diffuse = glm::max(glm::dot(normal, lightDir), 0.0f);
-
-//            std::lock_guard lock {accumulatedLightMutex};
-//            accumulatedLight += cLightSrc.color * attenuation * diffuse;
-
-//            break;
-//          }
-//        }
-//      });
-
-//      const glm::vec4 resultLight
-//      {
-//        accumulatedLight.r / 255.0f,
-//        accumulatedLight.g / 255.0f,
-//        accumulatedLight.b / 255.0f,
-//        1.0f
-//      };
-
-//      glm::vec4 resultTint {1.0f};
-
-//      if ( cTextureTint != nullptr )
-//        resultTint =
-//        {
-//          cTextureTint->tint.r / 255.0f,
-//          cTextureTint->tint.g / 255.0f,
-//          cTextureTint->tint.b / 255.0f,
-//          cTextureTint->tint.a / 255.0f,
-//        };
-
-//      resultTint *= resultLight;
-//    }
-  }
 }
 
 void

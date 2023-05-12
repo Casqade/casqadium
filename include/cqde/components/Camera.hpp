@@ -66,7 +66,7 @@ struct Camera
   Projection    projectionType {};
   RenderMode    renderMode {};
   TextureMode   textureMode {};
-  LightingMode  lightingMode {};
+  LightingMode  lightingMode {LightingMode::FullBright};
 
 
   Camera() = default;
