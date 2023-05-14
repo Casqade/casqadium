@@ -21,7 +21,7 @@
   },
   "car_loop" : 
   {
-    "path" : "audio/bra.wav",
+    "path" : "audio/bra.ogg",
     "type" : "wav"
   },
   "dlg_drunk_01" : 

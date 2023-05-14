@@ -1,0 +1,14 @@
+{
+  "saloon_ceiling" : 
+  {
+    "path" : "meshes/saloon_ceiling.json"
+  },
+  "saloon_floor" : 
+  {
+    "path" : "meshes/saloon_floor.json"
+  },
+  "skybox" : 
+  {
+    "path" : "meshes/skybox.gltf"
+  }
+}
