@@ -1555,6 +1555,9 @@
       [
         "eDopplerSkybox",
         "eCarRoot",
+        "eRoadBarrierBack",
+        "eRoadBarrier",
+        "eRoad",
         "eCameraDoppler",
         "eCarResetter"
       ],
@@ -5123,6 +5126,129 @@
         0.0,
         0.0,
         0.0
+      ]
+    }
+  },
+  "eRoad" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "road",
+      "textureId" : "road_surface"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eDopplerRoot"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        -0.50008630752563477,
+        -0.49991366267204285,
+        -0.49991369247436523,
+        0.50008630752563477
+      ],
+      "scale" : 
+      [
+        12.0,
+        150.0,
+        0.99999988079071045
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        -0.00034530460834503174,
+        -1.0,
+        -0.99999994039535522
+      ]
+    }
+  },
+  "eRoadBarrier" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "road_barrier",
+      "textureId" : "road_barrier"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eDopplerRoot"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        -0.1736481785774231,
+        -0.0,
+        0.0,
+        0.98480772972106934
+      ],
+      "scale" : 
+      [
+        150.0,
+        1.5,
+        0.99999988079071045
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        -0.30000004172325134,
+        -7.1999998092651367
+      ]
+    }
+  },
+  "eRoadBarrierBack" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "road_barrier",
+      "textureId" : "road_barrier"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eDopplerRoot"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        -5.036584838080671e-08,
+        0.98480772972106934,
+        0.17364822328090668,
+        3.3915064534539852e-08
+      ],
+      "scale" : 
+      [
+        150.00334167480469,
+        1.5,
+        1.0000009536743164
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        1.7400000095367432,
+        -0.3000030517578125,
+        -7.7125000953674316
       ]
     }
   },

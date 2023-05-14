@@ -1,4 +1,12 @@
 {
+  "road" : 
+  {
+    "path" : "meshes/road.json"
+  },
+  "road_barrier" : 
+  {
+    "path" : "meshes/road_barrier.json"
+  },
   "saloon_ceiling" : 
   {
     "path" : "meshes/saloon_ceiling.json"
