@@ -922,11 +922,6 @@
         "car_loop"
       ]
     },
-    "DrawableMesh" : 
-    {
-      "meshId" : "null",
-      "textureId" : "null"
-    },
     "RigidBody" : 
     {
       "body" : 
@@ -991,7 +986,7 @@
           ],
           "linear" : 
           [
-            -40.0,
+            0.0,
             0.0,
             0.0
           ]
@@ -1055,7 +1050,11 @@
     },
     "SceneNode" : 
     {
-      "children" : [],
+      "children" : 
+      [
+        "eCarSprite",
+        "eCarSpriteBack"
+      ],
       "parent" : "eCarRoot"
     },
     "Transform" : 
@@ -1236,6 +1235,88 @@
         100.0,
         0.0,
         -5.0
+      ]
+    }
+  },
+  "eCarSprite" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "null",
+      "textureId" : "car"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eCar"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        8.0,
+        1.8999999761581421,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eCarSpriteBack" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "car_back",
+      "textureId" : "car"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eCar"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        -4.3711388286737929e-08,
+        1.0,
+        -4.3711388286737929e-08,
+        1.910685465164705e-15
+      ],
+      "scale" : 
+      [
+        7.999997615814209,
+        1.8999996185302734,
+        0.99999988079071045
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        0.0,
+        0.0
       ]
     }
   },

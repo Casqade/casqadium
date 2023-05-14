@@ -1,4 +1,8 @@
 {
+  "car_back" : 
+  {
+    "path" : "meshes/car.json"
+  },
   "road" : 
   {
     "path" : "meshes/road.json"

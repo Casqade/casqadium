@@ -1,4 +1,12 @@
 {
+  "car" : 
+  {
+    "clamp" : false,
+    "filter" : false,
+    "flipHorizontal" : false,
+    "flipVertical" : false,
+    "path" : "textures/mountains/car.png"
+  },
   "drunkard_head" : 
   {
     "clamp" : false,

@@ -653,7 +653,7 @@ carReset(
 
     const rp3d::Vector3 newVelocity
     {
-      random(-30.0f, -60.0f),
+      random(-50.0f, -100.0f),
       0.0f,
       0.0f,
     };
