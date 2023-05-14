@@ -723,7 +723,12 @@ MeshAssetManager::ui_show_preview(
 
   if ( ImGui::Button("Save quad UV") )
   {
-    auto fileStream = fileOpen(meshPath, std::ios::out | std::ios::trunc);
+    const auto streamFlags =
+      std::ios::out |
+      std::ios::trunc |
+      std::ios::binary;
+
+    auto fileStream = fileOpen(meshPath, streamFlags);
     fileStream << Json::writeString(jsonWriter(), meshJson);
   }
 
