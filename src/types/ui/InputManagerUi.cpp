@@ -81,9 +81,10 @@ InputManagerUi::configSave(
 
     const auto userInputPath = userManager.inputConfigPath();
 
-    const auto streamFlags = std::ios::out |
-                             std::ios::trunc |
-                             std::ios::binary;
+    const auto streamFlags =
+      std::ios::out |
+      std::ios::trunc |
+      std::ios::binary;
 
     try
     {
