@@ -275,9 +275,10 @@ PackageManagerUi::ui_show_menu_bar(
         package->save(ContentType::Manifest, packageManifest);
     }
 
-    const auto streamFlags = std::ios::out |
-                             std::ios::trunc |
-                             std::ios::binary;
+    const auto streamFlags =
+      std::ios::out |
+      std::ios::trunc |
+      std::ios::binary;
 
     auto fileStream = fileOpen(mPackageMgr->manifestPath(), streamFlags);
     fileStream << Json::writeString(jsonWriter(), mConfigState.root);

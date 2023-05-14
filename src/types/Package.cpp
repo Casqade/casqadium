@@ -249,9 +249,10 @@ Package::save(
 
   try
   {
-    const auto streamFlags = std::ios::out |
-                             std::ios::trunc |
-                             std::ios::binary;
+    const auto streamFlags =
+      std::ios::out |
+      std::ios::trunc |
+      std::ios::binary;
 
     auto fileStream = fileOpen(path, streamFlags);
     fileStream << Json::writeString(jsonWriter(), data);
