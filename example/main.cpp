@@ -47,7 +47,6 @@ main( int argc, char* argv[] )
     const auto config = engine.config();
 
     config->engine.tickRate = 120;
-    config->engine.frameRate = 120;
     config->audio.bufferSize = 2048;
 
     engine.setConfig(config);
