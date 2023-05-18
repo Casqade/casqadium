@@ -398,8 +398,9 @@ InputManager::handleAxisInput(
 
   const InputHwId inputId = prefix + inputHwId->second.str();
 
-  const bool isMouseMotion =
-    inputHwCode >= static_cast <InputHwCode> (MouseInputId::MoveX);
+  const bool isEventComplete =
+    inputHwCode >= static_cast <InputHwCode> (MouseInputId::MoveX) ||
+    direction != 0;
 
   if ( direction != 0 )
   {
@@ -446,7 +447,7 @@ InputManager::handleAxisInput(
         for ( const auto& callbackId : axis.callbacks )
           callbackMgr.execute(
             callbackId, registry,
-            {entity, &cController, &axis, isMouseMotion} );
+            {entity, &cController, &axis, isEventComplete} );
       }
     };
 
