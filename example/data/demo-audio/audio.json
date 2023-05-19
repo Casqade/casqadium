@@ -21,7 +21,7 @@
   },
   "car_loop" : 
   {
-    "path" : "audio/bra.ogg",
+    "path" : "audio/car_loop.ogg",
     "type" : "wav"
   },
   "dlg_drunk_01" : 
@@ -136,7 +136,7 @@
   },
   "engine_cylinder" : 
   {
-    "path" : "audio/cbar_hit1.ogg",
+    "path" : "audio/engine_cylinder.ogg",
     "type" : "wav"
   },
   "guitar" : 
