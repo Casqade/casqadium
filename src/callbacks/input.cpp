@@ -25,10 +25,10 @@ controlTranslateXRelative(
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
   const auto axis = std::any_cast <ControlAxis*> (args.at(2));
-  const auto isMouseMotion = std::any_cast <bool> (args.at(3));
+  const auto isEventComplete = std::any_cast <bool> (args.at(3));
 
   const auto& tick = registry.ctx().get <TickCurrent> ();
-  const auto dt = isMouseMotion ? 1.0 : static_cast <double> (tick.tickInterval);
+  const auto dt = isEventComplete ? 1.0 : static_cast <double> (tick.tickInterval);
   const float value = axis->value * dt;
 
   auto& cTransform = registry.get <Transform> (entity);
@@ -49,10 +49,10 @@ controlTranslateYRelative(
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
   const auto axis = std::any_cast <ControlAxis*> (args.at(2));
-  const auto isMouseMotion = std::any_cast <bool> (args.at(3));
+  const auto isEventComplete = std::any_cast <bool> (args.at(3));
 
   const auto& tick = registry.ctx().get <TickCurrent> ();
-  const auto dt = isMouseMotion ? 1.0 : static_cast <double> (tick.tickInterval);
+  const auto dt = isEventComplete ? 1.0 : static_cast <double> (tick.tickInterval);
   const float value = axis->value * dt;
 
   auto& cTransform = registry.get <Transform> (entity);
@@ -73,10 +73,10 @@ controlTranslateZRelative(
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
   const auto axis = std::any_cast <ControlAxis*> (args.at(2));
-  const auto isMouseMotion = std::any_cast <bool> (args.at(3));
+  const auto isEventComplete = std::any_cast <bool> (args.at(3));
 
   const auto& tick = registry.ctx().get <TickCurrent> ();
-  const auto dt = isMouseMotion ? 1.0 : static_cast <double> (tick.tickInterval);
+  const auto dt = isEventComplete ? 1.0 : static_cast <double> (tick.tickInterval);
   const float value = axis->value * dt;
 
   auto& cTransform = registry.get <Transform> (entity);
@@ -97,10 +97,10 @@ controlPitchRelative(
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
   const auto axis = std::any_cast <ControlAxis*> (args.at(2));
-  const auto isMouseMotion = std::any_cast <bool> (args.at(3));
+  const auto isEventComplete = std::any_cast <bool> (args.at(3));
 
   const auto& tick = registry.ctx().get <TickCurrent> ();
-  const auto dt = isMouseMotion ? 1.0 : static_cast <double> (tick.tickInterval);
+  const auto dt = isEventComplete ? 1.0 : static_cast <double> (tick.tickInterval);
   const float value = axis->value * dt;
 
   auto& cTransform = registry.get <Transform> (entity);
@@ -129,10 +129,10 @@ controlYawRelative(
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
   const auto axis = std::any_cast <ControlAxis*> (args.at(2));
-  const auto isMouseMotion = std::any_cast <bool> (args.at(3));
+  const auto isEventComplete = std::any_cast <bool> (args.at(3));
 
   const auto& tick = registry.ctx().get <TickCurrent> ();
-  const auto dt = isMouseMotion ? 1.0 : static_cast <double> (tick.tickInterval);
+  const auto dt = isEventComplete ? 1.0 : static_cast <double> (tick.tickInterval);
   const float value = axis->value * dt;
 
   auto& cTransform = registry.get <Transform> (entity);
@@ -156,10 +156,10 @@ controlRollRelative(
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
   const auto axis = std::any_cast <ControlAxis*> (args.at(2));
-  const auto isMouseMotion = std::any_cast <bool> (args.at(3));
+  const auto isEventComplete = std::any_cast <bool> (args.at(3));
 
   const auto& tick = registry.ctx().get <TickCurrent> ();
-  const auto dt = isMouseMotion ? 1.0 : static_cast <double> (tick.tickInterval);
+  const auto dt = isEventComplete ? 1.0 : static_cast <double> (tick.tickInterval);
   const float value = axis->value * dt;
 
   auto& cTransform = registry.get <Transform> (entity);

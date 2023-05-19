@@ -72,10 +72,10 @@ editorCameraFovControl(
 
   const auto eCamera = std::any_cast <entt::entity> (args.at(0));
   const auto axis = std::any_cast <ControlAxis*> (args.at(2));
-  const auto isMouseMotion = std::any_cast <bool> (args.at(3));
+  const auto isEventComplete = std::any_cast <bool> (args.at(3));
 
   const auto& tick = registry.ctx().get <TickCurrent> ();
-  const auto dt = isMouseMotion ? 1.0 : static_cast <double> (tick.tickInterval);
+  const auto dt = isEventComplete ? 1.0 : static_cast <double> (tick.tickInterval);
   const float value = axis->value * dt;
 
   auto& cCamera = registry.get <Camera> (eCamera);
@@ -98,10 +98,10 @@ editorCameraZoomControl(
 
   const auto eCamera = std::any_cast <entt::entity> (args.at(0));
   const auto axis = std::any_cast <ControlAxis*> (args.at(2));
-  const auto isMouseMotion = std::any_cast <bool> (args.at(3));
+  const auto isEventComplete = std::any_cast <bool> (args.at(3));
 
   const auto& tick = registry.ctx().get <TickCurrent> ();
-  const auto dt = isMouseMotion ? 1.0 : static_cast <double> (tick.tickInterval);
+  const auto dt = isEventComplete ? 1.0 : static_cast <double> (tick.tickInterval);
   const float value = axis->value * dt;
 
   auto&& [cCamera, cSettings] = registry.get <Camera, CasqadiumEditorCameraSettings> (eCamera);
@@ -124,10 +124,10 @@ editorCameraSpeedControl(
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
   const auto axis = std::any_cast <ControlAxis*> (args.at(2));
-  const auto isMouseMotion = std::any_cast <bool> (args.at(3));
+  const auto isEventComplete = std::any_cast <bool> (args.at(3));
 
   const auto& tick = registry.ctx().get <TickCurrent> ();
-  const auto dt = isMouseMotion ? 1.0 : static_cast <double> (tick.tickInterval);
+  const auto dt = isEventComplete ? 1.0 : static_cast <double> (tick.tickInterval);
   const float value = axis->value * dt;
 
   auto& cSettings = registry.get <CasqadiumEditorCameraSettings> (entity);
@@ -148,10 +148,10 @@ editorCameraTranslateXRelative(
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
   const auto axis = std::any_cast <ControlAxis*> (args.at(2));
-  const auto isMouseMotion = std::any_cast <bool> (args.at(3));
+  const auto isEventComplete = std::any_cast <bool> (args.at(3));
 
   const auto& tick = registry.ctx().get <TickCurrent> ();
-  const auto dt = isMouseMotion ? 1.0 : static_cast <double> (tick.tickInterval);
+  const auto dt = isEventComplete ? 1.0 : static_cast <double> (tick.tickInterval);
   const float value = axis->value * dt;
 
   auto&& [cTransform, cSettings] = registry.get <Transform, CasqadiumEditorCameraSettings> (entity);
@@ -173,10 +173,10 @@ editorCameraTranslateYRelative(
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
   const auto axis = std::any_cast <ControlAxis*> (args.at(2));
-  const auto isMouseMotion = std::any_cast <bool> (args.at(3));
+  const auto isEventComplete = std::any_cast <bool> (args.at(3));
 
   const auto& tick = registry.ctx().get <TickCurrent> ();
-  const auto dt = isMouseMotion ? 1.0 : static_cast <double> (tick.tickInterval);
+  const auto dt = isEventComplete ? 1.0 : static_cast <double> (tick.tickInterval);
   const float value = axis->value * dt;
 
   auto&& [cTransform, cSettings] = registry.get <Transform, CasqadiumEditorCameraSettings> (entity);
@@ -199,10 +199,10 @@ editorCameraTranslateZRelative(
 
   const auto entity = std::any_cast <entt::entity> (args.at(0));
   const auto axis = std::any_cast <ControlAxis*> (args.at(2));
-  const auto isMouseMotion = std::any_cast <bool> (args.at(3));
+  const auto isEventComplete = std::any_cast <bool> (args.at(3));
 
   const auto& tick = registry.ctx().get <TickCurrent> ();
-  const auto dt = isMouseMotion ? 1.0 : static_cast <double> (tick.tickInterval);
+  const auto dt = isEventComplete ? 1.0 : static_cast <double> (tick.tickInterval);
   const float value = axis->value * dt;
 
   auto&& [cTransform, cCamera, cSettings] = registry.get <Transform, Camera, CasqadiumEditorCameraSettings> (entity);
