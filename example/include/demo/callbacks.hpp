@@ -40,6 +40,11 @@ audioListenerFilterInit(
     const std::vector <std::any>& args );
 
 void
+engineAudioListenerFilterInit(
+    entt::registry&,
+    const std::vector <std::any>& args );
+
+void
 musicConcertControllerInit(
   entt::registry&,
   const std::vector <std::any>& args );
@@ -74,14 +79,31 @@ playFootstepSound(
   entt::registry&,
   const std::vector <std::any>& args );
 
+
 void
 carReset(
   entt::registry&,
   const std::vector <std::any>& args );
 
+
+void
+audioDemoEngineInit(
+  entt::registry&,
+  const std::vector <std::any>& args );
+
+void
+audioDemoEngineShutdown(
+  entt::registry&,
+  const std::vector <std::any>& args );
+
+void
+engineThrottle(
+  entt::registry&,
+  const std::vector <std::any>& args );
+
 void
 engineCylinderHit(
-    entt::registry&,
-    const std::vector <std::any>& args );
+  entt::registry&,
+  const std::vector <std::any>& args );
 
 } // namespace demo

@@ -9,10 +9,27 @@
   },
   "EngineThrottle" : 
   {
+    "+MouseMove_X" : 
+    {
+      "absolute" : false,
+      "sensitivity" : 0.0010000000474974513
+    },
+    "-MouseButton_Left" : 
+    {
+      "absolute" : true,
+      "curve" : 0.0,
+      "deadzone" : 0.0,
+      "sensitivity" : -1.0
+    },
+    "-MouseMove_X" : 
+    {
+      "absolute" : false,
+      "sensitivity" : -0.0010000000474974513
+    },
     "~MouseButton_Left" : 
     {
       "absolute" : false,
-      "sensitivity" : 5.0
+      "sensitivity" : 0.10000000149011612
     }
   },
   "FootstepsStop" : 

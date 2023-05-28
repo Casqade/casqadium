@@ -5,11 +5,13 @@
 
 #include <cqde/types/EntityManager.hpp>
 #include <cqde/types/CallbackManager.hpp>
+#include <cqde/types/SystemManager.hpp>
 #include <cqde/types/assets/AudioAssetManager.hpp>
 #include <cqde/types/assets/TextureAssetManager.hpp>
 
 #include <demo/callbacks.hpp>
 #include <demo/components.hpp>
+#include <demo/systems.hpp>
 
 #include <entt/entity/registry.hpp>
 #include <entt/locator/locator.hpp>
@@ -23,11 +25,14 @@
 int
 main( int argc, char* argv[] )
 {
+  using cqde::types::System;
+  using cqde::types::SystemManager;
   using cqde::types::EntityManager;
   using cqde::types::CallbackManager;
   using cqde::types::CasqadiumEngine;
   using cqde::types::AudioAssetManager;
   using cqde::types::TextureAssetManager;
+  using SystemPhase = System::Phase;
   using WindowHints = CasqadiumEngine::WindowHints;
 
   bool status {};
@@ -75,6 +80,13 @@ main( int argc, char* argv[] )
 
     MetaCtxLocator::reset(registry.ctx().get <MetaCtxHandle> ());
 
+    auto& systemMgr = registry.ctx().get <SystemManager> ();
+
+    systemMgr.Register(
+      "EngineSystem",
+      demo::EngineSystem,
+      SystemPhase::Logic);
+
     auto& callbackMgr = registry.ctx().get <CallbackManager> ();
 
     callbackMgr.Register("AudioDemoReset", demo::audioDemoReset);
@@ -84,6 +96,9 @@ main( int argc, char* argv[] )
 
     callbackMgr.Register("AudioDemoDopplerInit", demo::audioDemoDopplerInit);
     callbackMgr.Register("AudioDemoDopplerShutdown", demo::audioDemoDopplerShutdown);
+
+    callbackMgr.Register("AudioDemoEngineInit", demo::audioDemoEngineInit);
+    callbackMgr.Register("AudioDemoEngineShutdown", demo::audioDemoEngineShutdown);
 
     callbackMgr.Register("AudioListenerFilterInit", demo::audioListenerFilterInit);
 
@@ -98,6 +113,8 @@ main( int argc, char* argv[] )
     callbackMgr.Register("PlayFootstepSound", demo::playFootstepSound);
 
     callbackMgr.Register("CarReset", demo::carReset);
+
+    callbackMgr.Register("EngineThrottle", demo::engineThrottle);
     callbackMgr.Register("EngineCylinderHit", demo::engineCylinderHit);
 
 
@@ -124,6 +141,14 @@ main( int argc, char* argv[] )
     textures.insert("hint_physics_debug", cqde::textureFromText("[F] Draw physics debug layer", olc::DARK_GREEN, olc::BLANK, true));
     textures.insert("hint_reset", cqde::textureFromText("[Esc] Reset demo", olc::GREY, olc::BLANK, true));
     textures.insert("hint_quit", cqde::textureFromText("[Q] Quit", olc::DARK_GREY, olc::BLANK, true));
+
+    textures.insert("engine_rpm_label", cqde::textureFromText("RPM:", olc::WHITE, olc::BLANK, true));
+    textures.insert("engine_torque_label", cqde::textureFromText("Torque:", olc::WHITE, olc::BLANK, true));
+    textures.insert("engine_temperature_label", cqde::textureFromText("t:", olc::WHITE, olc::BLANK, true));
+
+    textures.insert("engine_rpm", cqde::textureFromText("0000", olc::WHITE, olc::BLANK, true));
+    textures.insert("engine_torque", cqde::textureFromText("0000", olc::WHITE, olc::BLANK, true));
+    textures.insert("engine_temperature", cqde::textureFromText("000.0", olc::WHITE, olc::BLANK, true));
 
 
     try

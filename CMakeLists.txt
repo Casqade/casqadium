@@ -872,6 +872,7 @@ if(${CQDE_BUILD_EXAMPLE_APP})
     example/main.cpp
     example/src/callbacks.cpp
     example/src/components.cpp
+    example/src/systems.cpp
     example/icon.rc
   )
 

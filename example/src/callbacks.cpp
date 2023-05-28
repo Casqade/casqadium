@@ -8,6 +8,7 @@
 #include <cqde/callbacks/audio.hpp>
 #include <cqde/callbacks/common_routine.hpp>
 
+#include <cqde/types/TickCurrent.hpp>
 #include <cqde/types/CallbackManager.hpp>
 #include <cqde/types/assets/AudioAssetManager.hpp>
 #include <cqde/types/audio/AudioFilterFactory.hpp>
@@ -31,10 +32,36 @@
 
 #include <reactphysics3d/body/RigidBody.h>
 #include <reactphysics3d/collision/Collider.h>
+#include <reactphysics3d/collision/CollisionCallback.h>
+
+#include <cqde/logger.hpp>
+#include <bitset>
 
 
 namespace demo
 {
+
+static void
+ClearAllSounds(
+  entt::registry& registry )
+{
+  using cqde::AudioHandleInvalid;
+  using cqde::compos::AudioBus;
+  using cqde::compos::AudioListener3d;
+  using cqde::compos::SubscriberUpdate;
+
+  auto& soloud = registry.ctx().get <SoLoud::Soloud> ();
+
+  for ( auto&& [eListener, cListener, cListenerBus]
+          : registry.view <AudioListener3d, AudioBus> ().each() )
+  {
+    for ( const auto& [handle, entity] : cListener.instances )
+      soloud.stop(handle);
+
+    cListenerBus.bus->stop();
+    cListener.instances.clear();
+  }
+}
 
 void
 audioDemoReset(
@@ -50,9 +77,11 @@ audioDemoReset(
   using cqde::callbacks::entitiesUpdateOn;
 
   audioStopAll(registry, {});
+  ClearAllSounds(registry);
 
   audioDemoConcertShutdown(registry, {});
   audioDemoDopplerShutdown(registry, {});
+  audioDemoEngineShutdown(registry, {});
 
   for ( auto&& [eController, cInputController, cTransform]
           : registry.view <InputController, Transform> ().each() )
@@ -214,6 +243,35 @@ audioDemoDopplerShutdown(
 }
 
 void
+audioDemoEngineInit(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using cqde::compos::SubscriberUpdate;
+  using cqde::types::CallbackManager;
+  using cqde::callbacks::entitiesUpdateOn;
+
+  auto& callbackManager = registry.ctx().get <CallbackManager> ();
+
+  callbackManager.executeLater(
+  [] (  entt::registry& registry,
+        const CallbackManager::CallbackArgs& args )
+  {
+    registry.clear <SubscriberUpdate> ();
+    entitiesUpdateOn(registry, args);
+    engineAudioListenerFilterInit(registry, args);
+
+  }, {args} );
+}
+
+void
+audioDemoEngineShutdown(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+}
+
+void
 audioListenerFilterInit(
   entt::registry& registry,
   const std::vector <std::any>& args )
@@ -255,6 +313,48 @@ audioListenerFilterInit(
     soloud.setFilterParameter(
       busHandle,
       0, 4, 0.5f );
+  }
+}
+
+void
+engineAudioListenerFilterInit(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using cqde::compos::AudioBus;
+  using cqde::compos::AudioListener3d;
+  using cqde::compos::SubscriberUpdate;
+  using cqde::types::AudioFilterFactory;
+
+  auto& soloud = registry.ctx().get <SoLoud::Soloud> ();
+
+  const auto& filterFactory = registry.ctx().get <AudioFilterFactory> ();
+
+  const auto filter = filterFactory.get("BiquadResonantFilter");
+
+  if ( filter == nullptr )
+    return;
+
+  for ( const auto&& [eListener, cListener, cListenerBus]
+          : registry.view <AudioListener3d, AudioBus, SubscriberUpdate> ().each() )
+  {
+    cListenerBus.ensureIsPlaying(soloud);
+    const auto busHandle = cListenerBus.bus->mChannelHandle;
+
+    cListenerBus.bus->setVisualizationEnable(true);
+    cListenerBus.bus->setFilter(0, filter);
+
+    soloud.setFilterParameter(
+      busHandle,
+      0, 0, 1.0f );
+
+    soloud.setFilterParameter(
+      busHandle,
+      0, 2, 1000.0f );
+
+    soloud.setFilterParameter(
+      busHandle,
+      0, 3, 0.95f );
   }
 }
 
@@ -617,6 +717,7 @@ playFootstepSound(
   }
 }
 
+
 void
 carReset(
   entt::registry& registry,
@@ -653,7 +754,7 @@ carReset(
 
     const rp3d::Vector3 newVelocity
     {
-      random(-50.0f, -100.0f),
+      random(-90.0f, -150.0f),
       0.0f,
       0.0f,
     };
@@ -664,6 +765,22 @@ carReset(
     cBody->body->setLinearVelocity(newVelocity);
   }
 }
+
+void
+engineThrottle(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using cqde::types::ControlAxis;
+  using cqde::types::TickCurrent;
+
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+  const auto axis = std::any_cast <ControlAxis*> (args.at(2));
+
+  auto& cEngine = registry.get <EngineController> (entity);
+
+  cEngine.throttle = std::clamp(axis->value, 0.0f, 1.0f);
+};
 
 void
 engineCylinderHit(
@@ -685,16 +802,6 @@ engineCylinderHit(
        cBody == nullptr )
     return;
 
-  auto velocity = cBody->body->getAngularVelocity();
-
-  const auto pi2 = 2.0f * glm::pi <float> ();
-
-  if ( velocity.x > pi2 )
-  {
-    velocity.x = pi2;
-    cBody->body->setAngularVelocity(velocity);
-  }
-
   const auto& audioManager = registry.ctx().get <AudioAssetManager> ();
 
   const auto audio = audioManager.try_get(cController->cylinderAudioId);
@@ -703,9 +810,6 @@ engineCylinderHit(
     return;
 
   auto& soloud = registry.ctx().get <SoLoud::Soloud> ();
-
-  const auto playSpeed =
-    glm::mix(0.0f, 0.4f, std::pow(velocity.x / pi2, 2.5f));
 
   for ( const auto&& [eListener, cListener, cListenerBus, cListenerTransform]
           : registry.view <AudioListener3d, AudioBus, const Transform, SubscriberUpdate> ().each() )
@@ -717,7 +821,9 @@ engineCylinderHit(
 
     soloud.setAutoStop(handle, true);
     soloud.setInaudibleBehavior(handle, false, true);
-    soloud.setRelativePlaySpeed(handle, 0.9f + playSpeed);
+    soloud.setVolume(handle, cController->engine.soundVolume.current);
+    soloud.setRelativePlaySpeed(handle, cController->engine.soundSpeed.current);
+    soloud.setFilterParameter(cListenerBus.handle(), 0, 2, cController->engine.cutoffFrequency.current);
 
     soloud.setPause(handle, false);
   }

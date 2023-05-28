@@ -248,14 +248,14 @@
             ],
             [
               0.0,
-              8.7716534835635684e-07,
+              4.8890346988628153e-06,
               1.0,
               0.0
             ],
             [
               0.0,
-              -0.99999994039535522,
-              8.7716534835635684e-07,
+              -1.0,
+              4.8890346988628153e-06,
               0.0
             ],
             [
@@ -585,7 +585,7 @@
     "SceneNode" : 
     {
       "children" : [],
-      "parent" : "eDopplerRoot"
+      "parent" : "eDopplerCameraRoot"
     },
     "SubscriberInput" : {},
     "Transform" : 
@@ -661,9 +661,9 @@
       ],
       "scale" : 
       [
-        1.0,
-        1.0,
-        1.0
+        0.99998855590820312,
+        0.99999982118606567,
+        0.9999886155128479
       ],
       "scaleWorld" : 
       [
@@ -908,8 +908,8 @@
     {
       "attenuation" : 
       {
-        "distanceMax" : 100.0,
-        "distanceMin" : 1.0,
+        "distanceMax" : 150.0,
+        "distanceMin" : 5.0,
         "model" : "linear",
         "rolloff" : 1.0
       },
@@ -1193,9 +1193,9 @@
       ],
       "translation" : 
       [
-        -100.0,
-        0.0,
-        -5.0
+        -153.0,
+        4.0,
+        -19.0
       ]
     }
   },
@@ -1232,9 +1232,9 @@
       ],
       "translation" : 
       [
-        100.0,
-        0.0,
-        -5.0
+        155.0,
+        4.0,
+        -19.0
       ]
     }
   },
@@ -1261,8 +1261,8 @@
       ],
       "scale" : 
       [
-        8.0,
-        1.8999999761581421,
+        16.0,
+        3.7999999523162842,
         1.0
       ],
       "scaleWorld" : 
@@ -1302,9 +1302,50 @@
       ],
       "scale" : 
       [
-        7.999997615814209,
-        1.8999996185302734,
+        16.0,
+        3.7999999523162842,
         0.99999988079071045
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eCliff" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "cliff",
+      "textureId" : "cliff"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eDopplerRoot"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.70698469877243042,
+        0.0,
+        0.70722883939743042
+      ],
+      "scale" : 
+      [
+        300.0,
+        300.0,
+        300.0
       ],
       "scaleWorld" : 
       [
@@ -1616,6 +1657,7 @@
     {
       "systems" : 
       [
+        "EngineSystem",
         "Audio3dSystem",
         "MouseGrabSystem",
         "InteractionQuerySystem",
@@ -1628,21 +1670,15 @@
       ]
     }
   },
-  "eDopplerRoot" : 
+  "eDopplerCameraRoot" : 
   {
     "SceneNode" : 
     {
       "children" : 
       [
-        "eDopplerSkybox",
-        "eCarRoot",
-        "eRoadBarrierBack",
-        "eRoadBarrier",
-        "eRoad",
-        "eCameraDoppler",
-        "eCarResetter"
+        "eCameraDoppler"
       ],
-      "parent" : "null"
+      "parent" : "eDopplerRoot"
     },
     "Transform" : 
     {
@@ -1668,7 +1704,57 @@
       "translation" : 
       [
         0.0,
-        -100.0,
+        6.0,
+        0.0
+      ]
+    }
+  },
+  "eDopplerRoot" : 
+  {
+    "SceneNode" : 
+    {
+      "children" : 
+      [
+        "eCliff",
+        "eDopplerCameraRoot",
+        "eDopplerSkybox",
+        "eCarRoot",
+        "eRoadBarrierBack",
+        "eRoadBarrier",
+        "eRoad",
+        "eTunnelWest",
+        "eCarResetter",
+        "eTunnelEast",
+        "eRoadShadowWest",
+        "eRoadShadowEast"
+      ],
+      "parent" : "null"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        0.99999988079071045,
+        1.0,
+        0.99999988079071045
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        -200.0,
         0.0
       ]
     }
@@ -1696,9 +1782,9 @@
       ],
       "scale" : 
       [
-        150.0,
-        150.0,
-        150.0
+        300.0,
+        300.0,
+        300.0
       ],
       "scaleWorld" : 
       [
@@ -1875,18 +1961,18 @@
         "dlg_drunk_16",
         "dlg_drunk_05",
         "dlg_drunk_19",
-        "dlg_drunk_09",
-        "dlg_drunk_10",
-        "dlg_drunk_03",
         "dlg_drunk_13",
+        "dlg_drunk_03",
+        "dlg_drunk_10",
+        "dlg_drunk_09",
         "dlg_drunk_20",
         "dlg_drunk_04",
         "dlg_drunk_17",
         "dlg_drunk_07",
         "dlg_drunk_14",
         "dlg_drunk_18",
-        "dlg_drunk_08",
         "dlg_drunk_21",
+        "dlg_drunk_08",
         "dlg_drunk_02",
         "dlg_drunk_11",
         "dlg_drunk_06",
@@ -2584,7 +2670,50 @@
   {
     "EngineController" : 
     {
-      "cylinderAudioId" : "engine_cylinder"
+      "cylinderAudioId" : "engine_cylinder",
+      "engine" : 
+      {
+        "cutoffFrequency" : 
+        {
+          "current" : 0.0,
+          "lower" : 200.0,
+          "upper" : 20000.0
+        },
+        "rpm" : 
+        {
+          "current" : 0.0,
+          "idle" : 600.0,
+          "max" : 7000.0,
+          "optimal" : 2500.0,
+          "redline" : 6000.0,
+          "sensitivity" : 2.0
+        },
+        "soundSpeed" : 
+        {
+          "current" : 0.0,
+          "max" : 1.3999999761581421,
+          "min" : 0.5
+        },
+        "soundVolume" : 
+        {
+          "base" : 0.20000000298023224,
+          "current" : 0.0
+        },
+        "temperature" : 
+        {
+          "ambient" : 20.0,
+          "coolingRate" : 0.05000000074505806,
+          "current" : 20.0,
+          "max" : 110.0,
+          "optimal" : 70.0,
+          "sensitivity" : 3.0
+        },
+        "torque" : 
+        {
+          "current" : 0.0,
+          "max" : 1000.0
+        }
+      }
     },
     "InputController" : 
     {
@@ -2594,12 +2723,12 @@
         {
           "callbacks" : 
           [
-            "TorqueXRelative"
+            "EngineThrottle"
           ],
           "constraint" : 
           [
-            1.0,
-            0.0
+            0.0,
+            1.0
           ],
           "value" : 0.0
         }
@@ -2627,7 +2756,7 @@
         },
         "damp" : 
         {
-          "angular" : 0.25,
+          "angular" : 5.0,
           "linear" : 0.0
         },
         "force" : 
@@ -2638,11 +2767,11 @@
         ],
         "inertia" : 
         [
-          0.025620738044381142,
-          0.00033091448131017387,
-          0.025620738044381142
+          0.10248294472694397,
+          0.030001666396856308,
+          0.073804937303066254
         ],
-        "mass" : 1.0,
+        "mass" : 500.0,
         "massCenter" : 
         [
           0.0,
@@ -2714,70 +2843,14 @@
             ],
             [
               0.0,
-              0.96592587232589722,
-              0.25881895422935486,
+              0.50000011920928955,
+              0.86602532863616943,
               0.0
             ],
             [
               0.0,
-              -0.25881892442703247,
-              0.96592587232589722,
-              0.0
-            ],
-            [
-              0.0,
-              0.0,
-              0.0,
-              1.0
-            ]
-          ],
-          "type" : "CapsuleShape"
-        },
-        {
-          "callbacks" : 
-          {
-            "onEnter" : 
-            [
-              "EngineCylinderHit"
-            ],
-            "onLeave" : [],
-            "onStay" : []
-          },
-          "collision" : 
-          {
-            "group" : 1,
-            "mask" : 65535
-          },
-          "isTrigger" : false,
-          "material" : 
-          {
-            "bounciness" : 0.5,
-            "density" : 1.0,
-            "friction" : 0.3000000225043209
-          },
-          "shape" : 
-          {
-            "height" : 2.0,
-            "radius" : 0.10000000149011612
-          },
-          "transform" : 
-          [
-            [
-              1.0,
-              0.0,
-              0.0,
-              0.0
-            ],
-            [
-              0.0,
-              0.96592587232589722,
-              -0.25881895422935486,
-              0.0
-            ],
-            [
-              -0.0,
-              0.25881892442703247,
-              0.96592587232589722,
+              -0.86602532863616943,
+              0.50000011920928955,
               0.0
             ],
             [
@@ -2826,14 +2899,14 @@
             ],
             [
               0.0,
-              0.70710676908493042,
-              -0.7071068286895752,
+              8.4293697000248358e-07,
+              1.0,
               0.0
             ],
             [
-              -0.0,
-              0.7071068286895752,
-              0.70710676908493042,
+              0.0,
+              -1.0,
+              8.4293697000248358e-07,
               0.0
             ],
             [
@@ -2882,14 +2955,70 @@
             ],
             [
               0.0,
-              0.70710676908493042,
-              0.7071068286895752,
+              -0.50000011920928955,
+              0.86602532863616943,
               0.0
             ],
             [
               0.0,
-              -0.7071068286895752,
-              0.70710676908493042,
+              -0.86602532863616943,
+              -0.50000011920928955,
+              0.0
+            ],
+            [
+              0.0,
+              0.0,
+              0.0,
+              1.0
+            ]
+          ],
+          "type" : "CapsuleShape"
+        },
+        {
+          "callbacks" : 
+          {
+            "onEnter" : 
+            [
+              "EngineCylinderHit"
+            ],
+            "onLeave" : [],
+            "onStay" : []
+          },
+          "collision" : 
+          {
+            "group" : 1,
+            "mask" : 65535
+          },
+          "isTrigger" : false,
+          "material" : 
+          {
+            "bounciness" : 0.5,
+            "density" : 1.0,
+            "friction" : 0.3000000225043209
+          },
+          "shape" : 
+          {
+            "height" : 2.0,
+            "radius" : 0.10000000149011612
+          },
+          "transform" : 
+          [
+            [
+              1.0,
+              0.0,
+              0.0,
+              0.0
+            ],
+            [
+              0.0,
+              -0.86602538824081421,
+              0.50000005960464478,
+              0.0
+            ],
+            [
+              0.0,
+              -0.50000005960464478,
+              -0.86602538824081421,
               0.0
             ],
             [
@@ -2907,7 +3036,8 @@
     {
       "children" : 
       [
-        "eEngineSprite"
+        "eEngineCylinderSprite_0",
+        "eEngineCylinderSprite"
       ],
       "parent" : "eEngineRoot"
     },
@@ -2935,7 +3065,7 @@
       ],
       "translation" : 
       [
-        0.0,
+        0.10999999940395355,
         0.0,
         0.0
       ]
@@ -3011,11 +3141,6 @@
         }
       ]
     },
-    "DrawableMesh" : 
-    {
-      "meshId" : "null",
-      "textureId" : "null"
-    },
     "SceneNode" : 
     {
       "children" : [],
@@ -3050,15 +3175,161 @@
       ]
     }
   },
+  "eEngineColliderSprite" : 
+  {
+    "AudioDrivenTransform" : 
+    {
+      "axis" : 
+      [
+        1.0,
+        1.0,
+        0.0
+      ],
+      "damp" : 0.40000000596046448,
+      "ignoreBusVolume" : false,
+      "magnitude" : 0.075000002980232239,
+      "offset" : 1.0,
+      "operation" : "scale",
+      "sourceEntityId" : "eCameraEngine",
+      "useWorldSpace" : false
+    },
+    "DrawableMesh" : 
+    {
+      "meshId" : "null",
+      "textureId" : "engine_body"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eEngineRoot"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        0.0,
+        -1.2999999523162842
+      ]
+    }
+  },
+  "eEngineCylinderSprite" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "null",
+      "textureId" : "engine_cylinder"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eEngine"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.7071068286895752,
+        0.0,
+        0.7071068286895752
+      ],
+      "scale" : 
+      [
+        -1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.25,
+        0.0,
+        -0.75
+      ]
+    }
+  },
+  "eEngineCylinderSprite_0" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "null",
+      "textureId" : "engine_cylinder"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eEngine"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.7071068286895752,
+        -3.0908623216419073e-08,
+        -0.7071068286895752,
+        -3.0908623216419073e-08
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0000002384185791,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.25,
+        -0.36999997496604919,
+        0.75
+      ]
+    }
+  },
   "eEngineRoot" : 
   {
     "SceneNode" : 
     {
       "children" : 
       [
+        "eEngineRpmLabel",
+        "eEngineTorque",
         "eCameraEngine",
         "eEngine",
-        "eEngineCollider"
+        "eEngineCollider",
+        "eEngineTemperatureLabel",
+        "eEngineColliderSprite",
+        "eEngineTorqueLabel",
+        "eEngineTemperature",
+        "eEngineRpm"
       ],
       "parent" : "null"
     },
@@ -3091,31 +3362,31 @@
       ]
     }
   },
-  "eEngineSprite" : 
+  "eEngineRpm" : 
   {
     "DrawableMesh" : 
     {
       "meshId" : "null",
-      "textureId" : "error"
+      "textureId" : "engine_rpm"
     },
     "SceneNode" : 
     {
       "children" : [],
-      "parent" : "eEngine"
+      "parent" : "eEngineRoot"
     },
     "Transform" : 
     {
       "orientation" : 
       [
         0.0,
-        0.7071068286895752,
         0.0,
-        0.7071068286895752
+        0.0,
+        1.0
       ],
       "scale" : 
       [
-        1.0,
-        1.0,
+        0.5,
+        0.10000000149011612,
         1.0
       ],
       "scaleWorld" : 
@@ -3126,9 +3397,214 @@
       ],
       "translation" : 
       [
-        0.25,
+        -0.66999995708465576,
+        -0.70999997854232788,
+        -2.0
+      ]
+    }
+  },
+  "eEngineRpmLabel" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "null",
+      "textureId" : "engine_rpm_label"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eEngineRoot"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
         0.0,
-        0.0
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        0.5,
+        0.10000000149011612,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        -1.1799999475479126,
+        -0.70999997854232788,
+        -2.0
+      ]
+    }
+  },
+  "eEngineTemperature" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "null",
+      "textureId" : "engine_temperature"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eEngineRoot"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        0.5,
+        0.090000003576278687,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        -0.62000000476837158,
+        -0.99999994039535522,
+        -2.0
+      ]
+    }
+  },
+  "eEngineTemperatureLabel" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "null",
+      "textureId" : "engine_temperature_label"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eEngineRoot"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        0.25,
+        0.10000000149011612,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        -1.059999942779541,
+        -0.99999994039535522,
+        -2.0
+      ]
+    }
+  },
+  "eEngineTorque" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "null",
+      "textureId" : "engine_torque"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eEngineRoot"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        0.5,
+        0.10000000149011612,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        -0.67500001192092896,
+        -0.84999996423721313,
+        -2.0
+      ]
+    }
+  },
+  "eEngineTorqueLabel" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "null",
+      "textureId" : "engine_torque_label"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eEngineRoot"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        0.10000000149011612,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        -1.4199995994567871,
+        -0.84999996423721313,
+        -2.0
       ]
     }
   },
@@ -5226,16 +5702,16 @@
     {
       "orientation" : 
       [
-        -0.50008630752563477,
+        -0.49991363286972046,
+        -0.50008636713027954,
         -0.49991366267204285,
-        -0.49991369247436523,
         0.50008630752563477
       ],
       "scale" : 
       [
-        12.0,
-        150.0,
-        0.99999988079071045
+        29.5,
+        300.0,
+        0.99999862909317017
       ],
       "scaleWorld" : 
       [
@@ -5245,9 +5721,9 @@
       ],
       "translation" : 
       [
-        -0.00034530460834503174,
-        -1.0,
-        -0.99999994039535522
+        -0.0010360927553847432,
+        2.0,
+        -11.399999618530273
       ]
     }
   },
@@ -5255,28 +5731,50 @@
   {
     "DrawableMesh" : 
     {
-      "meshId" : "road_barrier",
-      "textureId" : "road_barrier"
+      "meshId" : "jersey",
+      "textureId" : "jersey"
     },
     "SceneNode" : 
     {
-      "children" : [],
+      "children" : 
+      [
+        "eRoadBarrier_18",
+        "eRoadBarrier_7",
+        "eRoadBarrier_17",
+        "eRoadBarrier_0",
+        "eRoadBarrier_1",
+        "eRoadBarrier_16",
+        "eRoadBarrier_11",
+        "eRoadBarrier_15",
+        "eRoadBarrier_2",
+        "eRoadBarrier_14",
+        "eRoadBarrier_3",
+        "eRoadBarrier_4",
+        "eRoadBarrier_5",
+        "eRoadBarrier_19",
+        "eRoadBarrier_13",
+        "eRoadBarrier_9",
+        "eRoadBarrier_6",
+        "eRoadBarrier_12",
+        "eRoadBarrier_8",
+        "eRoadBarrier_10"
+      ],
       "parent" : "eDopplerRoot"
     },
     "Transform" : 
     {
       "orientation" : 
       [
-        -0.1736481785774231,
-        -0.0,
         0.0,
-        0.98480772972106934
+        0.0,
+        0.0,
+        1.0
       ],
       "scale" : 
       [
-        150.0,
-        1.5,
-        0.99999988079071045
+        3.5,
+        3.0,
+        3.0
       ],
       "scaleWorld" : 
       [
@@ -5286,38 +5784,38 @@
       ],
       "translation" : 
       [
-        0.0,
-        -0.30000004172325134,
-        -7.1999998092651367
+        -57.400001525878906,
+        3.6999895572662354,
+        -27.349994659423828
       ]
     }
   },
-  "eRoadBarrierBack" : 
+  "eRoadBarrier_0" : 
   {
     "DrawableMesh" : 
     {
-      "meshId" : "road_barrier",
-      "textureId" : "road_barrier"
+      "meshId" : "jersey",
+      "textureId" : "jersey"
     },
     "SceneNode" : 
     {
       "children" : [],
-      "parent" : "eDopplerRoot"
+      "parent" : "eRoadBarrier"
     },
     "Transform" : 
     {
       "orientation" : 
       [
-        -5.036584838080671e-08,
-        0.98480772972106934,
-        0.17364822328090668,
-        3.3915064534539852e-08
+        0.0,
+        0.0,
+        0.0,
+        1.0
       ],
       "scale" : 
       [
-        150.00334167480469,
-        1.5,
-        1.0000009536743164
+        3.5,
+        3.0,
+        3.0
       ],
       "scaleWorld" : 
       [
@@ -5327,9 +5825,878 @@
       ],
       "translation" : 
       [
-        1.7400000095367432,
-        -0.3000030517578125,
-        -7.7125000953674316
+        5.7399978637695312,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eRoadBarrier_1" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "jersey",
+      "textureId" : "jersey"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eRoadBarrier"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        3.5,
+        3.0,
+        3.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        11.479995727539062,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eRoadBarrier_10" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "jersey",
+      "textureId" : "jersey"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eRoadBarrier"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        3.5,
+        3.0,
+        3.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        63.139995574951172,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eRoadBarrier_11" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "jersey",
+      "textureId" : "jersey"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eRoadBarrier"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        3.5,
+        3.0,
+        3.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        68.879997253417969,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eRoadBarrier_12" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "jersey",
+      "textureId" : "jersey"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eRoadBarrier"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        3.5,
+        3.0,
+        3.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        74.6199951171875,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eRoadBarrier_13" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "jersey",
+      "textureId" : "jersey"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eRoadBarrier"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        3.5,
+        3.0,
+        3.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        80.359992980957031,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eRoadBarrier_14" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "jersey",
+      "textureId" : "jersey"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eRoadBarrier"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        3.5,
+        3.0,
+        3.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        86.099990844726562,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eRoadBarrier_15" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "jersey",
+      "textureId" : "jersey"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eRoadBarrier"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        3.5,
+        3.0,
+        3.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        91.839996337890625,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eRoadBarrier_16" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "jersey",
+      "textureId" : "jersey"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eRoadBarrier"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        3.5,
+        3.0,
+        3.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        97.579994201660156,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eRoadBarrier_17" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "jersey",
+      "textureId" : "jersey"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eRoadBarrier"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        3.5,
+        3.0,
+        3.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        103.31999206542969,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eRoadBarrier_18" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "jersey",
+      "textureId" : "jersey"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eRoadBarrier"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        3.5,
+        3.0,
+        3.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        109.05999755859375,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eRoadBarrier_19" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "jersey",
+      "textureId" : "jersey"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eRoadBarrier"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        3.5,
+        3.0,
+        3.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        114.79999542236328,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eRoadBarrier_2" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "jersey",
+      "textureId" : "jersey"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eRoadBarrier"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        3.5,
+        3.0,
+        3.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        17.219997406005859,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eRoadBarrier_3" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "jersey",
+      "textureId" : "jersey"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eRoadBarrier"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        3.5,
+        3.0,
+        3.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        22.959999084472656,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eRoadBarrier_4" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "jersey",
+      "textureId" : "jersey"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eRoadBarrier"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        3.5,
+        3.0,
+        3.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        28.699996948242188,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eRoadBarrier_5" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "jersey",
+      "textureId" : "jersey"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eRoadBarrier"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        3.5,
+        3.0,
+        3.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        34.439994812011719,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eRoadBarrier_6" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "jersey",
+      "textureId" : "jersey"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eRoadBarrier"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        3.5,
+        3.0,
+        3.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        40.179996490478516,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eRoadBarrier_7" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "jersey",
+      "textureId" : "jersey"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eRoadBarrier"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        3.5,
+        3.0,
+        3.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        45.919998168945312,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eRoadBarrier_8" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "jersey",
+      "textureId" : "jersey"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eRoadBarrier"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        3.5,
+        3.0,
+        3.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        51.659996032714844,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eRoadBarrier_9" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "jersey",
+      "textureId" : "jersey"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eRoadBarrier"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        3.5,
+        3.0,
+        3.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        57.399993896484375,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eRoadShadowEast" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "quad",
+      "textureId" : "roadShadowEast"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eDopplerRoot"
+    },
+    "TextureTint" : 
+    {
+      "tint" : 4294967295
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        -0.50008618831634521,
+        0.49991375207901001,
+        0.49991369247436523,
+        0.50008630752563477
+      ],
+      "scale" : 
+      [
+        30.0,
+        86.5,
+        0.99999964237213135
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        -103.5,
+        2.100006103515625,
+        -11.399999618530273
+      ]
+    }
+  },
+  "eRoadShadowWest" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "quad",
+      "textureId" : "roadShadowWest"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eDopplerRoot"
+    },
+    "TextureTint" : 
+    {
+      "tint" : 4294967295
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.49991366267204285,
+        0.50008624792098999,
+        0.50008630752563477,
+        -0.49991369247436523
+      ],
+      "scale" : 
+      [
+        30.0,
+        86.5,
+        0.99999982118606567
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        102.5,
+        2.0999999046325684,
+        -11.399999618530273
       ]
     }
   },
@@ -6516,7 +7883,8 @@
         "eEngineCollider",
         "eEngine",
         "eAudioDemoController",
-        "eCameraInputHint"
+        "eCameraInputHint",
+        "eEngineColliderSprite"
       ]
     },
     "InteractionListener" : 
@@ -6525,7 +7893,7 @@
       {
         "interact" : 
         [
-          "AudioDemoConcertInit"
+          "AudioDemoEngineInit"
         ]
       }
     },
@@ -6996,6 +8364,176 @@
         -10.0,
         0.0,
         10.0
+      ]
+    }
+  },
+  "eTunnelEast" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "tunnel",
+      "textureId" : "tunnelEast"
+    },
+    "SceneNode" : 
+    {
+      "children" : 
+      [
+        "eTunnelEndEast"
+      ],
+      "parent" : "eDopplerRoot"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        5.9703757493423382e-09,
+        0.70698469877243042,
+        -5.9683156194978437e-09,
+        0.70722883939743042
+      ],
+      "scale" : 
+      [
+        299.99734497070312,
+        299.98617553710938,
+        299.99725341796875
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        -103.5,
+        1.4499969482421875,
+        -11.395855903625488
+      ]
+    }
+  },
+  "eTunnelEndEast" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "null",
+      "textureId" : "tunnelBg"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eTunnelEast"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        -1.5519054712125009e-19,
+        3.1619165619112266e-10,
+        5.3848874714870252e-18,
+        1.0
+      ],
+      "scale" : 
+      [
+        32.399806976318359,
+        16.200000762939453,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        8.75,
+        -42.999977111816406
+      ]
+    }
+  },
+  "eTunnelEndWest" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "null",
+      "textureId" : "tunnelBg"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eTunnelWest"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        -1.5519054712125009e-19,
+        3.1619165619112266e-10,
+        5.3848874714870252e-18,
+        1.0
+      ],
+      "scale" : 
+      [
+        32.399806976318359,
+        16.200000762939453,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        8.75,
+        -42.999977111816406
+      ]
+    }
+  },
+  "eTunnelWest" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "tunnel",
+      "textureId" : "tunnelWest"
+    },
+    "SceneNode" : 
+    {
+      "children" : 
+      [
+        "eTunnelEndWest"
+      ],
+      "parent" : "eDopplerRoot"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        -5.9683160635870536e-09,
+        -0.70698469877243042,
+        -5.9703766375207579e-09,
+        0.70722883939743042
+      ],
+      "scale" : 
+      [
+        299.99734497070312,
+        299.98617553710938,
+        299.99725341796875
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        102.5,
+        1.4500000476837158,
+        -11.399999618530273
       ]
     }
   }

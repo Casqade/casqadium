@@ -1,7 +1,19 @@
 {
   "car_back" : 
   {
-    "path" : "meshes/car.json"
+    "path" : "meshes/car_back.json"
+  },
+  "cliff" : 
+  {
+    "path" : "meshes/cliff.gltf"
+  },
+  "fshape" : 
+  {
+    "path" : "meshes/fshape.gltf"
+  },
+  "jersey" : 
+  {
+    "path" : "meshes/jersey.gltf"
   },
   "road" : 
   {
@@ -22,5 +34,9 @@
   "skybox" : 
   {
     "path" : "meshes/skybox.gltf"
+  },
+  "tunnel" : 
+  {
+    "path" : "meshes/tunnel.gltf"
   }
 }

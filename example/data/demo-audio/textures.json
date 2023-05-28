@@ -7,6 +7,14 @@
     "flipVertical" : false,
     "path" : "textures/mountains/car.png"
   },
+  "cliff" : 
+  {
+    "clamp" : false,
+    "filter" : false,
+    "flipHorizontal" : false,
+    "flipVertical" : false,
+    "path" : "textures/mountains/cliff.png"
+  },
   "drunkard_head" : 
   {
     "clamp" : false,
@@ -38,6 +46,30 @@
     "flipHorizontal" : false,
     "flipVertical" : false,
     "path" : "textures/drunkard/torso.png"
+  },
+  "engine_body" : 
+  {
+    "clamp" : false,
+    "filter" : false,
+    "flipHorizontal" : false,
+    "flipVertical" : false,
+    "path" : "textures/engine/engine.png"
+  },
+  "engine_cylinder" : 
+  {
+    "clamp" : false,
+    "filter" : false,
+    "flipHorizontal" : false,
+    "flipVertical" : false,
+    "path" : "textures/engine/cylinder.png"
+  },
+  "jersey" : 
+  {
+    "clamp" : false,
+    "filter" : false,
+    "flipHorizontal" : false,
+    "flipVertical" : false,
+    "path" : "textures/mountains/jersey.png"
   },
   "mus_banjo1" : 
   {
@@ -119,6 +151,22 @@
     "flipVertical" : false,
     "path" : "textures/instruments/violin.png"
   },
+  "roadShadowEast" : 
+  {
+    "clamp" : false,
+    "filter" : false,
+    "flipHorizontal" : false,
+    "flipVertical" : false,
+    "path" : "textures/mountains/roadShadow.png"
+  },
+  "roadShadowWest" : 
+  {
+    "clamp" : false,
+    "filter" : false,
+    "flipHorizontal" : true,
+    "flipVertical" : false,
+    "path" : "textures/mountains/roadShadow.png"
+  },
   "road_barrier" : 
   {
     "clamp" : false,
@@ -190,5 +238,29 @@
     "flipHorizontal" : false,
     "flipVertical" : false,
     "path" : "textures/skybox/mountains.png"
+  },
+  "tunnelBg" : 
+  {
+    "clamp" : false,
+    "filter" : false,
+    "flipHorizontal" : false,
+    "flipVertical" : false,
+    "path" : "textures/mountains/tunnelBg.png"
+  },
+  "tunnelEast" : 
+  {
+    "clamp" : false,
+    "filter" : false,
+    "flipHorizontal" : false,
+    "flipVertical" : false,
+    "path" : "textures/mountains/tunnelEast.png"
+  },
+  "tunnelWest" : 
+  {
+    "clamp" : false,
+    "filter" : false,
+    "flipHorizontal" : false,
+    "flipVertical" : false,
+    "path" : "textures/mountains/tunnelWest.png"
   }
 }
