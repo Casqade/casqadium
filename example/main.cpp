@@ -34,7 +34,12 @@ main( int argc, char* argv[] )
 
     CasqadiumEngine engine {{argc, argv}};
 
-//    engine.setCustomConfig(...);
+    const auto config = engine.config();
+
+    config->log.pattern = "[%T.%e] [%^%l%$] [%s:%#] [thread %t] %v";
+    config->engine.tickRate = 120;
+
+    engine.setConfig(config);
 
     engine.readConfig();
 
