@@ -51,6 +51,7 @@ main( int argc, char* argv[] )
 
     const auto config = engine.config();
 
+    config->log.pattern = "[%T.%e] [%^%l%$] [%s:%#] [thread %t] %v";
     config->engine.tickRate = 120;
     config->audio.bufferSize = 2048;
 
