@@ -9,6 +9,7 @@
 #include <cqde/logger.hpp>
 
 #include <cqde/components/Tag.hpp>
+#include <cqde/components/SceneNode.hpp>
 #include <cqde/components/EntityList.hpp>
 #include <cqde/components/SystemList.hpp>
 #include <cqde/components/EntityMetaInfo.hpp>
@@ -570,6 +571,7 @@ EntityManager::delayedRemove(
   entt::registry& registry )
 {
   using compos::Tag;
+  using compos::SceneNode;
 
   for ( const auto entity : mEntitesToRemove )
   {
@@ -577,6 +579,9 @@ EntityManager::delayedRemove(
 
     if ( entity_valid(entity, registry) == true )
     {
+      if ( registry.all_of <SceneNode> (entity) == true )
+        RootifyChildNode(registry, entity);
+
       const auto entityId = registry.get <Tag> (entity).id;
 
       if ( get(entityId) == entity )
