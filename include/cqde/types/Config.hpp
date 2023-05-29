@@ -54,8 +54,7 @@ struct Config
 
     } level {};
 
-//    [%Y-%m-%d %T.%e] [%^%l%$] [%s:%#] [thread %t] %v
-    std::string pattern {"[%T.%e] [%^%l%$] [%s:%#] [thread %t] %v"};
+    std::string pattern {"[%Y-%m-%d %T.%e] [%^%l%$] [%s:%#] [thread %t] %v"};
 
   } log {};
 
