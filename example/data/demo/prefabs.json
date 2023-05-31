@@ -1,0 +1,944 @@
+{
+  "cloud" : 
+  {
+    "eCloud" : 
+    {
+      "DrawableMesh" : 
+      {
+        "meshId" : "null",
+        "textureId" : "cloud_1"
+      },
+      "LightTarget" : {},
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "null"
+      },
+      "Tag" : {},
+      "TextureTint" : 
+      {
+        "tint" : 2717908991
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" : 
+        [
+          2.5,
+          1.0,
+          1.0
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    }
+  },
+  "clouds" : 
+  {
+    "eCloud" : 
+    {
+      "DrawableMesh" : 
+      {
+        "meshId" : "null",
+        "textureId" : "cloud_1"
+      },
+      "LightTarget" : {},
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eClouds"
+      },
+      "Tag" : {},
+      "TextureTint" : 
+      {
+        "tint" : 2717421055
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.38268342614173889,
+          0.0,
+          0.0,
+          0.92387956380844116
+        ],
+        "scale" : 
+        [
+          2.5,
+          0.99999994039535522,
+          0.99999994039535522
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          2.0,
+          11.175168037414551,
+          -3.7609555721282959
+        ]
+      }
+    },
+    "eCloud_0" : 
+    {
+      "DrawableMesh" : 
+      {
+        "meshId" : "null",
+        "textureId" : "cloud_2"
+      },
+      "LightTarget" : {},
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eClouds"
+      },
+      "Tag" : {},
+      "TextureTint" : 
+      {
+        "tint" : 2717421055
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.38268342614173889,
+          0.0,
+          0.0,
+          0.92387956380844116
+        ],
+        "scale" : 
+        [
+          2.5,
+          0.99999994039535522,
+          0.99999994039535522
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          -1.9694180488586426,
+          10.783779144287109,
+          -4.3877849578857422
+        ]
+      }
+    },
+    "eCloud_1" : 
+    {
+      "DrawableMesh" : 
+      {
+        "meshId" : "null",
+        "textureId" : "cloud_3"
+      },
+      "LightTarget" : {},
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eClouds"
+      },
+      "Tag" : {},
+      "TextureTint" : 
+      {
+        "tint" : 2717421055
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.38268342614173889,
+          0.0,
+          0.0,
+          0.92387956380844116
+        ],
+        "scale" : 
+        [
+          3.5050556659698486,
+          0.99999994039535522,
+          0.99999994039535522
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          0.63288772106170654,
+          12.060303688049316,
+          -3.1112766265869141
+        ]
+      }
+    },
+    "eCloud_2" : 
+    {
+      "DrawableMesh" : 
+      {
+        "meshId" : "null",
+        "textureId" : "cloud_4"
+      },
+      "LightTarget" : {},
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eClouds"
+      },
+      "Tag" : {},
+      "TextureTint" : 
+      {
+        "tint" : 2717421055
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.38268342614173889,
+          0.0,
+          0.0,
+          0.92387956380844116
+        ],
+        "scale" : 
+        [
+          2.5,
+          0.99999994039535522,
+          0.99999994039535522
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          -0.86537802219390869,
+          11.415359497070312,
+          -4.1537647247314453
+        ]
+      }
+    },
+    "eCloud_3" : 
+    {
+      "DrawableMesh" : 
+      {
+        "meshId" : "null",
+        "textureId" : "cloud_5"
+      },
+      "LightTarget" : {},
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eClouds"
+      },
+      "Tag" : {},
+      "TextureTint" : 
+      {
+        "tint" : 2717421055
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.38268342614173889,
+          0.0,
+          0.0,
+          0.92387956380844116
+        ],
+        "scale" : 
+        [
+          2.5,
+          0.99999994039535522,
+          0.99999994039535522
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          2.6280415058135986,
+          10.292302131652832,
+          -3.8639378547668457
+        ]
+      }
+    },
+    "eCloud_4" : 
+    {
+      "DrawableMesh" : 
+      {
+        "meshId" : "null",
+        "textureId" : "cloud_6"
+      },
+      "LightTarget" : {},
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eClouds"
+      },
+      "Tag" : {},
+      "TextureTint" : 
+      {
+        "tint" : 2717421055
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.38268342614173889,
+          0.0,
+          0.0,
+          0.92387956380844116
+        ],
+        "scale" : 
+        [
+          2.5,
+          0.99999994039535522,
+          0.99999994039535522
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          4.1886129379272461,
+          13.047914505004883,
+          -3.7319755554199219
+        ]
+      }
+    },
+    "eCloud_5" : 
+    {
+      "DrawableMesh" : 
+      {
+        "meshId" : "null",
+        "textureId" : "cloud_7"
+      },
+      "LightTarget" : {},
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eClouds"
+      },
+      "Tag" : {},
+      "TextureTint" : 
+      {
+        "tint" : 2717421055
+      },
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.38268342614173889,
+          0.0,
+          0.0,
+          0.92387956380844116
+        ],
+        "scale" : 
+        [
+          2.5,
+          0.99999994039535522,
+          0.99999994039535522
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          -2.1954946517944336,
+          11.898242950439453,
+          -3.2733306884765625
+        ]
+      }
+    },
+    "eClouds" : 
+    {
+      "SceneNode" : 
+      {
+        "children" : 
+        [
+          "eCloud_4",
+          "eCloud_3",
+          "eCloud_2",
+          "eCloud_1",
+          "eCloud_0",
+          "eCloud_5",
+          "eCloud"
+        ],
+        "parent" : "null"
+      },
+      "Tag" : {},
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    }
+  },
+  "cqde_logo" : 
+  {
+    "eC" : 
+    {
+      "DrawableMesh" : 
+      {
+        "meshId" : "null",
+        "textureId" : "cqde_c"
+      },
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eLogo"
+      },
+      "Tag" : {},
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.0,
+          0.70722872018814087,
+          0.0,
+          0.70698481798171997
+        ],
+        "scale" : 
+        [
+          0.99999970197677612,
+          1.0,
+          0.99999970197677612
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "eD" : 
+    {
+      "DrawableMesh" : 
+      {
+        "meshId" : "null",
+        "textureId" : "cqde_d"
+      },
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eLogo"
+      },
+      "Tag" : {},
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          -0.70710653066635132,
+          0.0,
+          0.0,
+          0.70710700750350952
+        ],
+        "scale" : 
+        [
+          0.99999970197677612,
+          0.99999487400054932,
+          0.99999481439590454
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          0.0,
+          -0.029999908059835434,
+          -0.059999998658895493
+        ]
+      }
+    },
+    "eE" : 
+    {
+      "DrawableMesh" : 
+      {
+        "meshId" : "null",
+        "textureId" : "cqde_e"
+      },
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eLogo"
+      },
+      "Tag" : {},
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" : 
+        [
+          0.99999970197677612,
+          0.99999737739562988,
+          0.99999731779098511
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "eLogo" : 
+    {
+      "SceneNode" : 
+      {
+        "children" : 
+        [
+          "eE",
+          "eD",
+          "eQ",
+          "eC"
+        ],
+        "parent" : "null"
+      },
+      "Tag" : {},
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "eQ" : 
+    {
+      "DrawableMesh" : 
+      {
+        "meshId" : "null",
+        "textureId" : "cqde_q"
+      },
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eLogo"
+      },
+      "Tag" : {},
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          -0.70710653066635132,
+          0.0,
+          0.0,
+          0.70710700750350952
+        ],
+        "scale" : 
+        [
+          0.99999970197677612,
+          0.99999737739562988,
+          0.99999731779098511
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    }
+  },
+  "monolith" : 
+  {
+    "eMonolith" : 
+    {
+      "SceneNode" : 
+      {
+        "children" : 
+        [
+          "eMonolithLeft",
+          "eMonolithBottom",
+          "eMonolithTop",
+          "eMonolithBack",
+          "eMonolithRight",
+          "eMonolithFace"
+        ],
+        "parent" : "null"
+      },
+      "Tag" : {},
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "eMonolithBack" : 
+    {
+      "DrawableMesh" : 
+      {
+        "meshId" : "null",
+        "textureId" : "monolith"
+      },
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eMonolith"
+      },
+      "Tag" : {},
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          4.3703842322884157e-08,
+          -1.0,
+          -4.3703842322884157e-08,
+          0.00017264291818719357
+        ],
+        "scale" : 
+        [
+          1.125,
+          2.0,
+          1.0
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          0.0,
+          0.0,
+          -0.10000000149011612
+        ]
+      }
+    },
+    "eMonolithBottom" : 
+    {
+      "DrawableMesh" : 
+      {
+        "meshId" : "null",
+        "textureId" : "monolith"
+      },
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eMonolith"
+      },
+      "Tag" : {},
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.70710676908493042,
+          0.0,
+          0.0,
+          0.70710676908493042
+        ],
+        "scale" : 
+        [
+          1.125,
+          0.19999966025352478,
+          0.99999779462814331
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          0.0,
+          -1.0,
+          0.0
+        ]
+      }
+    },
+    "eMonolithFace" : 
+    {
+      "DrawableMesh" : 
+      {
+        "meshId" : "null",
+        "textureId" : "monolith"
+      },
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eMonolith"
+      },
+      "Tag" : {},
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.0,
+          0.0,
+          0.0,
+          1.0
+        ],
+        "scale" : 
+        [
+          1.125,
+          2.0,
+          1.0
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          0.0,
+          0.0,
+          0.10000000149011612
+        ]
+      }
+    },
+    "eMonolithLeft" : 
+    {
+      "DrawableMesh" : 
+      {
+        "meshId" : "null",
+        "textureId" : "monolith"
+      },
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eMonolith"
+      },
+      "Tag" : {},
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.0,
+          -0.70698469877243042,
+          0.0,
+          0.70722883939743042
+        ],
+        "scale" : 
+        [
+          0.20000000298023224,
+          2.0,
+          1.0
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          -0.5625,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "eMonolithRight" : 
+    {
+      "DrawableMesh" : 
+      {
+        "meshId" : "null",
+        "textureId" : "monolith"
+      },
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eMonolith"
+      },
+      "Tag" : {},
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          0.0,
+          0.70698469877243042,
+          0.0,
+          0.70722883939743042
+        ],
+        "scale" : 
+        [
+          0.20000000298023224,
+          2.0,
+          1.0
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          0.5625,
+          0.0,
+          0.0
+        ]
+      }
+    },
+    "eMonolithTop" : 
+    {
+      "DrawableMesh" : 
+      {
+        "meshId" : "null",
+        "textureId" : "monolith"
+      },
+      "SceneNode" : 
+      {
+        "children" : [],
+        "parent" : "eMonolith"
+      },
+      "Tag" : {},
+      "Transform" : 
+      {
+        "orientation" : 
+        [
+          -0.70722872018814087,
+          0.0,
+          0.0,
+          0.70698481798171997
+        ],
+        "scale" : 
+        [
+          1.125,
+          0.19999966025352478,
+          0.99999779462814331
+        ],
+        "scaleWorld" : 
+        [
+          1.0,
+          1.0,
+          1.0
+        ],
+        "translation" : 
+        [
+          0.0,
+          1.0,
+          0.0
+        ]
+      }
+    }
+  }
+}

@@ -1,7 +1,8 @@
 {
-  "entry_point" : "cqde-templates",
+  "entry_point" : "demo",
   "load_order" :
   [
-    "cqde-templates"
+    "cqde-templates",
+    "demo"
   ]
 }

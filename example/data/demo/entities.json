@@ -1,0 +1,1396 @@
+{
+  "eApe" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "null",
+      "textureId" : "ape"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eSceneRoot"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        1.0,
+        0.0,
+        6.5989141262434714e-08
+      ],
+      "scale" : 
+      [
+        0.99999558925628662,
+        1.0,
+        0.99999558925628662
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        -1.3197828252486943e-07,
+        2.5,
+        0.0
+      ]
+    }
+  },
+  "eCamera" : 
+  {
+    "Camera" : 
+    {
+      "aspectRatio" : 1.7699999809265137,
+      "aspectRatioBehaviour" : "keep",
+      "fov" : 1.0,
+      "layer" : 0,
+      "lightingMode" : "diffuse",
+      "projection" : "perspective",
+      "renderMode" : "solid",
+      "textureMode" : "textured",
+      "viewport" : 
+      [
+        0.0,
+        0.0,
+        1.0,
+        1.0
+      ],
+      "z-range" : 
+      [
+        0.10000000149011612,
+        1000.0
+      ]
+    },
+    "InputController" : 
+    {
+      "axes" : 
+      {
+        "EditorModeToggle" : 
+        {
+          "callbacks" : 
+          [
+            "EditorModeToggle"
+          ],
+          "constraint" : 
+          [
+            0.0,
+            0.0
+          ],
+          "value" : 0.0
+        },
+        "Pitch" : 
+        {
+          "callbacks" : 
+          [
+            "ControlPitchRelative"
+          ],
+          "constraint" : 
+          [
+            1.0,
+            0.0
+          ],
+          "value" : 0.0
+        },
+        "TranslateX" : 
+        {
+          "callbacks" : 
+          [
+            "ControlTranslateXRelative"
+          ],
+          "constraint" : 
+          [
+            1.0,
+            0.0
+          ],
+          "value" : 0.0
+        },
+        "TranslateY" : 
+        {
+          "callbacks" : 
+          [
+            "ControlTranslateYRelative"
+          ],
+          "constraint" : 
+          [
+            1.0,
+            0.0
+          ],
+          "value" : 0.0
+        },
+        "TranslateZ" : 
+        {
+          "callbacks" : 
+          [
+            "ControlTranslateZRelative"
+          ],
+          "constraint" : 
+          [
+            1.0,
+            0.0
+          ],
+          "value" : 0.0
+        },
+        "Yaw" : 
+        {
+          "callbacks" : 
+          [
+            "ControlYawRelative"
+          ],
+          "constraint" : 
+          [
+            1.0,
+            0.0
+          ],
+          "value" : 0.0
+        }
+      }
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eCameraArmRoll"
+    },
+    "SequenceController" : 
+    {
+      "steps" : 
+      [
+        {
+          "CameraFovInterpolated" : 
+          {
+            "curve" : 
+            [
+              0.44499999284744263,
+              0.05000000074505806,
+              0.55000001192092896,
+              0.94999998807907104
+            ],
+            "fovInitial" : 0.01745329238474369,
+            "fovTarget" : 0.78539818525314331,
+            "initFromCurrentFov" : false,
+            "initialized" : false,
+            "timeElapsed" : 0.0,
+            "timeTotal" : 7.5
+          }
+        },
+        {
+          "Delay" : 
+          {
+            "timeElapsed" : 0.0,
+            "timeTotal" : 5.0
+          }
+        },
+        {
+          "CameraFovInterpolated" : 
+          {
+            "curve" : 
+            [
+              0.44499999284744263,
+              0.05000000074505806,
+              0.55000001192092896,
+              0.94999998807907104
+            ],
+            "fovInitial" : 0.78539818525314331,
+            "fovTarget" : 1.0,
+            "initFromCurrentFov" : false,
+            "initialized" : false,
+            "timeElapsed" : 0.0,
+            "timeTotal" : 7.5
+          }
+        }
+      ]
+    },
+    "SubscriberUpdate" : {},
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        0.99999713897705078,
+        0.99999743700027466,
+        0.99999892711639404
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        0.0,
+        -3.6507844924926758e-07
+      ]
+    }
+  },
+  "eCameraArm" : 
+  {
+    "SceneNode" : 
+    {
+      "children" : 
+      [
+        "eCameraArmRoll"
+      ],
+      "parent" : "eSceneRoot"
+    },
+    "SequenceController" : 
+    {
+      "steps" : 
+      [
+        {
+          "TransformInterpolated" : 
+          {
+            "curve" : 
+            [
+              0.22900000214576721,
+              0.05000000074505806,
+              0.55000001192092896,
+              0.94999998807907104
+            ],
+            "initFromTransform" : false,
+            "initialized" : false,
+            "timeElapsed" : 0.0,
+            "timeTotal" : 7.5,
+            "transformInitial" : 
+            [
+              [
+                0.99999547004699707,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.99999874830245972,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                0.99999755620956421,
+                0.0
+              ],
+              [
+                0.061000000685453415,
+                2.7925000190734863,
+                -0.12000000476837158,
+                1.0
+              ]
+            ],
+            "transformTarget" : 
+            [
+              [
+                0.99999886751174927,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.99999964237213135,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                0.99997162818908691,
+                0.0
+              ],
+              [
+                0.0,
+                2.7929999828338623,
+                -0.53100001811981201,
+                1.0
+              ]
+            ],
+            "useWorldSpace" : false
+          }
+        },
+        {
+          "TransformInterpolated" : 
+          {
+            "curve" : 
+            [
+              0.64499998092651367,
+              0.045000001788139343,
+              0.35499998927116394,
+              1.0
+            ],
+            "initFromTransform" : false,
+            "initialized" : false,
+            "timeElapsed" : 0.0,
+            "timeTotal" : 7.5,
+            "transformInitial" : 
+            [
+              [
+                0.99999886751174927,
+                0.0,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.99999964237213135,
+                0.0,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                0.99997162818908691,
+                0.0
+              ],
+              [
+                0.0,
+                2.7929999828338623,
+                -0.53100001811981201,
+                1.0
+              ]
+            ],
+            "transformTarget" : 
+            [
+              [
+                1.0,
+                4.6048634771977959e-07,
+                -7.4291010084166775e-14,
+                0.0
+              ],
+              [
+                1.1902890406645383e-07,
+                -0.25848531723022461,
+                -0.96601426601409912,
+                0.0
+              ],
+              [
+                -4.4483638816927851e-07,
+                0.96601426601409912,
+                -0.25848531723022461,
+                0.0
+              ],
+              [
+                0.0,
+                2.6839148998260498,
+                -0.53140801191329956,
+                1.0
+              ]
+            ],
+            "useWorldSpace" : false
+          }
+        }
+      ]
+    },
+    "SubscriberUpdate" : {},
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        0.99999547004699707,
+        0.99999874830245972,
+        0.99999755620956421
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.061000000685453415,
+        2.7925000190734863,
+        -0.12000000476837158
+      ]
+    }
+  },
+  "eCameraArmRoll" : 
+  {
+    "SceneNode" : 
+    {
+      "children" : 
+      [
+        "eCamera"
+      ],
+      "parent" : "eCameraArm"
+    },
+    "SequenceController" : 
+    {
+      "steps" : 
+      [
+        {
+          "TransformInterpolated" : 
+          {
+            "curve" : 
+            [
+              0.38999998569488525,
+              0.57499998807907104,
+              0.56499999761581421,
+              1.0
+            ],
+            "initFromTransform" : false,
+            "initialized" : false,
+            "timeElapsed" : 0.0,
+            "timeTotal" : 10.0,
+            "transformInitial" : 
+            [
+              [
+                2.984927505167434e-08,
+                0.9999992847442627,
+                -0.00034508196404203773,
+                0.0
+              ],
+              [
+                1.0,
+                2.9849296367956413e-08,
+                8.7421781813645794e-08,
+                0.0
+              ],
+              [
+                8.7423160266553168e-08,
+                -0.00034508196404203773,
+                -0.99999922513961792,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ],
+            "transformTarget" : 
+            [
+              [
+                0.99999874830245972,
+                0.00034524351940490305,
+                0.00034508173121139407,
+                0.0
+              ],
+              [
+                0.00034524372313171625,
+                -0.99999946355819702,
+                2.0670293565672182e-07,
+                0.0
+              ],
+              [
+                0.00034507238888181746,
+                -8.7563009287805471e-08,
+                -0.99997144937515259,
+                0.0
+              ],
+              [
+                0.0,
+                0.0,
+                0.0,
+                1.0
+              ]
+            ],
+            "useWorldSpace" : false
+          }
+        }
+      ]
+    },
+    "SubscriberUpdate" : {},
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.70710676908493042,
+        0.70710676908493042,
+        0.00012199550837976858,
+        0.00012205720850033686
+      ],
+      "scale" : 
+      [
+        0.99999725818634033,
+        0.99999946355819702,
+        0.99999856948852539
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eCameraMan" : 
+  {
+    "Camera" : 
+    {
+      "aspectRatio" : 1.7699999809265137,
+      "aspectRatioBehaviour" : "keep",
+      "fov" : 1.0,
+      "layer" : 0,
+      "lightingMode" : "diffuse",
+      "projection" : "perspective",
+      "renderMode" : "solid",
+      "textureMode" : "textured",
+      "viewport" : 
+      [
+        0.0,
+        0.0,
+        1.0,
+        1.0
+      ],
+      "z-range" : 
+      [
+        0.10000000149011612,
+        1000.0
+      ]
+    },
+    "InputController" : 
+    {
+      "axes" : 
+      {
+        "EditorModeToggle" : 
+        {
+          "callbacks" : 
+          [
+            "EditorModeToggle"
+          ],
+          "constraint" : 
+          [
+            0.0,
+            0.0
+          ],
+          "value" : 0.0
+        },
+        "Pitch" : 
+        {
+          "callbacks" : 
+          [
+            "ControlPitchRelative"
+          ],
+          "constraint" : 
+          [
+            1.0,
+            0.0
+          ],
+          "value" : 0.0
+        },
+        "TranslateX" : 
+        {
+          "callbacks" : 
+          [
+            "ControlTranslateXRelative"
+          ],
+          "constraint" : 
+          [
+            1.0,
+            0.0
+          ],
+          "value" : 0.0
+        },
+        "TranslateY" : 
+        {
+          "callbacks" : 
+          [
+            "ControlTranslateYRelative"
+          ],
+          "constraint" : 
+          [
+            1.0,
+            0.0
+          ],
+          "value" : 0.0
+        },
+        "TranslateZ" : 
+        {
+          "callbacks" : 
+          [
+            "ControlTranslateZRelative"
+          ],
+          "constraint" : 
+          [
+            1.0,
+            0.0
+          ],
+          "value" : 0.0
+        },
+        "Yaw" : 
+        {
+          "callbacks" : 
+          [
+            "ControlYawRelative"
+          ],
+          "constraint" : 
+          [
+            1.0,
+            0.0
+          ],
+          "value" : 0.0
+        }
+      }
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eSceneRoot"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        -0.70710676908493042,
+        -0.70710676908493042,
+        0.0001219740734086372,
+        -0.0001220358899445273
+      ],
+      "scale" : 
+      [
+        0.99999934434890747,
+        1.0,
+        0.99999934434890747
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.061000000685453415,
+        2.7925000190734863,
+        -0.12000000476837158
+      ]
+    }
+  },
+  "eCameraMonolith" : 
+  {
+    "Camera" : 
+    {
+      "aspectRatio" : 1.7699999809265137,
+      "aspectRatioBehaviour" : "keep",
+      "fov" : 57.295780181884766,
+      "layer" : 0,
+      "lightingMode" : "diffuse",
+      "projection" : "perspective",
+      "renderMode" : "solid",
+      "textureMode" : "textured",
+      "viewport" : 
+      [
+        0.0,
+        0.0,
+        1.0,
+        1.0
+      ],
+      "z-range" : 
+      [
+        0.10000000149011612,
+        1000.0
+      ]
+    },
+    "InputController" : 
+    {
+      "axes" : 
+      {
+        "EditorModeToggle" : 
+        {
+          "callbacks" : 
+          [
+            "EditorModeToggle"
+          ],
+          "constraint" : 
+          [
+            0.0,
+            0.0
+          ],
+          "value" : 0.0
+        },
+        "Pitch" : 
+        {
+          "callbacks" : 
+          [
+            "ControlPitchRelative"
+          ],
+          "constraint" : 
+          [
+            1.0,
+            0.0
+          ],
+          "value" : 0.0
+        },
+        "TranslateX" : 
+        {
+          "callbacks" : 
+          [
+            "ControlTranslateXRelative"
+          ],
+          "constraint" : 
+          [
+            1.0,
+            0.0
+          ],
+          "value" : 0.0
+        },
+        "TranslateY" : 
+        {
+          "callbacks" : 
+          [
+            "ControlTranslateYRelative"
+          ],
+          "constraint" : 
+          [
+            1.0,
+            0.0
+          ],
+          "value" : 0.0
+        },
+        "TranslateZ" : 
+        {
+          "callbacks" : 
+          [
+            "ControlTranslateZRelative"
+          ],
+          "constraint" : 
+          [
+            1.0,
+            0.0
+          ],
+          "value" : 0.0
+        },
+        "Yaw" : 
+        {
+          "callbacks" : 
+          [
+            "ControlYawRelative"
+          ],
+          "constraint" : 
+          [
+            1.0,
+            0.0
+          ],
+          "value" : 0.0
+        }
+      }
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eSceneRoot"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.60876142978668213,
+        1.4016322325005603e-07,
+        1.8266416645928985e-07,
+        0.79335331916809082
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        2.6839148998260498,
+        -0.53140801191329956
+      ]
+    }
+  },
+  "eCameraPos1" : 
+  {
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        1.0,
+        0.0,
+        1.0902110147981148e-07
+      ],
+      "scale" : 
+      [
+        0.99999904632568359,
+        1.0,
+        0.99999904632568359
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.061000000685453415,
+        2.7925000190734863,
+        -0.12000000476837158
+      ]
+    }
+  },
+  "eCameraPos2" : 
+  {
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        0.99999886751174927,
+        0.99999964237213135,
+        0.99997162818908691
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        2.7929999828338623,
+        -0.53100001811981201
+      ]
+    }
+  },
+  "eCameraPos3" : 
+  {
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        -0.79324823617935181,
+        -1.8263997958456457e-07,
+        1.4019472871495964e-07,
+        0.6088983416557312
+      ],
+      "scale" : 
+      [
+        1.0,
+        0.99999910593032837,
+        0.99999910593032837
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        2.6839148998260498,
+        -0.53140801191329956
+      ]
+    }
+  },
+  "eCloud" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "null",
+      "textureId" : "cloud_1"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eSceneRoot"
+    },
+    "TextureTint" : 
+    {
+      "tint" : 2717421055
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.38268342614173889,
+        0.0,
+        0.0,
+        0.92387956380844116
+      ],
+      "scale" : 
+      [
+        2.5,
+        0.99999994039535522,
+        0.99999994039535522
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        2.0,
+        11.292893409729004,
+        -2.4644663333892822
+      ]
+    }
+  },
+  "eMonolith" : 
+  {
+    "SceneNode" : 
+    {
+      "children" : 
+      [
+        "eMonolithFace",
+        "eMonolithRight",
+        "eMonolithBack",
+        "eMonolithTop",
+        "eMonolithBottom",
+        "eMonolithLeft"
+      ],
+      "parent" : "eSceneRoot"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        3.0,
+        -1.0
+      ]
+    }
+  },
+  "eMonolithBack" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "null",
+      "textureId" : "monolith"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eMonolith"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        4.3703842322884157e-08,
+        -1.0,
+        -4.3703842322884157e-08,
+        0.00017264291818719357
+      ],
+      "scale" : 
+      [
+        1.125,
+        2.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        0.0,
+        -0.10000000149011612
+      ]
+    }
+  },
+  "eMonolithBottom" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "null",
+      "textureId" : "monolith"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eMonolith"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.70710676908493042,
+        0.0,
+        0.0,
+        0.70710676908493042
+      ],
+      "scale" : 
+      [
+        1.125,
+        0.19999966025352478,
+        0.99999779462814331
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        -1.0,
+        0.0
+      ]
+    }
+  },
+  "eMonolithFace" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "null",
+      "textureId" : "monolith"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eMonolith"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.125,
+        2.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        0.0,
+        0.10000000149011612
+      ]
+    }
+  },
+  "eMonolithLeft" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "null",
+      "textureId" : "monolith"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eMonolith"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        -0.70698469877243042,
+        0.0,
+        0.70722883939743042
+      ],
+      "scale" : 
+      [
+        0.20000000298023224,
+        2.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        -0.5625,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eMonolithRight" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "null",
+      "textureId" : "monolith"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eMonolith"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.70698469877243042,
+        0.0,
+        0.70722883939743042
+      ],
+      "scale" : 
+      [
+        0.20000000298023224,
+        2.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.5625,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eMonolithTop" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "null",
+      "textureId" : "monolith"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eMonolith"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        -0.70722872018814087,
+        0.0,
+        0.0,
+        0.70698481798171997
+      ],
+      "scale" : 
+      [
+        1.125,
+        0.19999966025352478,
+        0.99999779462814331
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        1.0,
+        0.0
+      ]
+    }
+  },
+  "ePedestal" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "null",
+      "textureId" : "null"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eSceneRoot"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.70731896162033081,
+        0.0,
+        0.0,
+        0.70689451694488525
+      ],
+      "scale" : 
+      [
+        3.0,
+        3.0,
+        1.0000001192092896
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        2.0,
+        0.0
+      ]
+    }
+  },
+  "eSceneRoot" : 
+  {
+    "SceneNode" : 
+    {
+      "children" : 
+      [
+        "eCameraMonolith",
+        "eCameraMan",
+        "eSun",
+        "eCloud",
+        "eApe",
+        "ePedestal",
+        "eCameraArm",
+        "eMonolith"
+      ],
+      "parent" : "null"
+    },
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ],
+      "scale" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        0.0,
+        0.0
+      ]
+    }
+  },
+  "eSun" : 
+  {
+    "DrawableMesh" : 
+    {
+      "meshId" : "null",
+      "textureId" : "sun"
+    },
+    "LightSource" : 
+    {
+      "attenuation" : 
+      {
+        "constant" : 1.0,
+        "linear" : 0.0,
+        "quadratic" : 0.0
+      },
+      "color" : 4294967295,
+      "radius" : 100.0,
+      "type" : "directional"
+    },
+    "SceneNode" : 
+    {
+      "children" : [],
+      "parent" : "eSceneRoot"
+    },
+    "SubscriberUpdate" : {},
+    "Transform" : 
+    {
+      "orientation" : 
+      [
+        0.5,
+        0.0,
+        0.0,
+        0.86602538824081421
+      ],
+      "scale" : 
+      [
+        1.0,
+        0.99999737739562988,
+        0.99999672174453735
+      ],
+      "scaleWorld" : 
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "translation" : 
+      [
+        0.0,
+        12.0,
+        -3.2684369087219238
+      ]
+    }
+  }
+}

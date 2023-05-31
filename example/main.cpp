@@ -67,11 +67,17 @@ main( int argc, char* argv[] )
 
     MetaCtxLocator::reset(registry.ctx().get <MetaCtxHandle> ());
 
+    const auto textureMonolith = std::make_shared <olc::Renderable> ();
+    textureMonolith->Create(1, 1);
+    textureMonolith->Sprite()->Clear(olc::BLACK);
+    textureMonolith->Decal()->Update();
+
     auto& textures = registry.ctx().get <TextureAssetManager> ();
     textures.insert("cqde_c", cqde::textureFromText("c", olc::RED, olc::BLANK, true));
     textures.insert("cqde_q", cqde::textureFromText("q", olc::GREEN, olc::BLANK, true));
     textures.insert("cqde_d", cqde::textureFromText("d", olc::WHITE, olc::BLANK, true));
     textures.insert("cqde_e", cqde::textureFromText("e", olc::BLUE, olc::BLANK, true));
+    textures.insert("monolith", textureMonolith);
 
     try
     {
