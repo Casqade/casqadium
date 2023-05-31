@@ -96,7 +96,7 @@ AssetManager <olc::Renderable>::initPlaceholders()
 
   const auto textureTransparent = std::make_shared <olc::Renderable> ();
   textureTransparent->Create(1, 1);
-  textureTransparent->Sprite()->SetPixel(0, 0, olc::BLANK);
+  textureTransparent->Sprite()->Clear(olc::BLANK);
   textureTransparent->Decal()->Update();
 
   insert("transparent"_id, textureTransparent);
