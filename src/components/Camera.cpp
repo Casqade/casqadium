@@ -290,6 +290,14 @@ const static Json::Value cameraJsonReference =
   root.setComment("// root must be a JSON object"s,
                   Json::CommentPlacement::commentBefore);
 
+  root["aspectRatio"] = ValueType::realValue;
+  root["aspectRatio"].setComment("// 'aspectRatio' element must be a JSON float"s,
+                                  Json::CommentPlacement::commentBefore);
+
+  root["aspectRatioBehaviour"] = ValueType::stringValue;
+  root["aspectRatioBehaviour"].setComment("// 'aspectRatioBehaviour' must be a JSON string"s,
+                                          Json::CommentPlacement::commentBefore);
+
   root["viewport"] = ValueType::arrayValue;
   root["viewport"].setComment("// 'viewport' must be a JSON array"s,
                               Json::CommentPlacement::commentBefore);
