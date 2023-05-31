@@ -1,0 +1,22 @@
+{
+  "cube" : 
+  {
+    "path" : "meshes/cube.gltf"
+  },
+  "quad" : 
+  {
+    "path" : "quads/quad.json"
+  },
+  "sphere16" : 
+  {
+    "path" : "meshes/sphere16.gltf"
+  },
+  "sphere32" : 
+  {
+    "path" : "meshes/sphere32.gltf"
+  },
+  "sphere8" : 
+  {
+    "path" : "meshes/sphere8.gltf"
+  }
+}

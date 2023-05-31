@@ -1,0 +1,133 @@
+{
+  "CursorPosX" :
+  {
+    "+MousePos_X" :
+    {
+      "absolute" : true,
+      "curve" : 0.0,
+      "deadzone" : 0.0,
+      "sensitivity" : 1.0
+    },
+    "-MousePos_X" :
+    {
+      "absolute" : true,
+      "curve" : 0.0,
+      "deadzone" : 0.0,
+      "sensitivity" : 1.0
+    }
+  },
+  "CursorPosY" :
+  {
+    "+MousePos_Y" :
+    {
+      "absolute" : true,
+      "curve" : 0.0,
+      "deadzone" : 0.0,
+      "sensitivity" : 1.0
+    },
+    "-MousePos_Y" :
+    {
+      "absolute" : true,
+      "curve" : 0.0,
+      "deadzone" : 0.0,
+      "sensitivity" : 1.0
+    }
+  },
+  "EditorModeToggle" :
+  {
+    "-Key_F12" :
+    {
+      "absolute" : false,
+      "sensitivity" : 0.0
+    }
+  },
+  "EngineShutdown" :
+  {
+    "-Key_Q" :
+    {
+      "absolute" : false,
+      "sensitivity" : 0.0
+    }
+  },
+  "Pitch" :
+  {
+    "+MouseMove_Y" :
+    {
+      "absolute" : false,
+      "sensitivity" : -0.1
+    },
+    "-MouseMove_Y" :
+    {
+      "absolute" : false,
+      "sensitivity" : 0.1
+    }
+  },
+  "QuickLoad" :
+  {
+    "-Key_F2" :
+    {
+      "absolute" : false,
+      "sensitivity" : 0.0
+    }
+  },
+  "QuickSave" :
+  {
+    "-Key_F1" :
+    {
+      "absolute" : false,
+      "sensitivity" : 0.0
+    }
+  },
+  "TranslateX" :
+  {
+    "~Key_A" :
+    {
+      "absolute" : false,
+      "sensitivity" : -10.0
+    },
+    "~Key_D" :
+    {
+      "absolute" : false,
+      "sensitivity" : 10.0
+    }
+  },
+  "TranslateY" :
+  {
+    "~Key_Shift" :
+    {
+      "absolute" : false,
+      "sensitivity" : -10.0
+    },
+    "~Key_Space" :
+    {
+      "absolute" : false,
+      "sensitivity" : 10.0
+    }
+  },
+  "TranslateZ" :
+  {
+    "~Key_S" :
+    {
+      "absolute" : false,
+      "sensitivity" : -10.0
+    },
+    "~Key_W" :
+    {
+      "absolute" : false,
+      "sensitivity" : 10.0
+    }
+  },
+  "Yaw" :
+  {
+    "+MouseMove_X" :
+    {
+      "absolute" : false,
+      "sensitivity" : -0.1
+    },
+    "-MouseMove_X" :
+    {
+      "absolute" : false,
+      "sensitivity" : 0.1
+    }
+  }
+}

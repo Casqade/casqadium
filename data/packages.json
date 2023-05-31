@@ -1,8 +1,0 @@
-{
-  "entry_point" : "demo",
-  "load_order" :
-  [
-    "cqde-templates",
-    "demo"
-  ]
-}
