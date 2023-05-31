@@ -1,8 +1,10 @@
 #include <cqde/types/CasqadiumEngine.hpp>
 
 #include <cqde/logger.hpp>
+#include <cqde/render_helpers.hpp>
 
 #include <cqde/types/EntityManager.hpp>
+#include <cqde/types/assets/TextureAssetManager.hpp>
 
 #include <entt/entity/registry.hpp>
 #include <entt/locator/locator.hpp>
@@ -18,7 +20,7 @@ main( int argc, char* argv[] )
 {
   using cqde::types::CasqadiumEngine;
   using WindowHints = CasqadiumEngine::WindowHints;
-  using EntityManager = cqde::types::EntityManager;
+  using TextureAssetManager = cqde::types::TextureAssetManager;
 
   bool status {};
 
@@ -65,9 +67,11 @@ main( int argc, char* argv[] )
 
     MetaCtxLocator::reset(registry.ctx().get <MetaCtxHandle> ());
 
-    auto& entityManager = registry.ctx().get <EntityManager> ();
-
-//    register custom components
+    auto& textures = registry.ctx().get <TextureAssetManager> ();
+    textures.insert("cqde_c", cqde::textureFromText("c", olc::RED, olc::BLANK, true));
+    textures.insert("cqde_q", cqde::textureFromText("q", olc::GREEN, olc::BLANK, true));
+    textures.insert("cqde_d", cqde::textureFromText("d", olc::WHITE, olc::BLANK, true));
+    textures.insert("cqde_e", cqde::textureFromText("e", olc::BLUE, olc::BLANK, true));
 
     try
     {
