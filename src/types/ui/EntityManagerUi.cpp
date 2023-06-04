@@ -161,6 +161,8 @@ EntityManagerUi::ui_show_filter_section(
 
     auto& cEntityInfo = registry.emplace <EntityMetaInfo> (newEntity);
     cEntityInfo.packageId = mRegistryFilter.package();
+
+    mEntityViewSortRequested = true;
   }
 
   ImGui::SameLine();
