@@ -34,6 +34,7 @@ class PackageManagerUi
   Json::ArrayIndex mDraggedPackageIndex {-1u};
 
   bool mPackageWindowOpened {};
+  bool mPackageReloadRequested {};
 
   types::PackageManager* mPackageMgr {};
 
