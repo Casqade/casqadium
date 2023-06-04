@@ -199,9 +199,13 @@ PackageManagerUi::ui_show(
          ImGui::IsMouseReleased(ImGuiMouseButton_Left) == true )
       mDraggedPackageIndex = packages.size();
 
-    if ( ImGui::IsItemActivated() )
+    if ( ImGui::IsItemActivated() ||
+         (mPackageReloadRequested == true &&
+          selected == true) )
     {
       mPackageWindowOpened = true;
+      mPackageReloadRequested = false;
+
       ImGui::SetWindowFocus("PackageEdit");
 
       mEditedPackageId = packages[index].asString();
@@ -292,6 +296,9 @@ PackageManagerUi::ui_show_menu_bar(
       mDraggedPackageIndex = -1u;
       mConfigState.root.clear();
       mConfigState.packages.clear();
+
+      if ( mEditedPackageId.empty() == false )
+        mPackageReloadRequested = true;
     }
 
     if ( ImGui::MenuItem("Load & apply") )
@@ -319,10 +326,13 @@ PackageManagerUi::ui_show_menu_bar(
         LOG_ERROR("{}", e.what());
       }
 
-      mConfigState.packages.clear();
       mConfigState.root = fileParse(mPackageMgr->manifestPath());
-
       PackageManager::Validate(mConfigState.root);
+
+      mConfigState.packages.clear();
+
+      if ( mEditedPackageId.empty() == false )
+        mPackageReloadRequested = true;
     }
 
     ImGui::EndMenu();
@@ -356,6 +366,9 @@ PackageManagerUi::ui_show_package_window(
 
   if ( mPackageWindowOpened == false )
     mEditedPackageId.clear();
+
+  if ( mConfigState.packages.isMember(mEditedPackageId) == false )
+    return;
 
   if ( ImGui::Begin("PackageEdit", &mPackageWindowOpened,
                     ImGuiWindowFlags_HorizontalScrollbar) == false )
