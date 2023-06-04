@@ -188,7 +188,7 @@ CasqadiumEngine::readConfig() const
 
 bool
 CasqadiumEngine::calcVideoMode(
-  GLFWmonitor* monitor,
+  GLFWmonitor*& monitor,
   GLFWvidmode& videoMode ) const
 {
   auto& windowWidth = mConfig->video.width;
@@ -287,7 +287,8 @@ CasqadiumEngine::calcVideoMode(
   videoMode.blueBits = currentMonitorMode->blueBits;
   videoMode.refreshRate = currentMonitorMode->refreshRate;
 
-  if ( mConfig->video.fullscreen == false )
+  if ( mConfig->video.fullscreen == false &&
+       mConfig->video.borderless == false )
     monitor = nullptr;
 
   return true;

@@ -54,7 +54,7 @@ private:
 
 
   bool calcVideoMode(
-    GLFWmonitor*,
+    GLFWmonitor*&,
     GLFWvidmode& ) const;
 
 
