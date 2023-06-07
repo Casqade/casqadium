@@ -230,15 +230,11 @@ Font::RenderStringToSprite(std::u32string string, olc::Pixel color, const bool a
     olc::FontRect rect = GetStringBounds(string);
     olc::Sprite *sprite = new olc::Sprite{rect.size.x, rect.size.y};
 
-    for (int x = 0; x < rect.size.x; x++) {
-        for (int y = 0; y < rect.size.y; y++) {
-            sprite->SetPixel(x, y, olc::BLANK);
-        }
-    }
+    sprite->Clear(olc::BLANK);
 
     FT_Vector pen;
     pen.x = -rect.offset.x;
-    pen.y = rect.offset.y * 64;
+    pen.y = (sprite->height + rect.offset.y) * 64;
 
     olc::Pixel::Mode prevMode = Sprite::nPixelMode;
     Sprite::nPixelMode = olc::Pixel::ALPHA;
@@ -296,7 +292,7 @@ Font::RenderStringToSprite(std::u32string string, olc::Pixel color, const bool a
         FT_Bitmap bmp = toUse->fontFace->glyph->bitmap;
         FT_GlyphSlot slot = toUse->fontFace->glyph;
         DrawBitmapTo(slot->bitmap_left,
-                     slot->bitmap_top, bmp, color,
+                     sprite->height - slot->bitmap_top, bmp, color,
                      sprite);
 
         pen.x += toUse->fontFace->glyph->advance.x;
@@ -321,17 +317,9 @@ Font::RenderStringToRenderable(std::u32string string, olc::Pixel color, const bo
 {
     Sprite *sprite = RenderStringToSprite(string, color, antialiased);
     olc::Renderable renderable;
+
     renderable.Create(sprite->width, sprite->height);
-
-    for (int x = 0; x < sprite->width; x++) {
-        for (int y = 0; y < sprite->height; y++) {
-            renderable.Sprite()->SetPixel(x, y, sprite->GetPixel(x, y));
-        }
-    }
-
-    delete sprite;
-
-    renderable.Decal()->Update();
+    renderable.SetSprite(sprite);
 
     return renderable;
 }
