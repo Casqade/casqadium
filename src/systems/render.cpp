@@ -1,5 +1,6 @@
 #include <cqde/systems/render.hpp>
 
+#include <cqde/assert.hpp>
 #include <cqde/render_helpers.hpp>
 
 #include <cqde/types/EntityManager.hpp>
@@ -54,6 +55,10 @@ RenderBufferClearSystem(
   auto& engine = *registry.ctx().get <CasqadiumEngine*> ();
 
   const auto framebufferSize = engine.framebufferSize();
+
+  if ( framebufferSize.x == 0 ||
+       framebufferSize.y == 0 )
+    return;
 
   glViewport( 0, 0,
     framebufferSize.x,
@@ -478,6 +483,8 @@ DrawViewportOutline(
 
   const glm::vec2 framebufferSize = target.size;
 
+  CQDE_ASSERT_DEBUG(framebufferSize.x > 0 && framebufferSize.y > 0, return);
+
   glDisable(GL_CULL_FACE);
   glDisable(GL_DEPTH_TEST);
 
@@ -581,6 +588,8 @@ ClearRenderTarget(
 {
   const glm::vec2 framebufferSize = target.size;
 
+  CQDE_ASSERT_DEBUG(framebufferSize.x > 0 && framebufferSize.y > 0, return);
+
   glBindFramebuffer(GL_FRAMEBUFFER, target.fbo);
 
   glViewport( 0, 0,
@@ -632,6 +641,8 @@ RenderToTarget(
 
   const glm::vec2 framebufferSize = target.size;
   const auto camViewport = cCamera->viewportScaled(framebufferSize);
+
+  CQDE_ASSERT_DEBUG(framebufferSize.x > 0 && framebufferSize.y > 0, return);
 
   glBindFramebuffer(GL_FRAMEBUFFER, target.fbo);
   glEnable(GL_SCISSOR_TEST);
@@ -768,6 +779,10 @@ RenderSystem(
   auto& readbackQueue = registry.ctx().get <FrameReadbackQueue> ();
 
   const auto framebufferSize = engine.framebufferSize();
+
+  if ( framebufferSize.x == 0 ||
+       framebufferSize.y == 0 )
+    return;
 
   if ( mainTarget.target.update(framebufferSize) == true )
     readbackQueue.clear();
