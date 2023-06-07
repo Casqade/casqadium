@@ -42,6 +42,8 @@ RenderTarget::update(
   if ( this->size == size )
     return false;
 
+  CQDE_ASSERT_DEBUG(size.x > 0 && size.y > 0, return false);
+
   this->size = size;
 
   destroy();
