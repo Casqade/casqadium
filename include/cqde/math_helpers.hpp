@@ -63,45 +63,58 @@ Rect boundingBox(
 template <typename Number,
   typename std::enable_if <sizeof(Number) <= 4, bool>::type = true>
 std::mt19937
-randomNumberGenerator()
+randomNumberGenerator(
+  std::random_device seed = {} )
 {
-  return std::mt19937 { std::random_device {}() };
+  return std::mt19937 { seed() };
 }
 
 template <typename Number,
   typename std::enable_if <sizeof(Number) >= 8, bool>::type = true>
 std::mt19937_64
-randomNumberGenerator()
+randomNumberGenerator(
+  std::random_device seed = {} )
 {
-  return std::mt19937_64 { std::random_device {}() };
+  return std::mt19937_64 { seed() };
 }
 
-template <typename Number,
+template <typename Number, typename Generator,
   typename std::enable_if <std::is_integral_v <Number>, bool>::type = true>
 Number
 random(
+  Generator& rng,
   const Number min,
   const Number max )
 {
   using Distribution = std::uniform_int_distribution <Number>;
 
-  auto rng = randomNumberGenerator <Number> ();
-
   return Distribution{min, max} (rng);
 }
 
-template <typename Number,
+template <typename Number, typename Generator,
   typename std::enable_if <std::is_floating_point_v <Number>, bool>::type = true>
 Number
 random(
+  Generator& rng,
   const Number min,
   const Number max )
 {
   using Distribution = std::uniform_real_distribution <Number>;
 
+  return Distribution{min, max} (rng);
+}
+
+template <typename Number>
+Number
+random(
+  const Number min,
+  const Number max )
+{
   auto rng = randomNumberGenerator <Number> ();
 
-  return Distribution{min, max} (rng);
+  return random(
+    rng,
+    min, max );
 }
 
 } // namespace cqde
