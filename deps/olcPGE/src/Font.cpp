@@ -17,7 +17,6 @@ Font::~Font()
 
 Font::Font(const std::string& path, const int _fontSize)
   : fontFace(nullptr)
-  , fallbacks()
   , fontSize(_fontSize)
 {
     LoadFromFile(path, fontSize);
@@ -27,9 +26,7 @@ Font::Font(Font&& other)
 {
     fontFace = other.fontFace;
     fontSize = other.fontSize;
-    fallbacks = std::move(other.fallbacks);
     other.fontFace = nullptr;
-    other.fallbacks.clear();
 }
 
 Font&
@@ -37,9 +34,7 @@ Font::operator = (Font&& other)
 {
     fontFace = other.fontFace;
     fontSize = other.fontSize;
-    fallbacks = std::move(other.fallbacks);
     other.fontFace = nullptr;
-    other.fallbacks.clear();
     return *this;
 }
 
@@ -288,12 +283,6 @@ Font::RenderStringToRenderable(std::u32string string, olc::Pixel color, const bo
     renderable.SetSprite(sprite);
 
     return renderable;
-}
-
-void
-Font::AddFallbackFont(std::string path)
-{
-    fallbacks.emplace_back(path, fontSize);
 }
 
 int

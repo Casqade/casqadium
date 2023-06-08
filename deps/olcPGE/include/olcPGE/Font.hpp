@@ -70,7 +70,6 @@ private:
   FT_UInt GetCharIndex(char32_t charCode);
 
   FT_Face fontFace {};
-  std::vector<Font> fallbacks {};
   int fontSize {};
 
   std::string errorMessage {};
