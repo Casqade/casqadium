@@ -172,12 +172,12 @@ AssetManager <olc::Font>::ui_show_preview(
     return;
 
   static AssetId fontCurrent {fontId};
-  static std::string textSample {u8"Preview"};
+  static std::string textSample {u8"Type to preview"};
   static std::unique_ptr <olc::Decal> fontPreview {nullptr};
 
   ImGui::SetNextItemWidth(ImGui::GetContentRegionAvail().x);
 
-  if ( ImGui::InputTextWithHint("##fontPreview", "Type text to preview", &textSample) ||
+  if ( ImGui::InputTextMultiline("##fontPreview", &textSample) ||
        fontPreview == nullptr ||
        fontCurrent != fontId )
   {
@@ -194,10 +194,16 @@ AssetManager <olc::Font>::ui_show_preview(
        textSample.empty() == true )
     return;
 
-  float spriteRatio = 1.0f * fontPreview->sprite->width / fontPreview->sprite->height;
+  const auto targetSize = ImGui::GetContentRegionAvail();
 
-  float height = ImGui::GetContentRegionAvail().y / 2.0f;
-  float width = height * spriteRatio;
+  const float textureRatio = 1.0f * fontPreview->sprite->width / fontPreview->sprite->height;
+
+  const auto imageRatio = std::min(
+    targetSize.x / textureRatio,
+    targetSize.y );
+
+  const auto width = textureRatio * imageRatio;
+  const auto height = imageRatio;
 
   ImGui::Image(ImTextureID(fontPreview->id), {width, height});
 }
