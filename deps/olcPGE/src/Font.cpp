@@ -147,35 +147,18 @@ Font::GetStringBounds(std::u32string string, float angle)
     int maxX = intMin;
     int maxY = intMin;
 
-    Font *prevToUse = nullptr;
-
     for (size_t i = 0; i < string.size(); i++) {
         char32_t chr = string[i];
 
-        Font *toUse = this;
-        FT_UInt chrIndex = GetCharIndex(chr);
-
-        if (chrIndex == 0) {
-            for (auto &font : fallbacks) {
-                FT_UInt fbChr = font.GetCharIndex(chr);
-                if (fbChr != 0) {
-                    chrIndex = fbChr;
-                    toUse = &font;
-                }
-            }
+        if (chr == '\n')
+        {
+          pen.x = 0;
+          pen.y -= fontFace->size->metrics.height;
+          continue;
         }
 
-        if (prevToUse == toUse) {
-            FT_Vector kern;
-            FT_Get_Kerning(fontFace, string[i - 1], chr,
-                           FT_KERNING_DEFAULT, &kern);
-
-            pen.x += kern.x;
-            pen.y += kern.y;
-        }
-
-        FT_Set_Transform(toUse->fontFace, &rotMat, &pen);
-        FT_Error error = FT_Load_Char(toUse->fontFace, chr,
+        FT_Set_Transform(fontFace, &rotMat, &pen);
+        FT_Error error = FT_Load_Char(fontFace, chr,
                                       FT_LOAD_BITMAP_METRICS_ONLY);
         if (error)
         {
@@ -191,7 +174,7 @@ Font::GetStringBounds(std::u32string string, float angle)
             return olc::FontRect{{0, 0}, {0, 0}};
         }
 
-        FT_GlyphSlot slot = toUse->fontFace->glyph;
+        FT_GlyphSlot slot = fontFace->glyph;
         FT_Glyph glyph;
         FT_Get_Glyph(slot, &glyph);
 
@@ -239,39 +222,22 @@ Font::RenderStringToSprite(std::u32string string, olc::Pixel color, const bool a
     olc::Pixel::Mode prevMode = Sprite::nPixelMode;
     Sprite::nPixelMode = olc::Pixel::ALPHA;
 
-    olc::Font *prevToUse = nullptr;
-
     for (size_t i = 0; i < string.size(); i++) {
         char32_t chr = string[i];
 
-        Font *toUse = this;
-        FT_UInt chrIndex = GetCharIndex(chr);
-
-        if (chrIndex == 0) {
-            for (auto &font : fallbacks) {
-                FT_UInt fbChr = font.GetCharIndex(chr);
-                if (fbChr != 0) {
-                    chrIndex = fbChr;
-                    toUse = &font;
-                }
-            }
-        }
-
-        if (prevToUse == toUse) {
-            FT_Vector kern;
-            FT_Get_Kerning(fontFace, string[i - 1], chr,
-                           FT_KERNING_DEFAULT, &kern);
-
-            pen.x += kern.x;
-            pen.y += kern.y;
+        if (chr == '\n')
+        {
+          pen.x = 0;
+          pen.y -= fontFace->size->metrics.height;
+          continue;
         }
 
         int loadFlags = FT_LOAD_RENDER | FT_LOAD_COLOR;
         if (antialiased == false)
           loadFlags |= FT_LOAD_MONOCHROME;
 
-        FT_Set_Transform(toUse->fontFace, nullptr, &pen);
-        FT_Error error = FT_Load_Char(toUse->fontFace, chr,
+        FT_Set_Transform(fontFace, nullptr, &pen);
+        FT_Error error = FT_Load_Char(fontFace, chr,
                                       loadFlags);
         if (error)
         {
@@ -289,14 +255,14 @@ Font::RenderStringToSprite(std::u32string string, olc::Pixel color, const bool a
             return nullptr;
         }
 
-        FT_Bitmap bmp = toUse->fontFace->glyph->bitmap;
-        FT_GlyphSlot slot = toUse->fontFace->glyph;
+        FT_Bitmap bmp = fontFace->glyph->bitmap;
+        FT_GlyphSlot slot = fontFace->glyph;
         DrawBitmapTo(slot->bitmap_left,
                      sprite->height - slot->bitmap_top, bmp, color,
                      sprite);
 
-        pen.x += toUse->fontFace->glyph->advance.x;
-        pen.y += toUse->fontFace->glyph->advance.y;
+        pen.x += fontFace->glyph->advance.x;
+        pen.y += fontFace->glyph->advance.y;
     }
 
     Sprite::nPixelMode = prevMode;
