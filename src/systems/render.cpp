@@ -794,7 +794,13 @@ RenderSystem(
 
   for ( const auto&& [eCamera, cCamera, cTransform]
           : registry.view <Camera, Transform, SubscriberUpdate> ().each() )
+  {
     RenderToTarget(registry, mainTarget.target, eCamera);
+
+    glClearNamedFramebufferfi( mainTarget.target.fbo,
+      GL_DEPTH_STENCIL, 0,
+      1.0f, 0 );
+  }
 
   readbackQueue.write(mainTarget.target);
   readbackQueue.process(registry);
