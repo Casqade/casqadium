@@ -299,11 +299,12 @@ ViewportManagerUi::ui_show_viewport_windows(
       readbackQueue.clear();
     }
 
-    ImGui::GetBackgroundDrawList()->AddImage(
-      (ImTextureID) iter->framebuffer.textureAlbedo.id(),
-      {viewportPos.x, viewportPos.y},
-      {viewportPos.x + viewportSize.x, viewportPos.y + viewportSize.y},
-      ImVec2{0, 1}, ImVec2{1, 0} );
+    if ( windowsToClose.empty() == true )
+      ImGui::GetBackgroundDrawList()->AddImage(
+        (ImTextureID) iter->framebuffer.textureAlbedo.id(),
+        {viewportPos.x, viewportPos.y},
+        {viewportPos.x + viewportSize.x, viewportPos.y + viewportSize.y},
+        ImVec2{0, 1}, ImVec2{1, 0} );
 
     const float comboWidth =
       std::min( ImGui::GetContentRegionAvail().x,

@@ -31,6 +31,8 @@ struct RenderTarget
 
   bool update( const glm::u16vec2& size );
   void destroy();
+
+  bool isValid() const;
 };
 
 } // namespace cqde::types

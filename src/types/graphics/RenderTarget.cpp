@@ -39,7 +39,8 @@ bool
 RenderTarget::update(
   const glm::u16vec2& size )
 {
-  if ( this->size == size )
+  if ( this->size == size &&
+       isValid() == true )
     return false;
 
   CQDE_ASSERT_DEBUG(size.x > 0 && size.y > 0, return false);
@@ -105,7 +106,17 @@ RenderTarget::destroy()
   if ( fbo != 0 )
     glDeleteFramebuffers(1, &fbo);
 
-  fbo = depthStencil = 0;
+  fbo = depthStencil = objectIds = 0;
+}
+
+bool
+RenderTarget::isValid() const
+{
+  return
+    fbo != 0 &&
+    objectIds != 0 &&
+    depthStencil != 0 &&
+    textureAlbedo.isValid() == true;
 }
 
 } // namespace cqde::types
