@@ -579,13 +579,15 @@ EntityManager::delayedRemove(
 
     if ( entity_valid(entity, registry) == true )
     {
-      if ( registry.all_of <SceneNode> (entity) == true )
-        RootifyChildNode(registry, entity);
-
-      const auto entityId = registry.get <Tag> (entity).id;
+      const auto& entityId = registry.get <Tag> (entity).id;
 
       if ( get(entityId) == entity )
-        idInvalidate( registry.get <Tag> (entity).id );
+      {
+        if ( registry.all_of <SceneNode> (entity) == true )
+          RootifyChildNode(registry, entity);
+
+        idInvalidate(entityId);
+      }
 
       registry.destroy(entity);
     }
