@@ -484,6 +484,46 @@ MeshAssetManager::insert(
 }
 
 void
+MeshAssetManager::insert(
+  const AssetId& id,
+  const VertexBuffer& buffer )
+{
+  const auto mesh = std::make_shared <Mesh> ();
+
+  mesh->vertexCount = buffer.vertices.size();
+  mesh->elementCount = buffer.indices.size();
+
+  std::lock_guard guard(mAssetsMutex);
+
+  fitMesh(*mesh);
+
+  mMeshes.resize(
+    mesh->firstVertexIndex + mesh->vertexCount,
+    mesh->firstElementIndex + mesh->elementCount );
+
+  const auto verticesData = static_cast <glm::vec3*> (mMeshes.verticesBuffer.data());
+  const auto texCoordsData = static_cast <glm::vec2*> (mMeshes.texCoordsBuffer.data());
+  const auto indicesData = static_cast <uint32_t*> (mMeshes.elementBuffer.data());
+
+  std::memcpy(
+    verticesData + mesh->firstVertexIndex,
+    buffer.vertices.data(),
+    BufferSize(buffer.vertices));
+
+  std::memcpy(
+    texCoordsData + mesh->firstVertexIndex,
+    buffer.uvCoordinates.data(),
+    types::BufferSize(buffer.uvCoordinates));
+
+  std::memcpy(
+    indicesData + mesh->firstElementIndex,
+    buffer.indices.data(),
+    BufferSize(buffer.indices));
+
+  insert(id, mesh);
+}
+
+void
 MeshAssetManager::remove(
   const AssetId& id )
 {

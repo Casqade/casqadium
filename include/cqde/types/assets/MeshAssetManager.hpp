@@ -3,6 +3,7 @@
 #include <cqde/alias.hpp>
 #include <cqde/types/graphics/Mesh.hpp>
 #include <cqde/types/graphics/MeshStorage.hpp>
+#include <cqde/types/graphics/VertexBuffer.hpp>
 
 #include <cqde/types/assets/AssetStatus.hpp>
 
@@ -47,7 +48,7 @@ class MeshAssetManager
     const AssetId&,
     const Path& );
 
-  void fitMesh( Mesh& segment ) const;
+  void fitMesh( Mesh& ) const;
 
 public:
   MeshAssetManager();
@@ -67,6 +68,10 @@ public:
   void insert(
     const AssetId&,
     AssetHandle res );
+
+  void insert(
+    const AssetId&,
+    const VertexBuffer& );
 
   void remove( const AssetId& );
 
