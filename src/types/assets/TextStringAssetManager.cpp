@@ -317,7 +317,9 @@ AssetManager <std::string>::ui_show(
       lines.pop_back();
   }
 
-  if ( ImGui::InputTextMultiline("##multiline", &lines) )
+  const auto targetSize = ImGui::GetContentRegionAvail();
+
+  if ( ImGui::InputTextMultiline("##multiline", &lines, targetSize) )
   {
     if ( entry.isArray() == true )
       entry.clear();
