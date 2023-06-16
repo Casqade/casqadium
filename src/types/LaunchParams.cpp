@@ -14,6 +14,8 @@ LaunchParams::LaunchParams(
 {
   CQDE_ASSERT_DEBUG(argc >= 1, return);
 
+  args.clear();
+
   for ( int i = 0; i < argc; ++i )
     args.push_back(argv[i]);
 }
