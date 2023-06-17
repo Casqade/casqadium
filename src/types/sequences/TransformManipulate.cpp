@@ -216,7 +216,7 @@ TransformManipulate::value(
       return mOffset + mAmplitude * std::cos(std::fma(angularFrequncy, input, mPhase));
 
     case MathFunctionType::Pulse:
-      return std::copysign(mAmplitude, std::sin(std::fma(angularFrequncy, input, mPhase)));
+      return mOffset + std::copysign(mAmplitude, std::sin(std::fma(angularFrequncy, input, mPhase)));
 
     case MathFunctionType::Triangle:
 //      return  mAmplitude * 4.0 / mPeriod * ( std::fmod(input - mPeriod * 0.25, mPeriod)
