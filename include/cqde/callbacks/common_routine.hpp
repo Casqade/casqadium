@@ -22,6 +22,10 @@ void entityRemove(
   entt::registry&,
   const std::vector <std::any>& args = {} );
 
+void entitiesRemove(
+  entt::registry&,
+  const std::vector <std::any>& args = {} );
+
 
 void entityUpdateOn(
   entt::registry&,
@@ -34,6 +38,7 @@ void entityUpdateOff(
 void entityUpdateToggle(
   entt::registry&,
   const std::vector <std::any>& args = {} );
+
 
 void entitiesUpdateOn(
   entt::registry&,
@@ -59,6 +64,7 @@ void entityInputOff(
 void entityInputToggle(
   entt::registry&,
   const std::vector <std::any>& args = {} );
+
 
 void entitiesInputOn(
   entt::registry&,

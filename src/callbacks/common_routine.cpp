@@ -113,6 +113,28 @@ entityRemove(
 }
 
 void
+entitiesRemove(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using types::EntityManager;
+  using compos::EntityList;
+
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+  auto& entityManager = registry.ctx().get <EntityManager> ();
+
+  auto& entityList = registry.get <const EntityList> (entity);
+
+  for ( const auto& entityId : entityList.entities )
+  {
+    const auto entity = entityId.get(registry);
+
+    if ( entity != entt::null )
+      entityManager.removeLater(entity);
+  }
+}
+
+void
 entityUpdateOn(
   entt::registry& registry,
   const std::vector <std::any>& args )

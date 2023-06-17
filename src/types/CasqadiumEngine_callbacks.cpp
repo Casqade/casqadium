@@ -55,10 +55,12 @@ CasqadiumEngine::registerCallbacks()
   callbackManager.Register("InteractProbe", interactProbe);
 
   callbackManager.Register("EntityRemove", entityRemove);
+  callbackManager.Register("EntitiesRemove", entitiesRemove);
 
   callbackManager.Register("EntityUpdateOn", entityUpdateOn);
   callbackManager.Register("EntityUpdateOff", entityUpdateOff);
   callbackManager.Register("EntityUpdateToggle", entityUpdateToggle);
+
   callbackManager.Register("EntitiesUpdateOn", entitiesUpdateOn);
   callbackManager.Register("EntitiesUpdateOff", entitiesUpdateOff);
   callbackManager.Register("EntitiesUpdateToggle", entitiesUpdateToggle);
@@ -66,6 +68,7 @@ CasqadiumEngine::registerCallbacks()
   callbackManager.Register("EntityInputOn", entityInputOn);
   callbackManager.Register("EntityInputOff", entityInputOff);
   callbackManager.Register("EntityInputToggle", entityInputToggle);
+
   callbackManager.Register("EntitiesInputOn", entitiesInputOn);
   callbackManager.Register("EntitiesInputOff", entitiesInputOff);
   callbackManager.Register("EntitiesInputToggle", entitiesInputToggle);
