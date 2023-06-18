@@ -132,8 +132,8 @@ loadAllAudioAssets(
 
   auto& assetManager = registry.ctx().get <AudioAssetManager> ();
 
-    for ( const auto& assetId : assetManager.assetIdList() )
-      assetManager.load({assetId});
+  for ( const auto& assetId : assetManager.assetIdList() )
+    assetManager.load({assetId});
 }
 
 void
@@ -145,8 +145,8 @@ loadAllFontAssets(
 
   auto& assetManager = registry.ctx().get <FontAssetManager> ();
 
-    for ( const auto& assetId : assetManager.assetIdList() )
-      assetManager.load({assetId});
+  for ( const auto& assetId : assetManager.assetIdList() )
+    assetManager.load({assetId});
 }
 
 void
@@ -158,8 +158,8 @@ loadAllMeshAssets(
 
   auto& assetManager = registry.ctx().get <MeshAssetManager> ();
 
-    for ( const auto& assetId : assetManager.assetIdList() )
-      assetManager.load({assetId});
+  for ( const auto& assetId : assetManager.assetIdList() )
+    assetManager.load({assetId});
 }
 
 void
@@ -171,8 +171,8 @@ loadAllTerrainAssets(
 
   auto& assetManager = registry.ctx().get <TerrainAssetManager> ();
 
-    for ( const auto& assetId : assetManager.assetIdList() )
-      assetManager.load({assetId});
+  for ( const auto& assetId : assetManager.assetIdList() )
+    assetManager.load({assetId});
 }
 
 void
@@ -184,8 +184,8 @@ loadAllTextStringAssets(
 
   auto& assetManager = registry.ctx().get <TextStringAssetManager> ();
 
-    for ( const auto& assetId : assetManager.assetIdList() )
-      assetManager.load({assetId});
+  for ( const auto& assetId : assetManager.assetIdList() )
+    assetManager.load({assetId});
 }
 
 void
@@ -197,8 +197,8 @@ loadAllTextureAssets(
 
   auto& assetManager = registry.ctx().get <TextureAssetManager> ();
 
-    for ( const auto& assetId : assetManager.assetIdList() )
-      assetManager.load({assetId});
+  for ( const auto& assetId : assetManager.assetIdList() )
+    assetManager.load({assetId});
 }
 
 
