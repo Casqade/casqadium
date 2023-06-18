@@ -244,6 +244,8 @@ PrefabManagerUi::ui_show(
       {
         IM_ASSERT(entitiesPayload->DataSize == sizeof(std::vector <entt::entity>));
 
+        prefabsState[prefabId].clear();
+
         const auto entities = *(const std::vector <entt::entity>*) entitiesPayload->Data;
 
         const auto& entityManager = registry.ctx().get <EntityManager> ();
@@ -259,9 +261,12 @@ PrefabManagerUi::ui_show(
       {
         IM_ASSERT(nodePayload->DataSize == sizeof(entt::entity));
 
+        prefabsState[prefabId].clear();
+
         const auto& entityManager = registry.ctx().get <EntityManager> ();
 
         const auto eDragged = *(const entt::entity*) nodePayload->Data;
+
         SerializeChildNode(registry, prefabsState[prefabId], eDragged,
                            {entityManager.componentType <EntityMetaInfo> ()});
       }
