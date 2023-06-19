@@ -107,7 +107,7 @@ SystemManager::Register(
   const Callback& callback,
   const Phase     phase )
 {
-  LOG_INFO("Registering system '{}'",
+  LOG_DEBUG("Registering system '{}'",
             systemId.str());
 
   auto pos = systemIter(systemId);
@@ -128,7 +128,7 @@ SystemManager::RegisterBefore(
   const Callback& callback,
   const Phase     phase )
 {
-  LOG_INFO("Registering system '{}' before '{}'",
+  LOG_DEBUG("Registering system '{}' before '{}'",
             systemId.str(), beforeId.str());
 
   const auto pos = systemIter(beforeId);
@@ -149,7 +149,7 @@ SystemManager::RegisterAfter(
   const Callback& callback,
   const Phase     phase )
 {
-  LOG_INFO("Registering system '{}' after '{}'",
+  LOG_DEBUG("Registering system '{}' after '{}'",
             systemId.str(), afterId.str());
 
   auto pos = systemIter(afterId);
