@@ -293,6 +293,8 @@ PhysicsDebugRenderSystem(
 
   debugDrawData.buffer.vao.bind();
 
+  glDepthMask(GL_FALSE);
+  glDisable(GL_DEPTH_TEST);
   glEnable(GL_SCISSOR_TEST);
   glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 
@@ -300,21 +302,25 @@ PhysicsDebugRenderSystem(
 
   glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
-  glViewport(
-    0, 0,
-    framebufferSize.x,
-    framebufferSize.y );
-
-  glScissor(
-    0, 0,
-    framebufferSize.x,
-    framebufferSize.y );
-
   for ( const auto&& [eCamera, cCamera, cCameraTransform]
           : registry.view <Camera, Transform, SubscriberUpdate> ().each() )
   {
+    const auto camViewport = cCamera.viewportScaled(framebufferSize);
+
     const auto camView = cCamera.viewMatrix(registry, eCamera, cCameraTransform);
     const auto camProjection = cCamera.projMatrix(framebufferSize) * camView;
+
+    glViewport(
+      camViewport.x,
+      camViewport.y,
+      camViewport.z,
+      camViewport.w );
+
+    glScissor(
+      camViewport.x,
+      camViewport.y,
+      camViewport.z,
+      camViewport.w );
 
     glUniformMatrix4fv( uTransform,
       1, GL_FALSE,
@@ -330,6 +336,8 @@ PhysicsDebugRenderSystem(
 
   debugDrawData.buffer.vao.unbind();
 
+  glDepthMask(GL_TRUE);
+  glEnable(GL_DEPTH_TEST);
   glDisable(GL_SCISSOR_TEST);
   glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 }
