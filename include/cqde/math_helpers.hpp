@@ -31,7 +31,8 @@ glm::vec2 rectCenter( const glm::vec4& );
 template <typename Vec,
   typename std::enable_if <std::is_arithmetic_v <decltype(Vec::x)>, bool>::type = true,
   typename std::enable_if <std::is_arithmetic_v <decltype(Vec::y)>, bool>::type = true>
-Rect boundingBox(
+Rect
+boundingBox(
   const std::vector <Vec>& vertices )
 {
   Rect result
@@ -82,9 +83,9 @@ template <typename Number, typename Generator,
   typename std::enable_if <std::is_integral_v <Number>, bool>::type = true>
 Number
 random(
-  Generator& rng,
   const Number min,
-  const Number max )
+  const Number max,
+  Generator& rng )
 {
   using Distribution = std::uniform_int_distribution <Number>;
 
@@ -95,9 +96,9 @@ template <typename Number, typename Generator,
   typename std::enable_if <std::is_floating_point_v <Number>, bool>::type = true>
 Number
 random(
-  Generator& rng,
   const Number min,
-  const Number max )
+  const Number max,
+  Generator& rng )
 {
   using Distribution = std::uniform_real_distribution <Number>;
 
@@ -112,9 +113,7 @@ random(
 {
   auto rng = randomNumberGenerator <Number> ();
 
-  return random(
-    rng,
-    min, max );
+  return random(min, max, rng);
 }
 
 } // namespace cqde
