@@ -349,6 +349,9 @@ target_sources(${TARGET} PRIVATE
   include/${CASQADIUM_SHORT}/types/ui/SystemManagerUi.hpp
 
 #  UI widgets
+  src/types/ui/widgets/IdSelector.cpp
+  include/${CASQADIUM_SHORT}/types/ui/widgets/IdSelector.hpp
+
   src/types/ui/widgets/ToggleButton.cpp
   include/${CASQADIUM_SHORT}/types/ui/widgets/ToggleButton.hpp
 

@@ -1,6 +1,6 @@
 #include <cqde/components/DrawableMesh.hpp>
 
-#include <cqde/types/ui/widgets/StringFilter.hpp>
+#include <cqde/types/ui/widgets/IdSelector.hpp>
 #include <cqde/types/assets/MeshAssetManager.hpp>
 #include <cqde/types/assets/TextureAssetManager.hpp>
 
@@ -17,62 +17,28 @@ DrawableMesh::ui_edit_props(
   const entt::entity,
   const entt::registry& registry )
 {
-  using ui::StringFilter;
+  using ui::IdSelector;
   using types::MeshAssetManager;
   using types::TextureAssetManager;
 
   if ( ImGui::CollapsingHeader("Mesh ID", ImGuiTreeNodeFlags_DefaultOpen) )
   {
-    static StringFilter meshFilter {"Mesh ID"};
+    static IdSelector meshSelector {"Mesh ID", "##meshId"};
 
     const auto meshes = registry.ctx().get <MeshAssetManager> ().assetIdList();
 
-    if ( ImGui::BeginCombo("##meshId", meshId.str().c_str()) )
-    {
-      if ( ImGui::IsWindowAppearing() )
-        ImGui::SetKeyboardFocusHere(2);
-
-      meshFilter.search({}, ImGuiInputTextFlags_AutoSelectAll);
-
-      for ( const auto& mesh : meshes )
-      {
-        if ( meshFilter.query(mesh.str()) == false )
-          continue;
-
-        const bool selected = (meshId == mesh);
-
-        if ( ImGui::Selectable(mesh.str().c_str(), selected) )
-          meshId = mesh;
-      }
-      ImGui::EndCombo();
-    }
+    meshSelector.select(
+      registry, meshId, meshes );
   }
 
   if ( ImGui::CollapsingHeader("Texture ID", ImGuiTreeNodeFlags_DefaultOpen) )
   {
-    static StringFilter textureFilter {"Texture ID"};
+    static IdSelector textureSelector {"Texture ID", "##textureId"};
 
     const auto textures = registry.ctx().get <TextureAssetManager> ().assetIdList();
 
-    if ( ImGui::BeginCombo("##textureId", textureId.str().c_str()) )
-    {
-      if ( ImGui::IsWindowAppearing() )
-        ImGui::SetKeyboardFocusHere(2);
-
-      textureFilter.search({}, ImGuiInputTextFlags_AutoSelectAll);
-
-      for ( const auto& texture : textures )
-      {
-        if ( textureFilter.query(texture.str()) == false )
-          continue;
-
-        const bool selected = (textureId == texture);
-
-        if ( ImGui::Selectable(texture.str().c_str(), selected) )
-          textureId = texture;
-      }
-      ImGui::EndCombo();
-    }
+    textureSelector.select(
+      registry, textureId, textures );
   }
 }
 

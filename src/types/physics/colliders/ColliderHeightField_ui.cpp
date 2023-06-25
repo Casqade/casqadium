@@ -3,7 +3,7 @@
 #include <cqde/conversion/rp3d_glm.hpp>
 
 #include <cqde/types/assets/TerrainAssetManager.hpp>
-#include <cqde/types/ui/widgets/StringFilter.hpp>
+#include <cqde/types/ui/widgets/IdSelector.hpp>
 
 #include <entt/entity/registry.hpp>
 
@@ -21,46 +21,30 @@ void
 ColliderHeightField::ui_show(
   const entt::registry& registry )
 {
-  using ui::StringFilter;
+  using ui::IdSelector;
 
   if ( ImGui::CollapsingHeader("Terrain ID", ImGuiTreeNodeFlags_DefaultOpen) )
   {
-    static StringFilter terrainFilter {"Terrain ID"};
+    static IdSelector terrainSelector {"Terrain ID", "##terrainId"};
 
     const auto& terrainManager = registry.ctx().get <TerrainAssetManager> ();
 
-    if ( ImGui::BeginCombo("##terrainId", mTerrainId.str().c_str()) )
+    const bool selected = terrainSelector.select(
+      registry, mTerrainId, terrainManager.assetIdList() );
+
+    if ( selected == true )
     {
-      if ( ImGui::IsWindowAppearing() )
-        ImGui::SetKeyboardFocusHere(2);
+      const auto terrain = terrainManager.try_get(mTerrainId);
 
-      terrainFilter.search({}, ImGuiInputTextFlags_AutoSelectAll);
+      mShape->setMinMaxHeight(terrain->heightRange.first,
+                              terrain->heightRange.second);
 
-      for ( const auto& asset : terrainManager.assetIdList() )
-      {
-        if ( terrainFilter.query(asset.str()) == false )
-          continue;
+      mShape->setNbColumns(terrain->grid.columns);
+      mShape->setNbRows(terrain->grid.rows);
 
-        const bool selected = (mTerrainId == asset);
+      mShape->setHeightFieldData(terrain->data.data());
 
-        if ( ImGui::Selectable(asset.str().c_str(), selected) )
-        {
-          mTerrainId = asset;
-
-          const auto terrain = terrainManager.try_get(mTerrainId);
-
-          mShape->setMinMaxHeight(terrain->heightRange.first,
-                                  terrain->heightRange.second);
-
-          mShape->setNbColumns(terrain->grid.columns);
-          mShape->setNbRows(terrain->grid.rows);
-
-          mShape->setHeightFieldData(terrain->data.data());
-
-          mShape->computeLocalAABB();
-        }
-      }
-      ImGui::EndCombo();
+      mShape->computeLocalAABB();
     }
   }
 

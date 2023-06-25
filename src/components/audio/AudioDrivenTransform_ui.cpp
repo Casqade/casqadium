@@ -1,7 +1,7 @@
 #include <cqde/components/audio/AudioDrivenTransform.hpp>
 
 #include <cqde/conversion/enum_strings.hpp>
-#include <cqde/types/ui/widgets/StringFilter.hpp>
+#include <cqde/types/ui/widgets/IdSelector.hpp>
 #include <cqde/types/EntityManager.hpp>
 
 #include <entt/entity/registry.hpp>
@@ -17,7 +17,7 @@ AudioDrivenTransform::ui_edit_props(
   const entt::entity entity,
   const entt::registry& registry )
 {
-  using ui::StringFilter;
+  using ui::IdSelector;
   using types::EntityManager;
 
   const auto flags = ImGuiSliderFlags_NoRoundToFormat |
@@ -25,29 +25,12 @@ AudioDrivenTransform::ui_edit_props(
 
   if ( ImGui::CollapsingHeader("Source entity", ImGuiTreeNodeFlags_DefaultOpen) )
   {
+    static IdSelector entityFilter {"Entity ID", "##entitySourceId"};
+
     const auto entityList = registry.ctx().get <EntityManager> ().entities();
 
-    static StringFilter entityFilter {"Entity ID"};
-
-    if ( ImGui::BeginCombo("##entitySourceId", sourceEntity.id.str().c_str()) )
-    {
-      if ( ImGui::IsWindowAppearing() )
-        ImGui::SetKeyboardFocusHere(2);
-
-      entityFilter.search({}, ImGuiInputTextFlags_AutoSelectAll);
-
-      for ( const auto& entityId : entityList )
-      {
-        if ( entityFilter.query(entityId.str()) == false )
-          continue;
-
-        const bool selected = (sourceEntity == entityId);
-
-        if ( ImGui::Selectable(entityId.str().c_str(), selected) )
-          sourceEntity = entityId;
-      }
-      ImGui::EndCombo();
-    }
+    entityFilter.select(
+      registry, sourceEntity.id, entityList );
   }
 
   if ( ImGui::CollapsingHeader("Operation", ImGuiTreeNodeFlags_DefaultOpen) )

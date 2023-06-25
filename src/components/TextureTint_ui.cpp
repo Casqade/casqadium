@@ -13,8 +13,6 @@ TextureTint::ui_edit_props(
   const entt::entity,
   const entt::registry& registry )
 {
-  using ui::StringFilter;
-
   if ( ImGui::CollapsingHeader("Tint", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
 

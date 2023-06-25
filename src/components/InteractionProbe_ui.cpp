@@ -1,6 +1,6 @@
 #include <cqde/components/InteractionProbe.hpp>
 
-#include <cqde/types/ui/widgets/StringFilter.hpp>
+#include <cqde/types/ui/widgets/IdSelector.hpp>
 #include <cqde/types/EntityManager.hpp>
 
 #include <entt/entity/registry.hpp>
@@ -16,7 +16,7 @@ InteractionProbe::ui_edit_props(
   const entt::entity entity,
   const entt::registry& registry )
 {
-  using ui::StringFilter;
+  using ui::IdSelector;
   using types::EntityManager;
 
   const auto flags = ImGuiSliderFlags_NoRoundToFormat |
@@ -26,27 +26,10 @@ InteractionProbe::ui_edit_props(
   {
     const auto entityList = registry.ctx().get <EntityManager> ().entities();
 
-    static StringFilter entityFilter {"Entity ID"};
+    static IdSelector entitySelector {"Entity ID", "##listenerId"};
 
-    if ( ImGui::BeginCombo("##listenerId", listener.id.str().c_str()) )
-    {
-      if ( ImGui::IsWindowAppearing() )
-        ImGui::SetKeyboardFocusHere(2);
-
-      entityFilter.search({}, ImGuiInputTextFlags_AutoSelectAll);
-
-      for ( const auto& entityId : entityList )
-      {
-        if ( entityFilter.query(entityId.str()) == false )
-          continue;
-
-        const bool selected = (listener == entityId);
-
-        if ( ImGui::Selectable(entityId.str().c_str(), selected) )
-          listener = entityId;
-      }
-      ImGui::EndCombo();
-    }
+    entitySelector.select(
+      registry, listener.id, entityList );
   }
 }
 

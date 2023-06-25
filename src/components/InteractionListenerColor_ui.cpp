@@ -13,8 +13,6 @@ InteractionListenerColor::ui_edit_props(
   const entt::entity,
   const entt::registry& registry )
 {
-  using ui::StringFilter;
-
   if ( ImGui::CollapsingHeader("Color", ImGuiTreeNodeFlags_DefaultOpen) )
   {
     float colorBuffer[4]

@@ -2,7 +2,6 @@
 
 #include <cqde/components/Tag.hpp>
 #include <cqde/conversion/enum_strings.hpp>
-#include <cqde/types/ui/widgets/StringFilter.hpp>
 
 #include <entt/entity/registry.hpp>
 
@@ -21,7 +20,6 @@ TransformManipulate::ui_show(
 {
   using compos::Tag;
   using compos::TextureTint;
-  using ui::StringFilter;
 
   const auto flags = ImGuiSliderFlags_AlwaysClamp |
                      ImGuiSliderFlags_NoRoundToFormat;

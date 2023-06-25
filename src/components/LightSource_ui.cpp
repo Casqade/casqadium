@@ -13,8 +13,6 @@ LightSource::ui_edit_props(
   const entt::entity,
   const entt::registry& registry )
 {
-  using ui::StringFilter;
-
   const auto flags = ImGuiSliderFlags_AlwaysClamp |
                      ImGuiSliderFlags_NoRoundToFormat;
 

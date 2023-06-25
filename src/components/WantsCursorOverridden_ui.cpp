@@ -1,6 +1,6 @@
 #include <cqde/components/WantsCursorOverridden.hpp>
 
-#include <cqde/types/ui/widgets/StringFilter.hpp>
+#include <cqde/types/ui/widgets/IdSelector.hpp>
 #include <cqde/types/assets/MouseCursorAssetManager.hpp>
 
 #include <entt/entity/registry.hpp>
@@ -16,35 +16,18 @@ WantsCursorOverridden::ui_edit_props(
   const entt::entity,
   const entt::registry& registry )
 {
-  using ui::StringFilter;
+  using ui::IdSelector;
   using types::MouseCursorAssetManager;
 
   if ( ImGui::CollapsingHeader("Mouse cursor ID", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
 
-  static StringFilter cursorFilter {"Mouse cursor ID"};
+  static IdSelector cursorFilter {"Mouse cursor ID", "cursorId"};
 
-  const auto assets = registry.ctx().get <MouseCursorAssetManager> ().assetIdList();
+  const auto cursors = registry.ctx().get <MouseCursorAssetManager> ().assetIdList();
 
-  if ( ImGui::BeginCombo("##cursorId", cursor.str().c_str()) )
-  {
-    if ( ImGui::IsWindowAppearing() )
-      ImGui::SetKeyboardFocusHere(2);
-
-    cursorFilter.search({}, ImGuiInputTextFlags_AutoSelectAll);
-
-    for ( const auto& asset : assets )
-    {
-      if ( cursorFilter.query(asset.str()) == false )
-        continue;
-
-      const bool selected = (cursor == asset);
-
-      if ( ImGui::Selectable(asset.str().c_str(), selected) )
-        cursor = asset;
-    }
-    ImGui::EndCombo();
-  }
+  cursorFilter.select(
+    registry, cursor, cursors );
 }
 
 } // namespace cqde::compos

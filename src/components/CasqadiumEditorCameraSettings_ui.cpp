@@ -13,8 +13,6 @@ CasqadiumEditorCameraSettings::ui_edit_props(
   const entt::entity,
   const entt::registry& registry )
 {
-  using ui::StringFilter;
-
   if ( ImGui::CollapsingHeader("Speed", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
 
