@@ -18,6 +18,16 @@ EntityReference::EntityReference(
   : id{tag.id}
 {}
 
+EntityReference&
+EntityReference::operator = (
+  const EntityId& id )
+{
+  this->id = id;
+  entity = entt::null;
+
+  return *this;
+}
+
 entt::entity
 EntityReference::get(
   const entt::registry& registry ) const
