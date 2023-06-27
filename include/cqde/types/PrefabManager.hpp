@@ -27,6 +27,9 @@ public:
   void load( const path& );
   void clear();
 
+  std::vector <std::string> prefabNamesList() const;
+  std::vector <PrefabId> prefabIdList() const;
+
   Json::Value serialize() const;
 
   static void Validate( const Json::Value& );

@@ -91,6 +91,32 @@ PrefabManager::clear()
   mPrefabs.clear();
 }
 
+std::vector <std::string>
+PrefabManager::prefabNamesList() const
+{
+  return mPrefabs.getMemberNames();
+}
+
+std::vector <PrefabId>
+PrefabManager::prefabIdList() const
+{
+  const auto prefabNames = prefabNamesList();
+
+  std::vector <PrefabId> result {};
+  result.resize(prefabNames.size());
+
+  std::transform(
+    prefabNames.begin(),
+    prefabNames.end(),
+    result.begin(),
+  [] ( const auto& prefabId )
+  {
+    return prefabId;
+  });
+
+  return result;
+}
+
 void
 PrefabManager::deserialize(
   const Json::Value& prefabDbJson )
