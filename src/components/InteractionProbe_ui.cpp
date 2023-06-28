@@ -16,7 +16,6 @@ InteractionProbe::ui_edit_props(
   const entt::entity entity,
   const entt::registry& registry )
 {
-  using ui::IdSelector;
   using types::EntityManager;
 
   const auto flags = ImGuiSliderFlags_NoRoundToFormat |
@@ -24,12 +23,13 @@ InteractionProbe::ui_edit_props(
 
   if ( ImGui::CollapsingHeader("Listener entity", ImGuiTreeNodeFlags_DefaultOpen) )
   {
-    const auto entityList = registry.ctx().get <EntityManager> ().entities();
+    static ui::IdSelector entitySelector {
+      "Entity ID", "##listenerId" };
 
-    static IdSelector entitySelector {"Entity ID", "##listenerId"};
+    auto& entityManager = registry.ctx().get <EntityManager> ();
 
-    entitySelector.select(
-      registry, listener.id, entityList );
+    entitySelector.selectCombo(
+      listener.id, entityManager.entities() );
   }
 }
 

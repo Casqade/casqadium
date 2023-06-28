@@ -1,7 +1,7 @@
 #include <cqde/components/assets/TextureAssetList.hpp>
 #include <cqde/types/assets/TextureAssetManager.hpp>
 
-#include <cqde/types/ui/widgets/StringFilter.hpp>
+#include <cqde/types/ui/widgets/IdSelector.hpp>
 
 #include <entt/entity/registry.hpp>
 
@@ -24,46 +24,30 @@ TextureAssetList::ui_edit_props(
   if ( ImGui::CollapsingHeader("Textures", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
 
-  const auto textureList = registry.ctx().get <TextureAssetManager> ().assetIdList();
+  const auto textureAddPopupLabel {"##textureAddPopup"};
 
-  static ui::StringFilter textureFilter {"Texture ID"};
+  static ui::IdSelector textureSelector {
+    "Texture ID", textureAddPopupLabel };
 
   if ( ImGui::SmallButton("+##textureAdd") )
-    ImGui::OpenPopup("##textureAddPopup");
+    ImGui::OpenPopup(textureAddPopupLabel);
 
-  if ( ImGui::BeginPopup("##textureAddPopup") )
-  {
-    if ( ImGui::IsWindowAppearing() )
-      ImGui::SetKeyboardFocusHere(2);
+  auto& textureManager = registry.ctx().get <TextureAssetManager> ();
 
-    textureFilter.search({}, ImGuiInputTextFlags_AutoSelectAll);
-
-    bool texturesFound {};
-
-    for ( const auto& textureId : textureList )
+  textureSelector.selectPopup(
+    textureManager.assetIdList(),
+    [&textures = textures] ( const auto& textureId )
     {
-      if ( textureFilter.query(textureId.str()) == false )
-        continue;
+      textures.insert(textureId);
+    },
+    [&textures = textures] ( const auto& textureId )
+    {
+      return std::find(
+        textures.begin(),
+        textures.end(),
+        textureId ) == textures.end();
+    });
 
-      if ( std::find(textures.begin(), textures.end(),
-                     textureId) != textures.end() )
-        continue;
-
-      texturesFound = true;
-
-      if ( ImGui::Selectable(textureId.str().c_str(), false) )
-      {
-        textures.insert(textureId);
-        ImGui::CloseCurrentPopup();
-        break;
-      }
-    }
-
-    if ( texturesFound == false )
-      ImGui::Text("No textures matching filter");
-
-    ImGui::EndPopup(); // textureAddPopup
-  }
 
   ImGui::Separator();
 

@@ -1,7 +1,7 @@
 #include <cqde/components/assets/MouseCursorAssetList.hpp>
 #include <cqde/types/assets/MouseCursorAssetManager.hpp>
 
-#include <cqde/types/ui/widgets/StringFilter.hpp>
+#include <cqde/types/ui/widgets/IdSelector.hpp>
 
 #include <entt/entity/registry.hpp>
 
@@ -24,46 +24,30 @@ MouseCursorAssetList::ui_edit_props(
   if ( ImGui::CollapsingHeader("Mouse cursors", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
 
-  const auto cursorList = registry.ctx().get <MouseCursorAssetManager> ().assetIdList();
+  const auto cursorAddPopupLabel {"##cursorAddPopup"};
 
-  static ui::StringFilter cursorFilter {"Mouse Cursor ID"};
+  static ui::IdSelector cursorSelector {
+    "Mouse cursor ID", cursorAddPopupLabel };
 
   if ( ImGui::SmallButton("+##cursorAdd") )
-    ImGui::OpenPopup("##cursorAddPopup");
+    ImGui::OpenPopup(cursorAddPopupLabel);
 
-  if ( ImGui::BeginPopup("##cursorAddPopup") )
-  {
-    if ( ImGui::IsWindowAppearing() )
-      ImGui::SetKeyboardFocusHere(2);
+  auto& cursorManager = registry.ctx().get <MouseCursorAssetManager> ();
 
-    cursorFilter.search({}, ImGuiInputTextFlags_AutoSelectAll);
-
-    bool cursorFound {};
-
-    for ( const auto& cursorId : cursorList )
+  cursorSelector.selectPopup(
+    cursorManager.assetIdList(),
+    [&cursors = cursors] ( const auto& cursorId )
     {
-      if ( cursorFilter.query(cursorId.str()) == false )
-        continue;
+      cursors.insert(cursorId);
+    },
+    [&cursors = cursors] ( const auto& cursorId )
+    {
+      return std::find(
+        cursors.begin(),
+        cursors.end(),
+        cursorId ) == cursors.end();
+    });
 
-      if ( std::find(cursors.begin(), cursors.end(),
-                     cursorId) != cursors.end() )
-        continue;
-
-      cursorFound = true;
-
-      if ( ImGui::Selectable(cursorId.str().c_str(), false) )
-      {
-        cursors.insert(cursorId);
-        ImGui::CloseCurrentPopup();
-        break;
-      }
-    }
-
-    if ( cursorFound == false )
-      ImGui::Text("No mouse cursors matching filter");
-
-    ImGui::EndPopup(); // cursorAddPopup
-  }
 
   ImGui::Separator();
 

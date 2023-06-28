@@ -27,7 +27,7 @@ public:
 
   std::shared_ptr <SequenceStep> create( const std::string& id ) const;
 
-  std::vector <std::string> sequences() const;
+  std::vector <identifier> sequences() const;
 };
 
 template <class T>

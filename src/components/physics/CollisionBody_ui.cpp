@@ -2,7 +2,7 @@
 
 #include <cqde/types/physics/ColliderFactory.hpp>
 
-#include <cqde/types/ui/widgets/StringFilter.hpp>
+#include <cqde/types/ui/widgets/IdSelector.hpp>
 
 #include <entt/entity/registry.hpp>
 
@@ -35,41 +35,28 @@ CollisionBody::ui_edit_props(
   if ( ImGui::CollapsingHeader("Colliders", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
 
-  static ui::StringFilter shapeFilter {"Shape ID"};
-
   static bool colliderWindowOpened {};
   static int32_t selectedCollider = {-1};
 
+  const auto colliderAddPopupLabel {"##colliderAddPopup"};
+
+  static ui::IdSelector colliderSelector {
+    "Shape ID", colliderAddPopupLabel };
+
   if ( ImGui::SmallButton("+##colliderAdd") )
-    ImGui::OpenPopup("##colliderAddPopup");
+    ImGui::OpenPopup(colliderAddPopupLabel);
 
-  if ( ImGui::BeginPopup("##colliderAddPopup") )
-  {
-    if ( ImGui::IsWindowAppearing() )
-      ImGui::SetKeyboardFocusHere(2);
+  const auto& colliderFactory = registry.ctx().get <ColliderFactory> ();
 
-    shapeFilter.search({}, ImGuiInputTextFlags_AutoSelectAll);
-
-    const auto& colliderFactory = registry.ctx().get <ColliderFactory> ();
-
-    for ( const auto& shapeId : colliderFactory.colliders() )
+  colliderSelector.selectPopup(
+    colliderFactory.colliderIds(),
+    [&body = body, &colliders = colliders, &colliderFactory, &registry]
+    ( const identifier& shapeId )
     {
-      if ( shapeFilter.query(shapeId) == false )
-        continue;
-
-      if ( ImGui::Selectable(shapeId.c_str(), false) )
-      {
-        const auto collider = colliderFactory.create(shapeId);
-        collider->init(registry, body);
-        colliders.push_back(collider);
-
-        ImGui::CloseCurrentPopup();
-        break;
-      }
-    }
-
-    ImGui::EndPopup(); // colliderAddPopup
-  }
+      const auto collider = colliderFactory.create(shapeId.str());
+      collider->init(registry, body);
+      colliders.push_back(collider);
+    } );
 
   ImGui::Separator();
 

@@ -1,7 +1,7 @@
 #include <cqde/components/EntityList.hpp>
 #include <cqde/types/EntityManager.hpp>
 
-#include <cqde/types/ui/widgets/StringFilter.hpp>
+#include <cqde/types/ui/widgets/IdSelector.hpp>
 
 #include <entt/entity/registry.hpp>
 
@@ -24,46 +24,26 @@ EntityList::ui_edit_props(
   if ( ImGui::CollapsingHeader("Entities", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
 
-  const auto entityList = registry.ctx().get <EntityManager> ().entities();
+  const auto entityAddPopupLabel {"##entityAddPopup"};
 
-  static ui::StringFilter entityFilter {"Entity ID"};
+  static ui::IdSelector entitySelector {
+    "Entity ID", entityAddPopupLabel };
 
   if ( ImGui::SmallButton("+##entityAdd") )
-    ImGui::OpenPopup("##entityAddPopup");
+    ImGui::OpenPopup(entityAddPopupLabel);
 
-  if ( ImGui::BeginPopup("##entityAddPopup") )
-  {
-    if ( ImGui::IsWindowAppearing() )
-      ImGui::SetKeyboardFocusHere(2);
+  auto& entityManager = registry.ctx().get <EntityManager> ();
 
-    entityFilter.search({}, ImGuiInputTextFlags_AutoSelectAll);
-
-    bool entitiesFound {};
-
-    for ( const auto& entityId : entityList )
+  entitySelector.selectPopup(
+    entityManager.entities(),
+    [&entities = entities] ( const auto& entityId )
     {
-      if ( entityFilter.query(entityId.str()) == false )
-        continue;
-
-      if ( std::find(entities.begin(), entities.end(),
-                     entityId) != entities.end() )
-        continue;
-
-      entitiesFound = true;
-
-      if ( ImGui::Selectable(entityId.str().c_str(), false) )
-      {
-        entities.insert(entityId);
-        ImGui::CloseCurrentPopup();
-        break;
-      }
-    }
-
-    if ( entitiesFound == false )
-      ImGui::Text("No entities matching filter");
-
-    ImGui::EndPopup(); // entityAddPopup
-  }
+      entities.insert(entityId);
+    },
+    [&entities = entities] ( const auto& id )
+    {
+      return entities.count(id) == 0;
+    });
 
   ImGui::Separator();
 

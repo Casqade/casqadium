@@ -17,7 +17,6 @@ AudioDrivenTransform::ui_edit_props(
   const entt::entity entity,
   const entt::registry& registry )
 {
-  using ui::IdSelector;
   using types::EntityManager;
 
   const auto flags = ImGuiSliderFlags_NoRoundToFormat |
@@ -25,12 +24,14 @@ AudioDrivenTransform::ui_edit_props(
 
   if ( ImGui::CollapsingHeader("Source entity", ImGuiTreeNodeFlags_DefaultOpen) )
   {
-    static IdSelector entityFilter {"Entity ID", "##entitySourceId"};
+    static ui::IdSelector entityFilter {
+      "Entity ID", "##entitySourceId" };
 
-    const auto entityList = registry.ctx().get <EntityManager> ().entities();
+    auto& entityManager = registry.ctx().get <EntityManager> ();
 
-    entityFilter.select(
-      registry, sourceEntity.id, entityList );
+    entityFilter.selectCombo(
+      sourceEntity.id,
+      entityManager.entities() );
   }
 
   if ( ImGui::CollapsingHeader("Operation", ImGuiTreeNodeFlags_DefaultOpen) )

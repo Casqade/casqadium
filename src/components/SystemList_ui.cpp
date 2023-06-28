@@ -1,7 +1,7 @@
 #include <cqde/components/SystemList.hpp>
 #include <cqde/types/SystemManager.hpp>
 
-#include <cqde/types/ui/widgets/StringFilter.hpp>
+#include <cqde/types/ui/widgets/IdSelector.hpp>
 
 #include <entt/entity/registry.hpp>
 
@@ -24,46 +24,30 @@ SystemList::ui_edit_props(
   if ( ImGui::CollapsingHeader("Systems", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
 
-  const auto systemList = registry.ctx().get <SystemManager> ().systems();
+  auto& systemManager = registry.ctx().get <SystemManager> ();
 
-  static ui::StringFilter systemFilter {"System ID"};
+  const auto systemAddPopupLabel {"##systemAddPopup"};
+
+  static ui::IdSelector systemSelector {
+    "System ID", systemAddPopupLabel };
 
   if ( ImGui::SmallButton("+##systemAdd") )
-    ImGui::OpenPopup("##systemAddPopup");
+    ImGui::OpenPopup(systemAddPopupLabel);
 
-  if ( ImGui::BeginPopup("##systemAddPopup") )
-  {
-    if ( ImGui::IsWindowAppearing() )
-      ImGui::SetKeyboardFocusHere(2);
-
-    systemFilter.search({}, ImGuiInputTextFlags_AutoSelectAll);
-
-    bool systemsFound {};
-
-    for ( const auto& systemId : systemList )
+  systemSelector.selectPopup(
+    systemManager.systems(),
+    [&systems = systems] ( const auto& systemId )
     {
-      if ( systemFilter.query(systemId.str()) == false )
-        continue;
+      systems.insert(systemId);
+    },
+    [&systems = systems] ( const auto& systemId )
+    {
+      return std::find(
+        systems.begin(),
+        systems.end(),
+        systemId ) == systems.end();
+    });
 
-      if ( std::find(systems.begin(), systems.end(),
-                     systemId) != systems.end() )
-        continue;
-
-      systemsFound = true;
-
-      if ( ImGui::Selectable(systemId.str().c_str(), false) )
-      {
-        systems.insert(systemId);
-        ImGui::CloseCurrentPopup();
-        break;
-      }
-    }
-
-    if ( systemsFound == false )
-      ImGui::Text("No systems matching filter");
-
-    ImGui::EndPopup(); // systemAddPopup
-  }
 
   ImGui::Separator();
 

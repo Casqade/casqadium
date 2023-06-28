@@ -14,10 +14,10 @@ ColliderFactory::create(
   return {};
 }
 
-std::vector <std::string>
-ColliderFactory::colliders() const
+std::vector <identifier>
+ColliderFactory::colliderIds() const
 {
-  std::vector <std::string> result {};
+  std::vector <identifier> result {};
   result.reserve(mColliders.size());
 
   for ( const auto& [id, creator] : mColliders )

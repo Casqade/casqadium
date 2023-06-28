@@ -1,7 +1,7 @@
 #include <cqde/components/assets/MeshAssetList.hpp>
 #include <cqde/types/assets/MeshAssetManager.hpp>
 
-#include <cqde/types/ui/widgets/StringFilter.hpp>
+#include <cqde/types/ui/widgets/IdSelector.hpp>
 
 #include <entt/entity/registry.hpp>
 
@@ -24,46 +24,30 @@ MeshAssetList::ui_edit_props(
   if ( ImGui::CollapsingHeader("Meshes", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
 
-  const auto meshList = registry.ctx().get <MeshAssetManager> ().assetIdList();
+  const auto meshAddPopupLabel {"##meshAddPopup"};
 
-  static ui::StringFilter meshFilter {"Mesh ID"};
+  static ui::IdSelector meshSelector {
+    "Mesh ID", meshAddPopupLabel };
 
   if ( ImGui::SmallButton("+##meshAdd") )
-    ImGui::OpenPopup("##meshAddPopup");
+    ImGui::OpenPopup(meshAddPopupLabel);
 
-  if ( ImGui::BeginPopup("##meshAddPopup") )
-  {
-    if ( ImGui::IsWindowAppearing() )
-      ImGui::SetKeyboardFocusHere(2);
+  const auto& meshManager = registry.ctx().get <MeshAssetManager> ();
 
-    meshFilter.search({}, ImGuiInputTextFlags_AutoSelectAll);
-
-    bool meshFound {};
-
-    for ( const auto& meshId : meshList )
+  meshSelector.selectPopup(
+    meshManager.assetIdList(),
+    [&meshes = meshes] ( const auto& meshId )
     {
-      if ( meshFilter.query(meshId.str()) == false )
-        continue;
+      meshes.insert(meshId);
+    },
+    [&meshes = meshes] ( const auto& meshId )
+    {
+      return std::find(
+        meshes.begin(),
+        meshes.end(),
+        meshId ) == meshes.end();
+    });
 
-      if ( std::find(meshes.begin(), meshes.end(),
-                     meshId) != meshes.end() )
-        continue;
-
-      meshFound = true;
-
-      if ( ImGui::Selectable(meshId.str().c_str(), false) )
-      {
-        meshes.insert(meshId);
-        ImGui::CloseCurrentPopup();
-        break;
-      }
-    }
-
-    if ( meshFound == false )
-      ImGui::Text("No meshes matching filter");
-
-    ImGui::EndPopup(); // meshAddPopup
-  }
 
   ImGui::Separator();
 

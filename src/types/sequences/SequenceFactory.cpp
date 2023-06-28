@@ -14,10 +14,10 @@ SequenceFactory::create(
   return {};
 }
 
-std::vector <std::string>
+std::vector <identifier>
 SequenceFactory::sequences() const
 {
-  std::vector <std::string> sequences {};
+  std::vector <identifier> sequences {};
 
   for ( const auto& [id, creator] : mSequences )
     sequences.push_back(id);

@@ -16,18 +16,18 @@ WantsCursorOverridden::ui_edit_props(
   const entt::entity,
   const entt::registry& registry )
 {
-  using ui::IdSelector;
   using types::MouseCursorAssetManager;
 
   if ( ImGui::CollapsingHeader("Mouse cursor ID", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
 
-  static IdSelector cursorFilter {"Mouse cursor ID", "cursorId"};
+  static ui::IdSelector cursorFilter {
+    "Mouse cursor ID", "##cursorId" };
 
-  const auto cursors = registry.ctx().get <MouseCursorAssetManager> ().assetIdList();
+  auto& cursors = registry.ctx().get <MouseCursorAssetManager> ();
 
-  cursorFilter.select(
-    registry, cursor, cursors );
+  cursorFilter.selectCombo(
+    cursor, cursors.assetIdList() );
 }
 
 } // namespace cqde::compos

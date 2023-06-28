@@ -1,7 +1,7 @@
 #include <cqde/components/assets/FontAssetList.hpp>
 #include <cqde/types/assets/FontAssetManager.hpp>
 
-#include <cqde/types/ui/widgets/StringFilter.hpp>
+#include <cqde/types/ui/widgets/IdSelector.hpp>
 
 #include <entt/entity/registry.hpp>
 
@@ -24,46 +24,30 @@ FontAssetList::ui_edit_props(
   if ( ImGui::CollapsingHeader("Fonts", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
 
-  const auto fontList = registry.ctx().get <FontAssetManager> ().assetIdList();
+  const auto fontAddPopupLabel {"##fontAddPopup"};
 
-  static ui::StringFilter fontFilter {"Font ID"};
+  static ui::IdSelector fontSelector {
+    "Font ID", fontAddPopupLabel };
 
   if ( ImGui::SmallButton("+##fontAdd") )
-    ImGui::OpenPopup("##fontAddPopup");
+    ImGui::OpenPopup(fontAddPopupLabel);
 
-  if ( ImGui::BeginPopup("##fontAddPopup") )
-  {
-    if ( ImGui::IsWindowAppearing() )
-      ImGui::SetKeyboardFocusHere(2);
+  auto& fontManager = registry.ctx().get <FontAssetManager> ();
 
-    fontFilter.search({}, ImGuiInputTextFlags_AutoSelectAll);
-
-    bool fontsFound {};
-
-    for ( const auto& fontId : fontList )
+  fontSelector.selectPopup(
+    fontManager.assetIdList(),
+    [&fonts = fonts] ( const auto& fontId )
     {
-      if ( fontFilter.query(fontId.str()) == false )
-        continue;
+      fonts.insert(fontId);
+    },
+    [&fonts = fonts] ( const auto& fontId )
+    {
+      return std::find(
+        fonts.begin(),
+        fonts.end(),
+        fontId ) == fonts.end();
+    });
 
-      if ( std::find(fonts.begin(), fonts.end(),
-                     fontId) != fonts.end() )
-        continue;
-
-      fontsFound = true;
-
-      if ( ImGui::Selectable(fontId.str().c_str(), false) )
-      {
-        fonts.insert(fontId);
-        ImGui::CloseCurrentPopup();
-        break;
-      }
-    }
-
-    if ( fontsFound == false )
-      ImGui::Text("No fonts matching filter");
-
-    ImGui::EndPopup(); // fontAddPopup
-  }
 
   ImGui::Separator();
 

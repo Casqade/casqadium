@@ -21,16 +21,15 @@ void
 ColliderHeightField::ui_show(
   const entt::registry& registry )
 {
-  using ui::IdSelector;
-
   if ( ImGui::CollapsingHeader("Terrain ID", ImGuiTreeNodeFlags_DefaultOpen) )
   {
-    static IdSelector terrainSelector {"Terrain ID", "##terrainId"};
+    static ui::IdSelector terrainSelector {
+      "Terrain ID", "##terrainId" };
 
     const auto& terrainManager = registry.ctx().get <TerrainAssetManager> ();
 
-    const bool selected = terrainSelector.select(
-      registry, mTerrainId, terrainManager.assetIdList() );
+    const bool selected = terrainSelector.selectCombo(
+      mTerrainId, terrainManager.assetIdList() );
 
     if ( selected == true )
     {

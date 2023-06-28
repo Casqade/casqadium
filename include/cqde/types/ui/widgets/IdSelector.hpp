@@ -15,17 +15,40 @@ class IdSelector
 {
   StringFilter mIdFilter {"ID"};
 
-  std::string mComboLabel {"##idSelectorComboId"};
+  std::string mLabel {"##idSelector"};
 
 public:
+  using UserFilter = std::function <bool(const identifier&)>;
+  using UserCallback = std::function <void(const identifier&)>;
+  using ItemComparator = std::function <bool(const identifier&)>;
+
+
   IdSelector(
     const std::string& filterHint,
-    const std::string& comboLabel );
+    const std::string& label );
+
 
   bool select(
-    const entt::registry& registry,
+    const std::vector <identifier>& idList,
+    const UserCallback&,
+    const UserFilter& = {},
+    const ItemComparator& = {} );
+
+  bool selectCombo(
     identifier& selectedId,
-    const std::vector <identifier>& idList );
+    const std::vector <identifier>& idList,
+    const UserFilter& = {} );
+
+  bool selectCombo(
+    const identifier& selectedId,
+    const std::vector <identifier>& idList,
+    const UserCallback&,
+    const UserFilter& = {} );
+
+  bool selectPopup(
+    const std::vector <identifier>& idList,
+    const UserCallback&,
+    const UserFilter& = {} );
 };
 
 } // namespace cqde::ui

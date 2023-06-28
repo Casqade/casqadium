@@ -1,7 +1,7 @@
 #include <cqde/types/sequences/CallbackExecute.hpp>
 
 #include <cqde/types/CallbackManager.hpp>
-#include <cqde/types/ui/widgets/StringFilter.hpp>
+#include <cqde/types/ui/widgets/IdSelector.hpp>
 
 #include <entt/entity/registry.hpp>
 
@@ -23,35 +23,22 @@ CallbackExecute::ui_show(
   if ( ImGui::CollapsingHeader("Callbacks", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
 
+  const auto callbackAddPopupLabel {"##callbackAddPopup"};
+
+  static ui::IdSelector callbackSelector {
+    "Callback ID", callbackAddPopupLabel };
+
   if ( ImGui::SmallButton("+##callbackAdd") )
-    ImGui::OpenPopup("##callbackAddPopup");
+    ImGui::OpenPopup(callbackAddPopupLabel);
 
-  if ( ImGui::BeginPopup("##callbackAddPopup") )
-  {
-    static ui::StringFilter callbackFilter {"Callback ID"};
+  auto& callbackManager = registry.ctx().get <CallbackManager> ();
 
-    if ( ImGui::IsWindowAppearing() )
-      ImGui::SetKeyboardFocusHere(2);
-
-    callbackFilter.search({}, ImGuiInputTextFlags_AutoSelectAll);
-
-    auto& callbackManager = registry.ctx().get <CallbackManager> ();
-
-    for ( const auto& callbackId : callbackManager.callbacksSorted() )
+  callbackSelector.selectPopup(
+    callbackManager.callbacksSorted(),
+    [&callbacks = mCallbacks] ( const auto& callbackId )
     {
-      if ( callbackFilter.query(callbackId.str()) == false )
-        continue;
-
-      if ( ImGui::Selectable(callbackId.str().c_str(), false) )
-      {
-        mCallbacks.push_back(callbackId);
-        ImGui::CloseCurrentPopup();
-        break;
-      }
-    }
-
-    ImGui::EndPopup(); // callbackAddPopup
-  }
+      callbacks.push_back(callbackId);
+    } );
 
   ImGui::Separator();
 

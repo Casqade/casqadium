@@ -1,7 +1,7 @@
 #include <cqde/components/assets/TextStringAssetList.hpp>
 #include <cqde/types/assets/TextStringAssetManager.hpp>
 
-#include <cqde/types/ui/widgets/StringFilter.hpp>
+#include <cqde/types/ui/widgets/IdSelector.hpp>
 
 #include <entt/entity/registry.hpp>
 
@@ -24,46 +24,30 @@ TextStringAssetList::ui_edit_props(
   if ( ImGui::CollapsingHeader("Text strings", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
 
-  const auto textStringList = registry.ctx().get <TextStringAssetManager> ().assetIdList();
+  const auto textStringAddPopupLabel {"##textStringAddPopup"};
 
-  static ui::StringFilter textStringFilter {"String ID"};
+  static ui::IdSelector textStringSelector {
+    "String ID", textStringAddPopupLabel };
 
   if ( ImGui::SmallButton("+##textStringAdd") )
-    ImGui::OpenPopup("##textStringAddPopup");
+    ImGui::OpenPopup(textStringAddPopupLabel);
 
-  if ( ImGui::BeginPopup("##textStringAddPopup") )
-  {
-    if ( ImGui::IsWindowAppearing() )
-      ImGui::SetKeyboardFocusHere(2);
+  auto& textManager = registry.ctx().get <TextStringAssetManager> ();
 
-    textStringFilter.search({}, ImGuiInputTextFlags_AutoSelectAll);
-
-    bool textStringsFound {};
-
-    for ( const auto& textStringId : textStringList )
+  textStringSelector.selectPopup(
+    textManager.assetIdList(),
+    [&text = text] ( const auto& textStringId )
     {
-      if ( textStringFilter.query(textStringId.str()) == false )
-        continue;
+      text.insert(textStringId);
+    },
+    [&text = text] ( const auto& textStringId )
+    {
+      return std::find(
+        text.begin(),
+        text.end(),
+        textStringId ) == text.end();
+    });
 
-      if ( std::find(text.begin(), text.end(),
-                     textStringId) != text.end() )
-        continue;
-
-      textStringsFound = true;
-
-      if ( ImGui::Selectable(textStringId.str().c_str(), false) )
-      {
-        text.insert(textStringId);
-        ImGui::CloseCurrentPopup();
-        break;
-      }
-    }
-
-    if ( textStringsFound == false )
-      ImGui::Text("No text string matching filter");
-
-    ImGui::EndPopup(); // textStringAddPopup
-  }
 
   ImGui::Separator();
 

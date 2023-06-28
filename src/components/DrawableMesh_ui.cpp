@@ -17,28 +17,29 @@ DrawableMesh::ui_edit_props(
   const entt::entity,
   const entt::registry& registry )
 {
-  using ui::IdSelector;
   using types::MeshAssetManager;
   using types::TextureAssetManager;
 
   if ( ImGui::CollapsingHeader("Mesh ID", ImGuiTreeNodeFlags_DefaultOpen) )
   {
-    static IdSelector meshSelector {"Mesh ID", "##meshId"};
+    static ui::IdSelector meshSelector {
+      "Mesh ID", "##meshId" };
 
-    const auto meshes = registry.ctx().get <MeshAssetManager> ().assetIdList();
+    auto& meshes = registry.ctx().get <MeshAssetManager> ();
 
-    meshSelector.select(
-      registry, meshId, meshes );
+    meshSelector.selectCombo(
+      meshId, meshes.assetIdList() );
   }
 
   if ( ImGui::CollapsingHeader("Texture ID", ImGuiTreeNodeFlags_DefaultOpen) )
   {
-    static IdSelector textureSelector {"Texture ID", "##textureId"};
+    static ui::IdSelector textureSelector {
+      "Texture ID", "##textureId" };
 
-    const auto textures = registry.ctx().get <TextureAssetManager> ().assetIdList();
+    auto& textures = registry.ctx().get <TextureAssetManager> ();
 
-    textureSelector.select(
-      registry, textureId, textures );
+    textureSelector.selectCombo(
+      textureId, textures.assetIdList() );
   }
 }
 

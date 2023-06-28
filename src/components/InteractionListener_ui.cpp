@@ -1,7 +1,7 @@
 #include <cqde/components/InteractionListener.hpp>
 
 #include <cqde/types/CallbackManager.hpp>
-#include <cqde/types/ui/widgets/StringFilter.hpp>
+#include <cqde/types/ui/widgets/IdSelector.hpp>
 
 #include <entt/entity/registry.hpp>
 
@@ -106,46 +106,29 @@ InteractionListener::ui_edit_props(
 
     auto& actionCallbacks = actions.at(selectedActionId);
 
-    const auto callbacks = registry.ctx().get <CallbackManager> ().callbacks();
+    const auto callbackAddPopupLabel {"##callbackAddPopup"};
 
-    static ui::StringFilter callbackFilter {"Callback ID"};
+    static ui::IdSelector callbackSelector {
+      "Callback ID", callbackAddPopupLabel };
 
     if ( ImGui::SmallButton("+##callbackAdd") )
-      ImGui::OpenPopup("##callbackAddPopup");
+      ImGui::OpenPopup(callbackAddPopupLabel);
 
-    if ( ImGui::BeginPopup("##callbackAddPopup") )
-    {
-      if ( ImGui::IsWindowAppearing() )
-        ImGui::SetKeyboardFocusHere(2);
+    auto& callbackManager = registry.ctx().get <CallbackManager> ();
 
-      callbackFilter.search({}, ImGuiInputTextFlags_AutoSelectAll);
-
-      bool callbackFound {};
-
-      for ( const auto& callbackId : callbacks )
+    callbackSelector.selectPopup(
+      callbackManager.callbacksSorted(),
+      [&actionCallbacks] ( const auto& callbackId )
       {
-        if ( callbackFilter.query(callbackId.str()) == false )
-          continue;
-
-        if ( std::find( actionCallbacks.begin(), actionCallbacks.end(),
-                        callbackId ) != actionCallbacks.end() )
-          continue;
-
-        callbackFound = true;
-
-        if ( ImGui::Selectable(callbackId.str().c_str(), false) )
-        {
-          actionCallbacks.push_back(callbackId.str());
-          ImGui::CloseCurrentPopup();
-          break;
-        }
-      }
-
-      if ( callbackFound == false )
-        ImGui::Text("No callbacks matching filter");
-
-      ImGui::EndPopup(); // callbackAddPopup
-    }
+        actionCallbacks.push_back(callbackId.str());
+      },
+      [&actionCallbacks] ( const auto& callbackId )
+      {
+        return std::find(
+          actionCallbacks.begin(),
+          actionCallbacks.end(),
+          callbackId ) == actionCallbacks.end();
+      } );
 
     ImGui::Separator();
 

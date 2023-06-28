@@ -25,7 +25,7 @@ public:
 
   std::shared_ptr <Collider> create( const std::string& id ) const;
 
-  std::vector <std::string> colliders() const;
+  std::vector <identifier> colliderIds() const;
 };
 
 template <class T>

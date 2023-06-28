@@ -1,7 +1,7 @@
 #include <cqde/components/assets/AudioAssetList.hpp>
 #include <cqde/types/assets/AudioAssetManager.hpp>
 
-#include <cqde/types/ui/widgets/StringFilter.hpp>
+#include <cqde/types/ui/widgets/IdSelector.hpp>
 
 #include <entt/entity/registry.hpp>
 
@@ -24,46 +24,30 @@ AudioAssetList::ui_edit_props(
   if ( ImGui::CollapsingHeader("Audio", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
 
-  const auto audioList = registry.ctx().get <AudioAssetManager> ().assetIdList();
+  const auto audioAddPopupLabel {"##audioAddPopup"};
 
-  static ui::StringFilter audioFilter {"Audio ID"};
+  static ui::IdSelector audioSelector {
+    "Audio ID", audioAddPopupLabel };
 
   if ( ImGui::SmallButton("+##audioAdd") )
-    ImGui::OpenPopup("##audioAddPopup");
+    ImGui::OpenPopup(audioAddPopupLabel);
 
-  if ( ImGui::BeginPopup("##audioAddPopup") )
-  {
-    if ( ImGui::IsWindowAppearing() )
-      ImGui::SetKeyboardFocusHere(2);
+  auto& audioManager = registry.ctx().get <AudioAssetManager> ();
 
-    audioFilter.search({}, ImGuiInputTextFlags_AutoSelectAll);
-
-    bool audioFound {};
-
-    for ( const auto& audioId : audioList )
+  audioSelector.selectPopup(
+    audioManager.assetIdList(),
+    [&audio = audio] ( const auto& audioId )
     {
-      if ( audioFilter.query(audioId.str()) == false )
-        continue;
+      audio.insert(audioId);
+    },
+    [&audio = audio] ( const auto& audioId )
+    {
+      return std::find(
+        audio.begin(),
+        audio.end(),
+        audioId ) == audio.end();
+    });
 
-      if ( std::find(audio.begin(), audio.end(),
-                     audioId) != audio.end() )
-        continue;
-
-      audioFound = true;
-
-      if ( ImGui::Selectable(audioId.str().c_str(), false) )
-      {
-        audio.insert(audioId);
-        ImGui::CloseCurrentPopup();
-        break;
-      }
-    }
-
-    if ( audioFound == false )
-      ImGui::Text("No audio matching filter");
-
-    ImGui::EndPopup(); // audioAddPopup
-  }
 
   ImGui::Separator();
 

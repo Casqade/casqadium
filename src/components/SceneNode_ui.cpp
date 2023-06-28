@@ -1,7 +1,7 @@
 #include <cqde/components/SceneNode.hpp>
 #include <cqde/components/Tag.hpp>
 
-#include <cqde/types/ui/widgets/StringFilter.hpp>
+#include <cqde/types/ui/widgets/IdSelector.hpp>
 #include <cqde/types/EntityManager.hpp>
 
 #include <cqde/assert.hpp>
@@ -17,10 +17,9 @@ SceneNode::ui_edit_props(
   const entt::entity entity,
   entt::registry& registry )
 {
-  using ui::StringFilter;
   using types::EntityManager;
 
-  static StringFilter entityFilter {"Entity ID"};
+  static ui::StringFilter entityFilter {"Entity ID"};
 
   auto& entityManager = registry.ctx().get <EntityManager> ();
 
@@ -48,18 +47,17 @@ SceneNode::ui_edit_props(
 
         entt::entity eNode {entt::null};
 
-        if ( entityId != null_id )
-        {
-          eNode = entityManager.get_if_valid(entityId, registry);
+        CQDE_ASSERT_DEBUG( entityId != null_id, continue );
 
-          CQDE_ASSERT_DEBUG( eNode != entt::null, continue );
+        eNode = entityManager.get_if_valid(entityId, registry);
 
-          if ( registry.all_of <SceneNode> (eNode) == false )
-            continue;
+        CQDE_ASSERT_DEBUG( eNode != entt::null, continue );
 
-          if ( CanAddChildNode(registry, eNode, id) == false )
-            continue;
-        }
+        if ( registry.all_of <SceneNode> (eNode) == false )
+          continue;
+
+        if ( CanAddChildNode(registry, eNode, id) == false )
+          continue;
 
         const bool selected = entityId == parent.id;
 
@@ -107,49 +105,43 @@ SceneNode::ui_edit_props(
       children.erase(child);
     }
 
+
+    const auto childAddPopupLabel {"##childAddPopup"};
+
+    static ui::IdSelector entitySelector {
+      "Entity ID", childAddPopupLabel };
+
     if ( ImGui::SmallButton("+##childAdd") )
-      ImGui::OpenPopup("##childAddPopup");
+      ImGui::OpenPopup(childAddPopupLabel);
 
-    if ( ImGui::BeginPopup("##childAddPopup") )
-    {
-      if ( ImGui::IsWindowAppearing() )
-        ImGui::SetKeyboardFocusHere(2);
-
-      entityFilter.search({}, ImGuiInputTextFlags_AutoSelectAll);
-
-      for ( const auto& entityId : entityManager.entities() )
+    entitySelector.selectPopup(
+      entityManager.entities(),
+      [&registry, &entityManager, entity]
+      ( const auto& entityId )
       {
-        if ( entityId == id )
-          continue;
+        const auto eNode = entityManager.get_if_valid(
+          entityId, registry );
 
-        if ( entityId == null_id )
-          continue;
+        AttachChildNode(registry, entity, eNode);
+      },
+      [&registry, &entityManager, &id, &children = children, entity]
+      ( const auto& entityId )
+      {
+        if (  entityId == id ||
+              entityId == null_id ||
+              children.count(entityId) > 0 )
+          return false;
 
-        if ( entityFilter.query(entityId.str()) == false )
-          continue;
+        const auto eNode = entityManager.get_if_valid(
+          entityId, registry );
 
-        if ( children.count(entityId) > 0 )
-          continue;
-
-        const auto eNode = entityManager.get_if_valid(entityId, registry);
-
-        CQDE_ASSERT_DEBUG( eNode != entt::null, continue );
+        CQDE_ASSERT_DEBUG( eNode != entt::null, return false);
 
         if ( registry.all_of <SceneNode> (eNode) == false )
-          continue;
+          return false;
 
-        if ( CanAddChildNode(registry, entity, entityId) == false )
-          continue;
-
-        if ( ImGui::Selectable(entityId.str().c_str(), false) )
-        {
-          AttachChildNode(registry, entity, eNode);
-          break;
-        }
-      }
-
-      ImGui::EndPopup(); // childAddPopup
-    }
+        return CanAddChildNode(registry, entity, entityId);
+      });
   }
 }
 

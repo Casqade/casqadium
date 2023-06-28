@@ -1,7 +1,7 @@
 #include <cqde/components/assets/TerrainAssetList.hpp>
 #include <cqde/types/assets/TerrainAssetManager.hpp>
 
-#include <cqde/types/ui/widgets/StringFilter.hpp>
+#include <cqde/types/ui/widgets/IdSelector.hpp>
 
 #include <entt/entity/registry.hpp>
 
@@ -24,46 +24,30 @@ TerrainAssetList::ui_edit_props(
   if ( ImGui::CollapsingHeader("Terrain", ImGuiTreeNodeFlags_DefaultOpen) == false )
     return;
 
-  const auto terrainList = registry.ctx().get <TerrainAssetManager> ().assetIdList();
+  const auto terrainAddPopupLabel {"##terrainAddPopup"};
 
-  static ui::StringFilter terrainFilter {"Terrain ID"};
+  static ui::IdSelector terrainSelector {
+    "Terrain ID", terrainAddPopupLabel };
 
-  if ( ImGui::SmallButton("+##terraineAdd") )
-    ImGui::OpenPopup("##terrainAddPopup");
+  if ( ImGui::SmallButton("+##terrainAdd") )
+    ImGui::OpenPopup(terrainAddPopupLabel);
 
-  if ( ImGui::BeginPopup("##terrainAddPopup") )
-  {
-    if ( ImGui::IsWindowAppearing() )
-      ImGui::SetKeyboardFocusHere(2);
+  auto& terrainManager = registry.ctx().get <TerrainAssetManager> ();
 
-    terrainFilter.search({}, ImGuiInputTextFlags_AutoSelectAll);
-
-    bool terrainFound {};
-
-    for ( const auto& terrainId : terrainList )
+  terrainSelector.selectPopup(
+    terrainManager.assetIdList(),
+    [&terrain = terrain] ( const auto& terrainId )
     {
-      if ( terrainFilter.query(terrainId.str()) == false )
-        continue;
+      terrain.insert(terrainId);
+    },
+    [&terrain = terrain] ( const auto& terrainId )
+    {
+      return std::find(
+        terrain.begin(),
+        terrain.end(),
+        terrainId ) == terrain.end();
+    });
 
-      if ( std::find(terrain.begin(), terrain.end(),
-                     terrainId) != terrain.end() )
-        continue;
-
-      terrainFound = true;
-
-      if ( ImGui::Selectable(terrainId.str().c_str(), false) )
-      {
-        terrain.insert(terrainId);
-        ImGui::CloseCurrentPopup();
-        break;
-      }
-    }
-
-    if ( terrainFound == false )
-      ImGui::Text("No terrain matching filter");
-
-    ImGui::EndPopup(); // terrainAddPopup
-  }
 
   ImGui::Separator();
 

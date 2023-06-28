@@ -3,7 +3,7 @@
 
 #include <cqde/types/sequences/SequenceFactory.hpp>
 
-#include <cqde/types/ui/widgets/StringFilter.hpp>
+#include <cqde/types/ui/widgets/IdSelector.hpp>
 
 #include <entt/entity/registry.hpp>
 
@@ -32,43 +32,24 @@ SequenceController::ui_edit_props(
 
   auto& sequenceFactory = registry.ctx().get <SequenceFactory> ();
 
-  static ui::StringFilter sequenceFilter {"Sequence ID"};
+  const auto stepAddPopupLabel {"##stepAddPopup"};
+
+  static ui::IdSelector sequenceSelector {
+    "Sequence ID", stepAddPopupLabel };
 
   static bool stepWindowOpened {};
   static int32_t selectedStep {-1};
 
   if ( ImGui::SmallButton("+##stepAdd") )
-    ImGui::OpenPopup("##stepAddPopup");
+    ImGui::OpenPopup(stepAddPopupLabel);
 
-  if ( ImGui::BeginPopup("##stepAddPopup") )
-  {
-    if ( ImGui::IsWindowAppearing() )
-      ImGui::SetKeyboardFocusHere(2);
-
-    sequenceFilter.search({}, ImGuiInputTextFlags_AutoSelectAll);
-
-    bool sequenceFound {};
-
-    for ( const auto& sequence : sequenceFactory.sequences() )
+  sequenceSelector.selectPopup(
+    sequenceFactory.sequences(),
+    [&steps = steps,&sequenceFactory] ( const identifier& sequenceId )
     {
-      if ( sequenceFilter.query(sequence) == false )
-        continue;
+      steps.push_back(sequenceFactory.create(sequenceId.str()));
+    });
 
-      sequenceFound = true;
-
-      if ( ImGui::Selectable(sequence.c_str(), false) )
-      {
-        steps.push_back(sequenceFactory.create(sequence));
-        ImGui::CloseCurrentPopup();
-        break;
-      }
-    }
-
-    if ( sequenceFound == false )
-      ImGui::Text("No sequences matching filter");
-
-    ImGui::EndPopup(); // textureAddPopup
-  }
 
   ImGui::Separator();
 

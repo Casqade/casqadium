@@ -1,6 +1,6 @@
 #include <cqde/components/audio/AudioGroupMap.hpp>
 
-#include <cqde/types/ui/widgets/StringFilter.hpp>
+#include <cqde/types/ui/widgets/IdSelector.hpp>
 #include <cqde/types/assets/AudioAssetManager.hpp>
 
 #include <entt/entity/registry.hpp>
@@ -79,7 +79,7 @@ AudioGroupMap::ui_edit_props(
       selectedGroupId = groupId;
 
       groupWindowOpened = true;
-      ImGui::SetWindowFocus("###groupEditWindow");
+      ImGui::SetWindowFocus("###audioGroupEditWindow");
     }
 
     ImGui::PopID(); // groupId
@@ -99,55 +99,41 @@ AudioGroupMap::ui_edit_props(
   if ( groups.count(selectedGroupId) == 0 )
     return;
 
-  const auto windowTitle = format("Group '{}'###audioGroupEditWindow",
-                                  selectedGroupId.str());
+  const auto windowTitle = format(
+    "Group '{}'###audioGroupEditWindow",
+    selectedGroupId.str() );
 
   if ( ImGui::Begin(windowTitle.c_str(),
-                    &groupWindowOpened, ImGuiWindowFlags_MenuBar) == false )
+                    &groupWindowOpened,
+                    ImGuiWindowFlags_MenuBar) == false )
     return ImGui::End(); // windowTitle
 
   auto& audioGroupList = groups.at(selectedGroupId);
 
-  const auto audioList = registry.ctx().get <AudioAssetManager> ().assetIdList();
+  const auto audioAddPopupLabel {"##audioAddPopup"};
 
-  static ui::StringFilter audioFilter {"Audio ID"};
+  static ui::IdSelector audioSelector {
+    "Audio ID", audioAddPopupLabel };
 
   if ( ImGui::SmallButton("+##audioAdd") )
-    ImGui::OpenPopup("##audioAddPopup");
+    ImGui::OpenPopup(audioAddPopupLabel);
 
-  if ( ImGui::BeginPopup("##audioAddPopup") )
-  {
-    if ( ImGui::IsWindowAppearing() )
-      ImGui::SetKeyboardFocusHere(2);
+  auto& audioManager = registry.ctx().get <AudioAssetManager> ();
 
-    audioFilter.search({}, ImGuiInputTextFlags_AutoSelectAll);
-
-    bool audioFound {};
-
-    for ( const auto& audioId : audioList )
+  audioSelector.selectPopup(
+    audioManager.assetIdList(),
+    [&audioGroupList = audioGroupList] ( const auto& audioId )
     {
-      if ( audioFilter.query(audioId.str()) == false )
-        continue;
+      audioGroupList.push_back(audioId.str());
+    },
+    [&audioGroupList = audioGroupList] ( const auto& audioId )
+    {
+      return std::find(
+        audioGroupList.begin(),
+        audioGroupList.end(),
+        audioId ) == audioGroupList.end();
+    });
 
-      if ( std::find( audioGroupList.begin(), audioGroupList.end(),
-                      audioId ) != audioGroupList.end() )
-        continue;
-
-      audioFound = true;
-
-      if ( ImGui::Selectable(audioId.str().c_str(), false) )
-      {
-        audioGroupList.push_back(audioId.str());
-        ImGui::CloseCurrentPopup();
-        break;
-      }
-    }
-
-    if ( audioFound == false )
-      ImGui::Text("No audio matching filter");
-
-    ImGui::EndPopup(); // audioAddPopup
-  }
 
   ImGui::Separator();
 
