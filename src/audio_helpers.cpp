@@ -2,7 +2,6 @@
 
 #include <cqde/conversion/rp3d_glm.hpp>
 
-#include <cqde/components/Camera.hpp>
 #include <cqde/components/Transform.hpp>
 #include <cqde/components/audio/Audio3dParams.hpp>
 #include <cqde/components/physics/RigidBody.hpp>
@@ -23,27 +22,20 @@ calcAudioListenerParams(
   const entt::entity eListener,
   const compos::Transform& cListenerTransform )
 {
-  using compos::Camera;
   using compos::RigidBody;
 
-  const auto [cListenerBody, cListenerCamera]
-    = registry.try_get <const RigidBody, const Camera> (eListener);
+  const auto cListenerBody =
+    registry.try_get <const RigidBody> (eListener);
 
-  glm::mat4 listenerTransform {};
-
-  if ( cListenerCamera != nullptr )
-    listenerTransform = cListenerCamera->viewMatrix(registry, eListener, cListenerTransform);
-  else
-    listenerTransform = GetWorldMatrix(registry, eListener, cListenerTransform );
+  const auto listenerTransform = GetWorldMatrix(
+    registry, eListener, cListenerTransform );
 
   glm::vec3 listenerVelocity {};
 
   if ( cListenerBody != nullptr )
-    listenerVelocity = ToLocalSpace(
-      rp3dToGlm(cListenerBody->body->getLinearVelocity()),
-      registry,
-      eListener,
-      cListenerTransform );
+    listenerVelocity = glm::translate(
+      glm::mat4{glm::mat3{listenerTransform}},
+      rp3dToGlm(cListenerBody->body->getLinearVelocity()) )[3];
 
   return
   {
@@ -72,8 +64,9 @@ updateAudio3dParams(
 
   auto& soloud = registry.ctx().get <SoLoud::Soloud> ();
 
-  const auto sourceTransform = GetWorldMatrix(registry, eSource, cSourceTransform );
-  const auto sourceToListenerTransform = listenerParams.transform * sourceTransform;
+  const auto sourceToListenerTransform = GetDeltaMatrix(
+    listenerParams.transform,
+    GetWorldMatrix(registry, eSource, cSourceTransform ) );
 
   AudioSourceParams params
   {
@@ -85,8 +78,11 @@ updateAudio3dParams(
 
   if ( cSourceBody != nullptr )
   {
-    const auto sourceVelocity = rp3dToGlm(cSourceBody->body->getLinearVelocity());
-    params.velocity -= ToLocalSpace(sourceVelocity, registry, eListener, cListenerTransform);
+    const glm::vec3 sourceVelocity = glm::translate(
+      glm::mat4{glm::mat3{listenerParams.transform}},
+      rp3dToGlm(cSourceBody->body->getLinearVelocity()) )[3];
+
+    params.velocity = sourceVelocity - params.velocity;
   }
 
   soloud.set3dSourceParameters(
