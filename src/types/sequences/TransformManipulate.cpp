@@ -2,6 +2,7 @@
 
 #include <cqde/assert.hpp>
 #include <cqde/json_helpers.hpp>
+#include <cqde/math_helpers.hpp>
 
 #include <cqde/conversion/enum_strings.hpp>
 #include <cqde/conversion/json_glm_vec3.hpp>
@@ -199,39 +200,10 @@ double
 TransformManipulate::value(
   const double input ) const
 {
-  const auto angularFrequncy = 2.0 * glm::pi <float> () / mPeriod;
-
-  switch (mFunction)
-  {
-    case MathFunctionType::Constant:
-      return mOffset + mAmplitude;
-
-    case MathFunctionType::Linear:
-      return mOffset + mAmplitude * (input + mPhase);
-
-    case MathFunctionType::Sine:
-      return mOffset + mAmplitude * std::sin(std::fma(angularFrequncy, input, mPhase));
-
-    case MathFunctionType::Cosine:
-      return mOffset + mAmplitude * std::cos(std::fma(angularFrequncy, input, mPhase));
-
-    case MathFunctionType::Pulse:
-      return mOffset + std::copysign(mAmplitude, std::sin(std::fma(angularFrequncy, input, mPhase)));
-
-    case MathFunctionType::Triangle:
-//      return  mAmplitude * 4.0 / mPeriod * ( std::fmod(input - mPeriod * 0.25, mPeriod)
-//                                             - mPeriod * 0.5 )
-//              - mAmplitude;
-      return  2.0 * mAmplitude / glm::pi <float> ()
-            * std::asin(std::sin(2.0 * glm::pi <float> () / mPeriod * input))
-            + mPhase;
-
-    case MathFunctionType::Sawtooth:
-      return mOffset + mAmplitude * (std::fmod(input + mPhase, mPeriod) - mPeriod * 0.5);
-
-    default:
-      CQDE_ASSERT_DEBUG(false, return 0.0);
-  }
+  return waveformValue(
+    mFunction, input,
+    mOffset, mAmplitude,
+    mPeriod, mPhase );
 }
 
 Json::Value

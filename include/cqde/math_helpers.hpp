@@ -1,5 +1,8 @@
 #pragma once
 
+#include <cqde/fwd.hpp>
+#include <cqde/types/enums.hpp>
+
 #include <glm/fwd.hpp>
 
 #include <random>
@@ -9,9 +12,19 @@
 namespace cqde
 {
 
-glm::mat4 interpolate( const glm::mat4&,
-                       const glm::mat4&,
-                       const float delta );
+glm::mat4 interpolate(
+  const glm::mat4&,
+  const glm::mat4&,
+  const float delta );
+
+double waveformValue(
+  const types::MathFunctionType,
+  const double input,
+  const double offset,
+  const double amplitude,
+  const double period,
+  const double phase );
+
 
 struct Rect
 {
@@ -60,6 +73,7 @@ boundingBox(
 
   return result;
 }
+
 
 template <typename Number,
   typename std::enable_if <sizeof(Number) <= 4, bool>::type = true>
