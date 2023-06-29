@@ -243,6 +243,15 @@ ToWorldSpace(
           * matrix;
 }
 
+
+glm::mat4
+GetDeltaMatrix(
+  const glm::mat4& mat1,
+  const glm::mat4& mat2 )
+{
+  return glm::inverse(mat1) * mat2;
+}
+
 glm::mat4
 GetParentMatrix(
   const entt::registry& registry,
