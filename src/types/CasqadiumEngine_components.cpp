@@ -21,6 +21,7 @@
 #include <cqde/components/SnapshotExcluded.hpp>
 #include <cqde/components/SubscriberUpdate.hpp>
 #include <cqde/components/SequenceController.hpp>
+#include <cqde/components/SkinPool.hpp>
 #include <cqde/components/Tag.hpp>
 #include <cqde/components/TextureTint.hpp>
 #include <cqde/components/Transform.hpp>
@@ -79,6 +80,7 @@ CasqadiumEngine::registerComponents()
 //  entityManager.registerComponent <LightTarget> ("LightTarget"); // todo: add material data
   entityManager.registerComponent <SceneNode> ("SceneNode");
   entityManager.registerComponent <SequenceController> ("SequenceController");
+  entityManager.registerComponent <SkinPool> ("SkinPool");
   entityManager.registerComponent <Tag> ("Tag");
   entityManager.registerComponent <TextureTint> ("TextureTint");
   entityManager.registerComponent <Transform> ("Transform");

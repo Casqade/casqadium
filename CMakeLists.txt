@@ -458,6 +458,10 @@ target_sources(${TARGET} PRIVATE
   src/components/SequenceController_ui.cpp
   include/${CASQADIUM_SHORT}/components/SequenceController.hpp
 
+  src/components/SkinPool.cpp
+  src/components/SkinPool_ui.cpp
+  include/${CASQADIUM_SHORT}/components/SkinPool.hpp
+
   src/components/SnapshotExcluded.cpp
   include/${CASQADIUM_SHORT}/components/SnapshotExcluded.hpp
 
