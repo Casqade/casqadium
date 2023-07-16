@@ -73,6 +73,9 @@ CasqadiumEngine::registerCallbacks()
   callbackManager.Register("EntitiesInputOff", entitiesInputOff);
   callbackManager.Register("EntitiesInputToggle", entitiesInputToggle);
 
+  callbackManager.Register("SceneNodeRemove", sceneNodeRemove);
+  callbackManager.Register("SceneNodesRemove", sceneNodesRemove);
+
   callbackManager.Register("SystemsActivate", systemsActivate);
   callbackManager.Register("SystemsDeactivate", systemsDeactivate);
   callbackManager.Register("SystemsToggle", systemsToggle);

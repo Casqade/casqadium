@@ -15,6 +15,7 @@
 #include <cqde/components/InteractionProbe.hpp>
 #include <cqde/components/InteractionSource.hpp>
 #include <cqde/components/InteractionSourceActiveAction.hpp>
+#include <cqde/components/SceneNode.hpp>
 #include <cqde/components/SubscriberInput.hpp>
 #include <cqde/components/SubscriberUpdate.hpp>
 #include <cqde/components/EntityList.hpp>
@@ -133,6 +134,7 @@ entitiesRemove(
       entityManager.removeLater(entity);
   }
 }
+
 
 void
 entityUpdateOn(
@@ -412,6 +414,45 @@ systemsToggle(
       systemManager.activate(systemId);
     else
       systemManager.deactivate(systemId);
+}
+
+
+void
+sceneNodeRemove(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using compos::SceneNode;
+
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+
+  const auto eParent =
+    registry.get <SceneNode> (entity).parent.get(registry);
+
+  DestroyChildNode(registry, eParent, entity);
+}
+
+void
+sceneNodesRemove(
+  entt::registry& registry,
+  const std::vector <std::any>& args )
+{
+  using compos::SceneNode;
+  using compos::EntityList;
+
+  const auto entity = std::any_cast <entt::entity> (args.at(0));
+
+  auto& entityList = registry.get <const EntityList> (entity);
+
+  for ( const auto& entityId : entityList.entities )
+  {
+    const auto entity = entityId.get(registry);
+
+    const auto eParent =
+      registry.get <SceneNode> (entity).parent.get(registry);
+
+    DestroyChildNode(registry, eParent, entity);
+  }
 }
 
 

@@ -79,6 +79,15 @@ void entitiesInputToggle(
   const std::vector <std::any>& args );
 
 
+void sceneNodeRemove(
+  entt::registry&,
+  const std::vector <std::any>& args = {} );
+
+void sceneNodesRemove(
+  entt::registry&,
+  const std::vector <std::any>& args = {} );
+
+
 void systemsActivate(
   entt::registry&,
   const std::vector <std::any>& args );
