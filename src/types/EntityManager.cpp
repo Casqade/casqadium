@@ -510,7 +510,8 @@ EntityManager::clear()
 
 void
 EntityManager::entryPointExecute(
-  entt::registry& registry )
+  entt::registry& registry,
+  const PackageId& entryPoint )
 {
   using compos::CasqadiumEntryPoint;
   using compos::EntityMetaInfo;
@@ -519,9 +520,12 @@ EntityManager::entryPointExecute(
   using compos::EntityList;
   using compos::SystemList;
 
-  const auto& packageManager = registry.ctx().get <PackageManager> ();
+  CQDE_ASSERT_DEBUG(entryPoint != null_id, return);
+  CQDE_ASSERT_DEBUG(entryPoint.str().empty() == false, return);
 
-  const auto entryPoint = packageManager.entryPoint();
+  mEntryPointCurrent = entryPoint;
+
+  const auto& packageManager = registry.ctx().get <PackageManager> ();
 
   for ( const auto&& [entity, cMetaInfo]
           : registry.view <CasqadiumEntryPoint, EntityMetaInfo> ().each() )
@@ -549,6 +553,12 @@ EntityManager::entryPointExecute(
 
     return;
   }
+}
+
+PackageId
+EntityManager::entryPointCurrent() const
+{
+  return mEntryPointCurrent;
 }
 
 void

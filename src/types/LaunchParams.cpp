@@ -34,7 +34,28 @@ LaunchParams::startEditor() const
   return std::find(
     args.begin(),
     args.end(),
-    "-editor" ) != args.end();
+    "--editor" ) != args.end();
+}
+
+std::string
+LaunchParams::entryPoint() const
+{
+  const std::string entryKey {"--entry="};
+
+  const auto iter = std::find_if(
+    args.begin(),
+    args.end(),
+    [entryKey] ( const std::string& arg )
+    {
+      return arg.find(entryKey) != std::string::npos;
+    });
+
+  if ( iter == args.end() )
+    return {};
+
+  const auto entryPos = iter->find(entryKey) + entryKey.size();
+
+  return iter->substr(entryPos);
 }
 
 } // namespace cqde::types

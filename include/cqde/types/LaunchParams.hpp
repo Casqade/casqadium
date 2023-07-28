@@ -18,6 +18,7 @@ struct LaunchParams
   std::string executableName() const;
 
   bool startEditor() const;
+  std::string entryPoint() const;
 };
 
 } // namespace cqde::types

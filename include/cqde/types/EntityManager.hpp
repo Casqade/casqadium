@@ -32,6 +32,8 @@ class EntityManager
   std::unordered_map <entt::entity,
                       std::vector <ComponentType>> mComponentsToRemove {};
 
+  PackageId mEntryPointCurrent {};
+
 public:
 
   using IdMap = std::unordered_map <EntityId, EntityId,
@@ -123,7 +125,11 @@ public:
 
   void clear();
 
-  void entryPointExecute( entt::registry& );
+  void entryPointExecute(
+    entt::registry&,
+    const PackageId& entryPoint );
+
+  PackageId entryPointCurrent() const;
 
   void removeLater( const entt::entity );
   void removeLater( const entt::entity,

@@ -35,6 +35,18 @@ const static Json::Value snapshotReference =
   reference.setComment("// snapshot root must be a JSON object"s,
                        Json::CommentPlacement::commentBefore);
 
+  Json::Value entryPoint = ValueType::stringValue;
+  entryPoint.setComment("// 'entryPoint' must be a JSON string"s,
+                        Json::CommentPlacement::commentBefore);
+
+  Json::Value registry = ValueType::objectValue;
+  registry.setComment("// 'registry' must be a JSON object"s,
+                      Json::CommentPlacement::commentBefore);
+
+  Json::Value systems = ValueType::objectValue;
+  systems.setComment("// 'systems' must be a JSON object"s,
+                      Json::CommentPlacement::commentBefore);
+
   return reference;
 }();
 
@@ -46,6 +58,10 @@ SnapshotManager::Validate(
 
   EntityManager::Validate(snapshot["registry"]);
   SystemManager::Validate(snapshot["systems"]);
+
+  if ( snapshot["entryPoint"].asString().empty() == true )
+    throw std::runtime_error(
+      "'entryPoint' must be a non-empty string" );
 }
 
 void
@@ -140,6 +156,7 @@ SnapshotManager::Create(
 
   snapshot["registry"] = registrySnapshot;
   snapshot["systems"] = systemsSnapshot;
+  snapshot["entryPoint"] = entityManager.entryPointCurrent().str();
 
   return snapshot;
 }
@@ -255,7 +272,10 @@ SnapshotManager::Load(
                           packageId, registry);
     }
 
-    entityManager.entryPointExecute(registry);
+    const PackageId entryPoint = snapshot["entryPoint"].asString();
+
+    if ( entryPoint != null_id )
+      entityManager.entryPointExecute(registry, entryPoint);
   }
   catch ( const std::exception& e )
   {

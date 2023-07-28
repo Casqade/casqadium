@@ -610,7 +610,13 @@ CasqadiumEngine::run()
   else
   {
     auto& entityManager = mRegistry.ctx().get <EntityManager> ();
-    entityManager.entryPointExecute(mRegistry);
+
+    PackageId entryPoint = mLaunchParams.entryPoint();
+
+    if ( entryPoint.str().empty() == true )
+      entryPoint = packageManager.entryPoint();
+
+    entityManager.entryPointExecute(mRegistry, entryPoint);
   }
 
   TimeUtils::TimePeriodInit();
