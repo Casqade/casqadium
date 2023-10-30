@@ -659,7 +659,7 @@ set(RP3D_DOUBLE_PRECISION_ENABLED OFF CACHE BOOL "" FORCE) # ReactPhysics3D
 include(FetchContent)
 
 FetchContent_Declare(ctpl
-  GIT_REPOSITORY git@github.com:Casqade/CTPL
+  GIT_REPOSITORY https://github.com/Casqade/CTPL
   GIT_TAG        master
   GIT_SHALLOW    TRUE
 )
@@ -667,7 +667,7 @@ FetchContent_MakeAvailable(ctpl)
 
 
 FetchContent_Declare(TimeUtils
-  GIT_REPOSITORY git@github.com:Casqade/TimeUtils
+  GIT_REPOSITORY https://github.com/Casqade/TimeUtils
   GIT_TAG        main
   GIT_SHALLOW    TRUE
 )
@@ -733,7 +733,7 @@ endif()
 
 
 FetchContent_Declare(ReactPhysics3D
-  GIT_REPOSITORY git@github.com:Casqade/reactphysics3d
+  GIT_REPOSITORY https://github.com/Casqade/reactphysics3d
   GIT_TAG        master
   GIT_SHALLOW    TRUE
 )
@@ -741,7 +741,7 @@ FetchContent_MakeAvailable(ReactPhysics3D)
 
 
 FetchContent_Declare(soloud
-  GIT_REPOSITORY git@github.com:Casqade/soloud
+  GIT_REPOSITORY https://github.com/Casqade/soloud
   GIT_TAG        master
   GIT_SHALLOW    TRUE
   SOURCE_SUBDIR  contrib
