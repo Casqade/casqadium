@@ -13,6 +13,9 @@ on:
       - main
       - demo-audio
 
+env:
+  BUILD_TYPE: Release
+
 jobs:
   build:
     runs-on: ${{ matrix.os }}
@@ -22,7 +25,6 @@ jobs:
 
       matrix:
         os: [ubuntu-latest, windows-latest]
-        build_type: ['Release']
         compiler: [gcc, clang, cl]
         include:
           - os: windows-latest
@@ -77,8 +79,8 @@ jobs:
         cmake -B ${{ steps.strings.outputs.build-output-dir }}
         -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
         -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
-        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
         -S ${{ github.workspace }}
 
     - name: Build
-      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
+      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{env.BUILD_TYPE}}
