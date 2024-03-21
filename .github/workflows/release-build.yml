@@ -46,6 +46,12 @@ jobs:
       shell: bash
       run: |
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+    
+    - name: Install dependencies
+      if: matrix.os != 'windows-latest'
+      shell: bash
+      run: |
+        sudo apt install -y libxrandr-dev
 
     - name: Configure CMake
       run: >
