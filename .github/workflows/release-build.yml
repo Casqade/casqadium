@@ -5,6 +5,9 @@ on:
     branches:
       - main
       - demo-audio
+    paths-ignore:
+      - '**/README.md'
+
   pull_request:
     branches:
       - main
@@ -31,14 +34,26 @@ jobs:
           - os: windows-latest
             c_compiler: clang
             cpp_compiler: clang++
+
           - os: ubuntu-latest
             c_compiler: gcc
             cpp_compiler: g++
           - os: ubuntu-latest
             c_compiler: clang
             cpp_compiler: clang++
+
+          - os: macos-latest
+            c_compiler: gcc
+            cpp_compiler: g++
+          - os: macos-latest
+            c_compiler: clang
+            cpp_compiler: clang++
+
         exclude:
           - os: ubuntu-latest
+            compiler: cl
+
+          - os: macos-latest
             compiler: cl
 
 
@@ -51,11 +66,16 @@ jobs:
       run: |
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
     
-    - name: Install dependencies
-      if: matrix.os != 'windows-latest'
+    - name: Install dependencies (Ubuntu)
+      if: matrix.os == 'ubuntu-latest'
       shell: bash
       run: |
         sudo apt install -y xorg-dev libasound2-dev
+
+    - name: Install dependencies (macOS)
+      if: matrix.os == 'macos-latest'
+      run: |
+        brew install alsa-lib
 
     - name: Configure CMake
       run: >
