@@ -20,10 +20,11 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
         build_type: [Release]
+        compiler: [gcc, clang, cl]
         include:
-#          - os: windows-latest
-#            c_compiler: cl
-#            cpp_compiler: cl
+          - os: windows-latest
+            c_compiler: cl
+            cpp_compiler: cl
           - os: windows-latest
             c_compiler: gcc
             cpp_compiler: g++
@@ -36,6 +37,10 @@ jobs:
           - os: ubuntu-latest
             c_compiler: clang
             cpp_compiler: clang++
+        exclude:
+          - os: ubuntu-latest
+            c_compiler: cl
+
 
     steps:
     - uses: actions/checkout@v3
@@ -50,7 +55,7 @@ jobs:
       if: matrix.os != 'windows-latest'
       shell: bash
       run: |
-        sudo apt install -y libxrandr-dev
+        sudo apt install -y xorg-dev
 
     - name: Configure CMake
       run: >
