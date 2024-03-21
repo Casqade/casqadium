@@ -1,6 +1,6 @@
 # Casqadium Engine
 
-![release-build](https://github.com/casqade/casqadium/actions/workflows/release-build.yml/badge.svg)
+[![Build status](https://github.com/casqade/casqadium/actions/workflows/release-build.yml/badge.svg)](https://github.com/casqade/casqadium/actions)
 
 ECS-based WIP game engine for personal usage. 
 
