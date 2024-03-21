@@ -55,7 +55,7 @@ jobs:
       if: matrix.os != 'windows-latest'
       shell: bash
       run: |
-        sudo apt install -y xorg-dev
+        sudo apt install -y xorg-dev libasound2
 
     - name: Configure CMake
       run: >
