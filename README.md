@@ -1,5 +1,7 @@
 # Casqadium Engine
 
+![release-build](https://github.com/casqade/casqadium/actions/workflows/release-build.yml/badge.svg)
+
 ECS-based WIP game engine for personal usage. 
 
 This project was born with the idea of a framework for developing small interactive applications and prototypes. 
