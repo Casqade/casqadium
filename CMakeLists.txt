@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.14)
 
 set(TARGET casqadium)
 set(${TARGET}_VERSION 1.0.0)
@@ -913,6 +913,7 @@ if(${CQDE_BUILD_EXAMPLE_APP})
     casqadium::casqadium
   )
 
+  file(MAKE_DIRECTORY "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}")
   file(CREATE_LINK "${CMAKE_CURRENT_LIST_DIR}/example/data" "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}/data" SYMBOLIC)
 endif()
 
