@@ -913,7 +913,7 @@ if(${CQDE_BUILD_EXAMPLE_APP})
     casqadium::casqadium
   )
 
-  file(COPY example/data DESTINATION ${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR})
+  file(CREATE_LINK "${CMAKE_CURRENT_LIST_DIR}/example/data" "${CMAKE_BINARY_DIR}/${CMAKE_INSTALL_BINDIR}/data" SYMBOLIC)
 endif()
 
 
