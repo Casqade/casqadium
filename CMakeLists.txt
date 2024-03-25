@@ -603,6 +603,11 @@ if(${BUILD_SHARED_LIBS})
   set(SOLOUD_STATIC OFF CACHE BOOL "" FORCE)
   set(SOLOUD_LIBMODPLUG_SUPPORT ON CACHE BOOL "" FORCE)
   set(SOLOUD_LIBMODPLUG_SUPPORT_STATIC OFF CACHE BOOL "" FORCE)
+
+  if(${CQDE_BUILD_EXAMPLE_APP})
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL" CACHE STRING "" FORCE)
+  endif()
+
 else()
   set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
   set(SPDLOG_BUILD_SHARED OFF CACHE BOOL "" FORCE)
@@ -617,6 +622,10 @@ else()
   if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     set(USE_MSVC_RUNTIME_LIBRARY_DLL OFF CACHE BOOL "" FORCE)
     set(USE_STATIC_CRT ON CACHE BOOL "" FORCE)
+
+    if(${CQDE_BUILD_EXAMPLE_APP})
+      set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>" CACHE STRING "" FORCE)
+    endif()
   endif()
 endif()
 
@@ -766,17 +775,10 @@ if(${BUILD_SHARED_LIBS})
   set(GLM_LIB_TYPE glm_shared)
   set(JSONCPP_LIB_TYPE jsoncpp_lib)
 
-  set_target_properties(${TARGET} PROPERTIES
-    MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL"
-  )
 else()
   target_link_libraries(${TARGET} PRIVATE 
     -static-libgcc 
     -static-libstdc++
-  )
-
-  set_target_properties(${TARGET} PROPERTIES
-    MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
   )
 endif()
 
@@ -918,16 +920,8 @@ if(${CQDE_BUILD_EXAMPLE_APP})
     )
   endif()
 
-  if(${BUILD_SHARED_LIBS})
-    set_target_properties(${CQDE_APPNAME} PROPERTIES
-      MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL"
-    )
-  else()
+  if(NOT ${BUILD_SHARED_LIBS})
     target_link_libraries(${CQDE_APPNAME} PUBLIC -static)
-
-    set_target_properties(${CQDE_APPNAME} PROPERTIES
-      MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
-    )
   endif()
 
   target_link_libraries(${CQDE_APPNAME} PRIVATE
