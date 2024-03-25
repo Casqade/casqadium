@@ -26,14 +26,12 @@ jobs:
         build_type: ["Release"]
         cmake_generator: ["Ninja"]
         shared_libs_enabled: ["ON", "OFF"]
-        include:
-          - { sys: mingw64, env: x86_64, cc: gcc, cxx: g++ }
-          - { sys: mingw64, env: x86_64, cc: clang, cxx: clang++ }
-          - { sys: mingw32, env: i686, cc: gcc, cxx: g++ }
-          - { sys: mingw32, env: i686, cc: clang, cxx: clang++ }
-#          - { sys: clang32, env: clang-i686 }
-#          - { sys: clang64, env: clang-x86_64 }
-#          - { sys: ucrt64,  env: ucrt-x86_64 }
+
+        config:
+        - { sys: mingw32, env: i686, cc: gcc, cxx: g++ }
+        - { sys: mingw32, env: i686, cc: clang, cxx: clang++ }
+        - { sys: mingw64, env: x86_64, cc: gcc, cxx: g++ }
+        - { sys: mingw64, env: x86_64, cc: clang, cxx: clang++ }
 
     steps:
     - uses: actions/checkout@v4
@@ -41,13 +39,13 @@ jobs:
     - name: Setup MSYS2
       uses: msys2/setup-msys2@v2.22.0
       with:
-        msystem: ${{ matrix.sys }}
+        msystem: ${{ matrix.config.sys }}
         install: >-
-          mingw-w64-${{ matrix.env }}-gcc
-          mingw-w64-${{ matrix.env }}-clang
-          mingw-w64-${{ matrix.env }}-make
-          mingw-w64-${{ matrix.env }}-cmake
-          mingw-w64-${{ matrix.env }}-ninja
+          mingw-w64-${{ matrix.config.env }}-gcc
+          mingw-w64-${{ matrix.config.env }}-clang
+          mingw-w64-${{ matrix.config.env }}-make
+          mingw-w64-${{ matrix.config.env }}-cmake
+          mingw-w64-${{ matrix.config.env }}-ninja
 
     - name: Set reusable strings
       id: strings
@@ -61,8 +59,8 @@ jobs:
           -G ${{ matrix.cmake_generator }}
           -S ${{ steps.strings.outputs.source-dir }}
           -B ${{ steps.strings.outputs.build-output-dir }}
-          -DCMAKE_C_COMPILER=${{ matrix.cc }}
-          -DCMAKE_CXX_COMPILER=${{ matrix.cxx }}
+          -DCMAKE_C_COMPILER=${{ matrix.config.cc }}
+          -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }}
           -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
           -DBUILD_SHARED_LIBS=${{ matrix.shared_libs_enabled }}
           -DCQDE_BUILD_EXAMPLE_APP=ON
