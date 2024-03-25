@@ -12,6 +12,62 @@ on:
       - main
 
 jobs:
+  build-msys2:
+    runs-on: windows-latest
+
+    defaults:
+      run:
+        shell: msys2 {0}
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        build_type: "Release"
+        cmake_generator: "Ninja"
+        shared_libs_enabled: ["ON", "OFF"]
+        include:
+          - { sys: mingw64, env: x86_64 }
+          - { sys: mingw32, env: i686 }
+#          - { sys: clang32, env: clang-i686 }
+#          - { sys: clang64, env: clang-x86_64 }
+#          - { sys: ucrt64,  env: ucrt-x86_64 }
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup MSYS2
+      uses: msys2/setup-msys2@v2.22.0
+      with:
+        msystem: ${{ matrix.sys }}
+        install: >-
+          mingw-w64-${{ matrix.env }}-gcc
+          mingw-w64-${{ matrix.env }}-make
+          mingw-w64-${{ matrix.env }}-cmake
+          mingw-w64-${{ matrix.env }}-ninja
+
+    - name: Set reusable strings
+      id: strings
+      run: |
+        echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+
+    - name: Configure CMake
+      run: >
+          cmake
+          -G ${{ matrix.cmake_generator }}
+          -S ${{ github.workspace }}
+          -B ${{ steps.strings.outputs.build-output-dir }}
+          -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+          -DBUILD_SHARED_LIBS=${{ matrix.shared_libs_enabled }}
+          -DCQDE_BUILD_EXAMPLE_APP=ON
+
+    - name: Build
+      run: >
+        cmake
+        --build ${{ steps.strings.outputs.build-output-dir }}
+        --config ${{ matrix.build_type }}
+
+
   build-msvc:
     runs-on: ${{ matrix.config.os }}
 
@@ -19,10 +75,11 @@ jobs:
       fail-fast: false
 
       matrix:
+        build_type: "Release"
+        shared_libs_enabled: ["ON", "OFF"]
         config:
         - {
             os: windows-latest,
-            build_type: "Release",
             cc: "cl",
             cxx: "cl"
           }
@@ -41,15 +98,16 @@ jobs:
         cmake
         -S ${{ github.workspace }}
         -B ${{ steps.strings.outputs.build-output-dir }}
-        -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }}
-        -DBUILD_SHARED_LIBS=OFF
+        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        -DBUILD_SHARED_LIBS=${{ matrix.shared_libs_enabled }}
         -DCQDE_BUILD_EXAMPLE_APP=ON
 
     - name: Build
       run: >
         cmake
         --build ${{ steps.strings.outputs.build-output-dir }}
-        --config ${{ matrix.config.build_type }}
+        --config ${{ matrix.build_type }}
+
 
   build-unix:
     runs-on: ${{ matrix.config.os }}
@@ -58,20 +116,20 @@ jobs:
       fail-fast: false
 
       matrix:
+        build_type: "Release"
+        shared_libs_enabled: ["ON", "OFF"]
+        cmake_generator: "Ninja"
+
         config:
         - {
             os: ubuntu-latest,
-            build_type: "Release",
             cc: "gcc",
-            cxx: "g++",
-            generators: "Ninja"
+            cxx: "g++"
           }
         - {
             os: ubuntu-latest,
-            build_type: "Release",
             cc: "clang",
-            cxx: "clang++",
-            generators: "Ninja"
+            cxx: "clang++"
           }
 
     steps:
@@ -92,19 +150,20 @@ jobs:
     - name: Install dependencies (macOS)
       if: matrix.config.os == 'macos-latest'
       run: |
-        brew install ninja-build
+        brew install ninja
 
     - name: Configure CMake
       run: >
         cmake
         -S ${{ github.workspace }}
         -B ${{ steps.strings.outputs.build-output-dir }}
-        -G ${{ matrix.config.generators }}
-        -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }}
+        -G ${{ matrix.cmake_generator }}
+        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        -DBUILD_SHARED_LIBS=${{ matrix.shared_libs_enabled }}
         -DCQDE_BUILD_EXAMPLE_APP=ON
 
     - name: Build
       run: >
         cmake
         --build ${{ steps.strings.outputs.build-output-dir }}
-        --config ${{ matrix.config.build_type }}
+        --config ${{ matrix.build_type }}
