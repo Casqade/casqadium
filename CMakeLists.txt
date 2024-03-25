@@ -605,7 +605,10 @@ if(${BUILD_SHARED_LIBS})
   set(SOLOUD_LIBMODPLUG_SUPPORT_STATIC OFF CACHE BOOL "" FORCE)
 
   if(${CQDE_BUILD_EXAMPLE_APP})
-    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL" CACHE STRING "" FORCE)
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL" CACHE INTERNAL "" FORCE)
+    set_target_properties(${TARGET} PROPERTIES
+      MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL"
+    )
   endif()
 
 else()
@@ -624,7 +627,10 @@ else()
     set(USE_STATIC_CRT ON CACHE BOOL "" FORCE)
 
     if(${CQDE_BUILD_EXAMPLE_APP})
-      set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>" CACHE STRING "" FORCE)
+      set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>" CACHE INTERNAL "" FORCE)
+      set_target_properties(${TARGET} PROPERTIES
+        MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
+      )
     endif()
   endif()
 endif()
