@@ -4,83 +4,102 @@ on:
   push:
     branches:
       - main
-      - demo-audio
     paths-ignore:
       - '**/README.md'
 
   pull_request:
     branches:
       - main
-      - demo-audio
-
-env:
-  BUILD_TYPE: Release
 
 jobs:
-  build:
-    runs-on: ${{ matrix.os }}
+  build-msvc:
+    runs-on: ${{ matrix.config.os }}
 
     strategy:
       fail-fast: false
 
       matrix:
-        os: [ubuntu-latest, windows-latest]
-        compiler: [gcc, clang, cl]
-        include:
-          - os: windows-latest
-            c_compiler: cl
-            cpp_compiler: cl
-          - os: windows-latest
-            c_compiler: gcc
-            cpp_compiler: g++
-          - os: windows-latest
-            c_compiler: clang
-            cpp_compiler: clang++
-
-          - os: ubuntu-latest
-            c_compiler: gcc
-            cpp_compiler: g++
-          - os: ubuntu-latest
-            c_compiler: clang
-            cpp_compiler: clang++
-
-#          - os: macos-latest
-#            c_compiler: gcc
-#            cpp_compiler: g++
-#          - os: macos-latest
-#            c_compiler: clang
-#            cpp_compiler: clang++
-
-        exclude:
-          - os: ubuntu-latest
-            compiler: cl
-
-#          - os: macos-latest
-#            compiler: cl
-
+        config:
+        - {
+            os: windows-latest,
+            build_type: "Release",
+            cc: "cl",
+            cxx: "cl"
+          }
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Set reusable strings
       id: strings
       shell: bash
       run: |
         echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
-    
-    - name: Install dependencies (Ubuntu)
-      if: matrix.os == 'ubuntu-latest'
-      shell: bash
-      run: |
-        sudo apt install -y xorg-dev libasound2-dev
 
     - name: Configure CMake
       run: >
-        cmake -B ${{ steps.strings.outputs.build-output-dir }}
-        -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }}
-        -DCMAKE_C_COMPILER=${{ matrix.c_compiler }}
-        -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+        cmake
         -S ${{ github.workspace }}
+        -B ${{ steps.strings.outputs.build-output-dir }}
+        -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }}
+        -DBUILD_SHARED_LIBS=OFF
+        -DCQDE_BUILD_EXAMPLE_APP=ON
 
     - name: Build
-      run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{env.BUILD_TYPE}}
+      run: >
+        cmake
+        --build ${{ steps.strings.outputs.build-output-dir }}
+        --config ${{ matrix.config.build_type }}
+
+  build-unix:
+    runs-on: ${{ matrix.config.os }}
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        config:
+        - {
+            os: ubuntu-latest,
+            build_type: "Release",
+            cc: "gcc",
+            cxx: "g++",
+            generators: "Ninja"
+          }
+        - {
+            os: ubuntu-latest,
+            build_type: "Release",
+            cc: "clang",
+            cxx: "clang++",
+            generators: "Ninja"
+          }
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set reusable strings
+      id: strings
+      shell: bash
+      run: |
+        echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+
+    - name: Install dependencies (Ubuntu)
+      if: matrix.config.os == 'ubuntu-latest'
+      shell: bash
+      run: |
+        sudo apt install -y xorg-dev libasound2-dev ninja
+
+    - name: Configure CMake
+      run: >
+        cmake
+        -S ${{ github.workspace }}
+        -B ${{ steps.strings.outputs.build-output-dir }}
+        -G ${{ matrix.config.generators }}
+        -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }}
+        -DCQDE_BUILD_EXAMPLE_APP=ON
+
+    - name: Build
+      run: >
+        cmake
+        --build ${{ steps.strings.outputs.build-output-dir }}
+        --config ${{ matrix.config.build_type }}
