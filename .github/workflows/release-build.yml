@@ -87,7 +87,12 @@ jobs:
       if: matrix.config.os == 'ubuntu-latest'
       shell: bash
       run: |
-        sudo apt install -y xorg-dev libasound2-dev ninja
+        sudo apt install -y xorg-dev libasound2-dev ninja-build
+
+    - name: Install dependencies (macOS)
+      if: matrix.config.os == 'macos-latest'
+      run: |
+        brew install ninja-build
 
     - name: Configure CMake
       run: >
