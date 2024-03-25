@@ -908,7 +908,7 @@ if(${CQDE_BUILD_EXAMPLE_APP})
   if(CMAKE_BUILD_TYPE MATCHES "Release")
 
     if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-      target_compile_options(${CQDE_APPNAME} PRIVATE "/ENTRY:mainCRTStartup")
+      target_link_options(${CQDE_APPNAME} PUBLIC "/ENTRY:mainCRTStartup")
     else()
       target_compile_options(${CQDE_APPNAME} PUBLIC -O2)
     endif()
@@ -960,3 +960,4 @@ install(TARGETS ${TARGET}
 install(FILES ${CMAKE_BINARY_DIR}/exports/${CASQADIUM_SHORT}/${CASQADIUM_SHORT}_export.hpp
   DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${CASQADIUM_SHORT}"
 )
+
