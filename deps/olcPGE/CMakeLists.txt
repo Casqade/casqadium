@@ -74,7 +74,7 @@ FetchContent_MakeAvailable(Freetype)
 
 target_compile_definitions(freetype PUBLIC FT_CONFIG_OPTION_ERROR_STRINGS)
 
-if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+if(${BUILD_SHARED_LIBS} AND CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   target_compile_definitions(freetype PRIVATE DLL_EXPORT)
   target_compile_definitions(freetype INTERFACE DLL_IMPORT)
 endif()
