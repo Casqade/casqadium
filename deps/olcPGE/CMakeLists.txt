@@ -62,17 +62,17 @@ set(FT_DISABLE_BZIP2 ON CACHE BOOL "" FORCE)
 set(FT_DISABLE_HARFBUZZ ON CACHE BOOL "" FORCE)
 set(FT_DISABLE_PNG ON CACHE BOOL "" FORCE)
 set(FT_DISABLE_ZLIB ON CACHE BOOL "" FORCE)
+set(FT_ENABLE_ERROR_STRINGS ON CACHE BOOL "" FORCE)
 
 include(FetchContent)
 
 FetchContent_Declare(Freetype
-  GIT_REPOSITORY https://gitlab.freedesktop.org/freetype/freetype
-  GIT_TAG        VER-2-12-1
+#  GIT_REPOSITORY https://gitlab.freedesktop.org/freetype/freetype
+  GIT_REPOSITORY https://github.com/freetype/freetype
+  GIT_TAG        VER-2-13-2
   GIT_SHALLOW    TRUE
 )
 FetchContent_MakeAvailable(Freetype)
-
-target_compile_definitions(freetype PUBLIC FT_CONFIG_OPTION_ERROR_STRINGS)
 
 if(${BUILD_SHARED_LIBS} AND CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
   target_compile_definitions(freetype PRIVATE DLL_EXPORT)
@@ -80,7 +80,7 @@ if(${BUILD_SHARED_LIBS} AND CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 endif()
 
 target_link_libraries(${TARGET} PUBLIC
-  freetype
+  Freetype::Freetype
   glad
   glfw
 )
@@ -126,3 +126,4 @@ install(TARGETS ${TARGET}
 install(FILES ${CMAKE_BINARY_DIR}/exports/${TARGET}/${TARGET}_export.hpp
   DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${TARGET}"
 )
+
