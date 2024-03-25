@@ -1,5 +1,9 @@
 cmake_minimum_required(VERSION 3.14)
 
+if(POLICY CMP0091)
+  cmake_policy(SET CMP0091 NEW) 
+endif()
+
 set(TARGET casqadium)
 set(${TARGET}_VERSION 1.0.0)
 project(${TARGET} VERSION ${${TARGET}_VERSION} LANGUAGES CXX)
@@ -901,12 +905,16 @@ if(${CQDE_BUILD_EXAMPLE_APP})
     )
   endif()
 
-  if(NOT ${BUILD_SHARED_LIBS})
-    target_link_libraries(${CQDE_APPNAME} PUBLIC -static)
+  if(${BUILD_SHARED_LIBS})
+    set_target_properties(${CQDE_APPNAME} PROPERTIES
+      MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL"
+    )
+  else()
+    target_link_libraries(${CQDE_APPNAME} PUBLIC -static -static-libgcc -static-libstdc++)
 
-    if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
-      target_link_libraries(${TARGET} PRIVATE -static-libgcc -static-libstdc++)
-    endif()
+    set_target_properties(${CQDE_APPNAME} PROPERTIES
+      MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
+    )
   endif()
 
   target_link_libraries(${CQDE_APPNAME} PRIVATE
