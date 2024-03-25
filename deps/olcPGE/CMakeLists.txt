@@ -80,7 +80,7 @@ if(${BUILD_SHARED_LIBS} AND CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
 endif()
 
 target_link_libraries(${TARGET} PUBLIC
-  Freetype::Freetype
+  freetype
   glad
   glfw
 )
