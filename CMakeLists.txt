@@ -765,6 +765,19 @@ set(JSONCPP_LIB_TYPE jsoncpp_static)
 if(${BUILD_SHARED_LIBS})
   set(GLM_LIB_TYPE glm_shared)
   set(JSONCPP_LIB_TYPE jsoncpp_lib)
+
+  set_target_properties(${TARGET} PROPERTIES
+    MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL"
+  )
+else()
+  target_link_libraries(${TARGET} PRIVATE 
+    -static-libgcc 
+    -static-libstdc++
+  )
+
+  set_target_properties(${TARGET} PROPERTIES
+    MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
+  )
 endif()
 
 target_compile_definitions(${GLM_LIB_TYPE} PUBLIC
@@ -910,7 +923,7 @@ if(${CQDE_BUILD_EXAMPLE_APP})
       MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL"
     )
   else()
-    target_link_libraries(${CQDE_APPNAME} PUBLIC -static -static-libgcc -static-libstdc++)
+    target_link_libraries(${CQDE_APPNAME} PUBLIC -static)
 
     set_target_properties(${CQDE_APPNAME} PROPERTIES
       MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
