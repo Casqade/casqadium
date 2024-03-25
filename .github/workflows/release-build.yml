@@ -23,8 +23,8 @@ jobs:
       fail-fast: false
 
       matrix:
-        build_type: "Release"
-        cmake_generator: "Ninja"
+        build_type: ["Release"]
+        cmake_generator: ["Ninja"]
         shared_libs_enabled: ["ON", "OFF"]
         include:
           - { sys: mingw64, env: x86_64 }
@@ -75,7 +75,7 @@ jobs:
       fail-fast: false
 
       matrix:
-        build_type: "Release"
+        build_type: ["Release"]
         shared_libs_enabled: ["ON", "OFF"]
         config:
         - {
@@ -116,9 +116,9 @@ jobs:
       fail-fast: false
 
       matrix:
-        build_type: "Release"
+        build_type: ["Release"]
+        cmake_generator: ["Ninja"]
         shared_libs_enabled: ["ON", "OFF"]
-        cmake_generator: "Ninja"
 
         config:
         - {
