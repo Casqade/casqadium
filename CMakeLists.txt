@@ -907,7 +907,9 @@ if(${CQDE_BUILD_EXAMPLE_APP})
 
   if(CMAKE_BUILD_TYPE MATCHES "Release")
 
-    if(NOT CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+    if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+      target_compile_options(${CQDE_APPNAME} PRIVATE "/ENTRY:mainCRTStartup")
+    else()
       target_compile_options(${CQDE_APPNAME} PUBLIC -O2)
     endif()
 
