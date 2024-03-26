@@ -122,6 +122,13 @@ jobs:
         --build ${{ steps.strings.outputs.build-output-dir }}
         --config ${{ matrix.build_type }}
 
+    - name: Copy example data into binary dir
+      if: matrix.shared_libs_enabled == 'OFF'
+      run: |
+        xcopy /s \
+        ${{ github.workspace }}\example\data \
+        ${{ steps.strings.outputs.build-output-dir }}\bin\${{ matrix.build_type }}
+
     - name: Upload Build Artifact
       if: matrix.shared_libs_enabled == 'OFF'
       uses: actions/upload-artifact@v4
