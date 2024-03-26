@@ -71,6 +71,15 @@ jobs:
         --build ${{ steps.strings.outputs.build-output-dir }}
         --config ${{ matrix.build_type }}
 
+    - name: Upload Build Artifact
+      if: matrix.shared_libs_enabled == "OFF"
+      uses: actions/upload-artifact@v4
+      with:
+        name: '${{ matrix.config.sys }}-${{ matrix.config.cc }}'
+        path: ${{ steps.strings.outputs.build-output-dir }}
+        if-no-files-found: error
+        compression-level: 9
+
 
   build-msvc:
     runs-on: ${{ matrix.config.os }}
@@ -112,6 +121,15 @@ jobs:
         cmake
         --build ${{ steps.strings.outputs.build-output-dir }}
         --config ${{ matrix.build_type }}
+
+    - name: Upload Build Artifact
+      if: matrix.shared_libs_enabled == "OFF"
+      uses: actions/upload-artifact@v4
+      with:
+        name: msvc-x64
+        path: ${{ steps.strings.outputs.build-output-dir }}
+        if-no-files-found: error
+        compression-level: 9
 
 
   build-unix:
