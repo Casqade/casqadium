@@ -124,9 +124,9 @@ jobs:
 
     - name: Copy example data into binary dir
       if: matrix.shared_libs_enabled == 'OFF'
-      run: |
-        xcopy /s \
-        ${{ github.workspace }}\example\data \
+      run: >
+        xcopy /s
+        ${{ github.workspace }}\example\data
         ${{ steps.strings.outputs.build-output-dir }}\bin\${{ matrix.build_type }}
 
     - name: Upload Build Artifact
