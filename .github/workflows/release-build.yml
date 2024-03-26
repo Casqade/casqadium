@@ -76,7 +76,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: '${{ matrix.config.sys }}-${{ matrix.config.cc }}'
-        path: ${{ steps.strings.outputs.build-output-dir }}
+        path: '${{ steps.strings.outputs.build-output-dir }}/bin'
         if-no-files-found: error
         compression-level: 9
 
@@ -127,7 +127,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: msvc-x64
-        path: ${{ steps.strings.outputs.build-output-dir }}
+        path: '${{ steps.strings.outputs.build-output-dir }}\bin\${{ matrix.build_type }}'
         if-no-files-found: error
         compression-level: 9
 
