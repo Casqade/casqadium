@@ -72,7 +72,7 @@ jobs:
         --config ${{ matrix.build_type }}
 
     - name: Upload Build Artifact
-      if: matrix.shared_libs_enabled == "OFF"
+      if: matrix.shared_libs_enabled == 'OFF'
       uses: actions/upload-artifact@v4
       with:
         name: '${{ matrix.config.sys }}-${{ matrix.config.cc }}'
@@ -123,7 +123,7 @@ jobs:
         --config ${{ matrix.build_type }}
 
     - name: Upload Build Artifact
-      if: matrix.shared_libs_enabled == "OFF"
+      if: matrix.shared_libs_enabled == 'OFF'
       uses: actions/upload-artifact@v4
       with:
         name: msvc-x64
