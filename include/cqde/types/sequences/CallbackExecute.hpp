@@ -7,6 +7,8 @@
 
 #include <entt/fwd.hpp>
 
+#include <vector>
+
 
 namespace cqde::types
 {
