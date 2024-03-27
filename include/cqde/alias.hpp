@@ -3,6 +3,8 @@
 #include <cqde/fwd.hpp>
 #include <cqde/identifier.hpp>
 
+#include <unordered_map>
+
 
 namespace cqde
 {
@@ -32,6 +34,9 @@ using InputHwCode = int32_t;
 using AudioHandle = uint32_t;
 
 constexpr AudioHandle AudioHandleInvalid{0xfffff000};
+
+using IdMap = 
+  std::unordered_map <EntityId, EntityId, identifier_hash>;
 
 
 } // namespace cqde

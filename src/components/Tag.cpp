@@ -26,8 +26,7 @@ Tag::deserialize(
   entt::registry&,
   entt::entity,
   const Json::Value&,
-  const std::unordered_map <EntityId, EntityId,
-                            identifier_hash>& idMap )
+  const IdMap& idMap )
 {}
 
 } // namespace cqde::compos

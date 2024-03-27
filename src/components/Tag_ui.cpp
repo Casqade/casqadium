@@ -108,7 +108,7 @@ Tag::ui_edit_props(
   entityManager.entitySerialize(registry, jsonEntity, entity);
   id = idCurrent;
 
-  std::unordered_map <EntityId, EntityId, identifier_hash> idMap {};
+  IdMap idMap {};
   idMap[id] = idInputBuffer;
 
   const auto renamedEntity = entityManager.entityDeserialize(

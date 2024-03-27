@@ -51,8 +51,7 @@ MouseCursorAssetList::deserialize(
   entt::registry& registry,
   entt::entity entity,
   const Json::Value& json,
-  const std::unordered_map <EntityId, EntityId,
-                            identifier_hash>& idMap )
+  const IdMap& idMap )
 {
   jsonValidateObject(json, mouseCursorAssetListJsonReference);
 

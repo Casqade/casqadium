@@ -38,8 +38,7 @@ struct CollisionBody
     entt::registry&,
     entt::entity,
     const Json::Value&,
-    const std::unordered_map <EntityId, EntityId,
-                              identifier_hash>& idMap = {} );
+    const IdMap& = {} );
 };
 
 } // namespace cqde::compos

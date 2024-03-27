@@ -304,7 +304,7 @@ EntityManager::entityDeserialize(
   return entity;
 }
 
-EntityManager::IdMap
+IdMap
 EntityManager::prefabDeserialize(
   entt::registry& registry,
   const Json::Value& prefab,

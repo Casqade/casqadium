@@ -19,8 +19,7 @@ SubscriberUpdate::deserialize(
   entt::registry& registry,
   entt::entity entity,
   const Json::Value&,
-  const std::unordered_map <EntityId, EntityId,
-                            identifier_hash>& idMap )
+  const IdMap& idMap )
 {
   registry.emplace_or_replace <SubscriberUpdate> (entity);
 }

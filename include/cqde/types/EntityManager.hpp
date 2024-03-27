@@ -35,10 +35,6 @@ class EntityManager
   PackageId mEntryPointCurrent {};
 
 public:
-
-  using IdMap = std::unordered_map <EntityId, EntityId,
-                                    identifier_hash>;
-
   EntityManager() = default;
 
   static void Validate( const Json::Value& );

@@ -16,7 +16,8 @@ void
 ComponentTemplate::deserialize(
   entt::registry& registry,
   entt::entity entity,
-  const Json::Value& content ) const
+  const Json::Value& content,
+  const IdMap& idMap )
 {
   auto& comp = registry.emplace <ComponentTemplate> (entity);
 }
