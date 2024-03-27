@@ -163,11 +163,6 @@ jobs:
         - {
             os: macos-latest,
             cc: "clang",
-            cxx: "g++-13"
-          }
-        - {
-            os: macos-latest,
-            cc: "clang",
             cxx: "clang++"
           }
 
