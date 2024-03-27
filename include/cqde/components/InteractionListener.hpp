@@ -6,6 +6,8 @@
 
 #include <json/forwards.h>
 
+#include <vector>
+
 
 namespace cqde::compos
 {

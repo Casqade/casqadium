@@ -6,6 +6,7 @@
 
 #include <json/forwards.h>
 
+#include <vector>
 #include <unordered_map>
 
 
