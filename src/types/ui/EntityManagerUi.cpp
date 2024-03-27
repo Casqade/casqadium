@@ -240,7 +240,11 @@ EntityManagerUi::ui_show_entities_table(
     {
       return lhs.id.str() < rhs.id.str();
 
+#if !defined(__APPLE__) && !defined(__MACH__)
     }, {}, std::execution::par);
+#else
+    } );
+#endif
   }
 
   registry.view <Tag> ().each(
