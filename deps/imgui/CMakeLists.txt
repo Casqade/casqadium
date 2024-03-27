@@ -77,11 +77,21 @@ endif()
 if(${IMGUI_BUILD_BACKEND_GLFW})
     add_library(imgui_backend_glfw ./backends/imgui_impl_glfw.cpp)
     target_link_libraries(imgui_backend_glfw PUBLIC imgui glfw)
+
+    set_target_properties(imgui_backend_glfw PROPERTIES
+      CXX_STANDARD_REQUIRED ON
+      CXX_STANDARD 11
+    )
 endif()
 
 if(${IMGUI_BUILD_BACKEND_OPENGL_2})
     add_library(imgui_backend_opengl2 ./backends/imgui_impl_opengl2.cpp)
     target_link_libraries(imgui_backend_opengl2 PUBLIC imgui)
+
+    set_target_properties(imgui_backend_opengl2 PROPERTIES
+      CXX_STANDARD_REQUIRED ON
+      CXX_STANDARD 11
+    )
 endif()
 
 if(${IMGUI_BUILD_BACKEND_OPENGL_3})
@@ -92,4 +102,9 @@ if(${IMGUI_BUILD_BACKEND_OPENGL_3})
     endif()
 
     target_link_libraries(imgui_backend_opengl3 PUBLIC imgui)
+
+    set_target_properties(imgui_backend_opengl3 PROPERTIES
+      CXX_STANDARD_REQUIRED ON
+      CXX_STANDARD 11
+    )
 endif()
