@@ -162,7 +162,7 @@ jobs:
           }
         - {
             os: macos-latest,
-            cc: "gcc-13",
+            cc: "clang",
             cxx: "g++-13"
           }
         - {
