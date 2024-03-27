@@ -13,6 +13,11 @@ target_sources(${TARGET} PRIVATE
   ImGuizmo.h
 )
 
+set_target_properties(${TARGET} PROPERTIES
+  CXX_STANDARD_REQUIRED ON
+  CXX_STANDARD 11
+)
+
 target_include_directories(${TARGET} PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_LIST_DIR}>
 )
