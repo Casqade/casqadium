@@ -606,10 +606,11 @@ if(${BUILD_SHARED_LIBS})
 
   if(${CQDE_BUILD_EXAMPLE_APP})
     set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL" CACHE INTERNAL "" FORCE)
-    set_target_properties(${TARGET} PROPERTIES
-      MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL"
-    )
   endif()
+
+  set_target_properties(${TARGET} PROPERTIES
+    MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>DLL"
+  )
 
 else()
   set(BUILD_SHARED_LIBS OFF CACHE BOOL "" FORCE)
@@ -625,14 +626,15 @@ else()
   if(CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
     set(USE_MSVC_RUNTIME_LIBRARY_DLL OFF CACHE BOOL "" FORCE)
     set(USE_STATIC_CRT ON CACHE BOOL "" FORCE)
-
-    if(${CQDE_BUILD_EXAMPLE_APP})
-      set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>" CACHE INTERNAL "" FORCE)
-      set_target_properties(${TARGET} PROPERTIES
-        MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
-      )
-    endif()
   endif()
+
+  if(${CQDE_BUILD_EXAMPLE_APP})
+    set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>" CACHE INTERNAL "" FORCE)
+  endif()
+
+  set_target_properties(${TARGET} PROPERTIES
+    MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>"
+  )
 endif()
 
 set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
