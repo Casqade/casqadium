@@ -1,0 +1,67 @@
+name: Build (Ubuntu)
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '**/README.md'
+
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-ubuntu:
+    runs-on: ${{ matrix.config.os }}
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        build_type: ["Release"]
+        cmake_generator: ["Ninja"]
+
+        config:
+        - {
+            os: ubuntu-latest,
+            cc: "gcc",
+            cxx: "g++"
+          }
+        - {
+            os: ubuntu-latest,
+            cc: "clang",
+            cxx: "clang++"
+          }
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Set reusable strings
+      id: strings
+      shell: bash
+      run: |
+        echo "build-output-dir=${{ github.workspace }}/build" >> "$GITHUB_OUTPUT"
+
+    - name: Install dependencies
+      shell: bash
+      run: |
+        sudo apt install -y xorg-dev libasound2-dev ninja-build
+
+    - name: Configure CMake
+      run: >
+        cmake
+        -G ${{ matrix.cmake_generator }}
+        -S ${{ github.workspace }}
+        -B ${{ steps.strings.outputs.build-output-dir }}
+        -DCMAKE_C_COMPILER=${{ matrix.config.cc }}
+        -DCMAKE_CXX_COMPILER=${{ matrix.config.cxx }}
+        -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        -DCQDE_BUILD_EXAMPLE_APP=ON
+
+    - name: Build
+      run: >
+        cmake
+        --build ${{ steps.strings.outputs.build-output-dir }}
+        --config ${{ matrix.build_type }}
+
