@@ -46,6 +46,7 @@ jobs:
     - name: Install dependencies
       shell: bash
       run: |
+        sudo apt update
         sudo apt install -y xorg-dev libasound2-dev ninja-build
 
     - name: Configure CMake
