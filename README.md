@@ -6,21 +6,29 @@
 [![macOS](https://github.com/casqade/casqadium/actions/workflows/macos-build.yml/badge.svg)](https://github.com/casqade/casqadium/actions/workflows/macos-build.yml)
 [![GitHub Releases](https://img.shields.io/github/release/casqade/casqadium.svg)](https://github.com/casqade/casqadium/releases/latest)
 
-ECS-based WIP game engine for personal usage. 
+This is an ECS-based game engine for personal usage.
+It was born as a framework for developing
+small interactive applications and prototypes.
 
-This project was born with the idea of a framework for developing small interactive applications and prototypes. 
-Since its first days, gaining experience at software architecture and computer graphics continues to be the driving factor of this endeavour. 
-
-Listed below are engine's major initial design goals and requirements, some of which proved to be disputable over the course of development:
+Listed below are engine's major
+initial design goals and requirements,
+some of which proved to be disputable
+over the course of development:
 - Builds on Windows & Linux into a compact static binary
 - Logic driven by entity component system architecture pattern
 - Fully serialisable runtime state
-- Human-readable game data & resource specification format (JSON in particular)
-- Package system for game data & asset organisation
+- Human-readable entity & resource specification format (JSON)
+- Package system for bundling scenes & assets
 - Built-in GUI editing tools
-- Cutting-edge graphics (i.e. textured quads, no time for fancy Blender stuff!)
+- Minimalistic style graphics (i.e. textured quads & low poly meshes)
 
-Since there are far more advanced engines featuring fantastic graphics out there, it was decided to stick with minimalistic style of textured quads and low-poly meshes. 
+
+## Downloads
+
+[Windows binaries](https://github.com/casqade/casqadium/releases)
+
+[Demo examples](https://github.com/casqade/casqadium-demos)
+
 
 ## Credits
 
@@ -34,32 +42,64 @@ Notable libraries used:
 - [ReactPhysics3D](https://github.com/DanielChappuis/reactphysics3d)
 - [SoLoud](https://github.com/jarikomppa/soloud)
 
-## Status
 
-The project is currently being polished and tested in practice. 
+## Building:
 
-A minimal running example can be found on the main branch, while most up-to-date demo application resides at 'demo-audio' branch. Another demo coming soon... 
+### Windows (MSYS2 mingw32 environment):
 
-Future plans: 
-- Implement minimal lighting
-- Migrate from [ReactPhysics3D](https://github.com/DanielChappuis/reactphysics3d) to [Bullet3](https://github.com/bulletphysics/bullet3)
+```bash
+sudo pacman -S git
+sudo pacman -S mingw-w64-i686-cmake mingw-w64-i686-gcc
+git clone https://github.com/casqade/casqadium
+cd casqadium
+cmake .
+cmake --build .
+```
 
-## Dependencies
+### Windows (MSVC):
 
-### Windows MSYS2:
+Builds with default Visual Studio Tools installation,
+but you must have CMake installed
 
-Default GCC toolchain should suffice
-
-### Windows MSVC:
-
-Haven't tested yet :(
+```bash
+git clone https://github.com/casqade/casqadium
+cd casqadium
+cmake .
+cmake --build .
+```
 
 ### Arch Linux:
-```
-pacman -S libpng mesa
+
+```bash
+pacman -S git gcc cmake libpng mesa
+git clone https://github.com/casqade/casqadium
+cd casqadium
+cmake .
+cmake --build .
 ```
 
-### Debian-based:
+### Ubuntu/Debian-based:
+
+```bash
+sudo apt install git g++ cmake ninja-build xorg-dev libasound2-dev libglu1-mesa-dev libpng-dev
+git clone https://github.com/casqade/casqadium
+cd casqadium
+cmake .
+cmake --build .
 ```
-sudo apt install libglu1-mesa-dev libpng-dev
+
+### macOS (Sierra 10.12 and newer):
+
+[macOS workflow](https://github.com/casqade/casqadium/actions/workflows/macos-build.yml)
+builds fine, but I don't have any
+MacBooks for runtime testing,
+so feel free to report any issues (or successes)
+
+```bash
+brew install git cmake
+git clone https://github.com/casqade/casqadium
+cd casqadium
+cmake .
+cmake --build .
 ```
+
