@@ -71,6 +71,12 @@ jobs:
         --build ${{ steps.strings.outputs.build-output-dir }}
         --config ${{ matrix.build_type }}
 
+    - name: Create editor launch script
+      if: matrix.shared_libs_enabled == 'OFF'
+      shell: cmd
+      run: |
+        echo start .\CasqadiumApp.exe --editor > ${{ github.workspace }}\build\bin\CasqadiumEditor.bat
+
     - name: Upload Build Artifact
       if: matrix.shared_libs_enabled == 'OFF'
       uses: actions/upload-artifact@v4

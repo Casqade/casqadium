@@ -53,19 +53,27 @@ jobs:
         --build ${{ steps.strings.outputs.build-output-dir }}
         --config ${{ matrix.build_type }}
 
-    - name: Copy example data into binary dir
+    - name: Move executable into binary dir
       if: matrix.shared_libs_enabled == 'OFF'
+      shell: cmd
       run: >
-        xcopy /s /i /q
-        ${{ github.workspace }}\example\data
-        ${{ steps.strings.outputs.build-output-dir }}\bin\${{ matrix.build_type }}\data
+        move /y
+        ${{ steps.strings.outputs.build-output-dir }}\bin\${{ matrix.build_type }}\CasqadiumApp.exe
+        ${{ steps.strings.outputs.build-output-dir }}\bin
+
+    - name: Create editor launch script
+      if: matrix.shared_libs_enabled == 'OFF'
+      shell: cmd
+      run: |
+        echo start .\CasqadiumApp.exe --editor > ${{ steps.strings.outputs.build-output-dir }}\bin\CasqadiumEditor.bat
+
 
     - name: Upload Build Artifact
       if: matrix.shared_libs_enabled == 'OFF'
       uses: actions/upload-artifact@v4
       with:
         name: windows-msvc-x64
-        path: '${{ steps.strings.outputs.build-output-dir }}\bin\${{ matrix.build_type }}'
+        path: '${{ steps.strings.outputs.build-output-dir }}\bin'
         if-no-files-found: error
         compression-level: 9
 
