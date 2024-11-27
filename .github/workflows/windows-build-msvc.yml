@@ -29,7 +29,16 @@ jobs:
         - {
             os: windows-latest,
             cc: "cl",
-            cxx: "cl"
+            cxx: "cl",
+            arch: "x86",
+            cmake-arch-args: "-T host=x86 -A Win32"
+          }
+        - {
+            os: windows-latest,
+            cc: "cl",
+            cxx: "cl",
+            arch: "x64",
+            cmake-arch-args: ""
           }
 
     steps:
@@ -46,6 +55,7 @@ jobs:
         cmake
         -S ${{ github.workspace }}
         -B ${{ steps.strings.outputs.build-output-dir }}
+        ${{ matrix.config.cmake-arch-args }}
         -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         -DBUILD_SHARED_LIBS=${{ matrix.shared_libs_enabled }}
         -DCQDE_BUILD_EXAMPLE_APP=ON
@@ -75,7 +85,7 @@ jobs:
       if: matrix.shared_libs_enabled == 'OFF'
       uses: actions/upload-artifact@v4
       with:
-        name: windows-msvc-x64
+        name: windows-msvc-${{ matrix.config.arch }}
         path: '${{ steps.strings.outputs.build-output-dir }}\bin'
         if-no-files-found: error
         compression-level: 9
