@@ -34,7 +34,7 @@ calcAudioListenerParams(
 
   if ( cListenerBody != nullptr )
     listenerVelocity = glm::translate(
-      glm::mat4{glm::mat3{listenerTransform}},
+      glm::mat4{glm::inverse(glm::mat3{listenerTransform})},
       rp3dToGlm(cListenerBody->body->getLinearVelocity()) )[3];
 
   return
@@ -54,13 +54,8 @@ updateAudio3dParams(
   const entt::entity eSource,
   const compos::Transform& cSourceTransform )
 {
-  using compos::Camera;
-  using compos::Transform;
   using compos::RigidBody;
   using compos::Audio3dParams;
-  using compos::AudioListener3d;
-  using compos::SubscriberUpdate;
-  using types::EntityManager;
 
   auto& soloud = registry.ctx().get <SoLoud::Soloud> ();
 
@@ -79,7 +74,7 @@ updateAudio3dParams(
   if ( cSourceBody != nullptr )
   {
     const glm::vec3 sourceVelocity = glm::translate(
-      glm::mat4{glm::mat3{listenerParams.transform}},
+      glm::mat4{glm::inverse(glm::mat3{listenerParams.transform})},
       rp3dToGlm(cSourceBody->body->getLinearVelocity()) )[3];
 
     params.velocity = sourceVelocity - params.velocity;
@@ -90,9 +85,9 @@ updateAudio3dParams(
     params.pos.x,
     params.pos.y,
     params.pos.z,
-    params.velocity.x,
-    params.velocity.y,
-    params.velocity.z );
+    -params.velocity.x,
+    -params.velocity.y,
+    -params.velocity.z );
 
   auto audioParams = registry.try_get <const Audio3dParams> (eSource);
 
