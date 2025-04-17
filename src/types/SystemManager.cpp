@@ -7,6 +7,8 @@
 
 #include <json/value.h>
 
+#include <algorithm>
+
 
 namespace cqde::types
 {
